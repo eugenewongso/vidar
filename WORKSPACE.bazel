@@ -1,0 +1,31 @@
+workspace(name = "vidar")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Load Python rules
+http_archive(
+    name = "rules_python",
+    urls = ["https://github.com/bazelbuild/rules_python/releases/download/0.17.0/rules_python-0.17.0.tar.gz"],
+    sha256 = "60a84378e70ee293fded8668bdf9f24d46e7a792c85f28c80f4b108e96dc7d34",
+)
+
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
+
+# Set up pip dependencies
+load("@rules_python//python:pip.bzl", "pip_install")
+
+pip_install(
+    requirements = "//:requirements.txt",
+)
+
+# Load Python dependencies
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "pip_deps",
+    requirements = "//:requirements.txt",
+)
+
+load("@pip_deps//:requirements.bzl", "requirement")
