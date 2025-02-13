@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Diff - cde345a7ee06db716e613e12a2c218ce248ad1c4^! - platform/frameworks/base - Git at Google
+  </title>
+  <link href="/+static/base.css" rel="stylesheet" type="text/css"/>
+  <!-- default customHeadTagPart -->
+ </head>
+ <body class="Site">
+  <header class="Site-header">
+   <div class="Header">
+    <a class="Header-image" href="/">
+     <img alt="Google Git" height="24" src="//www.gstatic.com/images/branding/lockups/2x/lockup_git_color_108x24dp.png" width="108"/>
+    </a>
+    <div class="Header-menu">
+     <a class="Header-menuItem" href="https://accounts.google.com/AccountChooser?faa=1&amp;service=gerritcodereview&amp;continue=https://android.googlesource.com/login/platform/frameworks/base/%2B/cde345a7ee06db716e613e12a2c218ce248ad1c4%255E%2521/">
+      Sign in
+     </a>
+    </div>
+   </div>
+  </header>
+  <div class="Site-content">
+   <div class="Container">
+    <div class="Breadcrumbs">
+     <a class="Breadcrumbs-crumb" href="/?format=HTML">
+      android
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/platform/">
+      platform
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/platform/frameworks/">
+      frameworks
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/platform/frameworks/base/">
+      base
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4%5E%21/">
+      cde345a7ee06db716e613e12a2c218ce248ad1c4^!
+     </a>
+     /
+     <span class="Breadcrumbs-crumb">
+      .
+     </span>
+    </div>
+    <div class="u-monospace Metadata">
+     <table>
+      <tr>
+       <th class="Metadata-title">
+        commit
+       </th>
+       <td>
+        cde345a7ee06db716e613e12a2c218ce248ad1c4
+       </td>
+       <td>
+        <span>
+         [
+         <a href="/platform/frameworks/base/+log/cde345a7ee06db716e613e12a2c218ce248ad1c4/">
+          log
+         </a>
+         ]
+        </span>
+        <span>
+         [
+         <a href="/platform/frameworks/base/+archive/cde345a7ee06db716e613e12a2c218ce248ad1c4/.tar.gz">
+          tgz
+         </a>
+         ]
+        </span>
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        author
+       </th>
+       <td>
+        Dmitry Dementyev &lt;dementyev@google.com&gt;
+       </td>
+       <td>
+        Tue Oct 01 14:57:44 2024 -0700
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        committer
+       </th>
+       <td>
+        Dmitry Dementyev &lt;dementyev@google.com&gt;
+       </td>
+       <td>
+        Tue Oct 01 15:01:00 2024 -0700
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        tree
+       </th>
+       <td>
+        <a href="/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4/">
+         fcbb0655bb2e30def3208b7b9d8976b4d59f4c19
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        parent
+       </th>
+       <td>
+        <a href="/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4%5E">
+         3408c8bf430bb543ad42da02a9547eeef2d17861
+        </a>
+        <span>
+         [
+         <a href="/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4%5E%21/">
+          diff
+         </a>
+         ]
+        </span>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <pre class="u-pre u-monospace MetadataMessage">Update checkKeyIntent
+
+1) Explicityly set  component after target activity check.
+2) Update Intent subclass check.
+
+Bug: 360846772
+Test: manual
+Flag: EXEMPT bugfix
+Change-Id: <a href="https://android-review.googlesource.com/#/q/Ied7961c73299681aa5b523cf3f00fd905893116f">Ied7961c73299681aa5b523cf3f00fd905893116f</a>
+</pre>
+    <pre class="u-pre u-monospace Diff"><a class="Diff-fileIndex" name="F0"></a>diff --git <a href="/platform/frameworks/base/+/3408c8bf430bb543ad42da02a9547eeef2d17861/services/core/java/com/android/server/accounts/AccountManagerService.java">a/services/core/java/com/android/server/accounts/AccountManagerService.java</a> <a href="/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4/services/core/java/com/android/server/accounts/AccountManagerService.java">b/services/core/java/com/android/server/accounts/AccountManagerService.java</a>
+index 3499a3a..0ca3b56 100644
+--- a/services/core/java/com/android/server/accounts/AccountManagerService.java
++++ b/services/core/java/com/android/server/accounts/AccountManagerService.java
+</pre>
+    <pre class="u-pre u-monospace Diff-unified"><span class="Diff-hunk">@@ -5062,6 +5062,8 @@
+</span><span class="Diff-change">                     Log.e(TAG, String.format(tmpl, activityName, pkgName, mAccountType));</span>
+<span class="Diff-change">                     return false;</span>
+<span class="Diff-change">                 }</span>
+<span class="Diff-insert">+                intent.setComponent(targetActivityInfo.getComponentName());</span>
+<span class="Diff-insert">+                bundle.putParcelable(AccountManager.KEY_INTENT, intent);</span>
+<span class="Diff-change">                 return true;</span>
+<span class="Diff-change">             } finally {</span>
+<span class="Diff-change">                 Binder.restoreCallingIdentity(bid);</span>
+<span class="Diff-hunk">@@ -5083,14 +5085,15 @@
+</span><span class="Diff-change">             Bundle simulateBundle = p.readBundle();</span>
+<span class="Diff-change">             p.recycle();</span>
+<span class="Diff-change">             Intent intent = bundle.getParcelable(AccountManager.KEY_INTENT, Intent.class);</span>
+<span class="Diff-delete">-            if (intent != null &amp;&amp; intent.getClass() != Intent.class) {</span>
+<span class="Diff-delete">-                return false;</span>
+<span class="Diff-delete">-            }</span>
+<span class="Diff-change">             Intent simulateIntent = simulateBundle.getParcelable(AccountManager.KEY_INTENT,</span>
+<span class="Diff-change">                     Intent.class);</span>
+<span class="Diff-change">             if (intent == null) {</span>
+<span class="Diff-change">                 return (simulateIntent == null);</span>
+<span class="Diff-change">             }</span>
+<span class="Diff-insert">+            if (intent.getClass() != Intent.class || simulateIntent.getClass() != Intent.class) {</span>
+<span class="Diff-insert">+                return false;</span>
+<span class="Diff-insert">+            }</span>
+<span class="Diff-insert">+</span>
+<span class="Diff-change">             if (!intent.filterEquals(simulateIntent)) {</span>
+<span class="Diff-change">                 return false;</span>
+<span class="Diff-change">             }</span>
+</pre>
+   </div>
+   <!-- Container -->
+  </div>
+  <!-- Site-content -->
+  <footer class="Site-footer">
+   <div class="Footer">
+    <span class="Footer-poweredBy">
+     Powered by
+     <a href="https://gerrit.googlesource.com/gitiles/">
+      Gitiles
+     </a>
+     |
+     <a href="https://policies.google.com/privacy">
+      Privacy
+     </a>
+     |
+     <a href="https://policies.google.com/terms">
+      Terms
+     </a>
+    </span>
+    <span class="Footer-formats">
+     <a class="u-monospace Footer-formatsItem" href="?format=TEXT">
+      txt
+     </a>
+     <a class="u-monospace Footer-formatsItem" href="?format=JSON">
+      json
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
