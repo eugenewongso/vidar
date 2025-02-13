@@ -1,0 +1,14 @@
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+py_library(
+    name = "patch_adopter",
+    srcs = ["patch_adopter.py", "patch.py"],
+    visibility = ["//visibility:public"],
+    deps = [],
+)
+
+py_test(
+    name = "patch_adopter_test",
+    srcs = ["patch_adopter_test.py"],
+    deps = [":patch_adopter"],
+)
