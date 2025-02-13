@@ -1,0 +1,4 @@
+# Fetch patch diff (fetch_diff.py) direct dependencies
+requests
+beautifulsoup4
+lxml
