@@ -1,0 +1,7 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "vanir_report_parser",
+    srcs = ["vanir_report_parser.py"],
+    visibility = ["//visibility:public"],
+)
