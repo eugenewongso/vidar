@@ -1,0 +1,30 @@
+{
+  "https://android.googlesource.com/kernel/common/+/65e0a92c6d27d4cbaa0deef668df12b69853d65e": {
+    "patch_file": "65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+    "files": {
+      "include/net/af_unix.h": [],
+      "net/unix/garbage.c": [
+        "dec_inflight",
+        "inc_inflight",
+        "inc_inflight_move_tail",
+        "unix_gc"
+      ],
+      "net/unix/scm.c": ["unix_inflight", "unix_notinflight"],
+      "net/unix/af_unix.c": []
+    }
+  },
+  "https://android.googlesource.com/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692": {
+    "patch_file": "94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+    "files": {
+      "include/net/af_unix.h": [],
+      "net/unix/garbage.c": [
+        "inc_inflight",
+        "dec_inflight",
+        "inc_inflight_move_tail",
+        "unix_gc"
+      ],
+      "net/unix/scm.c": ["unix_inflight", "unix_notinflight"],
+      "net/unix/af_unix.c": []
+    }
+  }
+}
