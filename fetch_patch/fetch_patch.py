@@ -33,7 +33,7 @@ if response.status_code == 200:
         soup = BeautifulSoup(file, "lxml")
     
     text_content = soup.get_text(separator="\n", strip=True)
-    output_filename = os.path.join(output_dir_diff, f"{commit_hash}_{timestamp}.diff")
+    output_filename = os.path.join(output_dir_diff, f"{commit_hash}_{timestamp}.txt") # might neeed to change file extension later 
     with open(output_filename, "w", encoding="utf-8") as output_file:
         output_file.write(text_content)
 
