@@ -1,6 +1,6 @@
 import os
-import requests # type: ignore
-from bs4 import BeautifulSoup # type: ignore
+import requests 
+from bs4 import BeautifulSoup 
 from datetime import datetime
 
 
@@ -8,7 +8,7 @@ from datetime import datetime
 
 commit_hash = "cde345a7ee06db716e613e12a2c218ce248ad1c4"
 diff_url = f"https://android.googlesource.com/platform/frameworks/base/+/{commit_hash}%5E%21/" 
-# TODO: need to change this later on to use Eugene's MAP
+# TODO: need to change this later on to use Eugene's Map
 
 print(f"Fetching diff from: {diff_url}")
 
@@ -56,7 +56,4 @@ else:
 
 with open(diff_filename_html, "r", encoding="utf-8") as file:
     pass
-
-    
-
 
