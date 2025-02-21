@@ -3,11 +3,15 @@ import requests
 from bs4 import BeautifulSoup 
 from datetime import datetime
 
-
 # logic here form Eugene to traverse 
+diff_url = "https://android.googlesource.com/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4" 
+# diff_url = "https://git.codelinaro.org/clo/la/kernel/msm-5.10/-/commit/c1a7b4b4a736fa175488122cca9743cff2ae72e8"
 
-commit_hash = "cde345a7ee06db716e613e12a2c218ce248ad1c4"
-diff_url = f"https://android.googlesource.com/platform/frameworks/base/+/{commit_hash}%5E%21/" 
+if "android.googlesource.com" in diff_url:
+    diff_url += "^!"
+elif "git.codelinaro.org" in diff_url:
+    diff_url += ".diff"
+
 # TODO: need to change this later on to use Eugene's Map
 
 print(f"Fetching diff from: {diff_url}")
@@ -23,17 +27,17 @@ timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 if response.status_code == 200:
     soup = BeautifulSoup(response.text, "html.parser")
 
-    diff_filename = os.path.join(output_dir_html, f"{commit_hash}_{timestamp}.html")
+    diff_filename = os.path.join(output_dir_html, f"{timestamp}.html")
     with open(diff_filename, "w", encoding="utf-8") as f:
         f.write(soup.prettify())  
 
     print(f"Prettified Diff file saved as: {diff_filename}")
-    diff_filename_html = os.path.join(output_dir_html, f"{commit_hash}_{timestamp}.html") # current html file opened
+    diff_filename_html = os.path.join(output_dir_html, f"{timestamp}.html") # current html file opened
     with open(diff_filename_html, "r", encoding="utf-8") as file:
         soup = BeautifulSoup(file, "lxml")
     
     text_content = soup.get_text(separator="\n", strip=True)
-    output_filename = os.path.join(output_dir_diff, f"{commit_hash}_{timestamp}.txt") # might neeed to change file extension later 
+    output_filename = os.path.join(output_dir_diff, f"{timestamp}.txt") # might neeed to change file extension later 
     with open(output_filename, "w", encoding="utf-8") as output_file:
         output_file.write(text_content)
 

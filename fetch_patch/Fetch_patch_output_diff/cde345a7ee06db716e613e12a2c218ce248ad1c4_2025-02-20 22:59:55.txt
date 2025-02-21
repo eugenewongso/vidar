@@ -1,0 +1,50 @@
+msm: eva: Adding kref count for cvp_get_inst_from_id (0215bbc2) · Commits · CodeLinaro / la / kernel / msm-5.4 · GitLab
+Skip to content
+GitLab
+Explore
+Sign in
+Commit
+0215bbc2
+authored
+Jun 17, 2024
+by
+Pranay Varma Kopanati
+Committed by
+Suman Voora
+Jun 18, 2024
+Browse files
+msm: eva: Adding kref count for cvp_get_inst_from_id
+Adding count for instance
+
+Change-Id: I4505feb478c1c682ecf6a790d7cb804f70e50a1c
+Signed-off-by:
+Pranay Varma Kopanati
+<
+quic_pkopanat@quicinc.com
+>
+parent
+037ab57e
+Changes
+2
+Hide whitespace changes
+Inline
+Side-by-side
+Preview
+0%
+Try again
+or
+attach a new file
+.
+Cancel
+You are about to add
+0
+people
+to the discussion. Proceed with caution.
+Finish editing this message first!
+Save comment
+Cancel
+Please
+register
+or
+sign in
+to comment
