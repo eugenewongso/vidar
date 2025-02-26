@@ -1,50 +1,27 @@
-Diff - cde345a7ee06db716e613e12a2c218ce248ad1c4^! - platform/frameworks/base - Git at Google
-Sign in
-android
-/
-platform
-/
-frameworks
-/
-base
-/
-cde345a7ee06db716e613e12a2c218ce248ad1c4^!
-/
-.
-commit
-cde345a7ee06db716e613e12a2c218ce248ad1c4
-[
-log
-]
-[
-tgz
-]
-author
-Dmitry Dementyev <dementyev@google.com>
-Tue Oct 01 14:57:44 2024 -0700
-committer
-Dmitry Dementyev <dementyev@google.com>
-Tue Oct 01 15:01:00 2024 -0700
-tree
-fcbb0655bb2e30def3208b7b9d8976b4d59f4c19
-parent
-3408c8bf430bb543ad42da02a9547eeef2d17861
-[
-diff
-]
+==== COMMIT METADATA ====
+Commit:     cde345a7ee06db716e613e12a2c218ce248ad1c4
+Parent:     3408c8bf430bb543ad42da02a9547eeef2d17861
+
+Author:     Dmitry Dementyev <dementyev@google.com>
+Date:       Tue Oct 01 14:57:44 2024 
+
+Committer:  Dmitry Dementyev <dementyev@google.com>
+Date:       Tue Oct 01 15:01:00 2024 
+
+==== COMMIT MESSAGE ====
 Update checkKeyIntent
 
 1) Explicityly set  component after target activity check.
 2) Update Intent subclass check.
 
-Bug: 360846772
-Test: manual
 Flag: EXEMPT bugfix
-Change-Id:
-Ied7961c73299681aa5b523cf3f00fd905893116f
-diff --git
-a/services/core/java/com/android/server/accounts/AccountManagerService.java
-b/services/core/java/com/android/server/accounts/AccountManagerService.java
+
+==== ADDITIONAL INFO ====
+Bug:        360846772
+Test:       manual
+Change-Id:  
+
+diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java
 index 3499a3a..0ca3b56 100644
 --- a/services/core/java/com/android/server/accounts/AccountManagerService.java
 +++ b/services/core/java/com/android/server/accounts/AccountManagerService.java
