@@ -1,57 +1,42 @@
-import patch
+import subprocess
+import os
 
 class PatchAdopter:
-    """Handles applying multiple patch files to a codebase."""
+    """Handles applying a single patch file using GNU patch."""
 
-    def __init__(self, patch_files=None):
+    def __init__(self, strip_level=1):
         """
         Initializes the PatchAdopter.
-        
-        :param patch_files: Optional list of patch file paths to apply. Defaults to None.
+
+        :param strip_level: Number of leading path components to strip (equivalent to `-p` option in patch command).
         """
-        self.patch_files = patch_files if patch_files else []
-        # Stores success/failure per patch
-        self.results = {}
-
-    def apply_all(self):
-        """Applies all patches in the list and stores the results."""
-        for patch_file in self.patch_files:
-            success = self.apply_patch(patch_file)
-            self.results[patch_file] = success
-
-        self.print_summary()
+        self.strip_level = strip_level
+        # Assume GNU patch is installed
+        self.patch_command = "gpatch"  
 
     def apply_patch(self, patch_file: str):
         """
-        Applies a single patch file.
+        Applies a single patch file using GNU patch.
 
         :param patch_file: Path to the patch file.
         :return: True if the patch was applied successfully, False otherwise.
         """
-        patch_set = patch.fromfile(patch_file)
-        
-        if patch_set is None:
-            print(f"Failed to load patch file: {patch_file}")
+        if not os.path.exists(patch_file):
+            print(f"Patch file not found: {patch_file}")
             return False
 
-        success = patch_set.apply()
-
-        if success:
+        try:
+            result = subprocess.run([
+                self.patch_command, "-p", str(self.strip_level), "-i", patch_file
+            ], check=True, text=True)
+            
             print(f"Successfully applied patch: {patch_file}")
-        else:
+            return True
+        except subprocess.CalledProcessError as e:
             print(f"Failed to apply patch: {patch_file}")
+            return False
 
-        return success
-
-    def print_summary(self):
-        """Prints a summary of applied patches."""
-        print("\nPatch Adoption Summary:")
-        for patch_file, success in self.results.items():
-            status = "Success" if success else "Failed"
-            print(f"{patch_file}: {status}")
-
-# # Example:
-# if __name__ == "__main__":
-#     patch_files = ["patch1.diff", "patch2.diff", "patch3.diff"] 
-#     adopter = PatchAdopter(patch_files)
-#     adopter.apply_all()
+# Example:
+if __name__ == "__main__":
+    adopter = PatchAdopter(strip_level=0)
+    adopter.apply_patch("generated_patch.diff")
