@@ -1,0 +1,64 @@
+==== COMMIT METADATA ====
+Commit:     cde345a7ee06db716e613e12a2c218ce248ad1c4
+Parent:     3408c8bf430bb543ad42da02a9547eeef2d17861
+
+Author:     Dmitry Dementyev <dementyev@google.com>
+Date:       Tue Oct 01 14:57:44 2024 
+
+Committer:  Dmitry Dementyev <dementyev@google.com>
+Date:       Tue Oct 01 15:01:00 2024 
+
+==== COMMIT MESSAGE ====
+Update checkKeyIntent
+
+1) Explicityly set  component after target activity check.
+2) Update Intent subclass check.
+
+Flag: EXEMPT bugfix
+
+==== ADDITIONAL INFO ====
+Bug:        360846772
+Test:       manual
+Change-Id:  
+
+==== DIFF CONTENT ====
+diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java
+index 3499a3a..0ca3b56 100644
+--- a/services/core/java/com/android/server/accounts/AccountManagerService.java
++++ b/services/core/java/com/android/server/accounts/AccountManagerService.java
+@@ -5062,6 +5062,8 @@
+Log.e(TAG, String.format(tmpl, activityName, pkgName, mAccountType));
+return false;
+}
++                intent.setComponent(targetActivityInfo.getComponentName());
++                bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+return true;
+} finally {
+Binder.restoreCallingIdentity(bid);
+@@ -5083,14 +5085,15 @@
+Bundle simulateBundle = p.readBundle();
+p.recycle();
+Intent intent = bundle.getParcelable(AccountManager.KEY_INTENT, Intent.class);
+-            if (intent != null && intent.getClass() != Intent.class) {
+-                return false;
+-            }
+Intent simulateIntent = simulateBundle.getParcelable(AccountManager.KEY_INTENT,
+Intent.class);
+if (intent == null) {
+return (simulateIntent == null);
+}
++            if (intent.getClass() != Intent.class || simulateIntent.getClass() != Intent.class) {
++                return false;
++            }
++
+if (!intent.filterEquals(simulateIntent)) {
+return false;
+}
+Powered by
+Gitiles
+|
+Privacy
+|
+Terms
+txt
+json

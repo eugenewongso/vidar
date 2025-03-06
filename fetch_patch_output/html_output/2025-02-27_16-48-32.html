@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Diff - 94c88f80ffddff00f0af448c02dfd8a3f3cdd692^! - kernel/common - Git at Google
+  </title>
+  <link href="/+static/base.css" rel="stylesheet" type="text/css"/>
+  <!-- default customHeadTagPart -->
+ </head>
+ <body class="Site">
+  <header class="Site-header">
+   <div class="Header">
+    <a class="Header-image" href="/">
+     <img alt="Google Git" height="24" src="//www.gstatic.com/images/branding/lockups/2x/lockup_git_color_108x24dp.png" width="108"/>
+    </a>
+    <div class="Header-menu">
+     <a class="Header-menuItem" href="https://accounts.google.com/AccountChooser?faa=1&amp;service=gerritcodereview&amp;continue=https://android.googlesource.com/login/kernel/common/%2B/94c88f80ffddff00f0af448c02dfd8a3f3cdd692%255E%2521/">
+      Sign in
+     </a>
+    </div>
+   </div>
+  </header>
+  <div class="Site-content">
+   <div class="Container">
+    <div class="Breadcrumbs">
+     <a class="Breadcrumbs-crumb" href="/?format=HTML">
+      android
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/kernel/">
+      kernel
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/kernel/common/">
+      common
+     </a>
+     /
+     <a class="Breadcrumbs-crumb" href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692%5E%21/">
+      94c88f80ffddff00f0af448c02dfd8a3f3cdd692^!
+     </a>
+     /
+     <span class="Breadcrumbs-crumb">
+      .
+     </span>
+    </div>
+    <div class="u-monospace Metadata">
+     <table>
+      <tr>
+       <th class="Metadata-title">
+        commit
+       </th>
+       <td>
+        94c88f80ffddff00f0af448c02dfd8a3f3cdd692
+       </td>
+       <td>
+        <span>
+         [
+         <a href="/kernel/common/+log/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/">
+          log
+         </a>
+         ]
+        </span>
+        <span>
+         [
+         <a href="/kernel/common/+archive/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/.tar.gz">
+          tgz
+         </a>
+         ]
+        </span>
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        author
+       </th>
+       <td>
+        Kuniyuki Iwashima &lt;kuniyu@amazon.com&gt;
+       </td>
+       <td>
+        Tue Jan 23 09:08:53 2024 -0800
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        committer
+       </th>
+       <td>
+        Lee Jones &lt;joneslee@google.com&gt;
+       </td>
+       <td>
+        Mon Apr 22 16:22:57 2024 -0700
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        tree
+       </th>
+       <td>
+        <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/">
+         d2130f58ab10658f0b29958b5b56460844bd718a
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <th class="Metadata-title">
+        parent
+       </th>
+       <td>
+        <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692%5E">
+         3dfddcb9c2779eb7c91d7f0f1108574193970eec
+        </a>
+        <span>
+         [
+         <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692%5E%21/">
+          diff
+         </a>
+         ]
+        </span>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <pre class="u-pre u-monospace MetadataMessage">UPSTREAM: af_unix: Do not use atomic ops for unix_sk(sk)-&gt;inflight.
+
+[ Upstream commit 97af84a6bba2ab2b9c704c08e67de3b5ea551bb2 ]
+
+When touching unix_sk(sk)-&gt;inflight, we are always under
+spin_lock(&amp;unix_gc_lock).
+
+Let's convert unix_sk(sk)-&gt;inflight to the normal unsigned long.
+
+Bug: 336226035
+Signed-off-by: Kuniyuki Iwashima &lt;kuniyu@amazon.com&gt;
+Reviewed-by: Simon Horman &lt;horms@kernel.org&gt;
+Link: <a href="https://lore.kernel.org/r/20240123170856.41348-3-kuniyu@amazon.com">https://lore.kernel.org/r/20240123170856.41348-3-kuniyu@amazon.com</a>
+Signed-off-by: Jakub Kicinski &lt;kuba@kernel.org&gt;
+Stable-dep-of: 47d8ac011fe1 ("af_unix: Fix garbage collector racing against connect()")
+Signed-off-by: Sasha Levin &lt;sashal@kernel.org&gt;
+(cherry picked from commit 301fdbaa0bba4653570f07789909939f977a7620)
+Signed-off-by: Lee Jones &lt;joneslee@google.com&gt;
+Change-Id: <a href="https://android-review.googlesource.com/#/q/I0d965d5f2a863d798c06de9f21d0467f256b538e">I0d965d5f2a863d798c06de9f21d0467f256b538e</a>
+</pre>
+    <pre class="u-pre u-monospace Diff"><a class="Diff-fileIndex" name="F0"></a>diff --git <a href="/kernel/common/+/3dfddcb9c2779eb7c91d7f0f1108574193970eec/include/net/af_unix.h">a/include/net/af_unix.h</a> <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/include/net/af_unix.h">b/include/net/af_unix.h</a>
+index 480fa579..af4646f 100644
+--- a/include/net/af_unix.h
++++ b/include/net/af_unix.h
+</pre>
+    <pre class="u-pre u-monospace Diff-unified"><span class="Diff-hunk">@@ -60,7 +60,7 @@ struct unix_sock {
+</span><span class="Diff-change"> 	struct mutex		iolock, bindlock;</span>
+<span class="Diff-change"> 	struct sock		*peer;</span>
+<span class="Diff-change"> 	struct list_head	link;</span>
+<span class="Diff-delete">-	atomic_long_t		inflight;</span>
+<span class="Diff-insert">+	unsigned long		inflight;</span>
+<span class="Diff-change"> 	spinlock_t		lock;</span>
+<span class="Diff-change"> 	unsigned long		gc_flags;</span>
+<span class="Diff-change"> #define UNIX_GC_CANDIDATE	0</span>
+</pre>
+    <pre class="u-pre u-monospace Diff"><a class="Diff-fileIndex" name="F1"></a>diff --git <a href="/kernel/common/+/3dfddcb9c2779eb7c91d7f0f1108574193970eec/net/unix/af_unix.c">a/net/unix/af_unix.c</a> <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/net/unix/af_unix.c">b/net/unix/af_unix.c</a>
+index 6dbeb80..6757d11 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+</pre>
+    <pre class="u-pre u-monospace Diff-unified"><span class="Diff-hunk">@@ -970,11 +970,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern,
+</span><span class="Diff-change"> 	sk-&gt;sk_write_space	= unix_write_space;</span>
+<span class="Diff-change"> 	sk-&gt;sk_max_ack_backlog	= net-&gt;unx.sysctl_max_dgram_qlen;</span>
+<span class="Diff-change"> 	sk-&gt;sk_destruct		= unix_sock_destructor;</span>
+<span class="Diff-delete">-	u	  = unix_sk(sk);</span>
+<span class="Diff-insert">+	u = unix_sk(sk);</span>
+<span class="Diff-insert">+	u-&gt;inflight = 0;</span>
+<span class="Diff-change"> 	u-&gt;path.dentry = NULL;</span>
+<span class="Diff-change"> 	u-&gt;path.mnt = NULL;</span>
+<span class="Diff-change"> 	spin_lock_init(&amp;u-&gt;lock);</span>
+<span class="Diff-delete">-	atomic_long_set(&amp;u-&gt;inflight, 0);</span>
+<span class="Diff-change"> 	INIT_LIST_HEAD(&amp;u-&gt;link);</span>
+<span class="Diff-change"> 	mutex_init(&amp;u-&gt;iolock); /* single task reading lock */</span>
+<span class="Diff-change"> 	mutex_init(&amp;u-&gt;bindlock); /* single task binding lock */</span>
+</pre>
+    <pre class="u-pre u-monospace Diff"><a class="Diff-fileIndex" name="F2"></a>diff --git <a href="/kernel/common/+/3dfddcb9c2779eb7c91d7f0f1108574193970eec/net/unix/garbage.c">a/net/unix/garbage.c</a> <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/net/unix/garbage.c">b/net/unix/garbage.c</a>
+index dc27635..312474c 100644
+--- a/net/unix/garbage.c
++++ b/net/unix/garbage.c
+</pre>
+    <pre class="u-pre u-monospace Diff-unified"><span class="Diff-hunk">@@ -166,17 +166,18 @@ static void scan_children(struct sock *x, void (*func)(struct unix_sock *),
+</span><span class="Diff-change"> </span>
+<span class="Diff-change"> static void dec_inflight(struct unix_sock *usk)</span>
+<span class="Diff-change"> {</span>
+<span class="Diff-delete">-	atomic_long_dec(&amp;usk-&gt;inflight);</span>
+<span class="Diff-insert">+	usk-&gt;inflight--;</span>
+<span class="Diff-change"> }</span>
+<span class="Diff-change"> </span>
+<span class="Diff-change"> static void inc_inflight(struct unix_sock *usk)</span>
+<span class="Diff-change"> {</span>
+<span class="Diff-delete">-	atomic_long_inc(&amp;usk-&gt;inflight);</span>
+<span class="Diff-insert">+	usk-&gt;inflight++;</span>
+<span class="Diff-change"> }</span>
+<span class="Diff-change"> </span>
+<span class="Diff-change"> static void inc_inflight_move_tail(struct unix_sock *u)</span>
+<span class="Diff-change"> {</span>
+<span class="Diff-delete">-	atomic_long_inc(&amp;u-&gt;inflight);</span>
+<span class="Diff-insert">+	u-&gt;inflight++;</span>
+<span class="Diff-insert">+</span>
+<span class="Diff-change"> 	/* If this still might be part of a cycle, move it to the end</span>
+<span class="Diff-change"> 	 * of the list, so that it's checked even if it was already</span>
+<span class="Diff-change"> 	 * passed over</span>
+<span class="Diff-hunk">@@ -237,14 +238,12 @@ void unix_gc(void)
+</span><span class="Diff-change"> 	 */</span>
+<span class="Diff-change"> 	list_for_each_entry_safe(u, next, &amp;gc_inflight_list, link) {</span>
+<span class="Diff-change"> 		long total_refs;</span>
+<span class="Diff-delete">-		long inflight_refs;</span>
+<span class="Diff-change"> </span>
+<span class="Diff-change"> 		total_refs = file_count(u-&gt;sk.sk_socket-&gt;file);</span>
+<span class="Diff-delete">-		inflight_refs = atomic_long_read(&amp;u-&gt;inflight);</span>
+<span class="Diff-change"> </span>
+<span class="Diff-delete">-		BUG_ON(inflight_refs &lt; 1);</span>
+<span class="Diff-delete">-		BUG_ON(total_refs &lt; inflight_refs);</span>
+<span class="Diff-delete">-		if (total_refs == inflight_refs) {</span>
+<span class="Diff-insert">+		BUG_ON(!u-&gt;inflight);</span>
+<span class="Diff-insert">+		BUG_ON(total_refs &lt; u-&gt;inflight);</span>
+<span class="Diff-insert">+		if (total_refs == u-&gt;inflight) {</span>
+<span class="Diff-change"> 			list_move_tail(&amp;u-&gt;link, &amp;gc_candidates);</span>
+<span class="Diff-change"> 			__set_bit(UNIX_GC_CANDIDATE, &amp;u-&gt;gc_flags);</span>
+<span class="Diff-change"> 			__set_bit(UNIX_GC_MAYBE_CYCLE, &amp;u-&gt;gc_flags);</span>
+<span class="Diff-hunk">@@ -271,7 +270,7 @@ void unix_gc(void)
+</span><span class="Diff-change"> 		/* Move cursor to after the current position. */</span>
+<span class="Diff-change"> 		list_move(&amp;cursor, &amp;u-&gt;link);</span>
+<span class="Diff-change"> </span>
+<span class="Diff-delete">-		if (atomic_long_read(&amp;u-&gt;inflight) &gt; 0) {</span>
+<span class="Diff-insert">+		if (u-&gt;inflight) {</span>
+<span class="Diff-change"> 			list_move_tail(&amp;u-&gt;link, &amp;not_cycle_list);</span>
+<span class="Diff-change"> 			__clear_bit(UNIX_GC_MAYBE_CYCLE, &amp;u-&gt;gc_flags);</span>
+<span class="Diff-change"> 			scan_children(&amp;u-&gt;sk, inc_inflight_move_tail, NULL);</span>
+</pre>
+    <pre class="u-pre u-monospace Diff"><a class="Diff-fileIndex" name="F3"></a>diff --git <a href="/kernel/common/+/3dfddcb9c2779eb7c91d7f0f1108574193970eec/net/unix/scm.c">a/net/unix/scm.c</a> <a href="/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692/net/unix/scm.c">b/net/unix/scm.c</a>
+index e8e2a00..bdcda4e 100644
+--- a/net/unix/scm.c
++++ b/net/unix/scm.c
+</pre>
+    <pre class="u-pre u-monospace Diff-unified"><span class="Diff-hunk">@@ -54,12 +54,13 @@ void unix_inflight(struct user_struct *user, struct file *fp)
+</span><span class="Diff-change"> 	if (s) {</span>
+<span class="Diff-change"> 		struct unix_sock *u = unix_sk(s);</span>
+<span class="Diff-change"> </span>
+<span class="Diff-delete">-		if (atomic_long_inc_return(&amp;u-&gt;inflight) == 1) {</span>
+<span class="Diff-insert">+		if (!u-&gt;inflight) {</span>
+<span class="Diff-change"> 			BUG_ON(!list_empty(&amp;u-&gt;link));</span>
+<span class="Diff-change"> 			list_add_tail(&amp;u-&gt;link, &amp;gc_inflight_list);</span>
+<span class="Diff-change"> 		} else {</span>
+<span class="Diff-change"> 			BUG_ON(list_empty(&amp;u-&gt;link));</span>
+<span class="Diff-change"> 		}</span>
+<span class="Diff-insert">+		u-&gt;inflight++;</span>
+<span class="Diff-change"> 		/* Paired with READ_ONCE() in wait_for_unix_gc() */</span>
+<span class="Diff-change"> 		WRITE_ONCE(unix_tot_inflight, unix_tot_inflight + 1);</span>
+<span class="Diff-change"> 	}</span>
+<span class="Diff-hunk">@@ -76,10 +77,11 @@ void unix_notinflight(struct user_struct *user, struct file *fp)
+</span><span class="Diff-change"> 	if (s) {</span>
+<span class="Diff-change"> 		struct unix_sock *u = unix_sk(s);</span>
+<span class="Diff-change"> </span>
+<span class="Diff-delete">-		BUG_ON(!atomic_long_read(&amp;u-&gt;inflight));</span>
+<span class="Diff-insert">+		BUG_ON(!u-&gt;inflight);</span>
+<span class="Diff-change"> 		BUG_ON(list_empty(&amp;u-&gt;link));</span>
+<span class="Diff-change"> </span>
+<span class="Diff-delete">-		if (atomic_long_dec_and_test(&amp;u-&gt;inflight))</span>
+<span class="Diff-insert">+		u-&gt;inflight--;</span>
+<span class="Diff-insert">+		if (!u-&gt;inflight)</span>
+<span class="Diff-change"> 			list_del_init(&amp;u-&gt;link);</span>
+<span class="Diff-change"> 		/* Paired with READ_ONCE() in wait_for_unix_gc() */</span>
+<span class="Diff-change"> 		WRITE_ONCE(unix_tot_inflight, unix_tot_inflight - 1);</span>
+</pre>
+   </div>
+   <!-- Container -->
+  </div>
+  <!-- Site-content -->
+  <footer class="Site-footer">
+   <div class="Footer">
+    <span class="Footer-poweredBy">
+     Powered by
+     <a href="https://gerrit.googlesource.com/gitiles/">
+      Gitiles
+     </a>
+     |
+     <a href="https://policies.google.com/privacy">
+      Privacy
+     </a>
+     |
+     <a href="https://policies.google.com/terms">
+      Terms
+     </a>
+    </span>
+    <span class="Footer-formats">
+     <a class="u-monospace Footer-formatsItem" href="?format=TEXT">
+      txt
+     </a>
+     <a class="u-monospace Footer-formatsItem" href="?format=JSON">
+      json
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
