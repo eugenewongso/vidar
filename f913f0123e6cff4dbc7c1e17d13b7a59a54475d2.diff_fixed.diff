@@ -1,0 +1,29 @@
+```diff
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -156,8 +156,6 @@
+ 	return pte;
+ }
+ 
+-#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+-static inline bool trylock_vma_ref_count(struct vm_area_struct *vma)
+ {
+ 	/*
+ 	 * If we have the only reference, swap the refcount to -1. This
+@@ -222,6 +220,7 @@
+ 		spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
+ 
+ 	/*
++
+ 	 * If SPF is enabled, take the ptl lock on the source page table
+ 	 * page, to prevent the entire pmd from being moved under a
+ 	 * concurrent SPF.
+@@ -263,6 +262,7 @@
+ 		spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
+ 
+ 	/* Clear the pmd */
++
+ 	pmd = *old_pmd;
+ 	pmd_clear(old_pmd);
+ 
+```
