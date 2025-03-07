@@ -3,8 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-def extract_diff(url):
-    """Extracts the diff content from the commit page for Android Googlesource."""
+def extract_diff(url, files_to_include):
+    """Extracts and filters the diff content from the commit page for Android Googlesource."""
     
     response = requests.get(url)
     if response.status_code != 200:
@@ -22,16 +22,22 @@ def extract_diff(url):
     headers = [header.get_text() for header in file_headers]
 
     # Combine headers and diffs
-    formatted_diff = "\n".join([h + d for h, d in zip(headers, diffs)])
+    filtered_diff = []
+    for h, d in zip(headers, diffs):
+        for file_path in files_to_include:
+            if file_path in h:  # Check if file is in the header
+                filtered_diff.append(h + d)
+                break  # Avoid duplicate checks for the same file
 
-    return formatted_diff
+    return "\n".join(filtered_diff) if filtered_diff else None
 
-def fetch_patch(commit_url):
+def fetch_patch(commit_url, files_to_include):
     """
-    Fetches the diff for a given commit URL and saves it in a valid format.
-    
+    Fetches the diff for a given commit URL, filters it to only include relevant files, and saves it.
+
     Args:
         commit_url (str): The URL of the commit to fetch.
+        files_to_include (list): List of file paths to include in the diff.
 
     Returns:
         str: The path to the saved formatted diff file.
@@ -78,15 +84,15 @@ def fetch_patch(commit_url):
         return output_filename
 
     # Extract and format diff content for Android Googlesource
-    extracted_diff = extract_diff(diff_url)
+    extracted_diff = extract_diff(diff_url, files_to_include)
     if not extracted_diff:
-        print(f"❌ Failed to extract diff content for {commit_hash}")
+        print(f"❌ No matching diff content found for {commit_hash}")
         return None
 
-    # Save formatted diff
+    # Save filtered diff
     output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
     with open(output_filename, "w", encoding="utf-8") as output_file:
         output_file.write(extracted_diff.strip() + "\n")  # Ensure exactly one empty line at the end
 
-    print(f"✅ Formatted diff file saved to: {output_filename}")
+    print(f"✅ Filtered diff file saved to: {output_filename}")
     return output_filename

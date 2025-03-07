@@ -2,7 +2,7 @@ import json
 from fetch_diff import fetch_patch  # ✅ Correct import
 
 # Load the parsed report JSON
-parsed_report_path = "llm_integration/parsed_report.json"
+parsed_report_path = "parsed-20250306201629.json"
 
 with open(parsed_report_path, "r") as f:
     parsed_report = json.load(f)
@@ -10,11 +10,12 @@ with open(parsed_report_path, "r") as f:
 # Process each patch in the report
 for patch in parsed_report["patches"]:
     patch_url = patch["patch_url"]
-    print(f"🔍 Processing patch: {patch_url}")
+    files_to_include = list(patch["files"].keys())  # Extract file paths
+    print(f"🔍 Processing patch: {patch_url} | Filtering files: {files_to_include}")
     
     try:
-        # Fetch and save the patch
-        diff_file = fetch_patch(patch_url)
+        # Fetch and save the patch, passing the relevant file paths
+        diff_file = fetch_patch(patch_url, files_to_include)
 
         if diff_file:
             print(f"✅ Patch saved: {diff_file}")
