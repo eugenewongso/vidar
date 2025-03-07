@@ -1,0 +1,269 @@
+{
+    "patches": [
+        {
+            "patch_file": "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 succeeded at 277 (offset -12 lines).\nHunk #3 succeeded at 285 (offset -12 lines).\nHunk #4 succeeded at 312 with fuzz 2 (offset -11 lines).\nHunk #5 FAILED at 341.\nHunk #6 succeeded at 346 (offset -13 lines).\nHunk #7 succeeded at 367 (offset -12 lines).\n2 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bce004fba8be9e1bb575301f398b3ecc27ba42de",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 303 with fuzz 2 (offset -2 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/65e0a92c6d27d4cbaa0deef668df12b69853d65e",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\npatching file net/unix/af_unix.c\nHunk #1 succeeded at 817 (offset -60 lines).\npatching file net/unix/garbage.c\npatching file net/unix/scm.c\n"
+        },
+        {
+            "patch_file": "94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/af_unix.h.rej\npatching file net/unix/af_unix.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/unix/af_unix.c.rej\npatching file net/unix/garbage.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file net/unix/garbage.c.rej\npatching file net/unix/scm.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/unix/scm.c.rej\n"
+        },
+        {
+            "patch_file": "c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/c1a7b4b4a736fa175488122cca9743cff2ae72e8",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "drivers/gpu/msm/kgsl_vbo.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/drivers/gpu/msm/kgsl_vbo.c.rej"
+                }
+            ],
+            "message_output": "patching file drivers/gpu/msm/kgsl.c\npatching file drivers/gpu/msm/kgsl.h\npatching file drivers/gpu/msm/kgsl_reclaim.c\npatching file drivers/gpu/msm/kgsl_vbo.c\nHunk #1 FAILED at 43.\nHunk #2 succeeded at 307 (offset -2 lines).\nHunk #3 succeeded at 418 (offset -2 lines).\n1 out of 3 hunks FAILED -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/61abd2ada929a54983f95345ffa2504bbd9b993d",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nHunk #2 succeeded at 366 (offset -6 lines).\nHunk #3 succeeded at 472 (offset -6 lines).\n"
+        },
+        {
+            "patch_file": "25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/25c49620c22e375fbd69631ea1eb408ed43db6e0",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nHunk #2 succeeded at 47 (offset 1 line).\nHunk #3 succeeded at 120 (offset 1 line).\nHunk #4 succeeded at 167 (offset 1 line).\nHunk #5 succeeded at 221 (offset 1 line).\nHunk #6 succeeded at 251 (offset 1 line).\n"
+        },
+        {
+            "patch_file": "8954d806a5c57b8bdb3fe7cd32147fc1f7d5974e.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/8954d806a5c57b8bdb3fe7cd32147fc1f7d5974e",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl.c\nHunk #1 succeeded at 3870 (offset -7 lines).\nHunk #2 succeeded at 3889 (offset -7 lines).\nHunk #3 succeeded at 3911 (offset -7 lines).\n"
+        },
+        {
+            "patch_file": "7a2aa337ab8235460c1efa92a846eaeade5f2514.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/7a2aa337ab8235460c1efa92a846eaeade5f2514",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nHunk #1 succeeded at 1799 (offset -38 lines).\n"
+        },
+        {
+            "patch_file": "bf4f9bc41c3b5203e1e7284e1de78e82f0630473.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bf4f9bc41c3b5203e1e7284e1de78e82f0630473",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "b42ed94769088450987f2b52f41a3fb274244827.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/b42ed94769088450987f2b52f41a3fb274244827",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nHunk #1 succeeded at 3415 (offset -221 lines).\n"
+        },
+        {
+            "patch_file": "f4e5b5151e55932279287c55d4e4a801fbf1df96.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f4e5b5151e55932279287c55d4e4a801fbf1df96",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "c2201dde2a76788b5b7a75426e53a58e1490a028.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/c2201dde2a76788b5b7a75426e53a58e1490a028",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "370ea8bc2e0b1c4880c41bbfc2b01bac973209b9.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/370ea8bc2e0b1c4880c41bbfc2b01bac973209b9",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "ae7e5da1cae2b6be45f7c6ab6a70d35f6e532d5a.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/ae7e5da1cae2b6be45f7c6ab6a70d35f6e532d5a",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "30efc10dfe20bbf7410adb3d756106f365ac75cc.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/30efc10dfe20bbf7410adb3d756106f365ac75cc",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "135a19cfad1e5e9c1db63970df743c28f5dd74c8.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/135a19cfad1e5e9c1db63970df743c28f5dd74c8",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "6a1de5f5d37141467efb9e5d9b3844a19f9990a9.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/6a1de5f5d37141467efb9e5d9b3844a19f9990a9",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "051d2f9bed5c7b1f58fd3e2808420b5106512a46.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.15/commit/051d2f9bed5c7b1f58fd3e2808420b5106512a46",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/slimbus/qcom-ngd-ctrl.c\nHunk #3 succeeded at 970 (offset -2 lines).\nHunk #4 succeeded at 978 (offset -2 lines).\nHunk #5 succeeded at 1053 (offset 1 line).\nHunk #6 succeeded at 1114 (offset -2 lines).\nHunk #7 succeeded at 1132 (offset -4 lines).\nHunk #8 succeeded at 1146 (offset -4 lines).\nHunk #9 succeeded at 1155 (offset -4 lines).\nHunk #10 succeeded at 2136 (offset -23 lines).\n"
+        },
+        {
+            "patch_file": "0215bbc2e0d7590e324c9d11cc4247304ff65f22.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.4/commit/0215bbc2e0d7590e324c9d11cc4247304ff65f22",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/media/platform/msm/cvp/hfi_response_handler.c\nHunk #1 succeeded at 461 (offset -6 lines).\nHunk #2 succeeded at 513 (offset -6 lines).\nHunk #3 succeeded at 536 (offset -6 lines).\ncan't find file to patch at input line 42\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c b/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n|index 013232aaa66dc6a0dce12ca7b4c01305d8afa159..539779ba2fab42703223d78000b39e7c39ccdb33 100644\n|--- a/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n|+++ b/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n3 out of 3 hunks ignored\n"
+        },
+        {
+            "patch_file": "28204d125055f0dec3e9625382cb92810f5528d0.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.15/commit/28204d125055f0dec3e9625382cb92810f5528d0",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/char/adsprpc.c\nHunk #1 succeeded at 6267 (offset -34 lines).\n"
+        },
+        {
+            "patch_file": "841cae881066f0dd38d15a90cfcf245b0db9fc73.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/841cae881066f0dd38d15a90cfcf245b0db9fc73",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file net/sched/sch_multiq.c\n"
+        },
+        {
+            "patch_file": "3856ad0c3e3028d54c8dac960dec411e45c13146.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/3856ad0c3e3028d54c8dac960dec411e45c13146",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\npatching file include/net/sock.h\nHunk #1 FAILED at 2012.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\npatching file net/ipv6/route.c\npatching file net/xfrm/xfrm_policy.c\nHunk #1 succeeded at 3804 (offset 5 lines).\n"
+        },
+        {
+            "patch_file": "b8932254b9b2f02620e96572fee9c615c1db2bc3.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/b8932254b9b2f02620e96572fee9c615c1db2bc3",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                },
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/dst_ops.h.rej\npatching file include/net/sock.h\nHunk #1 FAILED at 2083.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "079d4f3ff06b21f99aed51d8b22534bdfda5a134.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/079d4f3ff06b21f99aed51d8b22534bdfda5a134",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/dst_ops.h.rej\npatching file include/net/sock.h\nHunk #1 FAILED at 1919.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "41a05cfc0e471cea173345622375b672edd8ed3c.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/41a05cfc0e471cea173345622375b672edd8ed3c",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/dst_ops.h.rej\npatching file include/net/sock.h\nHunk #1 FAILED at 1955.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "9b0dadc811eb0140a61734cde73498c1dd574fa1.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/9b0dadc811eb0140a61734cde73498c1dd574fa1",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                },
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/dst_ops.h.rej\npatching file include/net/sock.h\nHunk #1 FAILED at 2088.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "include/net/sock.h",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/include/net/sock.h.rej"
+                },
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file include/net/dst_ops.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/dst_ops.h.rej\npatching file include/net/sock.h\nHunk #1 FAILED at 2215.\n1 out of 1 hunk FAILED -- saving rejects to file include/net/sock.h.rej\npatching file net/ipv4/route.c\nHunk #1 FAILED at 132.\nHunk #2 FAILED at 837.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2762.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        }
+    ]
+}
