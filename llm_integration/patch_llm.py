@@ -2,6 +2,8 @@ import os
 import subprocess
 import re
 
+from paths import KERNEL_PATH, GENERATED_PATCHES_DIR
+
 class PatchLLMAdopter:
     """Handles applying an LLM-generated patch file using GNU patch and stores console output."""
 
@@ -104,8 +106,10 @@ class PatchLLMAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
-    patch_file = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff_fixed.diff"
+    patch_filename = "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff_fixed.diff"
+
+    kernel_path = str(KERNEL_PATH)
+    patch_file = str(GENERATED_PATCHES_DIR / patch_filename)
 
     # Ensure the kernel directory exists
     if not os.path.isdir(kernel_path):

@@ -4,6 +4,19 @@ import re
 import json
 import time
 
+import sys
+from pathlib import Path
+
+# Add project root (vidar/) to sys.path so we can import from it
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from paths import (
+    KERNEL_PATH,
+    PARSED_REPORT_PATH,
+    FETCHED_DIFF_DIR,
+    PATCH_APPLICATION_REPORT
+)
+
 class PatchAdopter:
     """Handles applying patches and generates a JSON report with rejected files and console output."""
 
@@ -153,10 +166,12 @@ class PatchAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
-    patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/fetch_patch_output/diff_output"
-    parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/llm_integration/parsed_report.json"
-    report_output_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/patch_application_report.json"
+    kernel_path = str(KERNEL_PATH)
+    patch_dir = str(FETCHED_DIFF_DIR)
+    parsed_report_path = str(PARSED_REPORT_PATH)
+    report_output_path = str(PATCH_APPLICATION_REPORT)
+
+    failed_patch_output_path = Path(__file__).resolve().parent.parent / "llm_integration" / "failed_patch.json"
 
     # Ensure the Xiaomi Kernel directory exists
     if not os.path.isdir(kernel_path):
@@ -173,14 +188,31 @@ if __name__ == "__main__":
     # Initialize patch handler
     patcher = PatchAdopter(kernel_path, patch_dir, report_output_path)
 
+    # Track rejected patches for LLM retry
+    llm_failed_patches = []
+
     # Iterate through patches
     for patch in parsed_report["patches"]:
-        patch_file = os.path.join(patch_dir, patch["patch_file"])
+        patch_file_path = os.path.join(patch_dir, patch["patch_file"])
+        print(f"\n🔍 Attempting to apply patch: {patch_file_path}")
 
-        print(f"\n🔍 Attempting to apply patch: {patch_file}")
-        patch_result = patcher.apply_patch(patch_file, patch["patch_url"])
-
+        patch_result = patcher.apply_patch(patch_file_path, patch["patch_url"])
         patcher.patch_results["patches"].append(patch_result)
 
-    # Save the final report
+        if patch_result["status"] == "Rejected":
+            llm_failed_patches.append({
+                "patch_file": patch_result["patch_file"],
+                "patch_url": patch_result["patch_url"],
+                "status": "Rejected",
+                "rejected_files": patch_result["rejected_files"],
+                "message_output": patch_result["message_output"]
+            })
+
+    # Save patch report
     patcher.save_report()
+
+    # Save failed patches for LLM
+    with open(failed_patch_output_path, "w") as fail_file:
+        json.dump({"patch": llm_failed_patches}, fail_file, indent=4)
+        print(f"📁 Failed patch list saved to: {failed_patch_output_path}")
+
