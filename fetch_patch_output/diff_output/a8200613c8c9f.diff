@@ -1,0 +1,15 @@
+diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
+index 4f76921..b272f2a 100644
+--- a/drivers/staging/android/ion/ion.c
++++ b/drivers/staging/android/ion/ion.c
+@@ -363,8 +363,8 @@ struct ion_handle *ion_handle_get_by_id_nolock(struct ion_client *client,
+ 	return ERR_PTR(-EINVAL);
+ }
+ 
+-static bool ion_handle_validate(struct ion_client *client,
+-				struct ion_handle *handle)
++bool ion_handle_validate(struct ion_client *client,
++			 struct ion_handle *handle)
+ {
+ 	WARN_ON(!mutex_is_locked(&client->lock));
+ 	return idr_find(&client->idr, handle->id) == handle;

@@ -19,7 +19,7 @@ class PatchAdopter:
         self.patch_dir = patch_dir
         self.report_output_path = report_output_path
         self.strip_level = 1
-        self.patch_command = "gpatch"  # Use "patch" if on Linux
+        self.patch_command = "gpatch"  # Use "patch" if on Linux (TODO: hardcode)
         self.patch_results = {"patches": []}
 
     def apply_patch(self, patch_file: str, patch_url: str):
@@ -153,10 +153,10 @@ class PatchAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
-    patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/fetch_patch_output/diff_output"
-    parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/llm_integration/parsed_report.json"
-    report_output_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/patch_application_report.json"
+    kernel_path = "/Users/enricoprayogo/Documents/UTM/shared folder (2)/Xiaomi_Kernel_OpenSource_copy_testing"
+    patch_dir = "reports/parsed_report.json" 
+    parsed_report_path = "reports/parsed_report.json"
+    report_output_path = "reports/patch_application_report.json"
 
     # Ensure the Xiaomi Kernel directory exists
     if not os.path.isdir(kernel_path):

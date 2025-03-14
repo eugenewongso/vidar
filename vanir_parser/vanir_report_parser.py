@@ -20,9 +20,13 @@ class VanirParser:
             return json.load(file)
 
     def extract_patch_hash(self, patch_url):
-        """Extracts the commit hash from a patch URL using regex."""
-        match = re.search(r"([a-f0-9]{40})$", patch_url)  # Match 40-char commit hashes
+        """
+        Extracts the commit hash from a patch URL using regex.
+        Constraint:  7 <= len(commit_hash) <= 40
+        """
+        match = re.search(r"([a-f0-9]{7,40})$", patch_url)  
         return match.group(1) if match else "N/A"
+
 
     def parse_vanir_report(self):
         """Parses the Vanir report into a structured format with a list of patch entries."""
@@ -66,9 +70,9 @@ class VanirParser:
         """Writes the parsed structured data to a JSON file."""
         with open(self.output_path, "w") as file:
             json.dump(self.reorganized_report, file, indent=4)
-        print(f"✅ Parsed report saved to {self.output_path}")
+        # print(f"✅ Parsed report saved to {self.output_path}")
 
 # Automatically execute when the script is run directly
-if __name__ == "__main__":
-    VANIR_REPORT_PATH = os.path.abspath("reports/xiaomi_output.json")
-    VanirParser(VANIR_REPORT_PATH)
+# if __name__ == "__main__":
+#     VANIR_REPORT_PATH = os.path.abspath("reports/xiaomi_output.json")
+#     VanirParser(VANIR_REPORT_PATH)

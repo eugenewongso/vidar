@@ -1,0 +1,43 @@
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index ee0da46..298b6a9 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -43,11 +43,15 @@ int f2fs_check_nid_range(struct f2fs_sb_info *sbi, nid_t nid)
+ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+ {
+ 	struct f2fs_nm_info *nm_i = NM_I(sbi);
++	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
+ 	struct sysinfo val;
+ 	unsigned long avail_ram;
+ 	unsigned long mem_size = 0;
+ 	bool res = false;
+ 
++	if (!nm_i)
++		return true;
++
+ 	si_meminfo(&val);
+ 
+ 	/* only uses low memory */
+@@ -89,6 +93,10 @@ bool f2fs_available_free_memory(struct f2fs_sb_info *sbi, int type)
+ 		/* it allows 20% / total_ram for inmemory pages */
+ 		mem_size = get_pages(sbi, F2FS_INMEM_PAGES);
+ 		res = mem_size < (val.totalram / 5);
++	} else if (type == DISCARD_CACHE) {
++		mem_size = (atomic_read(&dcc->discard_cmd_cnt) *
++				sizeof(struct discard_cmd)) >> PAGE_SHIFT;
++		res = mem_size < (avail_ram * nm_i->ram_thresh / 100);
+ 	} else {
+ 		if (!sbi->sb->s_bdi->wb.dirty_exceeded)
+ 			return true;
+
+diff --git a/fs/f2fs/node.h b/fs/f2fs/node.h
+index f84541b..7a45c0f 100644
+--- a/fs/f2fs/node.h
++++ b/fs/f2fs/node.h
+@@ -147,6 +147,7 @@ enum mem_type {
+ 	INO_ENTRIES,	/* indicates inode entries */
+ 	EXTENT_CACHE,	/* indicates extent cache */
+ 	INMEM_PAGES,	/* indicates inmemory pages */
++	DISCARD_CACHE,	/* indicates memory of cached discard cmds */
+ 	BASE_CHECK,	/* check kernel status */
+ };

@@ -1,0 +1,12 @@
+diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+index 889c95d..3f71bc3 100644
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -355,7 +355,6 @@ static int drm_syncobj_handle_to_fd(struct drm_file *file_private,
+ 		return PTR_ERR(file);
+ 	}
+ 
+-	drm_syncobj_get(syncobj);
+ 	fd_install(fd, file);
+ 
+ 	*p_fd = fd;
