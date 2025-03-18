@@ -1,5 +1,6 @@
 import json
 from download_diff.fetch_diff import fetch_patch
+# TODO: make this VCS-agnostic 
 
 def run_diff_fetcher():
     parsed_report_path = "reports/parsed_report.json" # Load the parsed report JSON hard coded
