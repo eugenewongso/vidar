@@ -18,10 +18,10 @@ def run_diff_fetcher():
         try:
             diff_file = fetch_patch(patch_url, files_to_include)
 
-            if not diff_file:
-                print(f"Failed to fetch patch: {patch_url}")
+            # if not diff_file:
+            #     print(f"Failed to fetch patch: {patch_url}")
 
         except Exception as e:
             print(f"Error processing {patch_url}: {e}")
             
-    print("Diff fetching process completed.")
+    print(f"Diff fetching process completed. File saved to {parsed_report_path}")

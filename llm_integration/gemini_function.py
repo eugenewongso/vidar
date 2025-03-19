@@ -101,7 +101,7 @@ ensuring compatibility and resolving any merge conflicts."""
 
 # === Main Script ===
 if __name__ == "__main__":
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource" # Hardcode
     failed_patch_path = os.path.join(os.path.dirname(__file__), "failed_patch.json")
 
     # Load failed patches JSON

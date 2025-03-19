@@ -153,7 +153,7 @@ class PatchAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Users/enricoprayogo/Documents/UTM/shared folder (2)/Xiaomi_Kernel_OpenSource_copy_testing"
+    kernel_path = input("Input Repository path to apply diff files here: ")
     patch_dir = "reports/parsed_report.json" 
     parsed_report_path = "reports/parsed_report.json"
     report_output_path = "reports/patch_application_report.json"

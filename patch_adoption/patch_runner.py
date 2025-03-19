@@ -103,7 +103,7 @@ class PatchLLMAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    kernel_path = input("Input Repository path to apply diff files here: ")
     llm_patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches"
 
     # Ensure the kernel directory exists

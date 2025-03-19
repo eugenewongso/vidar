@@ -4,12 +4,13 @@ from bs4 import BeautifulSoup
 import re
 
 def extract_diff(url, files_to_include):
+    # TODO: make this VCS agnostic
     """Extracts and filters the diff content from the commit page for Android Googlesource."""
     
     response = requests.get(url)
-    if response.status_code != 200:
-        print(f"⚠️ Failed to fetch page: {url}")
-        return None
+    # if response.status_code != 200:
+    #     print(f"⚠️ Failed to fetch page: {url}")
+    #     return None
 
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -32,12 +33,12 @@ def extract_diff(url, files_to_include):
                 break  # Avoid duplicate checks for the same file
 
     if not filtered_diff:  # Check if no files from the list were found in the diff
-        print(f"None of the specified files were found in the diff for {url}.")
+        # print(f"None of the specified files were found in the diff for {url}.")
         return None
 
     # Check for any specified files that were not found in the diffs
-    print("files_to_include", files_to_include)
-    print("found files", found_files)
+    # print("files_to_include", files_to_include)
+    # print("found files", found_files)
     not_found_files = set(files_to_include) - found_files
     if not_found_files:
         print(f"The following specified files were not found in the diff: {', '.join(not_found_files)}")
@@ -84,9 +85,9 @@ def fetch_patch(commit_url, files_to_include):
     # Fetch diff page
     response = requests.get(diff_url)
 
-    if response.status_code != 200:
-        print(f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}")
-        return None
+    # if response.status_code != 200:
+    #     print(f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}")
+    #     return None
 
     # Save raw .diff for CodeLinaro
     if is_codelinaro:
@@ -99,7 +100,7 @@ def fetch_patch(commit_url, files_to_include):
     # Extract and format diff content for Android Googlesource
     extracted_diff = extract_diff(diff_url, files_to_include)
     if not extracted_diff:
-        print(f"No matching diff content found for {commit_hash}")
+        # print(f"No matching diff content found for {commit_hash}")
         return None
 
     # Save filtered diff
