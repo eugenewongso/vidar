@@ -166,12 +166,10 @@ class PatchAdopter:
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = str(KERNEL_PATH)
-    patch_dir = str(FETCHED_DIFF_DIR)
-    parsed_report_path = str(PARSED_REPORT_PATH)
-    report_output_path = str(PATCH_APPLICATION_REPORT)
-
-    failed_patch_output_path = Path(__file__).resolve().parent.parent / "llm_integration" / "failed_patch.json"
+    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/fetch_patch_output/diff_output"
+    parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/llm_integration/parsed_report.json"
+    report_output_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/patch_application_report.json"
 
     # Ensure the Xiaomi Kernel directory exists
     if not os.path.isdir(kernel_path):

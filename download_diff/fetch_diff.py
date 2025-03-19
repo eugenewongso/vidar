@@ -73,10 +73,9 @@ def fetch_patch(commit_url, files_to_include):
         str: The path to the saved formatted diff file.
     """
 
-    # Extract commit hash from URL
-    commit_hash_match = re.search(r'/([a-f0-9]{7,40})$', commit_url)
-    if not commit_hash_match:
-        print(f"⚠️ Could not extract commit hash from URL: {commit_url}")
+    # Extract commit hash from the URL
+    commit_hash = extract_commit_hash(commit_url)
+    if not commit_hash:
         return None
 
     # Determine source type and construct the diff URL
@@ -102,9 +101,6 @@ def fetch_patch(commit_url, files_to_include):
     # if response.status_code != 200:
     #     print(f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}")
     #     return None
-
-    # Set output filename using commit hash
-    output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
 
     # Set output filename using commit hash
     output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")

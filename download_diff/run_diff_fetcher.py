@@ -30,4 +30,4 @@ with open(PARSED_REPORT_PATH, "r") as f:
         except Exception as e:
             print(f"Error processing {patch_url}: {e}")
             
-    print(f"Diff fetching process completed. File saved to {parsed_report_path}")
+    print(f"Diff fetching process completed. File saved to {PARSED_REPORT_PATH}")
