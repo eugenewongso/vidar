@@ -1,0 +1,265 @@
+{
+    "patches": [
+        {
+            "patch_file": "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "patch_url": "outputs/fetched_diffs/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 537 with fuzz 2 (offset 232 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "patch_url": "outputs/fetched_diffs/bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 555 with fuzz 2 (offset 250 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+            "patch_url": "outputs/fetched_diffs/65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/af_unix.h.rej\npatching file net/unix/af_unix.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/unix/af_unix.c.rej\npatching file net/unix/garbage.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file net/unix/garbage.c.rej\npatching file net/unix/scm.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/unix/scm.c.rej\n"
+        },
+        {
+            "patch_file": "94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "patch_url": "outputs/fetched_diffs/94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/af_unix.h.rej\npatching file net/unix/af_unix.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/unix/af_unix.c.rej\npatching file net/unix/garbage.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file net/unix/garbage.c.rej\npatching file net/unix/scm.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/unix/scm.c.rej\n"
+        },
+        {
+            "patch_file": "c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "patch_url": "outputs/fetched_diffs/c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/gpu/msm/kgsl.c.rej\npatching file drivers/gpu/msm/kgsl.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl.h.rej\npatching file drivers/gpu/msm/kgsl_reclaim.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_reclaim.c.rej\npatching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "patch_url": "outputs/fetched_diffs/61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "patch_url": "outputs/fetched_diffs/25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n6 out of 6 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "8954d806a5c57b8bdb3fe7cd32147fc1f7d5974e.diff",
+            "patch_url": "outputs/fetched_diffs/8954d806a5c57b8bdb3fe7cd32147fc1f7d5974e.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl.c.rej\n"
+        },
+        {
+            "patch_file": "35fae63593135636e7f80a3570e0ee45e63b6b19.diff",
+            "patch_url": "outputs/fetched_diffs/35fae63593135636e7f80a3570e0ee45e63b6b19.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/dma-buf/heaps/cma_heap.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/dma-buf/heaps/cma_heap.c.rej\n"
+        },
+        {
+            "patch_file": "84175dc5b2c932266a50c04e5ce342c30f817a2f.diff",
+            "patch_url": "outputs/fetched_diffs/84175dc5b2c932266a50c04e5ce342c30f817a2f.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/dma-buf/heaps/cma_heap.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/dma-buf/heaps/cma_heap.c.rej\n"
+        },
+        {
+            "patch_file": "7a2aa337ab8235460c1efa92a846eaeade5f2514.diff",
+            "patch_url": "outputs/fetched_diffs/7a2aa337ab8235460c1efa92a846eaeade5f2514.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "bf4f9bc41c3b5203e1e7284e1de78e82f0630473.diff",
+            "patch_url": "outputs/fetched_diffs/bf4f9bc41c3b5203e1e7284e1de78e82f0630473.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "b42ed94769088450987f2b52f41a3fb274244827.diff",
+            "patch_url": "outputs/fetched_diffs/b42ed94769088450987f2b52f41a3fb274244827.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "f4e5b5151e55932279287c55d4e4a801fbf1df96.diff",
+            "patch_url": "outputs/fetched_diffs/f4e5b5151e55932279287c55d4e4a801fbf1df96.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "c2201dde2a76788b5b7a75426e53a58e1490a028.diff",
+            "patch_url": "outputs/fetched_diffs/c2201dde2a76788b5b7a75426e53a58e1490a028.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "370ea8bc2e0b1c4880c41bbfc2b01bac973209b9.diff",
+            "patch_url": "outputs/fetched_diffs/370ea8bc2e0b1c4880c41bbfc2b01bac973209b9.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "ae7e5da1cae2b6be45f7c6ab6a70d35f6e532d5a.diff",
+            "patch_url": "outputs/fetched_diffs/ae7e5da1cae2b6be45f7c6ab6a70d35f6e532d5a.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "30efc10dfe20bbf7410adb3d756106f365ac75cc.diff",
+            "patch_url": "outputs/fetched_diffs/30efc10dfe20bbf7410adb3d756106f365ac75cc.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "135a19cfad1e5e9c1db63970df743c28f5dd74c8.diff",
+            "patch_url": "outputs/fetched_diffs/135a19cfad1e5e9c1db63970df743c28f5dd74c8.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "6a1de5f5d37141467efb9e5d9b3844a19f9990a9.diff",
+            "patch_url": "outputs/fetched_diffs/6a1de5f5d37141467efb9e5d9b3844a19f9990a9.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/android/binder.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/android/binder.c.rej\n"
+        },
+        {
+            "patch_file": "0215bbc2e0d7590e324c9d11cc4247304ff65f22.diff",
+            "patch_url": "outputs/fetched_diffs/0215bbc2e0d7590e324c9d11cc4247304ff65f22.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/media/platform/msm/cvp/hfi_response_handler.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/media/platform/msm/cvp/hfi_response_handler.c.rej\ncan't find file to patch at input line 42\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c b/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n|index 013232aaa66dc6a0dce12ca7b4c01305d8afa159..539779ba2fab42703223d78000b39e7c39ccdb33 100644\n|--- a/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n|+++ b/drivers/media/platform/msm/cvp2.0/hfi_response_handler.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n3 out of 3 hunks ignored\n"
+        },
+        {
+            "patch_file": "28204d125055f0dec3e9625382cb92810f5528d0.diff",
+            "patch_url": "outputs/fetched_diffs/28204d125055f0dec3e9625382cb92810f5528d0.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/char/adsprpc.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/char/adsprpc.c.rej\n"
+        },
+        {
+            "patch_file": "051d2f9bed5c7b1f58fd3e2808420b5106512a46.diff",
+            "patch_url": "outputs/fetched_diffs/051d2f9bed5c7b1f58fd3e2808420b5106512a46.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/slimbus/qcom-ngd-ctrl.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n10 out of 10 hunks ignored -- saving rejects to file drivers/slimbus/qcom-ngd-ctrl.c.rej\n"
+        },
+        {
+            "patch_file": "f02dd268a08d4e7ec09ec0ddd2a861ab5a51a0ae.diff",
+            "patch_url": "outputs/fetched_diffs/f02dd268a08d4e7ec09ec0ddd2a861ab5a51a0ae.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/hid/hid-core.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/hid/hid-core.c.rej\n"
+        },
+        {
+            "patch_file": "853ec04e2de45ae6d1fc9476ce52d06582ad87ed.diff",
+            "patch_url": "outputs/fetched_diffs/853ec04e2de45ae6d1fc9476ce52d06582ad87ed.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file drivers/hid/hid-core.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/hid/hid-core.c.rej\n"
+        },
+        {
+            "patch_file": "3856ad0c3e3028d54c8dac960dec411e45c13146.diff",
+            "patch_url": "outputs/fetched_diffs/3856ad0c3e3028d54c8dac960dec411e45c13146.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file net/ipv4/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "b8932254b9b2f02620e96572fee9c615c1db2bc3.diff",
+            "patch_url": "outputs/fetched_diffs/b8932254b9b2f02620e96572fee9c615c1db2bc3.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "079d4f3ff06b21f99aed51d8b22534bdfda5a134.diff",
+            "patch_url": "outputs/fetched_diffs/079d4f3ff06b21f99aed51d8b22534bdfda5a134.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file net/ipv4/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "41a05cfc0e471cea173345622375b672edd8ed3c.diff",
+            "patch_url": "outputs/fetched_diffs/41a05cfc0e471cea173345622375b672edd8ed3c.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file net/ipv4/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "9b0dadc811eb0140a61734cde73498c1dd574fa1.diff",
+            "patch_url": "outputs/fetched_diffs/9b0dadc811eb0140a61734cde73498c1dd574fa1.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5.diff",
+            "patch_url": "outputs/fetched_diffs/bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 132.\nHunk #2 FAILED at 837.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2762.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "841cae881066f0dd38d15a90cfcf245b0db9fc73.diff",
+            "patch_url": "outputs/fetched_diffs/841cae881066f0dd38d15a90cfcf245b0db9fc73.diff",
+            "status": "Applied Successfully",
+            "rejected_files": [],
+            "message_output": "patching file net/sched/sch_multiq.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/sched/sch_multiq.c.rej\n"
+        }
+    ]
+}

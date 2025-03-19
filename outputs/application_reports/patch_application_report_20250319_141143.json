@@ -1,0 +1,53 @@
+{
+    "patches": [
+        {
+            "patch_file": "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 717 with fuzz 2 (offset 412 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bce004fba8be9e1bb575301f398b3ecc27ba42de",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 735 with fuzz 2 (offset 430 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/65e0a92c6d27d4cbaa0deef668df12b69853d65e",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/af_unix.h.rej\npatching file net/unix/af_unix.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/unix/af_unix.c.rej\npatching file net/unix/garbage.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file net/unix/garbage.c.rej\npatching file net/unix/scm.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/unix/scm.c.rej\n"
+        },
+        {
+            "patch_file": "94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file include/net/af_unix.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file include/net/af_unix.h.rej\npatching file net/unix/af_unix.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/unix/af_unix.c.rej\npatching file net/unix/garbage.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file net/unix/garbage.c.rej\npatching file net/unix/scm.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file net/unix/scm.c.rej\n"
+        },
+        {
+            "patch_file": "c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/c1a7b4b4a736fa175488122cca9743cff2ae72e8",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file drivers/gpu/msm/kgsl.c.rej\npatching file drivers/gpu/msm/kgsl.h\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl.h.rej\npatching file drivers/gpu/msm/kgsl_reclaim.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n2 out of 2 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_reclaim.c.rej\npatching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/61abd2ada929a54983f95345ffa2504bbd9b993d",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n3 out of 3 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        },
+        {
+            "patch_file": "25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/25c49620c22e375fbd69631ea1eb408ed43db6e0",
+            "status": "Rejected",
+            "rejected_files": [],
+            "message_output": "patching file drivers/gpu/msm/kgsl_vbo.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n6 out of 6 hunks ignored -- saving rejects to file drivers/gpu/msm/kgsl_vbo.c.rej\n"
+        }
+    ]
+}

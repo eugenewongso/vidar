@@ -1,0 +1,76 @@
+{
+    "patch": [
+        {
+            "patch_file": "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "patch_url": "outputs/fetched_diffs/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 537 with fuzz 2 (offset 232 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "patch_url": "outputs/fetched_diffs/bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "mm/mremap.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/mm/mremap.c.rej"
+                }
+            ],
+            "message_output": "patching file mm/mremap.c\nHunk #1 FAILED at 219.\nHunk #2 FAILED at 289.\nHunk #3 succeeded at 555 with fuzz 2 (offset 250 lines).\nHunk #4 FAILED at 331.\nHunk #5 FAILED at 347.\nHunk #6 FAILED at 365.\nHunk #7 FAILED at 393.\n6 out of 7 hunks FAILED -- saving rejects to file mm/mremap.c.rej\n"
+        },
+        {
+            "patch_file": "b8932254b9b2f02620e96572fee9c615c1db2bc3.diff",
+            "patch_url": "outputs/fetched_diffs/b8932254b9b2f02620e96572fee9c615c1db2bc3.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "9b0dadc811eb0140a61734cde73498c1dd574fa1.diff",
+            "patch_url": "outputs/fetched_diffs/9b0dadc811eb0140a61734cde73498c1dd574fa1.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 139.\nHunk #2 FAILED at 844.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2763.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        },
+        {
+            "patch_file": "bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5.diff",
+            "patch_url": "outputs/fetched_diffs/bd2bcb81d4ebcffd4e56bb8dfe3e3d4c871928f5.diff",
+            "status": "Rejected",
+            "rejected_files": [
+                {
+                    "failed_file": "net/ipv4/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv4/route.c.rej"
+                },
+                {
+                    "failed_file": "net/ipv6/route.c",
+                    "reject_file": "/Users/enricoprayogo/Desktop/Google_Capstone/Xiaomi_Kernel_OpenSource/net/ipv6/route.c.rej"
+                }
+            ],
+            "message_output": "patching file net/ipv4/route.c\nHunk #1 FAILED at 132.\nHunk #2 FAILED at 837.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv4/route.c.rej\npatching file net/ipv6/route.c\nHunk #1 FAILED at 87.\nHunk #2 FAILED at 2762.\n2 out of 2 hunks FAILED -- saving rejects to file net/ipv6/route.c.rej\npatching file net/xfrm/xfrm_policy.c\nReversed (or previously applied) patch detected!  Assume -R? [n] \nApply anyway? [n] \nSkipping patch.\n1 out of 1 hunk ignored -- saving rejects to file net/xfrm/xfrm_policy.c.rej\n"
+        }
+    ]
+}

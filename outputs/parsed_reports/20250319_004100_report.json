@@ -1,0 +1,28 @@
+{
+    "patches": [
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2",
+            "patch_file": "outputs/fetched_diffs/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "files": {
+                "mm/mremap.c": {
+                    "functions": [
+                        "unlock_vma_ref_count",
+                        "trylock_vma_ref_count"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bce004fba8be9e1bb575301f398b3ecc27ba42de",
+            "patch_file": "outputs/fetched_diffs/bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "files": {
+                "mm/mremap.c": {
+                    "functions": [
+                        "unlock_vma_ref_count",
+                        "trylock_vma_ref_count"
+                    ]
+                }
+            }
+        }
+    ]
+}
