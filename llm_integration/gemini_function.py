@@ -1,25 +1,35 @@
-from google import genai
-from google.genai import types
+from vertexai.preview.generative_models import (
+    GenerativeModel,
+    GenerationConfig,
+    Content,
+    Part,
+    SafetySetting
+)
+import vertexai
 import os
 import json
+
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from paths import KERNEL_PATH
+from paths import FAILED_PATCH_JSON
+
 
 class LLMPatchGenerator:
     """Handles AI-based patch porting from upstream to downstream versions."""
 
-    def __init__(self, kernel_path, project_id="dev-smoke-452808-t2", location="us-central1"):
-        """Initializes the Google Vertex AI client and sets the kernel path."""
-        self.client = genai.Client(
-            vertexai=True,
-            project=project_id,
-            location=location
-        )
-        self.model = "gemini-2.0-pro-exp-02-05"
-        self.kernel_path = kernel_path  # Path to the kernel source directory
+    def __init__(self, kernel_path, project_id="vidar-452910", location="us-central1"):
+        """Initializes the Vertex AI client and sets the kernel path."""
+        vertexai.init(project=project_id, location=location)
+        self.model = GenerativeModel("gemini-1.0-pro")  # Use Gemini model name
+        self.kernel_path = kernel_path
 
     def load_file(self, file_path, base_path=None):
-        """Reads a file and returns its content as a string. Uses base_path if provided."""
+        """Reads a file and returns its content as a string."""
         if base_path:
-            file_path = os.path.join(base_path, file_path)  # Ensure absolute path
+            file_path = os.path.join(base_path, file_path)
 
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"❌ File not found: {file_path}")
@@ -30,8 +40,9 @@ class LLMPatchGenerator:
     def generate_patch(self, upstream_diff_path, downstream_version_path, output_path=None):
         """Generates a security patch porting suggestion based on AI analysis."""
         try:
-            upstream_diff = self.load_file(upstream_diff_path)  # No base path needed, already absolute
+            upstream_diff = self.load_file(upstream_diff_path, base_path=self.kernel_path)
             downstream_version = self.load_file(downstream_version_path, base_path=self.kernel_path)
+
         except FileNotFoundError as e:
             print(e)
             return None
@@ -54,40 +65,33 @@ Instructions:
 5. Ensure syntactic correctness, logical consistency, and functional integrity after applying the patch.
 6. Preserve indentation, structure, and accuracy in hunk headers (e.g., @@ -1,5 +1,5 @@)."""
 
-        system_instruction = """You are a specialized AI assistant designed for patch porting in software development. 
-Your expertise lies in adapting security fixes from newer (upstream) codebases to older (downstream) versions, 
-ensuring compatibility and resolving any merge conflicts."""
+        print("🚀 Generating ported patch...")
 
         contents = [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=user_prompt)]
-            )
+            Content(role="user", parts=[Part.from_text(user_prompt)])
         ]
 
-        generate_content_config = types.GenerateContentConfig(
+        config = GenerationConfig(
             temperature=1,
             top_p=1,
             seed=0,
             max_output_tokens=2048,
-            response_modalities=["TEXT"],
-            safety_settings=[
-                types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"),
-                types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"),
-                types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"),
-                types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="OFF"),
-            ],
-            system_instruction=[types.Part.from_text(text=system_instruction)],
+            response_mime_type="text/plain"
         )
 
-        # Call the AI model
-        print("🚀 Generating ported patch...")
-        response_text = ""
+        safety_settings = [
+            SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="BLOCK_NONE"),
+            SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="BLOCK_NONE"),
+            SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="BLOCK_NONE"),
+            SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="BLOCK_NONE"),
+        ]
 
-        for chunk in self.client.models.generate_content_stream(
-            model=self.model,
+        response_text = ""
+        for chunk in self.model.generate_content(
             contents=contents,
-            config=generate_content_config,
+            generation_config=config,
+            safety_settings=safety_settings,
+            stream=True
         ):
             response_text += chunk.text
 
@@ -101,10 +105,10 @@ ensuring compatibility and resolving any merge conflicts."""
 
 # === Main Script ===
 if __name__ == "__main__":
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource" # Hardcode
-    failed_patch_path = os.path.join(os.path.dirname(__file__), "failed_patch.json")
+    kernel_path = str(KERNEL_PATH)
+    old_volume_prefix = str(KERNEL_PATH)
+    failed_patch_path = str(FAILED_PATCH_JSON)
 
-    # Load failed patches JSON
     with open(failed_patch_path, "r") as f:
         failed_patches = json.load(f)
 
@@ -119,11 +123,14 @@ if __name__ == "__main__":
             failed_file = file["failed_file"]
             reject_file = file["reject_file"]
 
+            if reject_file.startswith(old_volume_prefix):
+                relative_reject_path = os.path.relpath(reject_file, old_volume_prefix)
+                reject_file = relative_reject_path
+
             print(f"\n🔍 Processing failed patch: {patch_file}")
             print(f" - Failed File: {failed_file}")
             print(f" - Reject File: {reject_file}")
 
-            # Generate new patched diff
             output_patch_file = f"{patch_file}_fixed.diff"
             generated_patch = generator.generate_patch(reject_file, failed_file, output_patch_file)
 

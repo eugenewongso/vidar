@@ -45,6 +45,22 @@ def extract_diff(url, files_to_include):
 
     return "\n".join(filtered_diff) if filtered_diff else None
 
+def extract_commit_hash(commit_url):
+    """Extracts the commit hash from a Googlesource or CodeLinaro URL."""
+    
+    # Matches full 40-character SHA-1 hash (if present)
+    full_hash_match = re.search(r'/([a-f0-9]{40})$', commit_url)
+    if full_hash_match:
+        return full_hash_match.group(1)
+    
+    # Matches shorter commit hashes (Googlesource sometimes uses short hashes)
+    short_hash_match = re.search(r'/\+/(.*?)$', commit_url)
+    if short_hash_match:
+        return short_hash_match.group(1)
+
+    print(f"⚠️ Could not extract commit hash from URL: {commit_url}")
+    return None
+
 def fetch_patch(commit_url, files_to_include):
     """
     Fetches the diff for a given commit URL, filters it to only include relevant files, and saves it.
@@ -63,14 +79,12 @@ def fetch_patch(commit_url, files_to_include):
         print(f"⚠️ Could not extract commit hash from URL: {commit_url}")
         return None
 
-    commit_hash = commit_hash_match.group(1)
-
-    # Determine source type
+    # Determine source type and construct the diff URL
     if "android.googlesource.com" in commit_url:
-        diff_url = commit_url + "^!"
+        diff_url = commit_url + "^!"  # Googlesource requires ^! for diff
         is_codelinaro = False
     elif "git.codelinaro.org" in commit_url:
-        diff_url = commit_url + ".diff"
+        diff_url = commit_url + ".diff"  # CodeLinaro requires .diff suffix
         is_codelinaro = True
     else:
         print(f"⚠️ Unsupported commit URL: {commit_url}")
@@ -89,9 +103,14 @@ def fetch_patch(commit_url, files_to_include):
     #     print(f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}")
     #     return None
 
+    # Set output filename using commit hash
+    output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
+
+    # Set output filename using commit hash
+    output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
+
     # Save raw .diff for CodeLinaro
     if is_codelinaro:
-        output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(response.text.strip() + "\n")  # Ensure exactly one empty line at the end
         # print(f"✅ CodeLinaro: Diff file saved as: {output_filename}")
@@ -104,7 +123,6 @@ def fetch_patch(commit_url, files_to_include):
         return None
 
     # Save filtered diff
-    output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
     with open(output_filename, "w", encoding="utf-8") as output_file:
         output_file.write(extracted_diff.strip() + "\n")  # Ensure exactly one empty line at the end
 
