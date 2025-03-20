@@ -3,9 +3,8 @@
 import asyncio
 import os
 import datetime
-from dataclasses import dataclass
-
 import logfire
+from dataclasses import dataclass
 from dotenv import load_dotenv
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
@@ -19,7 +18,7 @@ logfire.configure(send_to_logfire='if-token-present')
 
 # Fetch API key from environment variable
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-print(OPENAI_API_KEY)
+# print(OPENAI_API_KEY)
 
 # Ensure API key is set
 if not OPENAI_API_KEY:

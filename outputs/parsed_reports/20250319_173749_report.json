@@ -1,0 +1,128 @@
+{
+    "patches": [
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2",
+            "patch_file": "outputs/fetched_diffs/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "files": {
+                "mm/mremap.c": {
+                    "functions": [
+                        "unlock_vma_ref_count",
+                        "trylock_vma_ref_count"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bce004fba8be9e1bb575301f398b3ecc27ba42de",
+            "patch_file": "outputs/fetched_diffs/bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "files": {
+                "mm/mremap.c": {
+                    "functions": [
+                        "unlock_vma_ref_count",
+                        "trylock_vma_ref_count"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/65e0a92c6d27d4cbaa0deef668df12b69853d65e",
+            "patch_file": "N/A",
+            "files": {
+                "include/net/af_unix.h": {
+                    "functions": []
+                },
+                "net/unix/scm.c": {
+                    "functions": [
+                        "unix_inflight",
+                        "unix_notinflight"
+                    ]
+                },
+                "net/unix/af_unix.c": {
+                    "functions": []
+                },
+                "net/unix/garbage.c": {
+                    "functions": [
+                        "dec_inflight",
+                        "inc_inflight",
+                        "inc_inflight_move_tail",
+                        "unix_gc"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692",
+            "patch_file": "outputs/fetched_diffs/94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "files": {
+                "include/net/af_unix.h": {
+                    "functions": []
+                },
+                "net/unix/scm.c": {
+                    "functions": [
+                        "unix_inflight",
+                        "unix_notinflight"
+                    ]
+                },
+                "net/unix/af_unix.c": {
+                    "functions": []
+                },
+                "net/unix/garbage.c": {
+                    "functions": [
+                        "inc_inflight",
+                        "dec_inflight",
+                        "inc_inflight_move_tail",
+                        "unix_gc"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/c1a7b4b4a736fa175488122cca9743cff2ae72e8",
+            "patch_file": "outputs/fetched_diffs/c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "files": {
+                "drivers/gpu/msm/kgsl_vbo.c": {
+                    "functions": [
+                        "bind_range_create",
+                        "kgsl_sharedmem_free_bind_op",
+                        "kgsl_sharedmem_create_bind_op"
+                    ]
+                },
+                "drivers/gpu/msm/kgsl_reclaim.c": {
+                    "functions": [
+                        "kgsl_reclaim_process"
+                    ]
+                },
+                "drivers/gpu/msm/kgsl.c": {
+                    "functions": [
+                        "kgsl_mem_entry_create"
+                    ]
+                },
+                "drivers/gpu/msm/kgsl.h": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/61abd2ada929a54983f95345ffa2504bbd9b993d",
+            "patch_file": "outputs/fetched_diffs/61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "files": {
+                "drivers/gpu/msm/kgsl_vbo.c": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/25c49620c22e375fbd69631ea1eb408ed43db6e0",
+            "patch_file": "outputs/fetched_diffs/25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "files": {
+                "drivers/gpu/msm/kgsl_vbo.c": {
+                    "functions": [
+                        "kgsl_memdesc_remove_range",
+                        "kgsl_memdesc_add_range",
+                        "kgsl_sharedmem_vbo_put_gpuaddr"
+                    ]
+                }
+            }
+        }
+    ]
+}
