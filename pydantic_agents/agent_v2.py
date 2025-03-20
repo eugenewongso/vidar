@@ -1,53 +1,67 @@
 import os
+import asyncio
 from dataclasses import dataclass
+from httpx import AsyncClient
+from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.gemini import GeminiModel
-from dotenv import load_dotenv
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.google_gla import GoogleGLAProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 from unidiff import PatchSet
 
-# Load environment variables (including service account JSON path if used)
+# Load environment variables
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @dataclass
 class MergeDeps:
     """Dependencies for the merge conflict resolution agent."""
     api_key: str  # Required for Pydantic AI
 
-class PatchAgentV1:
+class PatchAgentV2:
     """AI-powered merge conflict resolution agent for generating valid diff patches."""
 
-    def __init__(self):
-        """Initialize the AI agent with the Gemini model."""
-        self.model = GeminiModel(
-            "gemini-2.0-pro-exp-02-05",  # Use Gemini 2.0 Pro (Experimental version)
-            api_key=GEMINI_API_KEY  # Pass API Key directly
-        )
+    def __init__(self, model_name="gemini-2.0-pro-exp-02-05"):
+        """Initialize the AI agent with support for Gemini & OpenAI models."""
+        self.model_name = model_name
+        self.agent = self.initialize_agent(model_name)
 
-        # Initialize AI Agent
-        self.agent = Agent(self.model, system_prompt=(
+        # Register `check_diff_format` tool
+        self.agent.tool(self.check_diff_format)
+
+    def initialize_agent(self, model_name):
+        """Dynamically initialize the agent with Gemini or OpenAI models."""
+        if model_name.startswith("gemini"):
+            print(f"🔹 Initializing Gemini model: {model_name}")
+            custom_http_client = AsyncClient(timeout=30)
+            model = GeminiModel(
+                model_name,
+                provider=GoogleGLAProvider(api_key=GEMINI_API_KEY, http_client=custom_http_client),
+            )
+        elif model_name.startswith("gpt") or model_name.startswith("openai"):
+            print(f"🔹 Initializing OpenAI model: {model_name}")
+            model = OpenAIModel(
+                model_name,
+                provider=OpenAIProvider(api_key=OPENAI_API_KEY),
+            )
+        else:
+            raise ValueError(f"❌ Unsupported model: {model_name}")
+
+        return Agent(model, system_prompt=self.get_system_prompt())
+
+    def get_system_prompt(self):
+        """Returns the system prompt for AI conflict resolution."""
+        return (
             "You are a skilled AI assistant specializing in resolving inline merge conflicts in code.\n"
             "Analyze conflicting changes, compare them with the surrounding code, and produce a clean, logically sound patch in unified diff format.\n"
             "Ensure the patch applies cleanly, includes all intended changes, and uses Unix-style line endings.\n"
             "Use the `check_diff_format` tool to verify the patch. If the patch is invalid, retry until it is correct."
-        ))
-
-        # Register tools
-        self.agent.tool(self.check_diff_format)
-        self.agent.tool(self.resolve_conflict)
-
-    async def check_diff_format(self, ctx: RunContext[MergeDeps], diff_content: str) -> bool:
-        """Validates the generated patch using unidiff.PatchSet instead of `patch --check`."""
-        try:
-            PatchSet.from_string(diff_content)
-            print("✅ Patch format is valid.")
-            return True
-        except Exception as e:
-            print(f"⚠️ Patch format is invalid. Retrying...\nError: {e}")
-            return False
+        )
 
     async def resolve_conflict(self, ctx: RunContext[MergeDeps], inline_merge_conflict: str, code_context: str, rejected_patch: str) -> str:
-        """AI-powered merge conflict resolution tool. Returns a valid patch."""
+        """AI-powered merge conflict resolution tool with auto-retry for quota exhaustion."""
         
         prompt = f"""
         **Inline Merge Conflict:**
@@ -74,14 +88,32 @@ class PatchAgentV1:
         - Do **NOT** add extra explanations, only output the corrected patch.
         """
 
-        print("🟡 Sending request to AI agent...")
-        response = await self.agent.run(prompt)
+        max_retries = 5
+        delay = 5  # Start with a 5-second delay
 
-        if not response or not response.data.strip():
-            print("❌ AI response was empty. Skipping.")
-            return None
+        for attempt in range(1, max_retries + 1):
+            try:
+                print(f"🟡 Sending request to AI agent ({self.model_name}) (Attempt {attempt})...")
+                response = await self.agent.run(prompt)
 
-        return response.data.strip() + "\n"  # Ensure Unix-style newline
+                if response and response.data.strip():
+                    return response.data.strip() + "\n"  # Ensure Unix-style newline
+
+                print("❌ AI response was empty. Skipping.")
+                return None
+
+            except Exception as e:
+                error_message = str(e)
+                if "RESOURCE_EXHAUSTED" in error_message:
+                    print(f"⚠️ API quota exceeded. Retrying in {delay} seconds...")
+                    await asyncio.sleep(delay)
+                    delay *= 2  # Exponential backoff
+                else:
+                    print(f"❌ Error while calling LLM: {e}")
+                    return None
+
+        print("❌ Failed after multiple retries.")
+        return None
 
     async def read_file(self, file_path: str) -> str:
         """Reads and returns the contents of a file."""
@@ -133,3 +165,13 @@ class PatchAgentV1:
 
         print("❌ Failed to generate a valid patch after multiple attempts.")
         return None
+
+    async def check_diff_format(self, ctx: RunContext[MergeDeps], diff_content: str) -> bool:
+        """Validates the generated patch using unidiff.PatchSet instead of `patch --check`."""
+        try:
+            PatchSet.from_string(diff_content)
+            print("✅ Patch format is valid.")
+            return True
+        except Exception as e:
+            print(f"⚠️ Patch format is invalid. Retrying...\nError: {e}")
+            return False

@@ -1,6 +1,8 @@
+import time  # Import time module for timestamp
 import subprocess
 import os
 import re
+import json
 
 class PatchAdopter:
     """Handles applying a single patch file using GNU patch and stores console output."""
@@ -92,14 +94,15 @@ class PatchAdopter:
 
     def generate_infile_merge_conflict(self, combined_rej_file):
         """
-        Generates an in-file merge conflict message by capturing it directly from the patch output,
-        ensuring surrounding context is included.
+        Extracts and processes all in-file merge conflicts from the given .rej file.
+        Each conflict is stored as a structured dictionary in a list and saved in JSON format.
 
         :param combined_rej_file: Path to the combined .rej file.
+        :return: Path to the saved JSON file.
         """
         if not os.path.exists(combined_rej_file):
-            print(f"No combined .rej file found at {combined_rej_file}. Skipping merge attempt.")
-            return
+            print(f"⚠️ No combined .rej file found at {combined_rej_file}. Skipping merge attempt.")
+            return None
 
         try:
             result = subprocess.run(
@@ -108,107 +111,61 @@ class PatchAdopter:
                 capture_output=True
             )
 
-            full_output = result.stdout.splitlines()  # Full file content with conflict markers
+            lines = result.stdout.split("\n")  # Convert output to list of lines
 
-            conflict_pattern = re.compile(r"(<<<<<<<.*?=======.*?>>>>>>>)", re.DOTALL)
-            conflicts = conflict_pattern.finditer(result.stdout)
+            # Improved regex to detect conflict markers
+            conflict_pattern = re.compile(r"<<<<<<<.*?=======.*?>>>>>>>", re.DOTALL)
+            conflicts = list(conflict_pattern.finditer(result.stdout))
 
             if not conflicts:
-                print("No merge conflicts detected.")
-                return
+                print("✅ No merge conflicts detected.")
+                return None
 
-            formatted_conflicts = []
-            lines = result.stdout.split("\n")  # Convert to list of lines for easier indexing
+            formatted_conflicts = []  # List to store structured conflicts
 
-            for match in conflicts:
-                conflict_start = result.stdout[:match.start()].count("\n")  # Get line number estimate
+            for i, match in enumerate(conflicts):
+                conflict_start = result.stdout[:match.start()].count("\n")  # Approximate line number
                 conflict_end = result.stdout[:match.end()].count("\n")
 
-                # Extract 10 lines before and after
+                # Extract 10 lines before and after conflict
                 start_context = max(0, conflict_start - 10)
                 end_context = min(len(lines), conflict_end + 10)
 
-                context_before = "\n".join(lines[start_context:conflict_start])
+                before_context = "\n".join(lines[start_context:conflict_start])
                 conflict_text = "\n".join(lines[conflict_start:conflict_end])
-                context_after = "\n".join(lines[conflict_end:end_context])
+                after_context = "\n".join(lines[conflict_end:end_context])
+
+                # Remove unwanted formatting (convert tabs to spaces)
+                before_context = before_context.replace("\t", "  ")
+                conflict_text = conflict_text.replace("\t", "  ")
+                after_context = after_context.replace("\t", "  ")
 
                 # Modify conflict markers for clarity
                 conflict_text = conflict_text.replace(
                     "<<<<<<<", f"<<<<<<< source code (line {conflict_start})"
-                )
-                conflict_text = conflict_text.replace(
+                ).replace(
                     ">>>>>>>", ">>>>>>> rejected patch from combined.rej"
                 )
 
-                # Format the final output with context
-                formatted_conflict = (
-                    f"{context_before}\n"
-                    f"{conflict_text}\n"
-                    f"{context_after}"
-                )
-                formatted_conflicts.append(formatted_conflict)
+                # Store conflict as a structured dictionary
+                conflict_entry = {
+                    "conflict_id": i + 1,
+                    "line_start": conflict_start,
+                    "before": before_context.strip(),
+                    "conflict": conflict_text.strip(),
+                    "after": after_context.strip(),
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")  # Add timestamp
+                }
 
-            self.infile_merge_conflict = "\n\n".join(formatted_conflicts).strip()
+                formatted_conflicts.append(conflict_entry)  # Store in list
 
-            print("\nExtracted In-File Merge Conflict Content with Context:")
-            print(self.infile_merge_conflict)
+            return formatted_conflicts # Return conflicts list
 
         except subprocess.CalledProcessError as e:
-            self.infile_merge_conflict = (e.stdout or "") + (e.stderr or "")
-            print("\nFailed to process in-file merge conflict. Remaining conflicts:")
-            print(self.infile_merge_conflict)
-
-            """
-            Generates an in-file merge conflict message by attempting to apply the combined .rej file using 
-            `patch --merge --output=-`. Extracts full conflict blocks including markers.
-
-            :param combined_rej_file: Path to the combined .rej file.
-            """
+            print("\n❌ Failed to process in-file merge conflict. Error:")
+            print(e.stderr or e.stdout)
+            return None
         
-            if not os.path.exists(combined_rej_file):
-                print(f"No combined .rej file found at {combined_rej_file}. Skipping merge attempt.")
-                return
-
-            try:
-                # Apply combined .rej using --merge but capture conflict output
-                result = subprocess.run(
-                    [self.patch_command, "--merge", "-p0", "--output=-", "-i", combined_rej_file],
-                    # [self.patch_command, "--merge", "-p0", "-i", combined_rej_file],
-
-                    text=True,
-                    capture_output=True
-                )
-
-                # Store full output first
-                self.infile_merge_conflict = result.stdout
-
-                # Extract full conflicts, including markers <<<<<<< and >>>>>>>
-                conflict_pattern = re.compile(r"(<<<<<<<.*?=======.*?>>>>>>>)", re.DOTALL)
-                conflicts = conflict_pattern.findall(self.infile_merge_conflict)
-
-                # If there are conflicts, format them explicitly
-                if conflicts:
-                    formatted_conflicts = []
-                    for conflict in conflicts:
-                        # Label the original code
-                        conflict_text = conflict_text.replace(
-                            "<<<<<<<", f"<<<<<<< source code (line {conflict_start})"
-                        )
-                        conflict_text = conflict_text.replace(
-                            ">>>>>>>", ">>>>>>> rejected patch from combined.rej"
-                        )
-                        formatted_conflicts.append(conflict)
-
-                    self.infile_merge_conflict = "\n\n".join(formatted_conflicts).strip()
-
-                print("\nExtracted In-File Merge Conflict Content:")
-                print(self.infile_merge_conflict)
-
-            except subprocess.CalledProcessError as e:
-                self.infile_merge_conflict = (e.stdout or "") + (e.stderr or "")
-                print("\nFailed to process in-file merge conflict. Remaining conflicts:")
-                print(self.infile_merge_conflict)
-
     def get_infile_merge_conflict(self) -> str:
         """
         Retrieves the in-file merge conflict content as a string.

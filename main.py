@@ -3,10 +3,11 @@ import json
 import re
 import time
 import asyncio
+import shutil
 import requests
 from bs4 import BeautifulSoup
 from patch_adopter import PatchAdopter
-from pydantic_agents.agent_v2 import PatchAgentV1 
+from pydantic_agents.agent_v2 import PatchAgentV2
 
 
 def extract_patch_hash(patch_url):
@@ -168,6 +169,9 @@ def get_input_file_path():
     if not os.path.exists(file_path):
         print("❌ Error: File does not exist.")
         return None
+    if os.path.isdir(file_path):
+        print("❌ Error: Path is a directory, not a file.")
+        return None
     return file_path
 
 def get_kernel_path():
@@ -181,20 +185,36 @@ def get_kernel_path():
         return None
     return kernel_path
 
-def process_patches(parsed_report, patcher, current_path):
+def extract_hunks_from_rej(rej_file):
+    """Extracts individual hunks from a .rej file and returns a list of hunks."""
+    if not os.path.exists(rej_file):
+        print(f"❌ Error: .rej file not found - {rej_file}")
+        return []
+
+    with open(rej_file, "r", encoding="utf-8") as f:
+        rej_content = f.read()
+
+    hunks = re.split(r'(?=^@@ -)', rej_content, flags=re.MULTILINE)  # Split by hunk header
+    return [hunk.strip() for hunk in hunks if hunk.strip()]
+
+async def process_patches(parsed_report, patcher, current_path, patch_agent):
     """
-    Process all patches in the report, apply them one by one, and handle rejections.
+    Process all patches in the report, apply them one by one, and handle rejections using AI.
 
     Args:
         parsed_report: The parsed report containing patches to apply.
         patcher: An instance of PatchAdopter.
         current_path: The working directory path.
-        report_output_path: Path where reports should be saved.
+        patch_agent: An instance of PatchAgentV2.
     """
-    failed_patches = []
+    temp_directory = os.path.join(current_path, "outputs/temp")
+    os.makedirs(temp_directory, exist_ok=True)
+
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    resolved_patches_dir = os.path.join(current_path, f"outputs/resolved_patches_{timestamp}")
+    os.makedirs(resolved_patches_dir, exist_ok=True)
 
     for patch in parsed_report["patches"]:
-        # Ensure absolute path to the patch file
         patch_file_path = os.path.abspath(os.path.join(current_path, patch["patch_file"]))
 
         if not os.path.exists(patch_file_path):
@@ -203,27 +223,52 @@ def process_patches(parsed_report, patcher, current_path):
 
         print(f"\n🔍 Attempting to apply patch: {patch_file_path}")
 
-        # Step 1: Apply the patch
+        # Apply the patch
         patcher.apply_patch(patch_file_path)
+
+        # Handle rejected hunks
         combined_rej = patcher.combine_rejected_hunks()
         if combined_rej:
-            patcher.generate_infile_merge_conflict(combined_rej)
+            # Step 1: Extract hunks from the combined .rej file
+            hunks = extract_hunks_from_rej(combined_rej)
 
-        conflict_output = patcher.get_infile_merge_conflict()
-        print(conflict_output)
+            # Step 2: Extract inline merge conflicts from the file
+            conflict_output_dict = patcher.generate_infile_merge_conflict(combined_rej)
+            if not conflict_output_dict:
+                print("✅ No merge conflicts detected.")
+                continue
 
+            # Step 3: Iterate through each merge conflict and corresponding hunk
+            for conflict, hunk in zip(conflict_output_dict, hunks):
+                print(f"\n🔄 Resolving Merge Conflict {conflict['conflict_id']}...")
+                # print("Current Hunk", hunk)
 
-    # Save report of failed patches
-    failed_patches_dir = os.path.join(current_path, "outputs/failed_patches")
-    os.makedirs(failed_patches_dir, exist_ok=True)
+                # Prepare file paths for LLM processing
+                conflict_id = conflict['conflict_id']
+                raw_merge_conflict_path = os.path.join(temp_directory, f"merge_conflict_{conflict_id}.txt")
+                code_context_path = os.path.join(temp_directory, f"code_context_{conflict_id}.txt")
+                rejected_patch_path = os.path.join(temp_directory, f"rejected_patch_{conflict_id}.rej")
+                output_file = os.path.join(resolved_patches_dir, f"resolved_patch_{conflict_id}.diff")
 
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    failed_patch_output_path = os.path.join(failed_patches_dir, f"failed_patches_{timestamp}.json")
+                # Step 4: Write contents to temporary files
+                with open(raw_merge_conflict_path, "w", encoding="utf-8") as f:
+                    f.write(conflict["conflict"])
 
-    with open(failed_patch_output_path, "w") as fail_file:
-        json.dump({"patches": failed_patches}, fail_file, indent=4)
+                with open(code_context_path, "w", encoding="utf-8") as f:
+                    f.write(f"{conflict['before']}\n{conflict['conflict']}\n{conflict['after']}")
 
-    print(f"📁 Failed patch list saved to: {failed_patch_output_path}")
+                with open(rejected_patch_path, "w", encoding="utf-8") as f:
+                    f.write(hunk)
+
+                # Step 5: Call LLM PatchAgentV2 to generate a fixed patch
+                fixed_patch_path = await patch_agent.generate_fixed_patch(
+                    raw_merge_conflict_path, code_context_path, rejected_patch_path, output_file
+                )
+
+                if fixed_patch_path:
+                    print(f"✅ Successfully resolved Merge Conflict {conflict_id}!")
+                else:
+                    print(f"❌ Failed to resolve Merge Conflict {conflict_id}.")
 
 def main():
     file_path = get_input_file_path()
@@ -253,10 +298,10 @@ def main():
     # Instantiate patch adopter to get its methods
     patcher = PatchAdopter() 
     
-    process_patches(parsed_report, patcher, current_path)
+    patch_agent = PatchAgentV2(model_name="gemini-2.0-pro-exp-02-05")
 
-    # TODO: implement 2 LLM-based approaches here (make it 2 different function)
+    # Run process_patches() asynchronously to process patch, applies them, and calls the LLM
+    asyncio.run(process_patches(parsed_report, patcher, current_path, patch_agent))
     
-
 if __name__ == "__main__":
     main()
