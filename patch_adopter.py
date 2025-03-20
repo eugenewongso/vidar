@@ -3,6 +3,7 @@ import os
 import re
 import json
 import time
+import shutil
 
 class PatchAdopter:
     """Handles applying patches from a single Vanir report and generates a JSON report with rejected files."""
@@ -49,13 +50,16 @@ class PatchAdopter:
                 "message_output": "Patch file not found."
             }
 
+        console_output = ""
+
         try:
             # Run the patch command
             result = subprocess.run(
                 [self.patch_command, "-p", str(self.strip_level), "-i", patch_file, "--ignore-whitespace"],
                 text=True,
                 check=True,
-                capture_output=True
+                capture_output=True,
+                cwd=self.kernel_path #tester caro
             )
 
             self.console_output = result.stdout + result.stderr
@@ -117,18 +121,102 @@ class PatchAdopter:
         # Use provided message_output or fall back to self.console_output
         output_to_parse = message_output or self.console_output
         
+        # added caro
+        output_rej_dir = os.path.join(self.kernel_path, "outputs/rejected_patches")
+        os.makedirs(output_rej_dir, exist_ok=True)  # Ensure the output directory exists
+
         # Pattern to match both "saving rejects to file X.rej" and "hunks ignored -- saving rejects to file X.rej"
         rej_pattern = re.compile(r"(?:saving rejects to file|ignored -- saving rejects to file) (.+\.rej)") # TODO: testing
+        # TODO: incorporate logic so that rej files do not overwrite when same rej file name
         matches = rej_pattern.findall(output_to_parse)
         
         rej_files = []
+
+        # Added caro
+        if not matches:
+            print("⚠️ No .rej files found in output.")
+            return rej_files  # ✅ Returns an empty list if no `.rej` files are found
+
+
         for rej_file in matches:
-            # Ensure the path is relative to the kernel path
             full_path = os.path.join(self.kernel_path, rej_file.strip())
+
             if os.path.exists(full_path):
-                rej_files.append(full_path)
+                # Prevent overwriting by using a numbered suffix (_1, _2, etc.)
+                # base, ext = os.path.splitext(full_path)
+                # counter = 1
+                # new_path = f"{base}_{counter}{ext}"
+
+                # while os.path.exists(new_path):  # Find next available number
+                #     counter += 1
+                #     new_path = f"{base}_{counter}{ext}"
+
+                # shutil.move(full_path, new_path)  # ✅ Rename instead of copying
+                # rej_files.append(new_path)
+
+                base_name = os.path.basename(full_path)
+                dest_path = os.path.join(output_rej_dir, base_name)
+
+                counter = 1
+                while os.path.exists(dest_path):
+                    dest_path = os.path.join(output_rej_dir, f"{os.path.splitext(base_name)[0]}_{counter}.rej")
+                    counter += 1
+
+                shutil.copy(full_path, dest_path)  # ✅ Copy instead of renaming
+                rej_files.append(dest_path)
+
+                
             else:
-                print(f"Warning: Rejection file not found: {full_path}")
+                print(f"⚠️ Warning: Expected .rej file not found: {full_path}")
+
+
+        # try 3
+        # for rej_file in matches:
+        #     # Ensure the path is relative to the kernel path
+        #     full_path = os.path.join(self.kernel_path, rej_file.strip())
+            
+        #     if os.path.exists(full_path):
+        #         # Prevent overwriting by copying the file immediately
+        #         timestamp = time.strftime("%Y%m%d_%H%M%S")  # Adds timestamp to ensure uniqueness
+        #         new_path = f"{full_path}_{timestamp}.rej"
+
+        #         shutil.copy(full_path, new_path)  # ✅ Copy instead of renaming
+        #         rej_files.append(new_path)
+        #     else:
+        #         print(f"⚠️ Warning: Expected .rej file not found: {full_path}")
+
+
+            # try 2
+            # if os.path.exists(full_path):
+            #     # If a duplicate exists, rename the old file
+            #     base, ext = os.path.splitext(full_path)
+            #     counter = 1
+            #     new_path = full_path
+
+            #     while os.path.exists(new_path):
+            #         new_path = f"{base}_{counter}{ext}"
+            #         counter += 1
+
+            #     # Rename the original `.rej` file
+            #     shutil.move(full_path, new_path)
+            #     rej_files.append(new_path)
+            # else:
+            #     print(f"⚠️ Warning: Expected .rej file not found: {full_path}")
+
+            # try 1
+            # base, ext = os.path.splitext(full_path)
+            # counter = 1
+            # while os.path.exists(full_path):
+            #     full_path = f"{base}_{counter}{ext}"
+            #     counter += 1
+
+            # rej_files.append(full_path)
+            
+            # original
+            # if os.path.exists(full_path):
+            #     rej_files.append(full_path)
+            # else:
+            #     print(f"Warning: Rejection file not found: {full_path}")
         
         return rej_files
 

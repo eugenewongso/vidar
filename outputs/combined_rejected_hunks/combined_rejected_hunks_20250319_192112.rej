@@ -1,0 +1,249 @@
+### Rejected hunks from kgsl.c.rej_20250319_192112.rej ###
+--- drivers/gpu/msm/kgsl.c
++++ drivers/gpu/msm/kgsl.c
+@@ -268,6 +268,7 @@ static struct kgsl_mem_entry *kgsl_mem_entry_create(void)
+ 		/* put this ref in userspace memory alloc and map ioctls */
+ 		kref_get(&entry->refcount);
+ 		atomic_set(&entry->map_count, 0);
++		atomic_set(&entry->vbo_count, 0);
+ 	}
+ 
+ 	return entry;
+
+### Rejected hunks from kgsl.h.rej_20250319_192112.rej ###
+--- drivers/gpu/msm/kgsl.h
++++ drivers/gpu/msm/kgsl.h
+@@ -1,7 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Copyright (c) 2008-2021, The Linux Foundation. All rights reserved.
+- * Copyright (c) 2022-2023, Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ #ifndef __KGSL_H
+ #define __KGSL_H
+@@ -350,6 +350,8 @@ struct kgsl_mem_entry {
+ 	 * debugfs accounting
+ 	 */
+ 	atomic_t map_count;
++	/** @vbo_count: Count how many VBO ranges this entry is mapped in */
++	atomic_t vbo_count;
+ };
+ 
+ struct kgsl_device_private;
+
+### Rejected hunks from kgsl_reclaim.c.rej_20250319_192112.rej ###
+--- drivers/gpu/msm/kgsl_reclaim.c
++++ drivers/gpu/msm/kgsl_reclaim.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+- * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022, 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #include <linux/kthread.h>
+@@ -266,6 +266,13 @@ static u32 kgsl_reclaim_process(struct kgsl_process_private *process,
+ 			continue;
+ 		}
+ 
++		/* Do not reclaim pages mapped into a VBO */
++		if (atomic_read(&valid_entry->vbo_count)) {
++			kgsl_mem_entry_put(entry);
++			next++;
++			continue;
++		}
++
+ 		if ((atomic_read(&process->unpinned_page_count) +
+ 			memdesc->page_count) > kgsl_reclaim_max_page_limit) {
+ 			kgsl_mem_entry_put(entry);
+
+### Rejected hunks from kgsl_vbo.c.rej_20250319_192112.rej ###
+--- drivers/gpu/msm/kgsl_vbo.c
++++ drivers/gpu/msm/kgsl_vbo.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+- * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+  */
+ 
+ #include <linux/file.h>
+@@ -46,6 +46,12 @@ static struct kgsl_memdesc_bind_range *bind_range_create(u64 start, u64 last,
+ 	return range;
+ }
+ 
++static void bind_range_destroy(struct kgsl_memdesc_bind_range *range)
++{
++	kgsl_mem_entry_put(range->entry);
++	kfree(range);
++}
++
+ static u64 bind_range_len(struct kgsl_memdesc_bind_range *range)
+ {
+ 	return (range->range.last - range->range.start) + 1;
+@@ -113,8 +119,7 @@ static void kgsl_memdesc_remove_range(struct kgsl_mem_entry *target,
+ 			kgsl_mmu_map_zero_page_to_range(memdesc->pagetable,
+ 				memdesc, range->range.start, bind_range_len(range));
+ 
+-			kgsl_mem_entry_put(range->entry);
+-			kfree(range);
++			bind_range_destroy(range);
+ 		}
+ 	}
+ 
+@@ -161,8 +166,7 @@ static int kgsl_memdesc_add_range(struct kgsl_mem_entry *target,
+ 
+ 		if (start <= cur->range.start) {
+ 			if (last >= cur->range.last) {
+-				kgsl_mem_entry_put(cur->entry);
+-				kfree(cur);
++				bind_range_destroy(cur);
+ 				continue;
+ 			}
+ 			/* Adjust the start of the mapping */
+@@ -216,8 +220,7 @@ static int kgsl_memdesc_add_range(struct kgsl_mem_entry *target,
+ 	return ret;
+ 
+ error:
+-	kgsl_mem_entry_put(range->entry);
+-	kfree(range);
++	bind_range_destroy(range);
+ 	mutex_unlock(&memdesc->ranges_lock);
+ 	return ret;
+ }
+@@ -247,12 +250,11 @@ static void kgsl_sharedmem_vbo_put_gpuaddr(struct kgsl_memdesc *memdesc)
+ 
+ 		interval_tree_remove(node, &memdesc->ranges);
+ 
+-		/* If unmap failed, mark the child memdesc as still mapped */
+-		if (ret)
+-			range->entry->memdesc.priv |= KGSL_MEMDESC_MAPPED;
+-
+-		kgsl_mem_entry_put(range->entry);
+-		kfree(range);
++		/* Put the child's refcount if unmap succeeds */
++		if (!ret)
++			bind_range_destroy(range);
++		else
++			kfree(range);
+ 	}
+ 
+ 	if (ret)
+
+### Rejected hunks from mremap.c.rej_20250319_192112.rej ###
+--- mm/mremap.c
++++ mm/mremap.c
+@@ -219,44 +219,12 @@ static inline bool arch_supports_page_table_move(void)
+ }
+ #endif
+ 
+-#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+-static inline bool trylock_vma_ref_count(struct vm_area_struct *vma)
+-{
+-	/*
+-	 * If we have the only reference, swap the refcount to -1. This
+-	 * will prevent other concurrent references by get_vma() for SPFs.
+-	 */
+-	return atomic_cmpxchg_acquire(&vma->file_ref_count, 0, -1) == 0;
+-}
+-
+-/*
+- * Restore the VMA reference count to 1 after a fast mremap.
+- */
+-static inline void unlock_vma_ref_count(struct vm_area_struct *vma)
+-{
+-	int old = atomic_xchg_release(&vma->file_ref_count, 0);
+-
+-	/*
+-	 * This should only be called after a corresponding,
+-	 * successful trylock_vma_ref_count().
+-	 */
+-	VM_BUG_ON_VMA(old != -1, vma);
+-}
+-#else	/* !CONFIG_SPECULATIVE_PAGE_FAULT */
+-static inline bool trylock_vma_ref_count(struct vm_area_struct *vma)
+-{
+-	return true;
+-}
+-static inline void unlock_vma_ref_count(struct vm_area_struct *vma)
+-{
+-}
+-#endif	/* CONFIG_SPECULATIVE_PAGE_FAULT */
+-
+ #ifdef CONFIG_HAVE_MOVE_PMD
+ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+ 		  unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pmd)
+ {
+-	spinlock_t *old_ptl, *new_ptl;
++	spinlock_t *old_ptl, *new_ptl, *old_pte_ptl;
++
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	pmd_t pmd;
+ 
+@@ -289,14 +257,6 @@ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+ 		return false;
+ 
+ 	/*
+-	 * We hold both exclusive mmap_lock and rmap_lock at this point and
+-	 * cannot block. If we cannot immediately take exclusive ownership
+-	 * of the VMA fallback to the move_ptes().
+-	 */
+-	if (!trylock_vma_ref_count(vma))
+-		return false;
+-
+-	/*
+ 	 * We don't have to worry about the ordering of src and dst
+ 	 * ptlocks because exclusive mmap_lock prevents deadlock.
+ 	 */
+@@ -331,11 +309,13 @@ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+ 
+ 	pmd_populate(mm, new_pmd, pmd_pgtable(pmd));
+ 	flush_tlb_range(vma, old_addr, old_addr + PMD_SIZE);
++
++	if (IS_ENABLED(CONFIG_SPECULATIVE_PAGE_FAULT) && old_pte_ptl != old_ptl)
++		spin_unlock(old_pte_ptl);
+ 	if (new_ptl != old_ptl)
+ 		spin_unlock(new_ptl);
+ 	spin_unlock(old_ptl);
+ 
+-	unlock_vma_ref_count(vma);
+ 	return true;
+ }
+ #else
+@@ -347,7 +327,8 @@ static inline bool move_normal_pmd(struct vm_area_struct *vma,
+ }
+ #endif
+ 
+-#if CONFIG_PGTABLE_LEVELS > 2 && defined(CONFIG_HAVE_MOVE_PUD)
++#if CONFIG_PGTABLE_LEVELS > 2 && defined(CONFIG_HAVE_MOVE_PUD) && \
++		!defined(CONFIG_SPECULATIVE_PAGE_FAULT)
+ static bool move_normal_pud(struct vm_area_struct *vma, unsigned long old_addr,
+ 		  unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
+ {
+@@ -365,14 +346,6 @@ static bool move_normal_pud(struct vm_area_struct *vma, unsigned long old_addr,
+ 		return false;
+ 
+ 	/*
+-	 * We hold both exclusive mmap_lock and rmap_lock at this point and
+-	 * cannot block. If we cannot immediately take exclusive ownership
+-	 * of the VMA fallback to the move_ptes().
+-	 */
+-	if (!trylock_vma_ref_count(vma))
+-		return false;
+-
+-	/*
+ 	 * We don't have to worry about the ordering of src and dst
+ 	 * ptlocks because exclusive mmap_lock prevents deadlock.
+ 	 */
+@@ -393,7 +366,6 @@ static bool move_normal_pud(struct vm_area_struct *vma, unsigned long old_addr,
+ 		spin_unlock(new_ptl);
+ 	spin_unlock(old_ptl);
+ 
+-	unlock_vma_ref_count(vma);
+ 	return true;
+ }
+ #else
+
