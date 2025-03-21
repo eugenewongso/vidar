@@ -6,8 +6,8 @@ import asyncio
 import shutil
 import requests
 from bs4 import BeautifulSoup
-from patch_adopter import PatchAdopter
-from pydantic_agents.agent_v1 import PatchAgentV2
+from patch_adopter_eugene import PatchAdopter
+from pydantic_agents.agent_v1_eugene import PatchAgentV2
 
 def extract_patch_hash(patch_url):
     """

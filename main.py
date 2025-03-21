@@ -32,56 +32,137 @@ def extract_commit_hash(commit_url):
     print(f"⚠️ Could not extract commit hash from URL: {commit_url}")
     return None
 
-def extract_diff(url, files_to_include):
+# def extract_diff(url, files_to_include):
+#     """
+#     Extracts and filters the diff content from the commit page for Android Googlesource.
+    
+#     Args:
+#         url (str): The URL of the commit page.
+#         files_to_include (list): List of filenames to include in the diff.
+    
+#     Returns:
+#         str or None: The filtered diff content, or None if extraction fails.
+#     """
+#     try:
+#         response = requests.get(url, timeout=10)
+#         response.raise_for_status()
+#     except requests.exceptions.RequestException as e:
+#         # TODO: fix this, might want to add a delay (make sure to fetch all the diff files)
+#         # print(f"❌ Failed to fetch diff from URL: {url}")
+#         # print(f"   Error: {str(e)}")
+#         return None
+
+#     soup = BeautifulSoup(response.text, "html.parser")
+
+#     # Extract diff content from the correct HTML structure
+#     diff_sections = soup.find_all("pre", class_="u-pre u-monospace Diff-unified")
+#     diffs = [section.get_text() for section in diff_sections]
+
+#     # Extract file headers
+#     file_headers = soup.find_all("pre", class_="u-pre u-monospace Diff")
+#     headers = [header.get_text() for header in file_headers]
+
+#     # Combine headers and diffs
+#     filtered_diff = []
+#     found_files = set()
+#     for h, d in zip(headers, diffs):
+#         for file_path in files_to_include:
+#             if file_path in h:  # Check if file is in the header
+#                 filtered_diff.append(h + d)
+#                 found_files.add(file_path)
+#                 break  # Avoid duplicate checks for the same file
+
+#     return "\n".join(filtered_diff) if filtered_diff else None
+
+def extract_diff(url, files_to_include, max_retries=5, initial_delay=2):
     """
     Extracts and filters the diff content from the commit page for Android Googlesource.
+    Implements retry logic with exponential backoff for reliability.
     
     Args:
         url (str): The URL of the commit page.
         files_to_include (list): List of filenames to include in the diff.
+        max_retries (int): Maximum number of retry attempts.
+        initial_delay (int): Initial delay in seconds between retries.
     
     Returns:
-        str or None: The filtered diff content, or None if extraction fails.
+        str or None: The filtered diff content, or None if extraction fails after all retries.
     """
-    try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        # TODO: fix this, might want to add a delay (make sure to fetch all the diff filesf)
-        # print(f"❌ Failed to fetch diff from URL: {url}")
-        # print(f"   Error: {str(e)}")
-        return None
+    retry_count = 0
+    delay = initial_delay
+    
+    while retry_count <= max_retries:
+        try:
+            if retry_count > 0:
+                print(f"🔄 Retry attempt {retry_count}/{max_retries} for URL: {url}")
+            
+            response = requests.get(url, timeout=15)  # Increased timeout for reliability
+            response.raise_for_status()
+            
+            # If request was successful, process the response
+            soup = BeautifulSoup(response.text, "html.parser")
 
-    soup = BeautifulSoup(response.text, "html.parser")
+            # Extract diff content from the correct HTML structure
+            diff_sections = soup.find_all("pre", class_="u-pre u-monospace Diff-unified")
+            diffs = [section.get_text() for section in diff_sections]
 
-    # Extract diff content from the correct HTML structure
-    diff_sections = soup.find_all("pre", class_="u-pre u-monospace Diff-unified")
-    diffs = [section.get_text() for section in diff_sections]
+            # Extract file headers
+            file_headers = soup.find_all("pre", class_="u-pre u-monospace Diff")
+            headers = [header.get_text() for header in file_headers]
 
-    # Extract file headers
-    file_headers = soup.find_all("pre", class_="u-pre u-monospace Diff")
-    headers = [header.get_text() for header in file_headers]
+            # Combine headers and diffs
+            filtered_diff = []
+            found_files = set()
+            for h, d in zip(headers, diffs):
+                for file_path in files_to_include:
+                    if file_path in h:  # Check if file is in the header
+                        filtered_diff.append(h + d)
+                        found_files.add(file_path)
+                        break  # Avoid duplicate checks for the same file
 
-    # Combine headers and diffs
-    filtered_diff = []
-    found_files = set()
-    for h, d in zip(headers, diffs):
-        for file_path in files_to_include:
-            if file_path in h:  # Check if file is in the header
-                filtered_diff.append(h + d)
-                found_files.add(file_path)
-                break  # Avoid duplicate checks for the same file
+            # Check if we found anything
+            if not filtered_diff:
+                print(f"⚠️ No matching files found in diff at URL: {url}")
+                print(f"   Looking for: {files_to_include}")
+                print(f"   Found headers: {len(headers)}")
+            
+            return "\n".join(filtered_diff) if filtered_diff else None
+            
+        except requests.exceptions.RequestException as e:
+            retry_count += 1
+            
+            # If we've reached the maximum retries, log the error and return None
+            if retry_count > max_retries:
+                print(f"❌ Failed to fetch diff after {max_retries} retries from URL: {url}")
+                print(f"   Final error: {str(e)}")
+                return None
+            
+            # Print information about the failure and retry
+            print(f"⚠️ Error fetching diff (attempt {retry_count}/{max_retries}): {url}")
+            print(f"   Error: {str(e)}")
+            print(f"   Retrying in {delay} seconds...")
+            
+            # Wait with exponential backoff before the next retry
+            time.sleep(delay)
+            
+            # Exponential backoff: double the delay for the next retry
+            delay *= 2
 
-    return "\n".join(filtered_diff) if filtered_diff else None
-
-def fetch_patch(commit_url, files_to_include):
+def fetch_patch(commit_url, files_to_include, max_retries=5, initial_delay=2):
+    # TODO: make sure to not fetch a diff file that is already fetched, to reduce redundances
     """
     Fetches the diff for a given commit URL, filters it to only include relevant files, and saves it.
+    Implements retry logic for reliability.
 
+    Args:
+        commit_url (str): URL of the commit.
+        files_to_include (list): List of files to include in the diff.
+        max_retries (int): Maximum number of retry attempts.
+        initial_delay (int): Initial delay in seconds between retries.
+    
     Returns:
-        str: The path to the saved formatted diff file.
+        str: The path to the saved formatted diff file, or None if fetching fails after all retries.
     """
-
     # Extract commit hash from the URL
     commit_hash = extract_commit_hash(commit_url)
     if not commit_hash:
@@ -102,24 +183,104 @@ def fetch_patch(commit_url, files_to_include):
     os.makedirs(output_dir_diff, exist_ok=True)  
     output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff") 
 
-    response = requests.get(diff_url)
-
-    # Save raw .diff for CodeLinaro
-    if is_codelinaro:
-        with open(output_filename, "w", encoding="utf-8") as f:
-            f.write(response.text.strip() + "\n") 
+    # Check if we already have this diff file cached
+    if os.path.exists(output_filename) and os.path.getsize(output_filename) > 0:
+        print(f"✅ Using cached diff file: {output_filename}")
         return output_filename
 
-    # Extract and format diff content for Android Googlesource
-    extracted_diff = extract_diff(diff_url, files_to_include)
+    # Handle CodeLinaro URLs with retry logic
+    if is_codelinaro:
+        retry_count = 0
+        delay = initial_delay
+        
+        while retry_count <= max_retries:
+            try:
+                if retry_count > 0:
+                    print(f"🔄 Retry attempt {retry_count}/{max_retries} for CodeLinaro URL: {diff_url}")
+                
+                response = requests.get(diff_url, timeout=15)  # Increased timeout
+                response.raise_for_status()
+                
+                # Save the raw diff
+                with open(output_filename, "w", encoding="utf-8") as f:
+                    f.write(response.text.strip() + "\n")
+                
+                print(f"✅ Successfully fetched and saved diff from CodeLinaro: {output_filename}")
+                return output_filename
+                
+            except requests.exceptions.RequestException as e:
+                retry_count += 1
+                
+                if retry_count > max_retries:
+                    print(f"❌ Failed to fetch CodeLinaro diff after {max_retries} retries: {diff_url}")
+                    print(f"   Final error: {str(e)}")
+                    return None
+                
+                print(f"⚠️ Error fetching CodeLinaro diff (attempt {retry_count}/{max_retries}): {diff_url}")
+                print(f"   Error: {str(e)}")
+                print(f"   Retrying in {delay} seconds...")
+                
+                time.sleep(delay)
+                delay *= 2
+    
+    # For Android Googlesource, use the extract_diff function which already has retry logic
+    extracted_diff = extract_diff(diff_url, files_to_include, max_retries, initial_delay)
     if not extracted_diff:
+        print(f"❌ Failed to extract diff from Googlesource after all retries: {diff_url}")
         return None
 
     # Save filtered diff
     with open(output_filename, "w", encoding="utf-8") as output_file:
-        output_file.write(extracted_diff.strip() + "\n")  
-
+        output_file.write(extracted_diff.strip() + "\n")
+    
+    print(f"✅ Successfully fetched, filtered and saved diff: {output_filename}")
     return output_filename
+# def fetch_patch(commit_url, files_to_include):
+#     """
+#     Fetches the diff for a given commit URL, filters it to only include relevant files, and saves it.
+
+#     Returns:
+#         str: The path to the saved formatted diff file.
+#     """
+
+#     # Extract commit hash from the URL
+#     commit_hash = extract_commit_hash(commit_url)
+#     if not commit_hash:
+#         return None
+
+#     # Determine source type and construct the diff URL
+#     if "android.googlesource.com" in commit_url:
+#         diff_url = commit_url + "^!"  # Googlesource requires ^! for diff
+#         is_codelinaro = False
+#     elif "git.codelinaro.org" in commit_url:
+#         diff_url = commit_url + ".diff"  # CodeLinaro requires .diff suffix
+#         is_codelinaro = True
+#     else:
+#         print(f"⚠️ Unsupported commit URL: {commit_url}")
+#         return None
+
+#     output_dir_diff = "outputs/fetched_diffs"
+#     os.makedirs(output_dir_diff, exist_ok=True)  
+#     output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff") 
+
+#     response = requests.get(diff_url)
+
+#     # Save raw .diff for CodeLinaro
+#     if is_codelinaro:
+#         with open(output_filename, "w", encoding="utf-8") as f:
+#             f.write(response.text.strip() + "\n") 
+#         return output_filename
+
+#     # Extract and format diff content for Android Googlesource
+#     extracted_diff = extract_diff(diff_url, files_to_include)
+#     if not extracted_diff:
+#         return None
+
+#     # Save filtered diff
+#     with open(output_filename, "w", encoding="utf-8") as output_file:
+#         output_file.write(extracted_diff.strip() + "\n")  
+
+#     return output_filename
 
 def parse_vanir_report(file_path, output_path=None):
     """
