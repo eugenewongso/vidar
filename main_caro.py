@@ -192,34 +192,10 @@ def extract_hunks_from_rej(rej_file):
         return []
 
     with open(rej_file, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+        rej_content = f.read()
 
-    # Remove file headers like "--- file.c" and "+++ file.c"
-    filtered_lines = []
-    for line in lines:
-        if not line.startswith(("--- ", "+++ ")):  # Skip file headers
-            filtered_lines.append(line)
-
-    rej_content = "".join(filtered_lines)
-
-    # Split hunks using hunk headers (starts with @@ -<old>,<count> +<new>,<count> @@)
-    hunks = re.split(r'(?=^@@ -)', rej_content, flags=re.MULTILINE)
-
+    hunks = re.split(r'(?=^@@ -)', rej_content, flags=re.MULTILINE)  # Split by hunk header
     return [hunk.strip() for hunk in hunks if hunk.strip()]
-
-# def extract_hunks_from_rej(rej_file):
-#     """Extracts individual hunks from a .rej file and returns a list of hunks."""
-#     if not os.path.exists(rej_file):
-#         print(f"❌ Error: .rej file not found - {rej_file}")
-#         return []
-
-#     with open(rej_file, "r", encoding="utf-8") as f:
-#         lines = f.readlines()
-
-#     rej_content = "".join(lines[1:]) # Start from the second line
-
-#     hunks = re.split(r'(?=^@@ -)', rej_content, flags=re.MULTILINE)  # Split by hunk header
-#     return [hunk.strip() for hunk in hunks if hunk.strip()]
 
 async def process_patches(parsed_report, patcher, current_path, patch_agent):
     """
@@ -238,19 +214,14 @@ async def process_patches(parsed_report, patcher, current_path, patch_agent):
     resolved_patches_dir = os.path.join(current_path, f"outputs/resolved_patches_{timestamp}")
     os.makedirs(resolved_patches_dir, exist_ok=True)
 
-    for index, patch in enumerate(parsed_report["patches"], start=1):  # Start index at 1
+    for patch in parsed_report["patches"]:
         patch_file_path = os.path.abspath(os.path.join(current_path, patch["patch_file"]))
 
         if not os.path.exists(patch_file_path):
             print(f"❌ Patch file not found: {patch_file_path}")
             continue  # Skip to the next patch
 
-        # Create a unique resolved patches directory for each patch
-        resolved_patches_dir = os.path.join(current_path, f"outputs/resolved_patches_{index}")
-        os.makedirs(resolved_patches_dir, exist_ok=True)
-
-        print(f"\n🔍 Attempting to apply patch {index}: {patch_file_path}")
-        print(f"📁 Using directory: {resolved_patches_dir}")
+        print(f"\n🔍 Attempting to apply patch: {patch_file_path}")
 
         # Apply the patch
         patcher.apply_patch(patch_file_path)
@@ -264,12 +235,13 @@ async def process_patches(parsed_report, patcher, current_path, patch_agent):
             # Step 2: Extract inline merge conflicts from the file
             conflict_output_dict = patcher.generate_infile_merge_conflict(combined_rej)
             if not conflict_output_dict:
-                print(f"✅ No merge conflicts detected for patch {index}.")
+                print("✅ No merge conflicts detected.")
                 continue
 
             # Step 3: Iterate through each merge conflict and corresponding hunk
             for conflict, hunk in zip(conflict_output_dict, hunks):
-                print(f"\n🔄 Resolving Merge Conflict {conflict['conflict_id']} for Patch {index}...")
+                print(f"\n🔄 Resolving Merge Conflict {conflict['conflict_id']}...")
+                # print("Current Hunk", hunk)
 
                 # Prepare file paths for LLM processing
                 conflict_id = conflict['conflict_id']
@@ -294,9 +266,9 @@ async def process_patches(parsed_report, patcher, current_path, patch_agent):
                 )
 
                 if fixed_patch_path:
-                    print(f"✅ Successfully resolved Merge Conflict {conflict_id} for Patch {index}!")
+                    print(f"✅ Successfully resolved Merge Conflict {conflict_id}!")
                 else:
-                    print(f"❌ Failed to resolve Merge Conflict {conflict_id} for Patch {index}.")
+                    print(f"❌ Failed to resolve Merge Conflict {conflict_id}.")
 
 def main():
     file_path = get_input_file_path()
@@ -327,7 +299,6 @@ def main():
     patcher = PatchAdopter(kernel_path) 
     
     patch_agent = PatchAgentV2(model_name="gemini-2.0-pro-exp-02-05")
-    # patch_agent = PatchAgentV2(model_name="openai:o1")
 
     # Run process_patches() asynchronously to process patch, applies them, and calls the LLM
     asyncio.run(process_patches(parsed_report, patcher, current_path, patch_agent))
