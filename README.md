@@ -1,4 +1,4 @@
-# Android Kernel Patch Adopter
+# Vidar : Patch-porting Automation Tool
 
 A tool for automating the processing, fetching, and application of security patches for Android kernels from Vanir security reports.
 

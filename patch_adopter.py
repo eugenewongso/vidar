@@ -17,6 +17,7 @@ class PatchAdopter:
         self.patch_command = "gpatch"
         self.console_output = ""
         self.infile_merge_conflict = ""
+        self.patch_results = {"patches": []}
 
     def apply_patch(self, patch_file: str):
         """
@@ -173,3 +174,12 @@ class PatchAdopter:
         :return: The merge conflict output as a string.
         """
         return self.infile_merge_conflict
+    
+    def save_report(self):
+        """
+        Saves the patch application report as a JSON file.
+        """
+        with open(self.report_output_path, "w") as report:
+            json.dump(self.patch_results, report, indent=4)
+
+        print(f"📄 Patch report saved to: {self.report_output_path}")

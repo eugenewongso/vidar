@@ -1,0 +1,127 @@
+{
+    "timestamp": "20250320_221442",
+    "patches_processed": [
+        {
+            "patch_file": "f913f0123e6cff4dbc7c1e17d13b7a59a54475d2.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/f913f0123e6cff4dbc7c1e17d13b7a59a54475d2",
+            "files_processed": [
+                {
+                    "file": "mm/mremap.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "bce004fba8be9e1bb575301f398b3ecc27ba42de.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/bce004fba8be9e1bb575301f398b3ecc27ba42de",
+            "files_processed": [
+                {
+                    "file": "mm/mremap.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "65e0a92c6d27d4cbaa0deef668df12b69853d65e.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/65e0a92c6d27d4cbaa0deef668df12b69853d65e",
+            "files_processed": [
+                {
+                    "file": "include/net/af_unix.h",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/af_unix.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/garbage.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/scm.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "94c88f80ffddff00f0af448c02dfd8a3f3cdd692.diff",
+            "patch_url": "https://android.googlesource.com/kernel/common/+/94c88f80ffddff00f0af448c02dfd8a3f3cdd692",
+            "files_processed": [
+                {
+                    "file": "include/net/af_unix.h",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/af_unix.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/garbage.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "net/unix/scm.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "c1a7b4b4a736fa175488122cca9743cff2ae72e8.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/c1a7b4b4a736fa175488122cca9743cff2ae72e8",
+            "files_processed": [
+                {
+                    "file": "drivers/gpu/msm/kgsl.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "drivers/gpu/msm/kgsl.h",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "drivers/gpu/msm/kgsl_reclaim.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                },
+                {
+                    "file": "drivers/gpu/msm/kgsl_vbo.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "61abd2ada929a54983f95345ffa2504bbd9b993d.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/61abd2ada929a54983f95345ffa2504bbd9b993d",
+            "files_processed": [
+                {
+                    "file": "drivers/gpu/msm/kgsl_vbo.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        },
+        {
+            "patch_file": "25c49620c22e375fbd69631ea1eb408ed43db6e0.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/kernel/msm-5.10/commit/25c49620c22e375fbd69631ea1eb408ed43db6e0",
+            "files_processed": [
+                {
+                    "file": "drivers/gpu/msm/kgsl_vbo.c",
+                    "status": "Failed",
+                    "reason": "Output directory not found"
+                }
+            ]
+        }
+    ]
+}

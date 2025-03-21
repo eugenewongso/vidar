@@ -1,177 +1,148 @@
-import os
+# Input vuln file, diff file
+# Output: whole (modified) 
 import asyncio
+import os
+import datetime
+import sys
+import logfire
 from dataclasses import dataclass
-from httpx import AsyncClient
 from dotenv import load_dotenv
-from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.gemini import GeminiModel
+from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.providers.openai import OpenAIProvider
-from unidiff import PatchSet
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Configure Logfire for logging (if token is available)
+logfire.configure(send_to_logfire='if-token-present')
+
+# Fetch API key from environment variable
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# print(OPENAI_API_KEY)
+
+# Ensure API key is set
+if not OPENAI_API_KEY:
+    raise ValueError("Missing API key. Please add OPENAI_API_KEY to your .env file.")
 
 @dataclass
-class MergeDeps:
-    """Dependencies for the merge conflict resolution agent."""
-    api_key: str  # Required for Pydantic AI
+class SupportDependencies:
+    diff_file: str
+    vulnerable_codebase: str
 
-class PatchAgentV2:
-    """AI-powered merge conflict resolution agent for generating valid diff patches."""
+# Configure OpenAI model with API key
+model = OpenAIModel('o1', provider=OpenAIProvider(api_key=OPENAI_API_KEY))
 
-    def __init__(self, model_name="gemini-2.0-pro-exp-02-05"):
-        """Initialize the AI agent with support for Gemini & OpenAI models."""
-        self.model_name = model_name
-        self.agent = self.initialize_agent(model_name)
+# Define the agent using the updated method
+patch_porter_agent = Agent(
+    model,
+    system_prompt="""
+    You are a patch porting agent specializing in resolving merge conflicts and applying diff files to remediate security vulnerabilities in codebases.
+    
+    IMPORTANT: Your response must contain ONLY the patched code with no additional comments, explanations, or formatting changes.
+    DO NOT include any explanations about what you did, DO NOT include any headers or footers.
+    DO NOT change indentation, whitespace, or formatting of the original file unless necessary for the patch.
+    Preserve all tabs, spaces, and line endings exactly as they appear in the original file.
+    Just output the final patched code file with the security fixes applied and nothing else.
+    """,
+    deps_type=SupportDependencies
+)
 
-        # Register `check_diff_format` tool
-        self.agent.tool(self.check_diff_format)
+async def run_patch_porter_agent(patch_file_path=None, vuln_file_path=None, output_suffix=None):
+    """
+    Runs the patch porter agent with provided dependencies and saves the output to a file.
+    
+    Args:
+        patch_file_path (str, optional): Path to the patch file. Defaults to "patch.diff".
+        vuln_file_path (str, optional): Path to the vulnerable file. Defaults to "vulnerable_file.c".
+        output_suffix (str, optional): Suffix to add to the output filename. Defaults to None.
+    """
+    # Define paths to the input files - use defaults if not provided
+    diff_file_path = patch_file_path or "patch.diff"
+    vulnerable_codebase_path = vuln_file_path or "vulnerable_file.c"
+    
+    # Get the filename for the output
+    output_basename = os.path.basename(vulnerable_codebase_path) if vuln_file_path else "output_gpt.c"
 
-    def initialize_agent(self, model_name):
-        """Dynamically initialize the agent with Gemini or OpenAI models."""
-        if model_name.startswith("gemini"):
-            print(f"🔹 Initializing Gemini model: {model_name}")
-            custom_http_client = AsyncClient(timeout=30)
-            model = GeminiModel(
-                model_name,
-                provider=GoogleGLAProvider(api_key=GEMINI_API_KEY, http_client=custom_http_client),
-            )
-        elif model_name.startswith("gpt") or model_name.startswith("openai"):
-            print(f"🔹 Initializing OpenAI model: {model_name}")
-            model = OpenAIModel(
-                model_name,
-                provider=OpenAIProvider(api_key=OPENAI_API_KEY),
-            )
-        else:
-            raise ValueError(f"❌ Unsupported model: {model_name}")
+    # Read file contents safely
+    try:
+        with open(diff_file_path, "r", encoding="utf-8") as file:
+            diff_file_content = file.read()
+    except FileNotFoundError:
+        print(f"Error: The file '{diff_file_path}' was not found.")
+        return
 
-        return Agent(model, system_prompt=self.get_system_prompt())
+    try:
+        with open(vulnerable_codebase_path, "r", encoding="utf-8") as file:
+            vulnerable_codebase_content = file.read()
+    except FileNotFoundError:
+        print(f"Error: The file '{vulnerable_codebase_path}' was not found.")
+        return
 
-    def get_system_prompt(self):
-        """Returns the system prompt for AI conflict resolution."""
-        return (
-            "You are a skilled AI assistant specializing in resolving inline merge conflicts in code.\n"
-            "Analyze conflicting changes, compare them with the surrounding code, and produce a clean, logically sound patch in unified diff format.\n"
-            "Ensure the patch applies cleanly, includes all intended changes, and uses Unix-style line endings.\n"
-            "Use the `check_diff_format` tool to verify the patch. If the patch is invalid, retry until it is correct."
-        )
+    # Construct dependencies with actual content
+    dependencies = SupportDependencies(
+        diff_file=diff_file_content,
+        vulnerable_codebase=vulnerable_codebase_content,
+    )
 
-    async def resolve_conflict(self, ctx: RunContext[MergeDeps], inline_merge_conflict: str, code_context: str, rejected_patch: str) -> str:
-        """AI-powered merge conflict resolution tool with auto-retry for quota exhaustion."""
-        
-        prompt = f"""
-        **Inline Merge Conflict:**
-        ```c
-        {inline_merge_conflict}
-        ```
+    # Task-specific instructions (formatted with runtime values)
+    task_prompt = f"""
+        You will be provided with the following:
 
-        **Code Context:**
-        ```c
-        {code_context}
-        ```
+        Diff File:
+        {dependencies.diff_file}
 
-        **Rejected Patch (.rej file from GNU patch):**
-        ```diff
-        {rejected_patch}
-        ```
+        Vulnerable Codebase:
+        {dependencies.vulnerable_codebase}
 
-        Your task:
-        - Resolve the merge conflict by comparing the rejected patch with the inline conflict and surrounding code.
-        - Produce a final patch in **standard unified diff format**.
-        - Ensure the patch applies **cleanly without errors**.
-        - **Remove conflict markers** (`<<<<<<<`, `=======`, `>>>>>>>`).
-        - Use **Unix-style line endings** (`\n`).
-        - Do **NOT** add extra explanations, only output the corrected patch.
-        """
+        Instructions:
 
-        max_retries = 5
-        delay = 5  # Start with a 5-second delay
+        1. Carefully analyze the provided diff_file and vulnerable_codebase.
+        2. Identify any merge conflicts that prevent the diff_file from being cleanly applied to the vulnerable_codebase.
+        3. Resolve the merge conflicts while maintaining the integrity and functionality of the vulnerable_codebase.
+        4. Apply the resolved diff_file to the vulnerable_codebase.
+        5. Ensure the patched code remains functional and does not introduce new issues.
+        6. Provide the patched codebase as your final output. 
 
-        for attempt in range(1, max_retries + 1):
-            try:
-                print(f"🟡 Sending request to AI agent ({self.model_name}) (Attempt {attempt})...")
-                response = await self.agent.run(prompt)
+        STRICT REQUIREMENTS:
+        - Output **ONLY** the complete patched code with no formatting changes.
+        - Do NOT include any explanations, comments, or anything else.
+        - The response must be **exactly** the final patched file with the security fixes applied.
+    """
 
-                if response and response.data.strip():
-                    return response.data.strip() + "\n"  # Ensure Unix-style newline
+    # Run the agent with the task-specific prompt
+    result = await patch_porter_agent.run(task_prompt, deps=dependencies)
 
-                print("❌ AI response was empty. Skipping.")
-                return None
+    # Ensure output is clean and strictly contains the modified code
+    modified_code = result.data.strip()
 
-            except Exception as e:
-                error_message = str(e)
-                if "RESOURCE_EXHAUSTED" in error_message:
-                    print(f"⚠️ API quota exceeded. Retrying in {delay} seconds...")
-                    await asyncio.sleep(delay)
-                    delay *= 2  # Exponential backoff
-                else:
-                    print(f"❌ Error while calling LLM: {e}")
-                    return None
+    # Create the output directory if it doesn't exist
+    output_dir = "outputs/output_gpt_no_desc"
+    os.makedirs(output_dir, exist_ok=True)
 
-        print("❌ Failed after multiple retries.")
-        return None
+    # Generate a filename with a timestamp
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Add suffix to output filename if provided
+    if output_suffix:
+        output_filename = os.path.join(output_dir, f"{timestamp}_{output_suffix}")
+    else:
+        output_filename = os.path.join(output_dir, f"{timestamp}_output_gpt.c")
 
-    async def read_file(self, file_path: str) -> str:
-        """Reads and returns the contents of a file."""
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return f.read()
-        except FileNotFoundError:
-            print(f"❌ Error: File not found - {file_path}")
-            return ""
-        except Exception as e:
-            print(f"❌ Error reading file {file_path}: {e}")
-            return ""
+    # Write the patched file to the new timestamped filename
+    with open(output_filename, "w", encoding="utf-8") as patched_file:
+        patched_file.write(modified_code)
 
-    async def generate_fixed_patch(self, raw_merge_conflict_path: str, code_context_path: str, rejected_patch_path: str, output_file: str):
-        """Runs the AI agent to resolve the merge conflict and ensure the final patch is valid."""
-        # Read contents from the provided file paths
-        raw_merge_conflict = await self.read_file(raw_merge_conflict_path)
-        code_context = await self.read_file(code_context_path)  
-        rejected_patch = await self.read_file(rejected_patch_path)
+    print(f"✅ Patched file successfully saved to '{output_filename}'")
+    return output_filename
 
-        if not raw_merge_conflict or not code_context or not rejected_patch:
-            print("❌ Error: One or more input files are empty or could not be read.")
-            return None
-
-        max_retries = 3  # Limit retries to avoid infinite loops
-        for attempt in range(max_retries):
-            print(f"🔄 Attempt {attempt + 1} of {max_retries}...")
-
-            # AI resolves the conflict using explicit code context
-            fixed_patch = await self.resolve_conflict(None, raw_merge_conflict, code_context, rejected_patch)
-
-            if not fixed_patch:
-                print("❌ AI failed to generate a patch. Retrying...")
-                continue
-
-            # Debug log before calling check_diff_format
-            print(f"🛠️ Checking patch format using check_diff_format (Attempt {attempt + 1})...")
-
-            is_valid = await self.check_diff_format(None, fixed_patch)
-
-            if is_valid:
-                print(f"✅ Patch validated successfully on attempt {attempt + 1}. Writing to file.")
-                with open(output_file, "w", encoding="utf-8") as f:
-                    f.write(fixed_patch)
-                print(f"✅ Successfully generated a clean patch: {output_file}")
-                return output_file
-            else:
-                print(f"❌ Patch validation failed on attempt {attempt + 1}. Retrying...")
-
-        print("❌ Failed to generate a valid patch after multiple attempts.")
-        return None
-
-    async def check_diff_format(self, ctx: RunContext[MergeDeps], diff_content: str) -> bool:
-        """Validates the generated patch using unidiff.PatchSet instead of `patch --check`."""
-        try:
-            PatchSet.from_string(diff_content)
-            print("✅ Patch format is valid.")
-            return True
-        except Exception as e:
-            print(f"⚠️ Patch format is invalid. Retrying...\nError: {e}")
-            return False
+# Entry point to execute the async function
+if __name__ == '__main__':
+    # Check if command line arguments are provided
+    if len(sys.argv) >= 3:
+        patch_file = sys.argv[1]
+        vuln_file = sys.argv[2]
+        output_suffix = sys.argv[3] if len(sys.argv) > 3 else None
+        asyncio.run(run_patch_porter_agent(patch_file, vuln_file, output_suffix))
+    else:
+        asyncio.run(run_patch_porter_agent())
