@@ -326,7 +326,9 @@ def main():
     # Instantiate patch adopter to get its methods
     patcher = PatchAdopter(kernel_path) 
     
-    patch_agent = PatchAgentV2(model_name="gemini-2.0-pro-exp-02-05")
+    # CHANGED CARO
+    patch_agent = PatchAgentV2()
+    # patch_agent = PatchAgentV2(model_name="gemini-2.0-pro-exp-02-05")
     # patch_agent = PatchAgentV2(model_name="openai:o1")
 
     # Run process_patches() asynchronously to process patch, applies them, and calls the LLM

@@ -71,11 +71,11 @@ class PatchAdopter:
         # ADDED CARO
         if not matches:
             print("⚠️ No .rej files found in output.")
-            return rej_files  # ✅ Returns an empty list if no `.rej` files are found
+            return rej_files 
 
 
         for rej_file in matches:
-            # ADDED CARO
+            # ADDED & CHANGED CARO
             full_path = os.path.join(self.kernel_path, rej_file.strip())
 
             if os.path.exists(full_path):
@@ -115,13 +115,11 @@ class PatchAdopter:
             return None
 
         # CHANGED CARO
-        # ✅ Define a proper output directory
         output_dir = os.path.join(self.kernel_path, "outputs/combined_rejected_hunks")
-        os.makedirs(output_dir, exist_ok=True)  # ✅ Ensure the output directory exists
+        os.makedirs(output_dir, exist_ok=True)
 
-        # ✅ If output_file is None or just a filename, assign it a proper path
         if not output_file or os.path.dirname(output_file) == "":
-            output_file = os.path.join(output_dir, "combined.rej")  # ✅ Default file path
+            output_file = os.path.join(output_dir, "combined.rej") 
 
         with open(output_file, "w") as combined_file:
             for rej_file in sorted(all_rej_files):
