@@ -7,9 +7,8 @@ import sys
 import logfire
 from dataclasses import dataclass
 from dotenv import load_dotenv
-from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.providers.openai import OpenAIProvider
+import google.generativeai as genai
+from typing import Optional
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,24 +17,53 @@ load_dotenv()
 logfire.configure(send_to_logfire='if-token-present')
 
 # Fetch API key from environment variable
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# print(OPENAI_API_KEY)
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Ensure API key is set
-if not OPENAI_API_KEY:
-    raise ValueError("Missing API key. Please add OPENAI_API_KEY to your .env file.")
+if not GOOGLE_API_KEY:
+    raise ValueError("Missing API key. Please add GOOGLE_API_KEY to your .env file.")
+
+# Configure Google Generative AI with API key
+genai.configure(api_key=GOOGLE_API_KEY)
 
 @dataclass
 class SupportDependencies:
     diff_file: str
     vulnerable_codebase: str
 
-# Configure OpenAI model with API key
-model = OpenAIModel('o1', provider=OpenAIProvider(api_key=OPENAI_API_KEY))
+class GeminiAgent:
+    def __init__(self, model_name: str, system_prompt: str):
+        self.model = genai.GenerativeModel(
+            model_name=model_name,
+            system_instruction=system_prompt
+        )
+        
+    async def run(self, prompt: str, deps: Optional[SupportDependencies] = None):
+        response = self.model.generate_content(prompt)
+        
+        # Create a simple result object to maintain compatibility with original code
+        class Result:
+            def __init__(self, text):
+                self.data = text
+                
+        return Result(response.text)
 
-# Define the agent using the updated method
-patch_porter_agent = Agent(
-    model,
+# Define the agent using Gemini
+# LatestGeminiModelNames = Literal[
+#     "gemini-1.5-flash",
+#     "gemini-1.5-flash-8b",
+#     "gemini-1.5-pro",
+#     "gemini-1.0-pro",
+#     "gemini-2.0-flash-exp",
+#     "gemini-2.0-flash-thinking-exp-01-21",
+#     "gemini-exp-1206",
+#     "gemini-2.0-flash",
+#     "gemini-2.0-flash-lite-preview-02-05",
+#     "gemini-2.0-pro-exp-02-05",
+#     "gemini-2.5-pro-exp-03-25",
+# ]
+patch_porter_agent = GeminiAgent(
+    model_name='gemini-2.0-pro-exp-02-05',
     system_prompt="""
     You are a patch porting agent specializing in resolving merge conflicts and applying diff files to remediate security vulnerabilities in codebases.
     
@@ -44,8 +72,7 @@ patch_porter_agent = Agent(
     DO NOT change indentation, whitespace, or formatting of the original file unless necessary for the patch.
     Preserve all tabs, spaces, and line endings exactly as they appear in the original file.
     Just output the final patched code file with the security fixes applied and nothing else.
-    """,
-    deps_type=SupportDependencies
+    """
 )
 
 async def run_patch_porter_agent(patch_file_path=None, vuln_file_path=None, output_suffix=None):
@@ -62,7 +89,7 @@ async def run_patch_porter_agent(patch_file_path=None, vuln_file_path=None, outp
     vulnerable_codebase_path = vuln_file_path or "vulnerable_file.c"
     
     # Get the filename for the output
-    output_basename = os.path.basename(vulnerable_codebase_path) if vuln_file_path else "output_gpt.c"
+    output_basename = os.path.basename(vulnerable_codebase_path) if vuln_file_path else "output_gemini.c"
 
     # Read file contents safely
     try:
@@ -117,7 +144,7 @@ async def run_patch_porter_agent(patch_file_path=None, vuln_file_path=None, outp
     modified_code = result.data.strip()
 
     # Create the output directory if it doesn't exist
-    output_dir = "outputs/output_gpt_no_desc"
+    output_dir = "outputs/output_gemini_no_desc"
     os.makedirs(output_dir, exist_ok=True)
 
     # Generate a filename with a timestamp
@@ -127,7 +154,7 @@ async def run_patch_porter_agent(patch_file_path=None, vuln_file_path=None, outp
     if output_suffix:
         output_filename = os.path.join(output_dir, f"{timestamp}_{output_suffix}")
     else:
-        output_filename = os.path.join(output_dir, f"{timestamp}_output_gpt.c")
+        output_filename = os.path.join(output_dir, f"{timestamp}_output_gemini.c")
 
     # Write the patched file to the new timestamped filename
     with open(output_filename, "w", encoding="utf-8") as patched_file:

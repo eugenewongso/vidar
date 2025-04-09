@@ -68,7 +68,7 @@ class PatchAdopter:
                     "status": "Already Applied",  # New status
                     "rejected_files": [],  # No rejected files since it's already applied
                     "message_output": self.console_output
-    }
+                }
             
             # Extract failed file paths from the output
             rejected_files = self.extract_failed_files(self.console_output)
@@ -95,7 +95,17 @@ class PatchAdopter:
             self.console_output = (e.stdout or "") + (e.stderr or "")
             print(self.console_output)
             
-            # Even for errors, we should try to extract rejected files
+            # Check for previously applied patches in the error output
+            if "Reversed (or previously applied) patch detected!" in self.console_output:
+                return {
+                    "patch_file": os.path.basename(patch_file),
+                    "patch_url": patch_url,
+                    "status": "Already Applied",  # New status for already applied patches
+                    "rejected_files": [],  # No rejected files since it's already applied
+                    "message_output": self.console_output
+                }
+            
+            # For other errors, extract failed files as usual
             rejected_files = self.extract_failed_files(self.console_output)
             reject_file_paths = self.get_rej_files()
             formatted_rejected_files = self.map_rejected_files(rejected_files, reject_file_paths)

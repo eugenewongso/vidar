@@ -524,76 +524,166 @@ async def process_failed_patches_with_llm(failed_patches_path, kernel_path, curr
     
     return results_path
 
-def process_patches(parsed_report, patcher, current_path, report_output_path):
+async def process_patches(parsed_report, patcher, current_path, report_output_path, kernel_path):
     """
-    Process all patches in the report, apply them, and save results.
+    Process all patches in the report, apply them, and immediately fix rejections with LLM.
     
     Args:
         parsed_report: The parsed report containing patches to apply
         patcher: The PatchAdopter instance
         current_path: The current working directory path
         report_output_path: Path where reports should be saved
+        kernel_path: Path to the kernel repository
     
     Returns:
         None
     """
-    # Track rejected patches for LLM retry
-    failed_patches = []
+    
+    # Create output directory for LLM results
+    llm_results_dir = os.path.join(current_path, "outputs/llm_results")
+    os.makedirs(llm_results_dir, exist_ok=True)
+    
+    # Track all results
+    llm_results = {
+        "timestamp": time.strftime("%Y%m%d_%H%M%S"),
+        "patches_processed": []
+    }
+    
+    # Track success/failure counts
+    success_count = 0
+    failed_count = 0
 
     # Iterate through patches
     for patch in parsed_report["patches"]:
         patch_file_path = os.path.join(current_path, patch["patch_file"])  
+        patch_url = patch["patch_url"]
+        
         print(f"\n🔍 Attempting to apply patch: {patch_file_path}")
 
-        patch_result = patcher.apply_patch(patch_file_path, patch["patch_url"])
+        # Apply the patch
+        patch_result = patcher.apply_patch(patch_file_path, patch_url)
         patcher.patch_results["patches"].append(patch_result)
+        
+        # Create a patch result entry for LLM tracking
+        llm_patch_result = {
+            "patch_file": patch_result["patch_file"],
+            "patch_url": patch_result["patch_url"],
+            "status": patch_result["status"],
+            "files_processed": []
+        }
 
+        # If patch was rejected (not already applied), use LLM to fix it
         if patch_result["status"] == "Rejected":
-            failed_patches.append({
-                "patch_file": patch_result["patch_file"],
-                "patch_url": patch_result["patch_url"],
-                "status": "Rejected",
-                "rejected_files": patch_result["rejected_files"],
-                "message_output": patch_result["message_output"]
-            })
+            print(f"📊 Patch was rejected. Attempting to fix with LLM.")
+            
+            # Save current directory and change to project root for LLM processing
+            original_dir = os.getcwd()
+            os.chdir(current_path)
+            
+            # Process each rejected file
+            for rejected_file_info in patch_result["rejected_files"]:
+                source_file = rejected_file_info.get("failed_file")
+                reject_file = rejected_file_info.get("reject_file")
+                
+                if not source_file or not reject_file:
+                    print(f"❌ Missing source or reject file information")
+                    continue
+                
+                source_file_path = os.path.join(kernel_path, source_file)
+                
+                # Check if files exist
+                if not os.path.exists(source_file_path):
+                    print(f"❌ Source file not found: {source_file_path}")
+                    continue
+                    
+                if not os.path.exists(reject_file):
+                    print(f"❌ Reject file not found: {reject_file}")
+                    continue
+                
+                print(f"📃 Processing source file: {source_file}")
+                print(f"📃 Processing reject file: {reject_file}")
+                
+                # Call the LLM agent to resolve the patch
+                try:
+                    print(f"🔄 Sending to LLM: {source_file}")
+                    
+                    # Run the agent with the actual file paths
+                    output_suffix = os.path.basename(source_file)
+                    output_file = await run_patch_porter_agent(
+                        patch_file_path=patch_file_path,
+                        vuln_file_path=source_file_path,
+                        output_suffix=output_suffix
+                    )
+                    
+                    if output_file and os.path.exists(output_file):
+                        # Read the patched file
+                        with open(output_file, 'r', encoding='utf-8') as f:
+                            patched_content = f.read()
+                        
+                        # Create a backup of the original file
+                        backup_path = source_file_path + ".before_llm_patch"
+                        with open(backup_path, 'w', encoding='utf-8') as f:
+                            with open(source_file_path, 'r', encoding='utf-8') as src:
+                                f.write(src.read())
+                        
+                        # Update the original file with the patched content
+                        with open(source_file_path, 'w', encoding='utf-8') as f:
+                            f.write(patched_content)
+                        
+                        print(f"✅ Successfully patched file: {source_file_path}")
+                        print(f"   (Backup saved at: {backup_path})")
+                        
+                        llm_patch_result["files_processed"].append({
+                            "file": source_file,
+                            "status": "Success",
+                            "backup_file": backup_path,
+                            "patched_file": output_file
+                        })
+                        
+                        success_count += 1
+                    else:
+                        print(f"⚠️ No output file returned from LLM agent")
+                        llm_patch_result["files_processed"].append({
+                            "file": source_file,
+                            "status": "Failed",
+                            "reason": "No output from LLM agent"
+                        })
+                        failed_count += 1
+                
+                except Exception as e:
+                    print(f"❌ Error processing with LLM: {str(e)}")
+                    llm_patch_result["files_processed"].append({
+                        "file": source_file,
+                        "status": "Error",
+                        "reason": str(e)
+                    })
+                    failed_count += 1
+            
+            # Restore original directory
+            os.chdir(original_dir)
+        
+        # Add this patch's result to the overall results
+        llm_results["patches_processed"].append(llm_patch_result)
 
-    # Save patch report
+    # Save patch application report
     report_output_dir = os.path.dirname(report_output_path)
     os.makedirs(report_output_dir, exist_ok=True) 
     patcher.save_report()
-
-    # Define failed patches directory and save failed patches
-    failed_patches_dir = os.path.join(current_path, "outputs/failed_patches")
-    os.makedirs(failed_patches_dir, exist_ok=True) 
     
+    # Save LLM results report
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    failed_patch_output_path = os.path.join(failed_patches_dir, f"failed_patches_{timestamp}.json")
+    llm_results_path = os.path.join(llm_results_dir, f"llm_results_{timestamp}.json")
     
-    # Save failed patches for LLM
-    with open(failed_patch_output_path, "w") as fail_file:
-        json.dump({"patch": failed_patches}, fail_file, indent=4)
-        print(f"📁 Failed patch list saved to: {failed_patch_output_path}")
+    with open(llm_results_path, "w") as f:
+        json.dump(llm_results, f, indent=4)
     
-    # Create directory for combined rejected hunks
-    combined_hunks_dir = os.path.join(current_path, "outputs/combined_rejected_hunks")
-    os.makedirs(combined_hunks_dir, exist_ok=True)
-
-    # Generate a filename with timestamp
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
-    combined_hunks_filename = f"combined_rejected_hunks_{timestamp}.rej"
-    combined_hunks_path = os.path.join(combined_hunks_dir, combined_hunks_filename)
-
-    # Get the combined rejected hunks, using the patch results for all info
-    rejected_hunks_path = patcher.combine_rejected_hunks(
-        combined_hunks_path,
-        patch_results=patcher.patch_results["patches"]
-    )
-    if rejected_hunks_path:
-        print(f"📁 Combined rejected hunks saved to: {rejected_hunks_path}")
-    else:
-        print("No rejected hunks found to combine.")
+    # Print summary statistics
+    print(f"\n📝 LLM processing results saved to: {llm_results_path}")
+    print(f"\n🔄 Total patches processed: {len(llm_results['patches_processed'])}")
+    print(f"✅ Successfully patched files: {success_count}")
+    print(f"❌ Failed to patch files: {failed_count}")
     
-    return failed_patch_output_path
+    return llm_results_path
 
 def main():
     file_path = get_input_file_path()
@@ -623,34 +713,38 @@ def main():
     # Instantiate patch adopter to get its methods
     patcher = PatchAdopter(kernel_path, combined_current_path) 
     
-    # Process patches and get the path to the failed patches file
-    failed_patches_path = process_patches(parsed_report, patcher, current_path, report_output_path)
-    
-    if failed_patches_path and os.path.exists(failed_patches_path):
-        print(f"\n🔍 Found failed patches file: {os.path.basename(failed_patches_path)}")
-        
-        # Process failed patches with LLM and directly update kernel files
-        print("\n📊 Starting LLM-based patch resolution...")
-        
-        # Save current directory
-        original_dir = os.getcwd()
-        os.chdir(current_path)  # Change back to project root
-        
-        # Process failed patches with LLM and apply fixes directly to the kernel
-        llm_results_path = asyncio.run(
-            process_failed_patches_with_llm(
-                failed_patches_path,
-                kernel_path,
-                current_path
-            )
+    # Process patches and apply LLM fixes immediately for rejections
+    llm_results_path = asyncio.run(
+        process_patches(
+            parsed_report, 
+            patcher, 
+            current_path, 
+            report_output_path,
+            kernel_path
         )
-        
-        # Restore directory
-        os.chdir(original_dir)
-        
-        print(f"\n✅ LLM patch resolution complete. Results saved to: {llm_results_path}")
+    )
+    
+    # Create combined rejected hunks file for reference
+    combined_hunks_dir = os.path.join(current_path, "outputs/combined_rejected_hunks")
+    os.makedirs(combined_hunks_dir, exist_ok=True)
+    
+    # Generate a filename with timestamp
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    combined_hunks_filename = f"combined_rejected_hunks_{timestamp}.rej"
+    combined_hunks_path = os.path.join(combined_hunks_dir, combined_hunks_filename)
+    
+    # Get the combined rejected hunks, using the patch results for all info
+    rejected_hunks_path = patcher.combine_rejected_hunks(
+        combined_hunks_path,
+        patch_results=patcher.patch_results["patches"]
+    )
+    
+    if rejected_hunks_path:
+        print(f"📁 Combined rejected hunks saved to: {rejected_hunks_path}")
     else:
-        print("\n✅ No failed patches to process with LLM.")
+        print("No rejected hunks found to combine.")
+    
+    print(f"\n✅ Patch processing complete. Results saved to: {llm_results_path}")
 
 if __name__ == "__main__":
     main()
