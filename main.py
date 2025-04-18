@@ -13,8 +13,8 @@ def read_file(file_path):
         return f.read()
 
 def main():
-    ground_truth_path = "./testing_files/ground_truth/hid-core-xiaomi-2018.c"
-    candidate_patch_code_path = "./testing_files/candidate_patch/hid-core-xiaomi-2018.c"
+    ground_truth_path = "./testing_files/ground_truth/eventfd.c"
+    candidate_patch_code_path = "./testing_files/candidate_patch/eventfd.c"
 
     ground_truth_code = read_file(ground_truth_path)
     candidate_code = read_file(candidate_patch_code_path)
@@ -41,9 +41,8 @@ def main():
     # print("Normalized Edit Distance:", round(norm_ed, 4))
 
     # TODO: cosine similarity
-    # cosine = cosine_sim(candidate_code, ground_truth_code) 
-    # similarity_score_codebert = compute_cosine_similarity_from_files(ground_truth_path, candidate_patch_code_path)
-    # print(f"Cosine similarity (CodeBERT) = {similarity_score_codebert:.4f}")
+    similarity_score_codebert = compute_cosine_similarity_from_files(ground_truth_path, candidate_patch_code_path)
+    print(f"Cosine similarity (CodeBERT) = {similarity_score_codebert:.4f}")
     similarity_score_codebert_c = compute_codebertscore_c(ground_truth_path, candidate_patch_code_path)
     print("CodeBERTScore for C file:")
     for metric, value in similarity_score_codebert_c.items():
