@@ -1,11 +1,10 @@
 # from compile_check import compiles_with_gpp
 # from line_metrics import relative_line_count_diff
-from line_metrics import relative_line_count_diff # TODO 
-from similarity.codeBERT import compute_cosine_similarity_from_files, compute_codebertscore_c
-from similarity.openAI import compute_cosine_openai_embedding
+# from line_metrics import relative_line_count_diff # TODO 
+# from similarity.codeBERT import compute_cosine_similarity_from_files, compute_codebertscore_c
+# from similarity.openAI import compute_cosine_openai_embedding
 # from similarity.sklearn import 
-
-# from edit_distance import token_level_edit_distance, normalized_edit_distance
+from edit_distance import token_level_edit_distance, normalized_edit_distance
 # from similarity import cosine_sim
 
 def read_file(file_path):
@@ -33,12 +32,12 @@ def main():
     # print("Relative Line Count Difference:", round(rel_line_diff, 4))
 
     # TODO: token edit distance
-    # token_ed = token_level_edit_distance(candidate_code, ground_truth_code)
-    # print("Token-Level Edit Distance:", token_ed)
+    token_ed = token_level_edit_distance(candidate_code, ground_truth_code)
+    print("Token-Level Edit Distance:", token_ed)
 
     # TODO: normalized edit distance
-    # norm_ed = normalized_edit_distance(candidate_code, ground_truth_code)
-    # print("Normalized Edit Distance:", round(norm_ed, 4))
+    norm_ed = normalized_edit_distance(candidate_code, ground_truth_code)
+    print("Normalized Edit Distance:", round(norm_ed, 4))
 
     # TODO: cosine similarity
     similarity_score_codebert = compute_cosine_similarity_from_files(ground_truth_path, candidate_patch_code_path)
