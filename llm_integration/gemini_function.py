@@ -2,6 +2,7 @@ from google import genai
 from google.genai import types
 import os
 import json
+from datetime import datetime
 
 class LLMPatchGenerator:
     """Handles AI-based patch porting from upstream to downstream versions."""
@@ -34,7 +35,7 @@ class LLMPatchGenerator:
             downstream_version = self.load_file(downstream_version_path, base_path=self.kernel_path)
         except FileNotFoundError as e:
             print(e)
-            return None
+            return None, str(e)
 
         user_prompt = f"""Task:
 Your task is to port the security patch from the upstream_diff_file to the downstream_version.
@@ -91,12 +92,20 @@ ensuring compatibility and resolving any merge conflicts."""
         ):
             response_text += chunk.text
 
-        if output_path:
-            with open(output_path, "w", encoding="utf-8") as f:
-                f.write(response_text)
-            print(f"✅ Ported patch saved to {output_path}")
+        success = True
+        error_message = None
+        try:
+            if output_path:
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                with open(output_path, "w", encoding="utf-8") as f:
+                    f.write(response_text)
+                print(f"✅ Ported patch saved to {output_path}")
+        except Exception as e:
+            success = False
+            error_message = str(e)
+            print(f"⚠️ Error saving patch: {error_message}")
 
-        return response_text
+        return response_text, error_message
 
 
 # === Main Script ===
@@ -104,30 +113,66 @@ if __name__ == "__main__":
     kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
     failed_patch_path = os.path.join(os.path.dirname(__file__), "failed_patch.json")
 
+    # Create output directories
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    generated_patches_dir = os.path.join(base_dir, "patch_adoption", "generated_patches")
+    reports_dir = os.path.join(base_dir, "reports")
+    
+    os.makedirs(generated_patches_dir, exist_ok=True)
+    os.makedirs(reports_dir, exist_ok=True)
+
     # Load failed patches JSON
     with open(failed_patch_path, "r") as f:
         failed_patches = json.load(f)
 
     generator = LLMPatchGenerator(kernel_path)
+    
+    # Initialize list to store individual patch results
+    patch_results = []
 
-    for patch in failed_patches["patch"]:
-        patch_file = patch["patch_file"]
+    for patch in failed_patches["patches"]:
+        patch_hash = os.path.splitext(patch["patch_file"])[0]  # Remove .diff extension
         patch_url = patch["patch_url"]
-        rejected_files = patch["rejected_files"]
+        message_output = patch["message_output"]
 
-        for file in rejected_files:
+        for file in patch["rejected_files"]:
             failed_file = file["failed_file"]
             reject_file = file["reject_file"]
 
-            print(f"\n🔍 Processing failed patch: {patch_file}")
+            print(f"\n🔍 Processing failed patch: {patch_hash}")
             print(f" - Failed File: {failed_file}")
             print(f" - Reject File: {reject_file}")
 
-            # Generate new patched diff
-            output_patch_file = f"{patch_file}_fixed.diff"
-            generated_patch = generator.generate_patch(reject_file, failed_file, output_patch_file)
+            # Generate output filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_filename = f"{patch_hash}_{timestamp}.diff"
+            output_path = os.path.join(generated_patches_dir, output_filename)
 
-            if generated_patch:
-                print(f"🎉 Successfully generated patch for {patch_file}")
+            # Generate new patched diff
+            generated_patch, error = generator.generate_patch(reject_file, failed_file, output_path)
+
+            # Create result entry for this specific patch attempt
+            result = {
+                "patch_hash": patch_hash,
+                "patch_url": patch_url,
+                "related_file": failed_file,
+                "message": message_output,
+                "generated_patch_path": output_path if not error else None,
+                "success": bool(generated_patch and not error),
+                "error": error,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            patch_results.append(result)
+
+            if generated_patch and not error:
+                print(f"🎉 Successfully generated patch for {patch_hash}")
             else:
-                print(f"⚠️ Failed to generate patch for {patch_file}")
+                print(f"⚠️ Failed to generate patch for {patch_hash}")
+
+    # Save results to report file
+    report_path = os.path.join(reports_dir, "1_llm_output.json")
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(patch_results, f, indent=2)
+
+    print(f"\n✅ Results saved to {report_path}")

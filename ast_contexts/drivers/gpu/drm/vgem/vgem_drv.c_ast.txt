@@ -1,0 +1,34 @@
+// Required includes
+
+
+// Required types and dependencies
+struct drm_file
+struct drm_gem_object
+struct drm_vgem_gem_object
+struct drm_device
+
+// Extracted Functions
+
+static struct drm_gem_object *vgem_gem_create(struct drm_device *dev,
+					      struct drm_file *file,
+					      unsigned int *handle,
+					      unsigned long size)
+{
+	struct drm_vgem_gem_object *obj;
+	int ret;
+
+	obj = __vgem_gem_create(dev, size);
+	if (IS_ERR(obj))
+		return ERR_CAST(obj);
+
+	ret = drm_gem_handle_create(file, &obj->base, handle);
+	drm_gem_object_put_unlocked(&obj->base);
+	if (ret)
+		goto err;
+
+	return &obj->base;
+
+err:
+	__vgem_gem_destroy(obj);
+	return ERR_PTR(ret);
+}

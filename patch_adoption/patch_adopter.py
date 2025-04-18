@@ -155,7 +155,7 @@ if __name__ == "__main__":
     # Paths
     kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
     patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/fetch_patch_output/diff_output"
-    parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/llm_integration/parsed_report.json"
+    parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/parsed_report.json"
     report_output_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/patch_application_report.json"
 
     # Ensure the Xiaomi Kernel directory exists

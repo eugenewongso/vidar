@@ -2,7 +2,7 @@ import json
 from fetch_diff import fetch_patch  # ✅ Correct import
 
 # Load the parsed report JSON
-parsed_report_path = "parsed-20250306201629.json"
+parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/parsed_report.json"
 
 with open(parsed_report_path, "r") as f:
     parsed_report = json.load(f)

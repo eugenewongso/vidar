@@ -104,7 +104,7 @@ class PatchLLMAdopter:
 if __name__ == "__main__":
     # Paths
     kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
-    llm_patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches"
+    llm_patch_dir = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource/generated_patches"
 
     # Ensure the kernel directory exists
     if not os.path.isdir(kernel_path):

@@ -1,0 +1,163 @@
+diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+index 2d2457c..39778af 100644
+--- a/drivers/android/binder.c
++++ b/drivers/android/binder.c
+@@ -2181,7 +2181,8 @@ static int binder_translate_binder(struct flat_binder_object *fp,
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+-	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
++	if (security_binder_transfer_binder(binder_get_cred(proc),
++					    binder_get_cred(target_proc))) {
+ 		ret = -EPERM;
+ 		goto done;
+ 	}
+@@ -2227,7 +2228,8 @@ static int binder_translate_handle(struct flat_binder_object *fp,
+ 				  proc->pid, thread->pid, fp->handle);
+ 		return -EINVAL;
+ 	}
+-	if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
++	if (security_binder_transfer_binder(binder_get_cred(proc),
++					    binder_get_cred(target_proc))) {
+ 		ret = -EPERM;
+ 		goto done;
+ 	}
+@@ -2315,7 +2317,8 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
+ 		ret = -EBADF;
+ 		goto err_fget;
+ 	}
+-	ret = security_binder_transfer_file(proc->tsk, target_proc->tsk, file);
++	ret = security_binder_transfer_file(binder_get_cred(proc),
++					    binder_get_cred(target_proc), file);
+ 	if (ret < 0) {
+ 		ret = -EPERM;
+ 		goto err_security;
+@@ -2725,8 +2728,8 @@ static void binder_transaction(struct binder_proc *proc,
+ 		}
+ 		e->to_node = target_node->debug_id;
+ 		trace_android_vh_binder_trans(target_proc, proc, thread, tr);
+-		if (security_binder_transaction(proc->tsk,
+-						target_proc->tsk) < 0) {
++		if (security_binder_transaction(binder_get_cred(proc),
++					binder_get_cred(target_proc)) < 0) {
+ 			return_error = BR_FAILED_REPLY;
+ 			return_error_param = -EPERM;
+ 			return_error_line = __LINE__;
+@@ -4714,7 +4717,7 @@ static int binder_ioctl_set_ctx_mgr(struct file *filp,
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+-	ret = security_binder_set_context_mgr(proc->tsk);
++	ret = security_binder_set_context_mgr(binder_get_cred(proc));
+ 	if (ret < 0)
+ 		goto out;
+ 	if (uid_valid(context->binder_context_mgr_uid)) {
+
+diff --git a/security/security.c b/security/security.c
+index cf8ddca..1e0f79c 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -689,25 +689,25 @@ static void __init lsm_early_task(struct task_struct *task)
+ 
+ /* Security operations */
+ 
+-int security_binder_set_context_mgr(struct task_struct *mgr)
++int security_binder_set_context_mgr(const struct cred *mgr)
+ {
+ 	return call_int_hook(binder_set_context_mgr, 0, mgr);
+ }
+ 
+-int security_binder_transaction(struct task_struct *from,
+-				struct task_struct *to)
++int security_binder_transaction(const struct cred *from,
++				const struct cred *to)
+ {
+ 	return call_int_hook(binder_transaction, 0, from, to);
+ }
+ 
+-int security_binder_transfer_binder(struct task_struct *from,
+-				    struct task_struct *to)
++int security_binder_transfer_binder(const struct cred *from,
++				    const struct cred *to)
+ {
+ 	return call_int_hook(binder_transfer_binder, 0, from, to);
+ }
+ 
+-int security_binder_transfer_file(struct task_struct *from,
+-				  struct task_struct *to, struct file *file)
++int security_binder_transfer_file(const struct cred *from,
++				  const struct cred *to, struct file *file)
+ {
+ 	return call_int_hook(binder_transfer_file, 0, from, to, file);
+ }
+
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index a490c84..0a18cbc 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -2007,22 +2007,19 @@ static inline u32 open_file_to_av(struct file *file)
+ 
+ /* Hook functions begin here. */
+ 
+-static int selinux_binder_set_context_mgr(struct task_struct *mgr)
++static int selinux_binder_set_context_mgr(const struct cred *mgr)
+ {
+-	u32 mysid = current_sid();
+-	u32 mgrsid = task_sid(mgr);
+-
+ 	return avc_has_perm(&selinux_state,
+-			    mysid, mgrsid, SECCLASS_BINDER,
++			    current_sid(), cred_sid(mgr), SECCLASS_BINDER,
+ 			    BINDER__SET_CONTEXT_MGR, NULL);
+ }
+ 
+-static int selinux_binder_transaction(struct task_struct *from,
+-				      struct task_struct *to)
++static int selinux_binder_transaction(const struct cred *from,
++				      const struct cred *to)
+ {
+ 	u32 mysid = current_sid();
+-	u32 fromsid = task_sid(from);
+-	u32 tosid = task_sid(to);
++	u32 fromsid = cred_sid(from);
++	u32 tosid = cred_sid(to);
+ 	int rc;
+ 
+ 	if (mysid != fromsid) {
+@@ -2033,27 +2030,24 @@ static int selinux_binder_transaction(struct task_struct *from,
+ 			return rc;
+ 	}
+ 
+-	return avc_has_perm(&selinux_state,
+-			    fromsid, tosid, SECCLASS_BINDER, BINDER__CALL,
+-			    NULL);
++	return avc_has_perm(&selinux_state, fromsid, tosid,
++			    SECCLASS_BINDER, BINDER__CALL, NULL);
+ }
+ 
+-static int selinux_binder_transfer_binder(struct task_struct *from,
+-					  struct task_struct *to)
++static int selinux_binder_transfer_binder(const struct cred *from,
++					  const struct cred *to)
+ {
+-	u32 fromsid = task_sid(from);
+-	u32 tosid = task_sid(to);
+-
+ 	return avc_has_perm(&selinux_state,
+-			    fromsid, tosid, SECCLASS_BINDER, BINDER__TRANSFER,
++			    cred_sid(from), cred_sid(to),
++			    SECCLASS_BINDER, BINDER__TRANSFER,
+ 			    NULL);
+ }
+ 
+-static int selinux_binder_transfer_file(struct task_struct *from,
+-					struct task_struct *to,
++static int selinux_binder_transfer_file(const struct cred *from,
++					const struct cred *to,
+ 					struct file *file)
+ {
+-	u32 sid = task_sid(to);
++	u32 sid = cred_sid(to);
+ 	struct file_security_struct *fsec = selinux_file(file);
+ 	struct dentry *dentry = file->f_path.dentry;
+ 	struct inode_security_struct *isec;

@@ -1,0 +1,112 @@
+[
+  {
+    "patch_hash": "212b4d3a42674d2cf366bd7b06fe9faae03477fc",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/212b4d3a42674d2cf366bd7b06fe9faae03477fc",
+    "related_file": "drivers/staging/android/ion/ion.c",
+    "message": "patching file drivers/staging/android/ion/ion.c\nHunk #1 FAILED at 323.\nHunk #2 succeeded at 344 (offset -26 lines).\n1 out of 2 hunks FAILED -- saving rejects to file drivers/staging/android/ion/ion.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/212b4d3a42674d2cf366bd7b06fe9faae03477fc_20250313_224412.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:15.998684"
+  },
+  {
+    "patch_hash": "41a097c0ed6658bf451c5cf993ab0469eb1ce4a5",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/41a097c0ed6658bf451c5cf993ab0469eb1ce4a5",
+    "related_file": "drivers/staging/android/ion/ion.c",
+    "message": "patching file drivers/staging/android/ion/ion.c\nHunk #1 FAILED at 969.\n1 out of 1 hunk FAILED -- saving rejects to file drivers/staging/android/ion/ion.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/41a097c0ed6658bf451c5cf993ab0469eb1ce4a5_20250313_224415.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:17.779982"
+  },
+  {
+    "patch_hash": "41a097c0ed6658bf451c5cf993ab0469eb1ce4a5",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/41a097c0ed6658bf451c5cf993ab0469eb1ce4a5",
+    "related_file": "drivers/staging/android/ion/ion.c",
+    "message": "patching file drivers/staging/android/ion/ion.c\nHunk #1 FAILED at 969.\n1 out of 1 hunk FAILED -- saving rejects to file drivers/staging/android/ion/ion.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/41a097c0ed6658bf451c5cf993ab0469eb1ce4a5_20250313_224417.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:19.456033"
+  },
+  {
+    "patch_hash": "8f66dc1a78a743ea3c3f039500d2aa0cddd776d5",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/8f66dc1a78a743ea3c3f039500d2aa0cddd776d5",
+    "related_file": "drivers/mmc/core/block.c",
+    "message": "patching file drivers/mmc/core/block.c\nHunk #1 FAILED at 1652.\n1 out of 1 hunk FAILED -- saving rejects to file drivers/mmc/core/block.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/8f66dc1a78a743ea3c3f039500d2aa0cddd776d5_20250313_224419.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:29.610541"
+  },
+  {
+    "patch_hash": "032a6762957f8",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/032a6762957f8",
+    "related_file": "drivers/tee/tee_shm.c",
+    "message": "patching file drivers/tee/tee_shm.c\nHunk #1 FAILED at 1.\nHunk #2 FAILED at 28.\nHunk #3 FAILED at 64.\nHunk #4 succeeded at 152 with fuzz 2 (offset 15 lines).\nHunk #5 FAILED at 151.\nHunk #6 FAILED at 162.\nHunk #7 succeeded at 266 with fuzz 2 (offset 22 lines).\nHunk #8 FAILED at 305.\nHunk #9 succeeded at 350 (offset 12 lines).\nHunk #10 FAILED at 379.\nHunk #11 succeeded at 403 (offset 11 lines).\nHunk #12 succeeded at 510 (offset 11 lines).\nHunk #13 succeeded at 530 (offset 11 lines).\n7 out of 13 hunks FAILED -- saving rejects to file drivers/tee/tee_shm.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/032a6762957f8_20250313_224429.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:42.073641"
+  },
+  {
+    "patch_hash": "c05d8f66ec347",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/c05d8f66ec347",
+    "related_file": "drivers/tee/tee_shm.c",
+    "message": "patching file drivers/tee/tee_shm.c\nHunk #1 FAILED at 1.\nHunk #2 FAILED at 28.\nHunk #3 FAILED at 64.\nHunk #4 FAILED at 137.\nHunk #5 FAILED at 150.\nHunk #6 FAILED at 161.\nHunk #7 FAILED at 243.\nHunk #8 FAILED at 303.\nHunk #9 succeeded at 379 with fuzz 2 (offset 43 lines).\nHunk #10 FAILED at 377.\nHunk #11 FAILED at 390.\nHunk #12 FAILED at 507.\nHunk #13 FAILED at 522.\n12 out of 13 hunks FAILED -- saving rejects to file drivers/tee/tee_shm.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/c05d8f66ec347_20250313_224442.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:56.024977"
+  },
+  {
+    "patch_hash": "df2c1f38939aa",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/df2c1f38939aa",
+    "related_file": "drivers/gpu/drm/vgem/vgem_drv.c",
+    "message": "patching file drivers/gpu/drm/vgem/vgem_drv.c\nHunk #1 FAILED at 189.\nHunk #2 succeeded at 219 (offset 5 lines).\n1 out of 2 hunks FAILED -- saving rejects to file drivers/gpu/drm/vgem/vgem_drv.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/df2c1f38939aa_20250313_224456.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:44:57.971637"
+  },
+  {
+    "patch_hash": "c8bcd9c5be24fb9e6132e97da5a35e55a83e36b9",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/c8bcd9c5be24fb9e6132e97da5a35e55a83e36b9",
+    "related_file": "drivers/tty/tty_jobctrl.c",
+    "message": "patching file drivers/tty/tty_io.c\nHunk #1 succeeded at 2724 (offset -173 lines).\nHunk #2 succeeded at 2763 (offset -173 lines).\npatching file drivers/tty/tty_jobctrl.c\nHunk #4 FAILED at 502.\n1 out of 5 hunks FAILED -- saving rejects to file drivers/tty/tty_jobctrl.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/c8bcd9c5be24fb9e6132e97da5a35e55a83e36b9_20250313_224457.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:45:00.758201"
+  },
+  {
+    "patch_hash": "90bfdeef83f1d6c696039b6a917190dcbbad3220",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/90bfdeef83f1d6c696039b6a917190dcbbad3220",
+    "related_file": "drivers/tty/vt/vt_ioctl.c",
+    "message": "patching file drivers/tty/vt/vt_ioctl.c\nHunk #1 FAILED at 484.\nHunk #2 succeeded at 239 (offset -263 lines).\nHunk #3 FAILED at 519.\nHunk #4 FAILED at 538.\nHunk #5 FAILED at 585.\nHunk #6 FAILED at 594.\nHunk #7 FAILED at 610.\nHunk #8 succeeded at 1072 (offset 5 lines).\nHunk #9 succeeded at 1092 (offset 5 lines).\nHunk #10 succeeded at 1101 (offset 5 lines).\nHunk #11 FAILED at 1186.\n7 out of 11 hunks FAILED -- saving rejects to file drivers/tty/vt/vt_ioctl.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/90bfdeef83f1d6c696039b6a917190dcbbad3220_20250313_224500.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:45:07.297567"
+  },
+  {
+    "patch_hash": "a50ef731e0981",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/a50ef731e0981",
+    "related_file": "drivers/media/v4l2-core/v4l2-mem2mem.c",
+    "message": "patching file drivers/media/v4l2-core/v4l2-mem2mem.c\nHunk #1 FAILED at 585.\nHunk #2 succeeded at 380 (offset -225 lines).\nHunk #3 succeeded at 539 with fuzz 2 (offset -239 lines).\nHunk #4 FAILED at 802.\nHunk #5 FAILED at 813.\n3 out of 5 hunks FAILED -- saving rejects to file drivers/media/v4l2-core/v4l2-mem2mem.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/a50ef731e0981_20250313_224507.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:45:25.240660"
+  },
+  {
+    "patch_hash": "20fdf274472998123a8d173ba4cb6282ff6b63bd",
+    "patch_url": "https://android.googlesource.com/kernel/common/+/20fdf274472998123a8d173ba4cb6282ff6b63bd",
+    "related_file": "net/bpf/test_run.c",
+    "message": "patching file net/bpf/test_run.c\nHunk #2 FAILED at 132.\n1 out of 2 hunks FAILED -- saving rejects to file net/bpf/test_run.c.rej\n",
+    "generated_patch_path": "/Users/theophilasetiawan/Desktop/files/capstone/vidar/patch_adoption/generated_patches/20fdf274472998123a8d173ba4cb6282ff6b63bd_20250313_224525.diff",
+    "success": true,
+    "error": null,
+    "timestamp": "2025-03-13T22:45:28.955197"
+  }
+]

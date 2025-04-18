@@ -1,0 +1,22 @@
+```diff
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -1691,13 +1691,11 @@ static void mmc_blk_read_single(struct mmc_queue *mq, struct request *req)
+ 		u32 status;
+ 		int err;
+ 
+-		mmc_blk_rw_rq_prep(mqrq, card, 1, mq);
++        mmc_blk_rw_rq_prep(mqrq, card, 1, mq);
+ 
+-		mmc_wait_for_req(host, mrq);
++        mmc_wait_for_req(host, mrq);
+ 
+-		err = mmc_send_status(card, &status);
+-		if (err)
+-			goto error_exit;
++        err = mmc_send_status(card, &status);
+ 
+ 		if (!mmc_host_is_spi(host) &&
+ 		    !mmc_blk_in_tran_state(status)) {
+
+```

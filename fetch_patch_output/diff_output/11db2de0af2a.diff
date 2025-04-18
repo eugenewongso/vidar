@@ -1,0 +1,16 @@
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 9af6bc4..a87cbac 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1011,6 +1011,11 @@ static inline void security_transfer_creds(struct cred *new,
+ {
+ }
+ 
++static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
++{
++	*secid = 0;
++}
++
+ static inline int security_kernel_act_as(struct cred *cred, u32 secid)
+ {
+ 	return 0;
