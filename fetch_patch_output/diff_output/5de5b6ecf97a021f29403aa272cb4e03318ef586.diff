@@ -1,0 +1,49 @@
+diff --git a/drivers/gpu/drm/nouveau/nouveau_sgdma.c b/drivers/gpu/drm/nouveau/nouveau_sgdma.c
+index 20b6d0b..c3ccf66 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_sgdma.c
++++ b/drivers/gpu/drm/nouveau/nouveau_sgdma.c
+@@ -95,12 +95,9 @@ nouveau_sgdma_create_ttm(struct ttm_buffer_object *bo, uint32_t page_flags)
+ 	else
+ 		nvbe->ttm.ttm.func = &nv50_sgdma_backend;
+ 
+-	if (ttm_dma_tt_init(&nvbe->ttm, bo, page_flags))
+-		/*
+-		 * A failing ttm_dma_tt_init() will call ttm_tt_destroy()
+-		 * and thus our nouveau_sgdma_destroy() hook, so we don't need
+-		 * to free nvbe here.
+-		 */
++	if (ttm_dma_tt_init(&nvbe->ttm, bo, page_flags)) {
++		kfree(nvbe);
+ 		return NULL;
++	}
+ 	return &nvbe->ttm.ttm;
+ }
+
+diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+index bab6787..9d1c7177 100644
+--- a/drivers/gpu/drm/ttm/ttm_tt.c
++++ b/drivers/gpu/drm/ttm/ttm_tt.c
+@@ -244,7 +244,6 @@ int ttm_tt_init(struct ttm_tt *ttm, struct ttm_buffer_object *bo,
+ 	ttm_tt_init_fields(ttm, bo, page_flags);
+ 
+ 	if (ttm_tt_alloc_page_directory(ttm)) {
+-		ttm_tt_destroy(ttm);
+ 		pr_err("Failed allocating page table\n");
+ 		return -ENOMEM;
+ 	}
+@@ -268,7 +267,6 @@ int ttm_dma_tt_init(struct ttm_dma_tt *ttm_dma, struct ttm_buffer_object *bo,
+ 
+ 	INIT_LIST_HEAD(&ttm_dma->pages_list);
+ 	if (ttm_dma_tt_alloc_page_directory(ttm_dma)) {
+-		ttm_tt_destroy(ttm);
+ 		pr_err("Failed allocating page table\n");
+ 		return -ENOMEM;
+ 	}
+@@ -290,7 +288,6 @@ int ttm_sg_tt_init(struct ttm_dma_tt *ttm_dma, struct ttm_buffer_object *bo,
+ 	else
+ 		ret = ttm_dma_tt_alloc_page_directory(ttm_dma);
+ 	if (ret) {
+-		ttm_tt_destroy(ttm);
+ 		pr_err("Failed allocating page table\n");
+ 		return -ENOMEM;
+ 	}

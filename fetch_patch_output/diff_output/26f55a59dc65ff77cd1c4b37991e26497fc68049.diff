@@ -1,0 +1,22 @@
+diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+index d17b67c..6a99def 100644
+--- a/arch/x86/net/bpf_jit_comp32.c
++++ b/arch/x86/net/bpf_jit_comp32.c
+@@ -2276,7 +2276,16 @@ emit_cond_jmp:		jmp_cond = get_cond_jmp_opcode(BPF_OP(code), false);
+ 		}
+ 
+ 		if (image) {
+-			if (unlikely(proglen + ilen > oldproglen)) {
++			/*
++			 * When populating the image, assert that:
++			 *
++			 *  i) We do not write beyond the allocated space, and
++			 * ii) addrs[i] did not change from the prior run, in order
++			 *     to validate assumptions made for computing branch
++			 *     displacements.
++			 */
++			if (unlikely(proglen + ilen > oldproglen ||
++				     proglen + ilen != addrs[i])) {
+ 				pr_err("bpf_jit: fatal error\n");
+ 				return -EFAULT;
+ 			}

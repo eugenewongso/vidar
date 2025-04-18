@@ -1,0 +1,86 @@
+// Required includes
+
+
+// Required types and dependencies
+struct fq_tin
+struct fq
+struct list_head
+struct fq_flow
+struct sk_buff
+
+// Extracted Functions
+
+static struct sk_buff *fq_tin_dequeue(struct fq *fq,
+				      struct fq_tin *tin,
+				      fq_tin_dequeue_t dequeue_func)
+{
+	struct fq_flow *flow;
+	struct list_head *head;
+	struct sk_buff *skb;
+
+	lockdep_assert_held(&fq->lock);
+
+begin:
+	head = &tin->new_flows;
+	if (list_empty(head)) {
+		head = &tin->old_flows;
+		if (list_empty(head))
+			return NULL;
+	}
+
+	flow = list_first_entry(head, struct fq_flow, flowchain);
+
+	if (flow->deficit <= 0) {
+		flow->deficit += fq->quantum;
+		list_move_tail(&flow->flowchain,
+			       &tin->old_flows);
+		goto begin;
+	}
+
+	skb = dequeue_func(fq, tin, flow);
+	if (!skb) {
+		/* force a pass through old_flows to prevent starvation */
+		if ((head == &tin->new_flows) &&
+		    !list_empty(&tin->old_flows)) {
+			list_move_tail(&flow->flowchain, &tin->old_flows);
+		} else {
+			list_del_init(&flow->flowchain);
+			flow->tin = NULL;
+		}
+		goto begin;
+	}
+
+	flow->deficit -= skb->len;
+	tin->tx_bytes += skb->len;
+	tin->tx_packets++;
+
+	return skb;
+}
+
+
+static struct fq_flow *fq_flow_classify(struct fq *fq,
+					struct fq_tin *tin,
+					struct sk_buff *skb,
+					fq_flow_get_default_t get_default_func)
+{
+	struct fq_flow *flow;
+	u32 hash;
+	u32 idx;
+
+	lockdep_assert_held(&fq->lock);
+
+	hash = skb_get_hash_perturb(skb, fq->perturbation);
+	idx = reciprocal_scale(hash, fq->flows_cnt);
+	flow = &fq->flows[idx];
+
+	if (flow->tin && flow->tin != tin) {
+		flow = get_default_func(fq, tin, idx, skb);
+		tin->collisions++;
+		fq->collisions++;
+	}
+
+	if (!flow->tin)
+		tin->flows++;
+
+	return flow;
+}

@@ -1,54 +1,112 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+import re
 
-class DiffFetcher:
-    """Handles fetching and extracting diff files from Android source repositories."""
-
-    def __init__(self, commit_hash, output_dir_html="Fetch_patch_output_html", output_dir_diff="Fetch_patch_output_diff"):
-        self.commit_hash = commit_hash
-        self.diff_url = f"https://android.googlesource.com/platform/frameworks/base/+/{commit_hash}%5E%21/"
-        self.output_dir_html = output_dir_html
-        self.output_dir_diff = output_dir_diff
-        os.makedirs(self.output_dir_html, exist_ok=True)
-        os.makedirs(self.output_dir_diff, exist_ok=True)
+def extract_diff(url, files_to_include):
+    """Extracts and filters the diff content from the commit page for Android Googlesource."""
     
-    def fetch_diff(self):
-        """Fetches the diff file from the source repository."""
-        print(f"Fetching diff from: {self.diff_url}")
-        response = requests.get(self.diff_url)
-        if response.status_code != 200:
-            print(f"Failed to fetch diff. HTTP Status: {response.status_code}")
-            return None
-        return response.text
-    
-    def save_prettified_html(self, html_content):
-        """Saves the prettified HTML content of the diff page."""
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        html_filename = os.path.join(self.output_dir_html, f"{self.commit_hash}_{timestamp}.html")
-        with open(html_filename, "w", encoding="utf-8") as file:
-            file.write(html_content)
-        print(f"Prettified Diff file saved as: {html_filename}")
-        return html_filename
-    
-    def extract_text_diff(self, html_filename):
-        """Extracts plain text diff content from the HTML file."""
-        with open(html_filename, "r", encoding="utf-8") as file:
-            soup = BeautifulSoup(file, "lxml")
-        text_content = soup.get_text(separator="\n", strip=True)
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        text_filename = os.path.join(self.output_dir_diff, f"{self.commit_hash}_{timestamp}.txt")
-        with open(text_filename, "w", encoding="utf-8") as output_file:
-            output_file.write(text_content)
-        print(f"Extracted content saved to: {text_filename}")
-        return text_filename
-    
-    def process_diff(self):
-        """Orchestrates the full process of fetching, saving, and extracting the diff."""
-        html_content = self.fetch_diff()
-        if html_content:
-            html_filename = self.save_prettified_html(html_content)
-            text_filename = self.extract_text_diff(html_filename)
-            return text_filename
+    response = requests.get(url)
+    if response.status_code != 200:
+        print(f"⚠️ Failed to fetch page: {url}")
         return None
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Extract diff content from the correct HTML structure
+    diff_sections = soup.find_all("pre", class_="u-pre u-monospace Diff-unified")
+    diffs = [section.get_text() for section in diff_sections]
+
+    # Extract file headers
+    file_headers = soup.find_all("pre", class_="u-pre u-monospace Diff")
+    headers = [header.get_text() for header in file_headers]
+
+    # Combine headers and diffs
+    filtered_diff = []
+    for h, d in zip(headers, diffs):
+        for file_path in files_to_include:
+            if file_path in h:  # Check if file is in the header
+                filtered_diff.append(h + d)
+                break  # Avoid duplicate checks for the same file
+
+    return "\n".join(filtered_diff) if filtered_diff else None
+
+def extract_commit_hash(commit_url):
+    """Extracts the commit hash from a Googlesource or CodeLinaro URL."""
+    
+    # Matches full 40-character SHA-1 hash (if present)
+    full_hash_match = re.search(r'/([a-f0-9]{40})$', commit_url)
+    if full_hash_match:
+        return full_hash_match.group(1)
+    
+    # Matches shorter commit hashes (Googlesource sometimes uses short hashes)
+    short_hash_match = re.search(r'/\+/(.*?)$', commit_url)
+    if short_hash_match:
+        return short_hash_match.group(1)
+
+    print(f"⚠️ Could not extract commit hash from URL: {commit_url}")
+    return None
+
+def fetch_patch(commit_url, files_to_include):
+    """
+    Fetches the diff for a given commit URL, filters it to only include relevant files, and saves it.
+
+    Args:
+        commit_url (str): The URL of the commit to fetch.
+        files_to_include (list): List of file paths to include in the diff.
+
+    Returns:
+        str: The path to the saved formatted diff file.
+    """
+
+    # Extract commit hash from the URL
+    commit_hash = extract_commit_hash(commit_url)
+    if not commit_hash:
+        return None
+
+    # Determine source type and construct the diff URL
+    if "android.googlesource.com" in commit_url:
+        diff_url = commit_url + "^!"  # Googlesource requires ^! for diff
+        is_codelinaro = False
+    elif "git.codelinaro.org" in commit_url:
+        diff_url = commit_url + ".diff"  # CodeLinaro requires .diff suffix
+        is_codelinaro = True
+    else:
+        print(f"⚠️ Unsupported commit URL: {commit_url}")
+        return None
+
+    print(f"🔍 Fetching diff from: {diff_url}")
+
+    # Define output directory
+    output_dir_diff = "fetch_patch_output/diff_output"
+    os.makedirs(output_dir_diff, exist_ok=True)
+
+    # Fetch diff page
+    response = requests.get(diff_url)
+
+    if response.status_code != 200:
+        print(f"❌ Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}")
+        return None
+
+    # Set output filename using commit hash
+    output_filename = os.path.join(output_dir_diff, f"{commit_hash}.diff")
+
+    # Save raw .diff for CodeLinaro
+    if is_codelinaro:
+        with open(output_filename, "w", encoding="utf-8") as f:
+            f.write(response.text.strip() + "\n")  # Ensure exactly one empty line at the end
+        print(f"✅ CodeLinaro: Diff file saved as: {output_filename}")
+        return output_filename
+
+    # Extract and format diff content for Android Googlesource
+    extracted_diff = extract_diff(diff_url, files_to_include)
+    if not extracted_diff:
+        print(f"❌ No matching diff content found for {commit_hash}")
+        return None
+
+    # Save filtered diff
+    with open(output_filename, "w", encoding="utf-8") as output_file:
+        output_file.write(extracted_diff.strip() + "\n")  # Ensure exactly one empty line at the end
+
+    print(f"✅ Filtered diff file saved to: {output_filename}")
+    return output_filename

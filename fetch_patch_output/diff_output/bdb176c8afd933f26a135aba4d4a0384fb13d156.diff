@@ -1,0 +1,13 @@
+diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+index a681ae5381d6cd43ef736280b7199edfbca5e40c..acb92eaa992cdada3b567de4014923ab671ad482 100644
+--- a/drivers/media/platform/qcom/venus/hfi_msgs.c
++++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+@@ -412,7 +412,7 @@ session_get_prop_buf_req(struct hfi_msg_session_property_info_pkt *pkt,
+ 		memcpy(&bufreq[idx], buf_req, sizeof(*bufreq));
+ 		idx++;
+ 
+-		if (idx > HFI_BUFFER_TYPE_MAX)
++		if (idx >= HFI_BUFFER_TYPE_MAX)
+ 			return HFI_ERR_SESSION_INVALID_PARAMETER;
+ 
+ 		req_bytes -= sizeof(struct hfi_buffer_requirements);
