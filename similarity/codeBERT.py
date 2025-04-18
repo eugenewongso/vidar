@@ -4,7 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity # type: ignore
 import code_bert_score # type: ignore
 
 # Load tokenizer and model once
-tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base") # TODO: change to appropriate models 
+tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base") 
 model = RobertaModel.from_pretrained("microsoft/codebert-base")
 
 
