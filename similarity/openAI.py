@@ -1,13 +1,16 @@
-import openai
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+import openai # type: ignore
+import numpy as np # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity # type: ignore
+from dotenv import load_dotenv # type: ignore
+import os
 
-openai.api_key = "your-api-key"
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_KEY")
 
 def get_openai_embedding(text: str) -> list:
     response = openai.embeddings.create(
         input=text,
-        model="text-embedding-3-small"
+        model="text-embedding-3-large"
     )
     return response.data[0].embedding
 

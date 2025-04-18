@@ -1,10 +1,13 @@
-import torch
-from transformers import RobertaTokenizer, RobertaModel
-from sklearn.metrics.pairwise import cosine_similarity
+import torch # type: ignore
+from transformers import RobertaTokenizer, RobertaModel # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity # type: ignore
+import code_bert_score # type: ignore
 
 # Load tokenizer and model once
-tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
+tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base") # TODO: change to appropriate models 
 model = RobertaModel.from_pretrained("microsoft/codebert-base")
+
+
 
 def load_code_from_file(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as f:
@@ -24,3 +27,25 @@ def compute_cosine_similarity_from_files(gt_path: str, candidate_path: str) -> f
     candidate_vec = get_code_embedding(candidate_code).unsqueeze(0).numpy()
 
     return float(cosine_similarity(gt_vec, candidate_vec)[0][0])
+
+
+def compute_codebertscore_c(gt_file: str, candidate_file: str) -> dict:
+    """
+    Computes CodeBERTScore between a ground truth and a candidate C code file.
+    Returns a dictionary with precision, recall, F1, and F3 scores.
+    """
+    gt_code = load_code_from_file(gt_file)
+    candidate_code = load_code_from_file(candidate_file)
+
+    precision, recall, f1, f3 = code_bert_score.score(
+        cands=[candidate_code],
+        refs=[gt_code],
+        lang="c"
+    )
+
+    return {
+        "precision": precision.item(),
+        "recall": recall.item(),
+        "f1": f1.item(),
+        "f3": f3.item()
+    }
