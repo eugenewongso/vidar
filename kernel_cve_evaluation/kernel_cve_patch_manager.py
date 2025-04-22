@@ -158,6 +158,7 @@ class KernelCVEPatchManager:
 
 
             patch_summary = {
+                "program_files": entry.get("programFiles", []), # Add programFiles here
                 "upstream_commit": upstream_commit,
                 "upstream_commit_date": upstream_commit_date,
                 "upstream_patch": upstream_patch,
