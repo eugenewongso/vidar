@@ -48,7 +48,7 @@ def levenshtein_distance(tokens1, tokens2):
             if tokens1[i-1] == tokens2[j-1]:
                 dp[i][j] = dp[i-1][j-1]
             else:
-                dp[i][j] = 1 + min(dp[i-1][j],    # deletion
+                dp[i][j] = 1 + min(dp[i-1][j],   # deletion
                                  dp[i][j-1],     # insertion
                                  dp[i-1][j-1])   # substitution
     
@@ -103,4 +103,4 @@ def normalized_edit_distance(candidate_code, ground_truth_code):
     
     normalized_distance = distance / max_length
     
-    return normalized_distance
+    return min(1.0, normalized_distance)

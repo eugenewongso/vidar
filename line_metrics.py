@@ -27,9 +27,10 @@ def relative_line_count_diff(candidate_code, ground_truth_code):
         if candidate_line_count == 0:
             return 0.0  # Both are empty, no difference
         else:
-            return float('inf')  # Ground truth is empty but candidate is not
+            # return float('inf')  # Ground truth is empty but candidate is not
+            return 1.0  # Ground truth is empty but candidate is not → max difference
     
     # Calculate relative difference
-    relative_diff = (candidate_line_count - ground_truth_line_count) / ground_truth_line_count
+    relative_diff = abs(candidate_line_count - ground_truth_line_count) / ground_truth_line_count
     
-    return relative_diff
+    return min(1.0, relative_diff)

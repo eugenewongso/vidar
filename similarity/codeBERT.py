@@ -28,18 +28,16 @@ def compute_cosine_similarity_from_files(gt_path: str, candidate_path: str) -> f
 
     return float(cosine_similarity(gt_vec, candidate_vec)[0][0])
 
-
-def compute_codebertscore_c(gt_file: str, candidate_file: str) -> dict:
+# similarity_score_codebert_c = compute_codebertscore_c(candidate_code, ground_truth_code)
+def compute_codebertscore_c(candidate_code: str, ground_truth_code: str) -> dict:
     """
     Computes CodeBERTScore between a ground truth and a candidate C code file.
     Returns a dictionary with precision, recall, F1, and F3 scores.
     """
-    gt_code = load_code_from_file(gt_file)
-    candidate_code = load_code_from_file(candidate_file)
 
     precision, recall, f1, f3 = code_bert_score.score(
         cands=[candidate_code],
-        refs=[gt_code],
+        refs=[ground_truth_code],
         lang="c"
     )
 
