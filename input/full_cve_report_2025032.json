@@ -21,6 +21,7 @@
                     "total_versions_tested": 3,
                     "successful_patches": 0,
                     "failed_patches": 3,
+                    "file_paths": ["io_uring/eventfd.c"],
                     "patch_results": [
                         {
                             "downstream_patch": "6b63308c28987c6010b1180c72a6db4df6c68033",

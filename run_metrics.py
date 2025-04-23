@@ -1,6 +1,6 @@
 import os
 import argparse
-from line_metrics import relative_line_count_diff 
+from metrics.line_metrics import relative_line_count_diff 
 from metrics.similarity.codeBERT import compute_codebertscore_c
 from metrics.similarity.openAI import compute_cosine_openai_embedding
 from metrics.distance.edit_distance import token_level_edit_distance, normalized_edit_distance
