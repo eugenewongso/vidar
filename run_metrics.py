@@ -1,10 +1,12 @@
-# from compile_check import compiles_with_gpp
+import os
+import argparse
 from line_metrics import relative_line_count_diff 
-from similarity.codeBERT import compute_codebertscore_c
-from similarity.openAI import compute_cosine_openai_embedding
-from edit_distance import token_level_edit_distance, normalized_edit_distance
-# from similarity.sklearn import 
+from metrics.similarity.codeBERT import compute_codebertscore_c
+from metrics.similarity.openAI import compute_cosine_openai_embedding
+from metrics.distance.edit_distance import token_level_edit_distance, normalized_edit_distance
 
+# supress warnings
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def read_file(file_path) -> str:
     with open(file_path, 'r') as f:
@@ -16,11 +18,24 @@ def count_tokens(text):
 MAX_TOKENS = 8192
 
 def main():
-    ground_truth_path = "./testing_files/ground_truth/eventfd.c"
-    candidate_patch_code_path = "./testing_files/candidate_patch/eventfd.c"
+    parser = argparse.ArgumentParser(description="Compare two code files using various metrics.")
+    parser.add_argument("--ground", required=True, help="Path to the ground truth code file.")
+    parser.add_argument("--candidate", required=True, help="Path to the candidate code file.")
+    args = parser.parse_args()
 
-    ground_truth_code = read_file(ground_truth_path)
-    candidate_code = read_file(candidate_patch_code_path)
+    # Check if files exist before reading
+    if not os.path.exists(args.ground):
+        print(f"Error: Ground truth file not found at {args.ground}")
+        return
+    if not os.path.exists(args.candidate):
+        print(f"Error: Candidate file not found at {args.candidate}")
+        return
+
+    ground_truth_code = read_file(args.ground)
+    candidate_code = read_file(args.candidate)
+
+    # ground_truth_code = read_file(ground_truth_path) # use this for hardcode
+    # candidate_code = read_file(candidate_patch_code_path)
 
     print("\n=== Evaluation Metrics ===")
 
@@ -46,7 +61,7 @@ def main():
     if total_tokens_ground_truth > MAX_TOKENS or total_tokens_candidate_code > MAX_TOKENS:
         print(f"Skipping OpenAI cosine similarity: total tokens ({total_tokens}) exceed limit ({MAX_TOKENS})")
     else:
-        score = compute_cosine_openai_embedding(ground_truth_path, candidate_patch_code_path)
+        score = compute_cosine_openai_embedding(ground_truth_code, candidate_code)
         print(f"Cosine similarity (Open AI) = {score:.4f}")
 
 if __name__ == "__main__":

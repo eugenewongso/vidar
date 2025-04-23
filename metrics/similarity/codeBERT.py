@@ -7,8 +7,6 @@ import code_bert_score # type: ignore
 tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base") 
 model = RobertaModel.from_pretrained("microsoft/codebert-base")
 
-
-
 def load_code_from_file(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()

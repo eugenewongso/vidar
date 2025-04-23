@@ -1,0 +1,58 @@
+{
+    "cves_with_all_failures": [
+      {
+        "cve_url": "https://web.git.kernel.org/pub/scm/linux/security/vulns.git/plain/cve/published/2025/CVE-2025-21655.json",
+        "patch_attempts": [
+          {
+            "upstream_commit": "60495b08cf7a6920035c5172a22655ca2001270b",
+            "upstream_commit_date": "2025-01-09 07:16:45 -0700",
+            "upstream_patch": "c9a40292a44e78f71258b8522655bffaf5753bdb",
+            "total_versions_tested": 3,
+            "successful_patches": 0,
+            "failed_patches": 3,
+            "file_paths": ["io_uring/eventfd.c"],
+            "patch_results": [
+              {
+                "downstream_patch": "6b63308c28987c6010b1180c72a6db4df6c68033",
+                "downstream_commit": "3e871c1d51f9ffea70065c36a2d8615ffc3f05aa",
+                "commit_date": "2025-01-17 13:34:47 +0100",
+                "result": "failure",
+                "error": "can't find file to patch at input line 31\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|From c9a40292a44e78f71258b8522655bffaf5753bdb Mon Sep 17 00:00:00 2001\n|From: Jens Axboe <axboe@kernel.dk>\n|Date: Wed, 8 Jan 2025 10:28:05 -0700\n|Subject: [PATCH] io_uring/eventfd: ensure io_eventfd_signal() defers another\n| RCU period\n|\n|io_eventfd_do_signal() is invoked from an RCU callback, but when\n|dropping the reference to the io_ev_fd, it calls io_eventfd_free()\n|directly if the refcount drops to zero. This isn't correct, as any\n|potential freeing of the io_ev_fd should be deferred another RCU grace\n|period.\n|\n|Just call io_eventfd_put() rather than open-code the dec-and-test and\n|free, which will correctly defer it another RCU grace period.\n|\n|Fixes: 21a091b970cd (\"io_uring: signal registered eventfd to process deferred task work\")\n|Reported-by: Jann Horn <jannh@google.com>\n|Cc: stable@vger.kernel.org\n|Tested-by: Li Zetao <lizetao1@huawei.com>\n|Reviewed-by: Li Zetao<lizetao1@huawei.com>\n|Reviewed-by: Prasanna Kumar T S M <ptsm@linux.microsoft.com>\n|Signed-off-by: Jens Axboe <axboe@kernel.dk>\n|---\n| io_uring/eventfd.c | 16 +++++++---------\n| 1 file changed, 7 insertions(+), 9 deletions(-)\n|\n|diff --git a/io_uring/eventfd.c b/io_uring/eventfd.c\n|index fab936d31ba8..100d5da94cb9 100644\n|--- a/io_uring/eventfd.c\n|+++ b/io_uring/eventfd.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n1 out of 1 hunk ignored",
+                "total_hunks": 0,
+                "total_failed_hunks": 0,
+                "failed_hunks": [],
+                "rej_file_content": "No rejected diff content found.",
+                "inline_merge_conflict": "No conflict markers found."
+              },
+              {
+                "downstream_patch": "8efff2aa2d95dc437ab67c5b4a9f1d3f367baa10",
+                "downstream_commit": "03753bfacbc6039fce7cc7585287589b87895199",
+                "commit_date": "2025-01-17 13:36:24 +0100",
+                "result": "failure",
+                "error": "can't find file to patch at input line 31\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|From c9a40292a44e78f71258b8522655bffaf5753bdb Mon Sep 17 00:00:00 2001\n|From: Jens Axboe <axboe@kernel.dk>\n|Date: Wed, 8 Jan 2025 10:28:05 -0700\n|Subject: [PATCH] io_uring/eventfd: ensure io_eventfd_signal() defers another\n| RCU period\n|\n|io_eventfd_do_signal() is invoked from an RCU callback, but when\n|dropping the reference to the io_ev_fd, it calls io_eventfd_free()\n|directly if the refcount drops to zero. This isn't correct, as any\n|potential freeing of the io_ev_fd should be deferred another RCU grace\n|period.\n|\n|Just call io_eventfd_put() rather than open-code the dec-and-test and\n|free, which will correctly defer it another RCU grace period.\n|\n|Fixes: 21a091b970cd (\"io_uring: signal registered eventfd to process deferred task work\")\n|Reported-by: Jann Horn <jannh@google.com>\n|Cc: stable@vger.kernel.org\n|Tested-by: Li Zetao <lizetao1@huawei.com>\n|Reviewed-by: Li Zetao<lizetao1@huawei.com>\n|Reviewed-by: Prasanna Kumar T S M <ptsm@linux.microsoft.com>\n|Signed-off-by: Jens Axboe <axboe@kernel.dk>\n|---\n| io_uring/eventfd.c | 16 +++++++---------\n| 1 file changed, 7 insertions(+), 9 deletions(-)\n|\n|diff --git a/io_uring/eventfd.c b/io_uring/eventfd.c\n|index fab936d31ba8..100d5da94cb9 100644\n|--- a/io_uring/eventfd.c\n|+++ b/io_uring/eventfd.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n1 out of 1 hunk ignored",
+                "total_hunks": 0,
+                "total_failed_hunks": 0,
+                "failed_hunks": [],
+                "rej_file_content": "No rejected diff content found.",
+                "inline_merge_conflict": "No conflict markers found."
+              },
+              {
+                "downstream_patch": "a7085c3ae43b86d4b3d1b8275e6a67f14257e3b7",
+                "downstream_commit": "cbb64f5d757fe18e5ac7a6ffb67e8264f2992996",
+                "commit_date": "2025-01-17 13:40:58 +0100",
+                "result": "failure",
+                "error": "patching file io_uring/eventfd.c\nHunk #1 FAILED at 33.\n1 out of 1 hunk FAILED -- saving rejects to file io_uring/eventfd.c.rej",
+                "total_hunks": 0,
+                "total_failed_hunks": 1,
+                "failed_hunks": [
+                  1
+                ],
+                "rej_file_content": "```diff\n--- io_uring/eventfd.c.rej ---\n--- io_uring/eventfd.c\n+++ io_uring/eventfd.c\n@@ -33,20 +33,18 @@ static void io_eventfd_free(struct rcu_head *rcu)\n \tkfree(ev_fd);\n }\n \n-static void io_eventfd_do_signal(struct rcu_head *rcu)\n+static void io_eventfd_put(struct io_ev_fd *ev_fd)\n {\n-\tstruct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);\n-\n-\teventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);\n-\n \tif (refcount_dec_and_test(&ev_fd->refs))\n-\t\tio_eventfd_free(rcu);\n+\t\tcall_rcu(&ev_fd->rcu, io_eventfd_free);\n }\n \n-static void io_eventfd_put(struct io_ev_fd *ev_fd)\n+static void io_eventfd_do_signal(struct rcu_head *rcu)\n {\n-\tif (refcount_dec_and_test(&ev_fd->refs))\n-\t\tcall_rcu(&ev_fd->rcu, io_eventfd_free);\n+\tstruct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);\n+\n+\teventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);\n+\tio_eventfd_put(ev_fd);\n }\n \n static void io_eventfd_release(struct io_ev_fd *ev_fd, bool put_ref)\n```",
+                "inline_merge_conflict": "```diff\n// Conflict in: unknown\n<<<<<<< CURRENT VERSION\n- void io_eventfd_signal(struct io_ring_ctx *ctx)\n=======\n+ static void io_eventfd_do_signal(struct rcu_head *rcu)\n>>>>>>> INCOMING PATCH\n```\n\n```diff\n// Conflict in: unknown\n<<<<<<< CURRENT VERSION\n- \tstruct io_ev_fd *ev_fd = NULL;\n=======\n+ \tstruct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);\n+ \n+ \teventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);\n+ \tio_eventfd_put(ev_fd);\n+ }\n>>>>>>> INCOMING PATCH\n```"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
