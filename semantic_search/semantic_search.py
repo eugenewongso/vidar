@@ -1,4 +1,3 @@
-import os
 import argparse
 from langchain_community.vectorstores import FAISS # type: ignore 
 from langchain_openai import OpenAIEmbeddings # type: ignore
@@ -25,7 +24,8 @@ def semantic_search(index_path, query_code_path, top_k=3):
     print(f"\n🧾 Top {top_k} Matches:")
     for i, result in enumerate(results, start=1):
         print(f"\n🔹 Match #{i}")
-        print(f"📍 File: {result.metadata['source']}")
+        # print(f"📍 File: {result.metadata['source']}")
+        print(f"📍 File: {result.metadata.get('source', '[unknown]')}")
         print(f"--- Snippet ---\n{result.page_content[:300]}...\n")
 
 if __name__ == "__main__":

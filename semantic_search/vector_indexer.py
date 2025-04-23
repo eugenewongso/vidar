@@ -11,9 +11,8 @@ from langchain_openai import OpenAIEmbeddings # type: ignore
 
 load_dotenv()
 
-
 def load_c_files_manually(repo_path):
-    print(f"📁 Searching for .c files in {repo_path} ...")
+    print(f"Searching for .c files in {repo_path} ...")
     docs = []
     all_c_files = []
 
@@ -24,7 +23,7 @@ def load_c_files_manually(repo_path):
                 all_c_files.append(os.path.join(root, file))
 
     # Read each file with a progress bar
-    for path in tqdm(all_c_files, desc="📄 Loading C files"):
+    for path in tqdm(all_c_files, desc="Loading C files"):
         try:
             with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
@@ -43,34 +42,22 @@ def index_repo(repo_path: str, commit_hash: str, output_dir: str):
     docs = load_c_files_manually(repo_path)
 
     # Step 2: Split into chunks
-    print("🧩 Splitting documents into chunks...")
+    print("Splitting documents into chunks...")
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     chunks = []
-    for doc in tqdm(docs, desc="🔪 Splitting"):
-        chunks.extend(splitter.split_documents([doc]))
+    for doc in tqdm(docs, desc="Splitting"):
+        # chunks.extend(splitter.split_documents([doc])) # TODO: change to preserve metadata during chunking
+        split_docs = splitter.split_documents([doc])
+        for chunk in split_docs:
+            chunk.metadata = doc.metadata  # Copy metadata (i.e., file path) into each chunk
+        chunks.extend(split_docs)
 
-    print(f"📦 Total chunks: {len(chunks)}")
+    print(f"Total chunks: {len(chunks)}")
 
     # Step 3: Generate embeddings and build FAISS index
-    print("🧠 Generating embeddings and building FAISS index...")
+    print("Generating embeddings and building FAISS index...")
     embeddings = OpenAIEmbeddings()
-    # db = FAISS.from_documents(tqdm(chunks, desc="🔁 Embedding"), embeddings)
-
-    texts = [doc.page_content for doc in chunks]
-    metadatas = [doc.metadata for doc in chunks]
-
-    embedded_vectors = []
-    print("🔁 Generating embeddings (this may take a while)...")
-    for text in tqdm(texts, desc="Embedding"):
-        try:
-            embedded_vectors.append(embeddings.embed_query(text))
-        except Exception as e:
-            print(f"⚠️ Embedding failed: {e}")
-            embedded_vectors.append([0.0] * 1536)  # Fallback zero vector, or skip
-
-    # db = FAISS.from_embeddings(embedded_vectors, texts, metadatas)
-    text_embeddings = list(zip(texts, embedded_vectors))
-    db = FAISS.from_embeddings(text_embeddings, metadatas)
+    db = FAISS.from_documents(tqdm(chunks, desc="Generating embeddings..."), embeddings)
 
     # Step 4: Save index
     index_path = os.path.join(output_dir, f"faiss_index_{commit_hash}")
