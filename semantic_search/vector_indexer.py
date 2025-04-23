@@ -68,7 +68,9 @@ def index_repo(repo_path: str, commit_hash: str, output_dir: str):
             print(f"⚠️ Embedding failed: {e}")
             embedded_vectors.append([0.0] * 1536)  # Fallback zero vector, or skip
 
-    db = FAISS.from_embeddings(embedded_vectors, texts, metadatas)
+    # db = FAISS.from_embeddings(embedded_vectors, texts, metadatas)
+    text_embeddings = list(zip(texts, embedded_vectors))
+    db = FAISS.from_embeddings(text_embeddings, metadatas)
 
     # Step 4: Save index
     index_path = os.path.join(output_dir, f"faiss_index_{commit_hash}")
