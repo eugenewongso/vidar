@@ -54,8 +54,8 @@ Run the `post_eval.py` script, providing the necessary arguments.
 
 ### Optional Arguments:
 
-*   `--upstream_dir`: Directory to save the extracted upstream file versions (defaults to `testing_files/upstream_commit`).
-*   `--downstream_dir`: Directory to save the extracted downstream file versions (defaults to `testing_files/downstream_commit`).
+*   `--upstream_dir`: Directory to save the extracted upstream file versions (defaults to `input/upstream_commit`).
+*   `--downstream_dir`: Directory to save the extracted downstream file versions (defaults to `input/downstream_commit`).
 
 ## Example Test Runs:
 
@@ -64,8 +64,8 @@ Run the `post_eval.py` script, providing the necessary arguments.
 python3 post_eval.py \
   --repo /Volumes/Files/Google_Capstone/linux-stable \
   --eval_report full_cve_report.json \
-  --upstream_dir testing_files/upstream_commit \
-  --downstream_dir testing_files/downstream_commit
+  --upstream_dir input/upstream_commit \
+  --downstream_dir input/downstream_commit
 
 # Example using default output directories
 python3 post_eval.py \

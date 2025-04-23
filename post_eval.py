@@ -33,8 +33,8 @@ def main():
     parser = argparse.ArgumentParser(description="Run patch evaluation post-processing.")
     parser.add_argument("--repo", required=True, help="Path to the Linux kernel repository")
     parser.add_argument("--eval_report", required=True, help="Path to the JSON evaluation report")
-    parser.add_argument("--upstream_dir", default="testing_files/upstream_commit", help="Directory to save upstream files")
-    parser.add_argument("--downstream_dir", default="testing_files/downstream_commit", help="Directory to save downstream files")
+    parser.add_argument("--upstream_dir", default="input/upstream_commit", help="Directory to save upstream files")
+    parser.add_argument("--downstream_dir", default="input/downstream_commit", help="Directory to save downstream files")
     
     args = parser.parse_args()
 

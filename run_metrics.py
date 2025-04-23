@@ -34,9 +34,6 @@ def main():
     ground_truth_code = read_file(args.ground)
     candidate_code = read_file(args.candidate)
 
-    # ground_truth_code = read_file(ground_truth_path) # use this for hardcode
-    # candidate_code = read_file(candidate_patch_code_path)
-
     print("\n=== Evaluation Metrics ===")
 
     rel_line_diff = relative_line_count_diff(candidate_code, ground_truth_code)
