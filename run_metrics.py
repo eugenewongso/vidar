@@ -5,6 +5,8 @@ from metrics.similarity.codeBERT import compute_codebertscore_c
 from metrics.similarity.openAI import compute_cosine_openai_embedding
 from metrics.distance.edit_distance import token_level_edit_distance, normalized_edit_distance
 
+# TODO: make code similarity metrics for FAISS (https://github.com/facebookresearch/faiss)
+
 # supress warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
