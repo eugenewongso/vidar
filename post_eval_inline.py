@@ -74,7 +74,7 @@ def main():
 
             if got_upstream and got_downstream:
                 print(f"\n🔍 Comparing {upstream_file_path} vs {downstream_file_path}")
-                compare_with_metrics(upstream_file_path, downstream_file_path, args.index_path)
+                compare_with_metrics(upstream_file_path, downstream_file_path)
 
                 all_results.append({
                     "cve_id": cve_id,

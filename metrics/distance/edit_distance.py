@@ -56,14 +56,14 @@ def levenshtein_distance(tokens1, tokens2):
 
 def token_level_edit_distance(candidate_code, ground_truth_code):
     """
-    Calculate the edit distance between two code samples at the token level
-    
+    Calculate the normalized token-level edit distance (0 to 1).
+
     Args:
         candidate_code (str): The candidate code
         ground_truth_code (str): The ground truth code
         
     Returns:
-        int: The token-level edit distance
+        float: Normalized token-level edit distance (0 = perfect match, 1 = fully different)
     """
     # Tokenize both code samples
     candidate_tokens = tokenize_code(candidate_code)
@@ -72,7 +72,14 @@ def token_level_edit_distance(candidate_code, ground_truth_code):
     # Calculate Levenshtein distance between token lists
     distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
     
-    return distance
+    # Normalize by the max length to avoid favoring shorter lists
+    max_len = max(len(candidate_tokens), len(ground_truth_tokens))
+
+    if max_len == 0:
+        return 0.0  # Both empty → no distance
+
+    return min(1.0, distance / max_len)
+
 
 def normalized_edit_distance(candidate_code, ground_truth_code):
     """
