@@ -1,0 +1,16 @@
+torch==2.7.0
+transformers==4.51.3
+code_bert_score==0.4.1
+openai
+numpy
+scikit-learn
+tqdm
+langchain
+langchain-community
+langchain-openai
+langchain-core
+faiss-cpu
+python-dotenv
+pandas
+requests
+matplotlib

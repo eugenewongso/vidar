@@ -9,7 +9,7 @@ def run_code_search(repo_path, commit_hash, query_file, top_k=3):
     output_dir = os.path.join(os.getcwd(), "vector_indexes")
     os.makedirs(output_dir, exist_ok=True)
     
-    print(f"\n🔍 Running semantic code search for {query_file} in commit {commit_hash}")
+    print(f"\n Running semantic code search for {query_file} in commit {commit_hash}")
     subprocess.run([
         "python3", "code_search/code_search.py",
         "--repo_path", repo_path,
@@ -51,15 +51,15 @@ def main():
                     got_downstream = extract_file_at_commit(args.repo, downstream_commit, file_path, downstream_file_path)
 
                     if got_upstream and got_downstream:
-                        print(f"\n📊 Comparing metrics: {os.path.basename(upstream_file_path)} vs {os.path.basename(downstream_file_path)}")
+                        print(f"\n Comparing metrics: {os.path.basename(upstream_file_path)} vs {os.path.basename(downstream_file_path)}")
                         compare_with_metrics(upstream_file_path, downstream_file_path)
                         
                         # Run semantic search using upstream file as query against downstream commit
-                        print(f"\n🔎 Finding similar code in downstream repository...")
+                        print(f"\n Finding similar code in downstream repository...")
                         run_code_search(args.repo, downstream_commit, upstream_file_path, args.top_k)
                         
                         # Run semantic search using downstream file as query against upstream commit
-                        print(f"\n🔍 Finding similar code in upstream repository...")
+                        print(f"\n Finding similar code in upstream repository...")
                         run_code_search(args.repo, upstream_commit, downstream_file_path, args.top_k)
 
 if __name__ == "__main__":
