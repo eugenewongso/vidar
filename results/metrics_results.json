@@ -1,0 +1,317 @@
+[
+  {
+    "cve_id": "ASB-A-363248394",
+    "downstream_version": "12",
+    "file_name": "src/com/android/settings/notification/NotificationAccessConfirmationActivity.java",
+    "upstream_file": "input/upstream_commit/ASB-A-363248394_12_src_com_android_settings_notification_NotificationAccessConfirmationActivity.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-363248394_12_src_com_android_settings_notification_NotificationAccessConfirmationActivity.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-363248394",
+    "downstream_version": "12L",
+    "file_name": "src/com/android/settings/notification/NotificationAccessConfirmationActivity.java",
+    "upstream_file": "input/upstream_commit/ASB-A-363248394_12L_src_com_android_settings_notification_NotificationAccessConfirmationActivity.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-363248394_12L_src_com_android_settings_notification_NotificationAccessConfirmationActivity.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-277207798",
+    "downstream_version": "13",
+    "file_name": "core/java/com/android/internal/app/ChooserActivity.java",
+    "upstream_file": "input/upstream_commit/ASB-A-277207798_13_core_java_com_android_internal_app_ChooserActivity.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-277207798_13_core_java_com_android_internal_app_ChooserActivity.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "12",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "upstream_file": "input/upstream_commit/ASB-A-352542820_12_src_com_android_settings_users_UserSettings.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-352542820_12_src_com_android_settings_users_UserSettings.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "12L",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "upstream_file": "input/upstream_commit/ASB-A-352542820_12L_src_com_android_settings_users_UserSettings.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-352542820_12L_src_com_android_settings_users_UserSettings.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "13",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "upstream_file": "input/upstream_commit/ASB-A-352542820_13_src_com_android_settings_users_UserSettings.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-352542820_13_src_com_android_settings_users_UserSettings.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "14",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "upstream_file": "input/upstream_commit/ASB-A-352542820_14_src_com_android_settings_users_UserSettings.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-352542820_14_src_com_android_settings_users_UserSettings.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-296915500",
+    "downstream_version": "13",
+    "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+    "upstream_file": "input/upstream_commit/ASB-A-296915500_13_android_app_src_com_android_bluetooth_opp_BluetoothOppSendFileInfo.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-296915500_13_android_app_src_com_android_bluetooth_opp_BluetoothOppSendFileInfo.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-296915500",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+    "upstream_file": "input/upstream_commit/ASB-A-296915500_14_android_app_src_com_android_bluetooth_opp_BluetoothOppSendFileInfo.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-296915500_14_android_app_src_com_android_bluetooth_opp_BluetoothOppSendFileInfo.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-370840874",
+    "downstream_version": "12",
+    "file_name": "libs/binder/Parcel.cpp",
+    "upstream_file": "input/upstream_commit/ASB-A-370840874_12_libs_binder_Parcel.cpp_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-370840874_12_libs_binder_Parcel.cpp_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-370840874",
+    "downstream_version": "12L",
+    "file_name": "libs/binder/Parcel.cpp",
+    "upstream_file": "input/upstream_commit/ASB-A-370840874_12L_libs_binder_Parcel.cpp_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-370840874_12L_libs_binder_Parcel.cpp_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-369103643",
+    "downstream_version": "13",
+    "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+    "upstream_file": "input/upstream_commit/ASB-A-369103643_13_services_core_java_com_android_server_wm_WindowOrganizerController.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-369103643_13_services_core_java_com_android_server_wm_WindowOrganizerController.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-369103643",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+    "upstream_file": "input/upstream_commit/ASB-A-369103643_14_services_core_java_com_android_server_wm_WindowOrganizerController.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-369103643_14_services_core_java_com_android_server_wm_WindowOrganizerController.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364027038",
+    "downstream_version": "13",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364027038_13_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364027038_13_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364027038",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364027038_14_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364027038_14_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364026473",
+    "downstream_version": "13",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364026473_13_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364026473_13_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364026473",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364026473_14_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364026473_14_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-317203980",
+    "downstream_version": "13",
+    "file_name": "services/core/java/com/android/server/media/MediaSessionRecord.java",
+    "upstream_file": "input/upstream_commit/ASB-A-317203980_13_services_core_java_com_android_server_media_MediaSessionRecord.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-317203980_13_services_core_java_com_android_server_media_MediaSessionRecord.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-375623125",
+    "downstream_version": "13",
+    "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-375623125_13_services_core_java_com_android_server_appop_AppOpsService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-375623125_13_services_core_java_com_android_server_appop_AppOpsService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-375623125",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-375623125_14_services_core_java_com_android_server_appop_AppOpsService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-375623125_14_services_core_java_com_android_server_appop_AppOpsService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-289811388",
+    "downstream_version": "13",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-289811388_13_android_app_src_com_android_bluetooth_btservice_AdapterService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-289811388_13_android_app_src_com_android_bluetooth_btservice_AdapterService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-289811388",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-289811388_14_android_app_src_com_android_bluetooth_btservice_AdapterService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-289811388_14_android_app_src_com_android_bluetooth_btservice_AdapterService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "12",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "upstream_file": "input/upstream_commit/ASB-A-353240784_12_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-353240784_12_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "12L",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "upstream_file": "input/upstream_commit/ASB-A-353240784_12L_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-353240784_12L_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "13",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "upstream_file": "input/upstream_commit/ASB-A-353240784_13_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-353240784_13_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "14",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "upstream_file": "input/upstream_commit/ASB-A-353240784_14_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-353240784_14_services_appwidget_java_com_android_server_appwidget_AppWidgetServiceImpl.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "12",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "upstream_file": "input/upstream_commit/ASB-A-340480881_12_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-340480881_12_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "12L",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "upstream_file": "input/upstream_commit/ASB-A-340480881_12L_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-340480881_12L_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "13",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "upstream_file": "input/upstream_commit/ASB-A-340480881_13_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-340480881_13_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "14",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "upstream_file": "input/upstream_commit/ASB-A-340480881_14_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-340480881_14_PermissionController_src_com_android_permissioncontroller_permission_ui_handheld_ReviewPermissionsFragment.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-366401629",
+    "downstream_version": "12",
+    "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+    "upstream_file": "input/upstream_commit/ASB-A-366401629_12_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-366401629_12_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-366401629",
+    "downstream_version": "12L",
+    "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+    "upstream_file": "input/upstream_commit/ASB-A-366401629_12L_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-366401629_12L_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-366401629",
+    "downstream_version": "13",
+    "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+    "upstream_file": "input/upstream_commit/ASB-A-366401629_13_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-366401629_13_src_com_android_settings_accounts_AccountTypePreferenceLoader.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-382064697",
+    "downstream_version": "13",
+    "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-382064697_13_services_devicepolicy_java_com_android_server_devicepolicy_DevicePolicyManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-382064697_13_services_devicepolicy_java_com_android_server_devicepolicy_DevicePolicyManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-382064697",
+    "downstream_version": "14",
+    "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-382064697_14_services_devicepolicy_java_com_android_server_devicepolicy_DevicePolicyManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-382064697_14_services_devicepolicy_java_com_android_server_devicepolicy_DevicePolicyManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-360846772",
+    "downstream_version": "12",
+    "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-360846772_12_services_core_java_com_android_server_accounts_AccountManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-360846772_12_services_core_java_com_android_server_accounts_AccountManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-360846772",
+    "downstream_version": "12L",
+    "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-360846772_12L_services_core_java_com_android_server_accounts_AccountManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-360846772_12L_services_core_java_com_android_server_accounts_AccountManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-369351375",
+    "downstream_version": "12",
+    "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-369351375_12_services_core_java_com_android_server_accounts_AccountManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-369351375_12_services_core_java_com_android_server_accounts_AccountManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-369351375",
+    "downstream_version": "12L",
+    "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-369351375_12L_services_core_java_com_android_server_accounts_AccountManagerService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-369351375_12L_services_core_java_com_android_server_accounts_AccountManagerService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-289375038",
+    "downstream_version": "13",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-289375038_13_android_app_src_com_android_bluetooth_btservice_AdapterService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-289375038_13_android_app_src_com_android_bluetooth_btservice_AdapterService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-289375038",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "upstream_file": "input/upstream_commit/ASB-A-289375038_14_android_app_src_com_android_bluetooth_btservice_AdapterService.java_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-289375038_14_android_app_src_com_android_bluetooth_btservice_AdapterService.java_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364025411",
+    "downstream_version": "13",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364025411_13_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364025411_13_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364025411",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364025411_14_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364025411_14_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364027949",
+    "downstream_version": "13",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364027949_13_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364027949_13_system_stack_gatt_gatt_sr.cc_downstream.java"
+  },
+  {
+    "cve_id": "ASB-A-364027949",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "upstream_file": "input/upstream_commit/ASB-A-364027949_14_system_stack_gatt_gatt_sr.cc_upstream.java",
+    "downstream_file": "input/downstream_commit/ASB-A-364027949_14_system_stack_gatt_gatt_sr.cc_downstream.java"
+  }
+]

@@ -1,1 +1,51 @@
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+*.log
+*.pot
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+.spyderproject/
+.spyproject
+*.xml
+
+# System
+.DS_Store
+*.swp
+
+# Distribution
+build/
+dist/
+sdist/
+*.whl
+
+# Other
+*.sqlite
+*.db
+.coverage
+*.mo
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+*.lock
+
+input/
