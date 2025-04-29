@@ -3,41 +3,72 @@ import json
 import argparse
 import subprocess
 import csv
-
-def extract_inline_file(content: str, output_path: str):
-    try:
-        with open(output_path, "w") as out_file:
-            out_file.write(content)
-        return True
-    except Exception as e:
-        print(f"Error writing file {output_path}: {e}")
-        return False
-
+import re
 
 def sanitize_filename(s):
     return s.replace("/", "_").replace("..", "").strip()
 
+# TODO: fix such that this will directly call functions from run_metrics_inline.py instead of executing it on terminal (much safer approach)
+def compare_with_metrics_inline(ground_code, candidate_code):
+    # Run the metrics script and capture output
+    result = subprocess.run(
+        [
+            "python3", "run_metrics_inline.py",
+            "--ground_code", ground_code,
+            "--candidate_code", candidate_code,
+        ],
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout
 
-def compare_with_metrics(upstream_path, downstream_path):
-    subprocess.run([
-        "python3", "run_metrics.py",
-        "--ground", upstream_path,
-        "--candidate", downstream_path,
-    ])
 
+def parse_metrics(output):
+    # Parse the output from run_metrics_inline.py into a dict
+    metrics = {}
+    # Relative Line Count Difference
+    m = re.search(r"Relative Line Count Difference:\s*([-\d.]+)", output)
+    if m:
+        metrics["relative_line_count_diff"] = float(m.group(1))
+    # Token-Level Edit Similarity
+    m = re.search(r"Token-Level Edit Similarity:\s*(\d+)", output)
+    if m:
+        metrics["token_level_edit_similarity"] = int(m.group(1))
+    # Normalized Edit Similarity
+    m = re.search(r"Normalized Edit Similarity:\s*([-\d.]+)", output)
+    if m:
+        metrics["normalized_edit_similarity"] = float(m.group(1))
+    # CodeBERTScore
+    codebert = {}
+    codebert_section = re.search(r"CodeBERTScore for C file:\s*((?:\w+: [\d.]+\s*)+)", output)
+    if codebert_section:
+        for line in codebert_section.group(1).strip().splitlines():
+            k, v = line.split(":")
+            codebert[k.strip()] = float(v.strip())
+        metrics["codebert_score"] = codebert
+    # Cosine similarity (Open AI)
+    m = re.search(r"Cosine similarity \(Open AI\) = ([\d.]+)", output)
+    if m:
+        metrics["cosine_similarity_openai"] = float(m.group(1))
+    elif "Skipping OpenAI cosine similarity" in output:
+        metrics["cosine_similarity_openai"] = None
+    return metrics
+
+def clean_code(code):
+    code = code.strip()
+    if code.startswith("```"):
+        code = code.split('\n', 1)[-1]
+    if code.endswith("```"):
+        code = code.rsplit('```', 1)[0]
+    return code.strip()
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate failed patch comparisons using inline JSON content.")
     parser.add_argument("--json_input", required=True, help="Path to the JSON file with failure data")
-    parser.add_argument("--upstream_dir", default="input/upstream_commit", help="Directory to save upstream files")
-    parser.add_argument("--downstream_dir", default="input/downstream_commit", help="Directory to save downstream files")
-    parser.add_argument("--index_path", required=True, help="Path to the FAISS index for similarity checks")
     parser.add_argument("--results_json", default="results/summary.json", help="Path to save result summary JSON")
     parser.add_argument("--results_csv", default="results/summary.csv", help="Path to save result summary CSV")
     args = parser.parse_args()
 
-    os.makedirs(args.upstream_dir, exist_ok=True)
-    os.makedirs(args.downstream_dir, exist_ok=True)
     os.makedirs(os.path.dirname(args.results_json), exist_ok=True)
 
     with open(args.json_input, "r") as f:
@@ -62,43 +93,60 @@ def main():
             conflict = file_conflicts[0]
             file_name = conflict["file_name"]
 
-            upstream_content = conflict.get("upstream_file_content", "").strip("```java\n").strip("```")
-            downstream_content = conflict.get("downstream_file_content", "").strip("```java\n").strip("```")
+            upstream_content = clean_code(conflict.get("upstream_file_content", ""))
+            downstream_content = clean_code(conflict.get("downstream_file_content", ""))
 
-            suffix = sanitize_filename(f"{cve_id}_{downstream_version}_{file_name}")
-            upstream_file_path = os.path.join(args.upstream_dir, f"{suffix}_upstream.java")
-            downstream_file_path = os.path.join(args.downstream_dir, f"{suffix}_downstream.java")
+            print(f"\n🔍 Comparing {file_name} for {cve_id} ({downstream_version})")
+            metrics_output = compare_with_metrics_inline(upstream_content, downstream_content)
+            metrics = parse_metrics(metrics_output)
 
-            got_upstream = extract_inline_file(upstream_content, upstream_file_path)
-            got_downstream = extract_inline_file(downstream_content, downstream_file_path)
-
-            if got_upstream and got_downstream:
-                print(f"\n🔍 Comparing {upstream_file_path} vs {downstream_file_path}")
-                compare_with_metrics(upstream_file_path, downstream_file_path)
-
-                all_results.append({
-                    "cve_id": cve_id,
-                    "downstream_version": downstream_version,
-                    "file_name": file_name,
-                    "upstream_file": upstream_file_path,
-                    "downstream_file": downstream_file_path
-                })
+            all_results.append({
+                "cve_id": cve_id,
+                "downstream_version": downstream_version,
+                "file_name": file_name,
+                "upstream_codebase": upstream_content,
+                "downstream_codebase": downstream_content,
+                "metrics": metrics,
+            })
 
     # Save JSON
     with open(args.results_json, "w") as jf:
         json.dump(all_results, jf, indent=2)
 
-    # Save CSV
+    # Save CSV (flattened metrics)
     if all_results:
-        fieldnames = list(all_results[0].keys())
+        fieldnames = [
+            "cve_id", "downstream_version", "file_name",
+            "relative_line_count_diff", "token_level_edit_distance",
+            "normalized_edit_distance", "cosine_similarity_openai"
+        ]
+        # Add CodeBERTScore keys if present
+        codebert_keys = []
+        for r in all_results:
+            if "metrics" in r and "codebert_score" in r["metrics"]:
+                codebert_keys = list(r["metrics"]["codebert_score"].keys())
+                break
+        fieldnames += [f"codebert_{k}" for k in codebert_keys]
         with open(args.results_csv, "w", newline="") as cf:
             writer = csv.DictWriter(cf, fieldnames=fieldnames)
             writer.writeheader()
             for row in all_results:
-                writer.writerow(row)
+                flat = {
+                    "cve_id": row["cve_id"],
+                    "downstream_version": row["downstream_version"],
+                    "file_name": row["file_name"],
+                }
+                metrics = row.get("metrics", {})
+                flat["relative_line_count_diff"] = metrics.get("relative_line_count_diff")
+                flat["token_level_edit_distance"] = metrics.get("token_level_edit_distance")
+                flat["normalized_edit_distance"] = metrics.get("normalized_edit_distance")
+                flat["cosine_similarity_openai"] = metrics.get("cosine_similarity_openai")
+                if "codebert_score" in metrics:
+                    for k in codebert_keys:
+                        flat[f"codebert_{k}"] = metrics["codebert_score"].get(k)
+                writer.writerow(flat)
 
     print(f"\n✅ Results saved to:\n  JSON: {args.results_json}\n  CSV: {args.results_csv}")
-
 
 if __name__ == "__main__":
     main()

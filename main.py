@@ -2,7 +2,7 @@ import os
 import json
 import argparse
 import subprocess
-from post_eval import extract_file_at_commit, sanitize_filename, compare_with_metrics
+from testing_workflow.post_eval_old import extract_file_at_commit, sanitize_filename, compare_with_metrics
 
 def run_code_search(repo_path, commit_hash, query_file, top_k=3):
     """Run semantic code search using the provided query file."""

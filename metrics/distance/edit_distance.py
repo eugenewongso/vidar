@@ -111,3 +111,44 @@ def normalized_edit_distance(candidate_code, ground_truth_code):
     normalized_distance = distance / max_length
     
     return min(1.0, normalized_distance)
+
+# TODO: test again
+def token_level_edit_similarity(candidate_code, ground_truth_code):
+    """
+    Calculate the normalized token-level similarity (1 = perfect match, 0 = fully different).
+
+    Args:
+        candidate_code (str): The candidate code
+        ground_truth_code (str): The ground truth code
+        
+    Returns:
+        float: Normalized token-level similarity (1 = perfect match, 0 = fully different)
+    """
+    candidate_tokens = tokenize_code(candidate_code)
+    ground_truth_tokens = tokenize_code(ground_truth_code)
+    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
+    max_len = max(len(candidate_tokens), len(ground_truth_tokens))
+    if max_len == 0:
+        return 1.0  # Both empty → perfectly similar
+    similarity = 1.0 - min(1.0, distance / max_len)
+    return similarity
+
+def normalized_edit_similarity(candidate_code, ground_truth_code):
+    """
+    Calculate the normalized edit similarity between two code samples (1 = identical, 0 = maximally different).
+
+    Args:
+        candidate_code (str): The candidate code
+        ground_truth_code (str): The ground truth code
+        
+    Returns:
+        float: The normalized similarity (between 0 and 1)
+    """
+    candidate_tokens = tokenize_code(candidate_code)
+    ground_truth_tokens = tokenize_code(ground_truth_code)
+    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
+    max_length = max(len(candidate_tokens), len(ground_truth_tokens))
+    if max_length == 0:
+        return 1.0
+    similarity = 1.0 - min(1.0, distance / max_length)
+    return similarity

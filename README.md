@@ -60,14 +60,13 @@ Run the `post_eval.py` script, providing the necessary arguments.
 ## Example Test Runs:
 
 ```bash
-# Example with all arguments specified
-python3 post_eval.py \
-  --repo /Volumes/Files/Google_Capstone/linux-stable \
-  --eval_report input/report_modified.json \
-  --upstream_dir input/upstream_commit \
-  --downstream_dir input/downstream_commit
-
-# Example using default output directories
 python3 post_eval.py \
   --repo /Volumes/Files/Google_Capstone/linux-stable \
   --eval_report input/report_modified.json
+```
+
+# Post eval-inline
+Example command:
+```bash
+python3 post_eval_inline.py --json_input input/testing_inline.json
+```

@@ -1,0 +1,21 @@
+[
+  {
+    "cve_id": "CVE-2023-12345",
+    "downstream_version": "1.2.3",
+    "file_name": "Example.java",
+    "upstream_codebase": "public class Example {\n  // upstream code\n}",
+    "downstream_codebase": "public class Example {\n  // downstream code\n}",
+    "metrics": {
+      "relative_line_count_diff": 1.0,
+      "token_level_edit_distance": 0,
+      "normalized_edit_distance": 0.875,
+      "codebert_score": {
+        "precision": 0.9813,
+        "recall": 0.9813,
+        "f1": 0.9813,
+        "f3": 0.9813
+      },
+      "cosine_similarity_openai": 0.9046
+    }
+  }
+]

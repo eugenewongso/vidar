@@ -32,7 +32,6 @@ def main():
     parser.add_argument("--json_input", required=True, help="Path to the JSON file with failure data")
     parser.add_argument("--upstream_dir", default="input/upstream_commit", help="Directory to save upstream files")
     parser.add_argument("--downstream_dir", default="input/downstream_commit", help="Directory to save downstream files")
-    parser.add_argument("--index_path", required=True, help="Path to the FAISS index for similarity checks")
     args = parser.parse_args()
 
     os.makedirs(args.upstream_dir, exist_ok=True)
@@ -70,7 +69,7 @@ def main():
 
             if got_upstream and got_downstream:
                 print(f"\n🔍 Comparing {upstream_file_path} vs {downstream_file_path}")
-                compare_with_metrics(upstream_file_path, downstream_file_path, args.index_path)
+                compare_with_metrics(upstream_file_path, downstream_file_path)
 
 
 if __name__ == "__main__":

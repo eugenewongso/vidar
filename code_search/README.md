@@ -13,7 +13,15 @@ This directory contains a Python script for indexing a code repository and immed
 3.  **OpenAI API Key:** You need an OpenAI API key for generating embeddings. Create a `.env` file in the root directory (`vidar-post-eval`) and add your key:
     ```
     OPENAI_API_KEY='your_api_key_here'
+4. **Optional**: Virtual Environment:
+
+    ```bash
+      sudo apt install python3-venv python3-full
+      python3 -m venv venv
+      source venv/bin/activate
+      pip install -r requirements.txt
     ```
+
 
 ## Core Process Overview
 

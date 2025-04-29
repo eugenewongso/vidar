@@ -1,0 +1,2 @@
+cve_id,downstream_version,file_name,relative_line_count_diff,token_level_edit_distance,normalized_edit_distance,cosine_similarity_openai,codebert_precision,codebert_recall,codebert_f1,codebert_f3
+CVE-2023-12345,1.2.3,Example.java,1.0,0,0.875,0.9046,0.9813,0.9813,0.9813,0.9813
