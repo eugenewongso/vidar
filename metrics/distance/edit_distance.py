@@ -112,7 +112,7 @@ def normalized_edit_distance(candidate_code, ground_truth_code):
     
     return min(1.0, normalized_distance)
 
-# TODO: test again
+# TODO: test again and verify
 def token_level_edit_similarity(candidate_code, ground_truth_code):
     """
     Calculate the normalized token-level similarity (1 = perfect match, 0 = fully different).
