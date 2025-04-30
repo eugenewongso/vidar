@@ -106,19 +106,65 @@ def _test_codebert_score_all():
     print("  Result:", c_result)
     assert "precision" in c_result
 
-    # Unsupported languages (should fallback to cosine similarity)
-    unsupported_languages = ["go", "rust", "typescript", "bash", "kotlin", "swift"]
-    dummy_1 = "fn main() { println!(\"Hello World\"); }"
-    dummy_2 = "fn main() { println!(\"Hi there\"); }"
+    # Realistic code snippets from unsupported languages
+    code_snippets = {
+        "go": (
+            '''package main
+import "fmt"
+func main() {
+    fmt.Println("Hello, World!")
+}''',
+            '''package main
+import "fmt"
+func main() {
+    fmt.Println("Hi there!")
+}'''
+        ),
+        "rust": (
+            '''fn main() {
+    println!("Hello, world!");
+}''',
+            '''fn main() {
+    println!("Hi there!");
+}'''
+        ),
+        "typescript": (
+            '''function greet(): void {
+    console.log("Hello, world!");
+}''',
+            '''function greet(): void {
+    console.log("Hi there!");
+}'''
+        ),
+        "bash": (
+            '''#!/bin/bash
+echo "Hello, world!"''',
+            '''#!/bin/bash
+echo "Hi there!"'''
+        ),
+        "kotlin": (
+            '''fun main() {
+    println("Hello, world!")
+}''',
+            '''fun main() {
+    println("Hi there!")
+}'''
+        ),
+        "swift": (
+            '''import Foundation
+print("Hello, world!")''',
+            '''import Foundation
+print("Hi there!")'''
+        ),
+    }
 
-    for lang in unsupported_languages:
+    for lang, (code1, code2) in code_snippets.items():
         print(f"\nTest: Unsupported language ({lang})")
-        result = compute_codebert_score(dummy_1, dummy_2, lang)
+        result = compute_codebert_score(code1, code2, lang)
         print("  Result:", result)
         assert "cosine_similarity_fallback" in result or "error" in result, f"Unexpected result for {lang}"
 
-    print("\nAll tests passed.")
-
+    print("\n✅ All fallback tests passed.")
 # Uncomment to run the test
 if __name__ == "__main__":
     _test_codebert_score_all()
