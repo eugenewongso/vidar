@@ -64,7 +64,17 @@ def compute_metrics(upstream_code, downstream_code, file_name) -> dict:
     else:
         metrics["codebert_score"] = {k: round(v, 4) for k, v in codebert.items()}
 
-    total_tokens = count_tokens(upstream_code) + count_tokens(downstream_code)
+    total_tokens_upstream = count_tokens(upstream_code)
+    total_tokens_downstream = count_tokens(downstream_code)
+    total_tokens = total_tokens_upstream + total_tokens_downstream
+
+    metrics["token_count_upstream"] = total_tokens_upstream
+    metrics["token_count_downstream"] = total_tokens_downstream
+    metrics["token_count_total"] = total_tokens
+    print(f"🧠 Token usage for {file_name}:")
+    print(f"- Upstream: {total_tokens_upstream}")
+    print(f"- Downstream: {total_tokens_downstream}")
+    print(f"- Total: {total_tokens} (limit = {MAX_TOKENS})")
     if total_tokens > MAX_TOKENS:
         metrics["cosine_similarity_openai"] = "skipped"
     else:
@@ -116,14 +126,6 @@ def main():
                     file_name = conflict.get("file_name", "unknown")
                     upstream_content = clean_code(conflict.get("upstream_file_content", ""))
                     downstream_content = clean_code(conflict.get("downstream_file_content", ""))
-                    upstream_tokens = count_tokens(upstream_content)
-                    downstream_tokens = count_tokens(downstream_content)
-                    total_tokens = upstream_tokens + downstream_tokens
-
-                    print(f"🧠 Token usage for {file_name}:")
-                    print(f"- Upstream: {upstream_tokens}")
-                    print(f"- Downstream: {downstream_tokens}")
-                    print(f"- Total: {total_tokens} (limit = {MAX_TOKENS})")
 
                     print(f"\nComparing {file_name} for {cve_id} ({downstream_version})")
                     metrics = compute_metrics(upstream_content, downstream_content, file_name)

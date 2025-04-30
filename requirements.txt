@@ -14,3 +14,4 @@ python-dotenv
 pandas
 requests
 matplotlib
+tree-sitter==0.20.1
