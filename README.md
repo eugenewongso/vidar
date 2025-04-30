@@ -65,8 +65,14 @@ python3 post_eval.py \
   --eval_report input/report_modified.json
 ```
 
-# Post eval-inline
+# Post eval-inline-direct (newest version april 29)
 Example command:
 ```bash
-python3 post_eval_inline.py --json_input input/testing_inline.json
+python3 post_eval_inline_direct.py --json_input testing.json
 ```
+
+## Notes:
+Use file testing.json for testing purposes 
+and use
+- android_platform_vulnerability_report_2025_2_failures.json
+as input.json as the real file being used. 

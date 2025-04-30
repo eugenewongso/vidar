@@ -1,3 +1,4 @@
+# NOTE: not used
 from sklearn.feature_extraction.text import CountVectorizer # type: ignore
 from sklearn.metrics.pairwise import cosine_similarity # type: ignore
 import ast

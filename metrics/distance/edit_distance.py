@@ -1,154 +1,80 @@
 import re
+from rapidfuzz.distance import Levenshtein #type: ignore
+
+MAX_TOKENS = 8192
 
 def tokenize_code(code_string):
-    """
-    Split code into tokens (identifiers, keywords, operators, etc.)
-    
-    Args:
-        code_string (str): The code to tokenize
-        
-    Returns:
-        list: List of tokens
-    """
-    # This regex pattern matches:
-    # - Identifiers and keywords (words)
-    # - Operators, punctuation, and other symbols
-    # - Numbers
-    # - String literals (both single and double quotes)
-    # - Whitespace is ignored
-    
     pattern = r'[a-zA-Z_]\w*|[-+*/=<>!&|^~%]+|[(){}\[\];,.]|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|\d+(?:\.\d+)?'
-    tokens = re.findall(pattern, code_string)
-    return tokens
-
-def levenshtein_distance(tokens1, tokens2):
-    """
-    Calculate Levenshtein distance between two lists of tokens
-    
-    Args:
-        tokens1 (list): First list of tokens
-        tokens2 (list): Second list of tokens
-        
-    Returns:
-        int: The edit distance between the token lists
-    """
-    # Initialize the matrix
-    m, n = len(tokens1), len(tokens2)
-    dp = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
-    
-    # Initialize first row and column
-    for i in range(m + 1):
-        dp[i][0] = i
-    for j in range(n + 1):
-        dp[0][j] = j
-    
-    # Fill the matrix
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if tokens1[i-1] == tokens2[j-1]:
-                dp[i][j] = dp[i-1][j-1]
-            else:
-                dp[i][j] = 1 + min(dp[i-1][j],   # deletion
-                                 dp[i][j-1],     # insertion
-                                 dp[i-1][j-1])   # substitution
-    
-    return dp[m][n]
+    return re.findall(pattern, code_string)
 
 def token_level_edit_distance(candidate_code, ground_truth_code):
     """
-    Calculate the normalized token-level edit distance (0 to 1).
-
-    Args:
-        candidate_code (str): The candidate code
-        ground_truth_code (str): The ground truth code
-        
-    Returns:
-        float: Normalized token-level edit distance (0 = perfect match, 1 = fully different)
+    Normalized Levenshtein distance (0 = identical, 1 = max difference).
     """
-    # Tokenize both code samples
-    candidate_tokens = tokenize_code(candidate_code)
-    ground_truth_tokens = tokenize_code(ground_truth_code)
-    
-    # Calculate Levenshtein distance between token lists
-    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
-    
-    # Normalize by the max length to avoid favoring shorter lists
-    max_len = max(len(candidate_tokens), len(ground_truth_tokens))
+    tokens1 = tokenize_code(candidate_code)
+    tokens2 = tokenize_code(ground_truth_code)
 
-    if max_len == 0:
-        return 0.0  # Both empty → no distance
+    if len(tokens1) > MAX_TOKENS or len(tokens2) > MAX_TOKENS:
+        return "skipped"
 
-    return min(1.0, distance / max_len)
+    return round(Levenshtein.normalized_distance(tokens1, tokens2), 4)
 
+def token_level_edit_similarity(candidate_code, ground_truth_code):
+    """
+    Normalized Levenshtein similarity (1 = identical, 0 = completely different).
+    """
+    tokens1 = tokenize_code(candidate_code)
+    tokens2 = tokenize_code(ground_truth_code)
+
+    if len(tokens1) > MAX_TOKENS or len(tokens2) > MAX_TOKENS:
+        return "skipped"
+
+    return round(Levenshtein.normalized_similarity(tokens1, tokens2), 4)
 
 def normalized_edit_distance(candidate_code, ground_truth_code):
     """
-    Calculate the normalized edit distance between two code samples
-    
-    Normalized by the maximum possible edit operations (max length of the two token lists)
-    
-    Args:
-        candidate_code (str): The candidate code
-        ground_truth_code (str): The ground truth code
-        
-    Returns:
-        float: The normalized edit distance (between 0 and 1)
+    Normalized Levenshtein distance (real definition): edit_distance / max_len(tokens).
+    Not forcibly bounded to 1.0 — may exceed 1.0 for weighted edits.
     """
-    # Tokenize both code samples
-    candidate_tokens = tokenize_code(candidate_code)
-    ground_truth_tokens = tokenize_code(ground_truth_code)
-    
-    # Calculate Levenshtein distance between token lists
-    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
-    
-    # Normalize by the maximum length of the two token lists
-    max_length = max(len(candidate_tokens), len(ground_truth_tokens))
-    
-    # Avoid division by zero
-    if max_length == 0:
-        return 0.0
-    
-    normalized_distance = distance / max_length
-    
-    return min(1.0, normalized_distance)
+    tokens1 = tokenize_code(candidate_code)
+    tokens2 = tokenize_code(ground_truth_code)
 
-# TODO: test again and verify
-def token_level_edit_similarity(candidate_code, ground_truth_code):
-    """
-    Calculate the normalized token-level similarity (1 = perfect match, 0 = fully different).
+    if len(tokens1) > MAX_TOKENS or len(tokens2) > MAX_TOKENS:
+        return "skipped"
 
-    Args:
-        candidate_code (str): The candidate code
-        ground_truth_code (str): The ground truth code
-        
-    Returns:
-        float: Normalized token-level similarity (1 = perfect match, 0 = fully different)
-    """
-    candidate_tokens = tokenize_code(candidate_code)
-    ground_truth_tokens = tokenize_code(ground_truth_code)
-    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
-    max_len = max(len(candidate_tokens), len(ground_truth_tokens))
+    max_len = max(len(tokens1), len(tokens2))
     if max_len == 0:
-        return 1.0  # Both empty → perfectly similar
-    similarity = 1.0 - min(1.0, distance / max_len)
-    return similarity
+        return 0.0
 
-def normalized_edit_similarity(candidate_code, ground_truth_code):
-    """
-    Calculate the normalized edit similarity between two code samples (1 = identical, 0 = maximally different).
+    return Levenshtein.distance(tokens1, tokens2) / max_len
 
-    Args:
-        candidate_code (str): The candidate code
-        ground_truth_code (str): The ground truth code
-        
-    Returns:
-        float: The normalized similarity (between 0 and 1)
-    """
-    candidate_tokens = tokenize_code(candidate_code)
-    ground_truth_tokens = tokenize_code(ground_truth_code)
-    distance = levenshtein_distance(candidate_tokens, ground_truth_tokens)
-    max_length = max(len(candidate_tokens), len(ground_truth_tokens))
-    if max_length == 0:
-        return 1.0
-    similarity = 1.0 - min(1.0, distance / max_length)
-    return similarity
+
+def _test_edit_distance_metrics():
+    code1 = "int a = b + 1;"
+    code2 = "int a = b + 1;"
+    code3 = "int x = c + 2;"
+    code4 = "for (int i = 0; i < 10; ++i) { sum += i; }"
+
+    print("Test 1: Identical code")
+    print("  token_level_edit_distance:", token_level_edit_distance(code1, code2))  # Expect 0.0
+    print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code2))  # Expect 1.0
+    print("  normalized_edit_distance:", normalized_edit_distance(code1, code2))  # Expect 0.0
+
+    print("\nTest 2: One variable changed")
+    print("  token_level_edit_distance:", token_level_edit_distance(code1, code3))  # Small > 0.0
+    print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code3))  # Close to 1.0
+    print("  normalized_edit_distance:", normalized_edit_distance(code1, code3))
+
+    print("\nTest 3: Completely different")
+    print("  token_level_edit_distance:", token_level_edit_distance(code1, code4))  # Higher value
+    print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code4))
+    print("  normalized_edit_distance:", normalized_edit_distance(code1, code4))
+
+    print("\nTest 4: Empty code")
+    print("  token_level_edit_distance:", token_level_edit_distance("", ""))  # Expect 0.0
+    print("  token_level_edit_similarity:", token_level_edit_similarity("", ""))  # Expect 1.0
+    print("  normalized_edit_distance:", normalized_edit_distance("", ""))  # Expect 0.0
+
+# Run the test (uncomment to run tests)
+if __name__ == "__main__":
+    _test_edit_distance_metrics()

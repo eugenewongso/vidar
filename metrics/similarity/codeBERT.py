@@ -26,22 +26,99 @@ def compute_cosine_similarity_from_files(gt_path: str, candidate_path: str) -> f
 
     return float(cosine_similarity(gt_vec, candidate_vec)[0][0])
 
-# similarity_score_codebert_c = compute_codebertscore_c(candidate_code, ground_truth_code)
-def compute_codebertscore_c(candidate_code: str, ground_truth_code: str) -> dict:
-    """
-    Computes CodeBERTScore between a ground truth and a candidate C code file.
+def compute_codebert_score(candidate_code: str, ground_truth_code: str, language: str) -> dict:
+    supported_languages = ["python", "java", "javascript", "c", "cpp", "c++", "js"]
+    language = language.lower().strip()
+
+    if not candidate_code or not ground_truth_code:
+        return {
+            "error": "Candidate code and ground truth code must not be empty."
+        }
+
+    if language in supported_languages:
+        try:
+            precision, recall, f1, f3 = code_bert_score.score(
+                cands=[candidate_code],
+                refs=[ground_truth_code],
+                lang=language
+            )
+            return {
+                "precision": precision.item(),
+                "recall": recall.item(),
+                "f1": f1.item(),
+                "f3": f3.item()
+            }
+        except Exception as e:
+            return {
+                "error": f"Exception during CodeBERTScore computation: {e}"
+            }
+    else:
+        # Fallback to cosine similarity using embeddings
+        try:
+            cand_vec = get_code_embedding(candidate_code).unsqueeze(0).numpy()
+            gt_vec = get_code_embedding(ground_truth_code).unsqueeze(0).numpy()
+            cos_sim = float(cosine_similarity(cand_vec, gt_vec)[0][0])
+            return {
+                "cosine_similarity_fallback": cos_sim
+            }
+        except Exception as e:
+            return {
+                "error": f"Exception during fallback cosine similarity computation: {e}"
+            }
+
+"""
+def compute_codebert_score(candidate_code: str, ground_truth_code: str, language: str) -> dict:
+    Computes CodeBERTScore between a ground truth and a candidate code file.
     Returns a dictionary with precision, recall, F1, and F3 scores.
-    """
+    supported_languages = ["python", "java", "javascript", "c", "cpp", "c++", "js"]
+    language = language.lower().strip()
+    if language not in supported_languages:
+        return {
+            "error": f"Language '{language}' is not supported for CodeBERTScore. Supported languages are: {', '.join(supported_languages)}"
+        }
+    if not candidate_code or not ground_truth_code:
+        return {
+            "error": "Candidate code and ground truth code must not be empty."
+        }
+    try:
+        precision, recall, f1, f3 = code_bert_score.score(
+            cands=[candidate_code],
+            refs=[ground_truth_code],
+            lang=language
+        )
+        return {
+            "precision": precision.item(),
+            "recall": recall.item(),
+            "f1": f1.item(),
+            "f3": f3.item()
+        }
+    except Exception as e:
+        return {
+            "error": f"Exception during CodeBERTScore computation: {e}"
+        }
+"""
 
-    precision, recall, f1, f3 = code_bert_score.score(
-        cands=[candidate_code],
-        refs=[ground_truth_code],
-        lang="c"
-    )
+# Simple validation test
+def _test_codebert_score_all():
+    # Supported language test (should return precision/recall/f1/f3)
+    print("Test: Supported language (C)")
+    c_result = compute_codebert_score("int main() { return 0; }", "int main() { return 0; }", "c")
+    print("  Result:", c_result)
+    assert "precision" in c_result
 
-    return {
-        "precision": precision.item(),
-        "recall": recall.item(),
-        "f1": f1.item(),
-        "f3": f3.item()
-    }
+    # Unsupported languages (should fallback to cosine similarity)
+    unsupported_languages = ["go", "rust", "typescript", "bash", "kotlin", "swift"]
+    dummy_1 = "fn main() { println!(\"Hello World\"); }"
+    dummy_2 = "fn main() { println!(\"Hi there\"); }"
+
+    for lang in unsupported_languages:
+        print(f"\nTest: Unsupported language ({lang})")
+        result = compute_codebert_score(dummy_1, dummy_2, lang)
+        print("  Result:", result)
+        assert "cosine_similarity_fallback" in result or "error" in result, f"Unexpected result for {lang}"
+
+    print("\nAll tests passed.")
+
+# Uncomment to run the test
+if __name__ == "__main__":
+    _test_codebert_score_all()

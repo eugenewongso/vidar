@@ -28,4 +28,5 @@ def relative_line_count_similarity(candidate_code, ground_truth_code):
 
     relative_diff = abs(candidate_line_count - ground_truth_line_count) / ground_truth_line_count
     similarity = 1.0 - min(1.0, relative_diff)
+    
     return similarity
