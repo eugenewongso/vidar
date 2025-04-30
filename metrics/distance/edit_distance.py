@@ -1,12 +1,47 @@
 import re
 from rapidfuzz.distance import Levenshtein #type: ignore
+from tree_sitter import Language, Parser #type: ignore
 
 MAX_TOKENS = 8192
+
+# TODO: use tree-sitter for tokenization
+# Build one-time (once per environment)
+# Language.build_library(
+#     'build/my-languages.so',
+#     [
+#         'vendor/tree-sitter-c',
+#         'vendor/tree-sitter-cpp',
+#         'vendor/tree-sitter-python',
+#         'vendor/tree-sitter-java',
+#         'vendor/tree-sitter-javascript',
+#     ]
+# )
+"""
+PY_LANGUAGE = Language('build/my-languages.so', 'python')
+parser = Parser()
+parser.set_language(PY_LANGUAGE)
+
+
+def tokenize_with_tree_sitter(code: str) -> list:
+    tree = parser.parse(bytes(code, "utf8"))
+    root = tree.root_node
+
+    def walk(node):
+        if node.child_count == 0:
+            return [code[node.start_byte:node.end_byte]]
+        tokens = []
+        for child in node.children:
+            tokens.extend(walk(child))
+        return tokens
+
+    return walk(root)
+"""
 
 def tokenize_code(code_string):
     pattern = r'[a-zA-Z_]\w*|[-+*/=<>!&|^~%]+|[(){}\[\];,.]|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|\d+(?:\.\d+)?'
     return re.findall(pattern, code_string)
 
+# TODO: determine if this is the best way to tokenize code and try to not skip
 def token_level_edit_distance(candidate_code, ground_truth_code):
     """
     Normalized Levenshtein distance (0 = identical, 1 = max difference).

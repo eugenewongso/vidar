@@ -2,11 +2,15 @@ import os
 import json
 import argparse
 import csv
-from tqdm import tqdm #type: ignore
+from tqdm import tqdm  # type: ignore
 from metrics.line_metrics import relative_line_count_similarity
 from metrics.similarity.codeBERT import compute_codebert_score
 from metrics.similarity.openAI import compute_cosine_openai_embedding
-from metrics.distance.edit_distance import token_level_edit_similarity, normalized_edit_distance, token_level_edit_distance
+from metrics.distance.edit_distance import (
+    token_level_edit_similarity,
+    normalized_edit_distance,
+    token_level_edit_distance,
+)
 from datetime import datetime
 
 MAX_TOKENS = 8192
@@ -35,58 +39,43 @@ def get_language_from_filename(filename):
         "h": "cpp",
         "hpp": "cpp",
         "cs": "csharp",
-        # Add more as needed
     }
-    return ext_map.get(ext, ext) # if not found, use the extension itself
+    return ext_map.get(ext, ext)  # fallback to extension
 
 def compute_metrics(upstream_code, downstream_code, file_name) -> dict:
     metrics = {}
 
-    # Relative line count similarity
     rls = relative_line_count_similarity(downstream_code, upstream_code)
     metrics["relative_line_count_similarity"] = round(rls, 4) if isinstance(rls, float) else rls
 
-    # Token-level edit similarity
     tles = token_level_edit_similarity(downstream_code, upstream_code)
     metrics["token_level_edit_similarity"] = round(tles, 4) if isinstance(tles, float) else tles
 
-    # Normalized edit similarity
     nes = normalized_edit_distance(downstream_code, upstream_code)
     metrics["normalized_edit_similarity"] = round(nes, 4) if isinstance(nes, float) else nes
 
-    # Token-level edit distance
     tled = token_level_edit_distance(downstream_code, upstream_code)
     metrics["token_level_edit_distance"] = round(tled, 4) if isinstance(tled, float) else tled
 
-    # Get language from file name
     language = get_language_from_filename(file_name)
-
-    # CodeBERTScore
     codebert = compute_codebert_score(downstream_code, upstream_code, language)
     if "error" in codebert:
-        metrics["codebert_score"] = codebert  # preserve the error message
+        metrics["codebert_score"] = codebert
     else:
         metrics["codebert_score"] = {k: round(v, 4) for k, v in codebert.items()}
 
-    # OpenAI cosine similarity (if tokens upstream, downstream < 8192)
-    total_tokens_upstream = count_tokens(upstream_code)
-    total_tokens_downstream = count_tokens(downstream_code)
-    total_tokens = total_tokens_upstream + total_tokens_downstream
-
+    total_tokens = count_tokens(upstream_code) + count_tokens(downstream_code)
     if total_tokens > MAX_TOKENS:
         metrics["cosine_similarity_openai"] = "skipped"
     else:
         score = compute_cosine_openai_embedding(upstream_code, downstream_code)
-        if isinstance(score, float):
-            metrics["cosine_similarity_openai"] = round(score, 4)
-        else:
-            metrics["cosine_similarity_openai"] = score
+        metrics["cosine_similarity_openai"] = round(score, 4) if isinstance(score, float) else score
 
     return metrics
 
 def main():
-    parser = argparse.ArgumentParser(description="Directly evaluate patch comparisons using inline JSON content and imported metric functions.")
-    parser.add_argument("--json_input", required=True, help="Path to the JSON file with failure data")
+    parser = argparse.ArgumentParser(description="Evaluate patch comparisons and save results incrementally.")
+    parser.add_argument("--json_input", required=True, help="Path to input JSON file")
     args = parser.parse_args()
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -99,13 +88,14 @@ def main():
     with open(args.json_input, "r") as f:
         report = json.load(f)
 
-    # Count total number of file_conflicts for progress bar
-    total_conflicts = 0
-    for vuln in report:
-        for failure in vuln.get("failures", []):
-            total_conflicts += len(failure.get("file_conflicts", []))
+    total_conflicts = sum(
+        len(failure.get("file_conflicts", []))
+        for vuln in report
+        for failure in vuln.get("failures", [])
+    )
 
     all_results = []
+    header_written = os.path.exists(results_csv)
 
     with tqdm(total=total_conflicts, desc="Evaluating file conflicts") as pbar:
         for vuln in report:
@@ -119,92 +109,67 @@ def main():
                 downstream_version = failure.get("downstream_version", "unknown")
                 file_conflicts = failure.get("file_conflicts", [])
                 if not file_conflicts:
-                    print(f"⚠️ Skipping {cve_id} — no file_conflicts in failure for version {downstream_version}.")
+                    print(f"⚠️ Skipping {cve_id} — no file_conflicts for {downstream_version}.")
                     continue
 
                 for conflict in file_conflicts:
                     file_name = conflict.get("file_name", "unknown")
                     upstream_content = clean_code(conflict.get("upstream_file_content", ""))
                     downstream_content = clean_code(conflict.get("downstream_file_content", ""))
+                    upstream_tokens = count_tokens(upstream_content)
+                    downstream_tokens = count_tokens(downstream_content)
+                    total_tokens = upstream_tokens + downstream_tokens
+
+                    print(f"🧠 Token usage for {file_name}:")
+                    print(f"- Upstream: {upstream_tokens}")
+                    print(f"- Downstream: {downstream_tokens}")
+                    print(f"- Total: {total_tokens} (limit = {MAX_TOKENS})")
 
                     print(f"\nComparing {file_name} for {cve_id} ({downstream_version})")
-
-                    # compute metrics
                     metrics = compute_metrics(upstream_content, downstream_content, file_name)
 
-                    print("\n=== Evaluation Metrics ===")
-                    print(f"Relative Line Count Difference: {metrics.get('relative_line_count_similarity')}")
-                    print(f"Token-Level Edit Distance: {metrics.get('token_level_edit_distance')}")
-                    print(f"Normalized Edit Distance: {metrics.get('normalized_edit_similarity')}")
-
-                    # Print CodeBERTScore
-                    codebert = metrics.get("codebert_score", {})
-                    if isinstance(codebert, dict) and all(isinstance(v, float) for v in codebert.values()):
-                        print("CodeBERTScore for C file:")
-                        for k in ["precision", "recall", "f1", "f3"]:
-                            if k in codebert:
-                                print(f"{k}: {codebert[k]}")
-                    elif isinstance(codebert, dict) and "error" in codebert:
-                        print(f"CodeBERTScore error: {codebert['error']}")
-
-                    # Print OpenAI cosine similarity
-                    cosine = metrics.get("cosine_similarity_openai")
-                    if isinstance(cosine, float):
-                        print(f"Cosine similarity (Open AI) = {cosine}")
-                    elif cosine == "skipped":
-                        print(f"Skipping OpenAI cosine similarity: total tokens exceed limit ({MAX_TOKENS})")
-                    else:
-                        print(f"Cosine similarity (Open AI) = {cosine}")
-
-                    all_results.append({
+                    result_entry = {
                         "cve_id": cve_id,
                         "downstream_version": downstream_version,
                         "file_name": file_name,
                         "upstream_codebase": upstream_content,
                         "downstream_codebase": downstream_content,
                         "metrics": metrics,
-                    })
+                    }
+
+                    all_results.append(result_entry)
                     pbar.update(1)
 
-    # Save JSON
-    with open(results_json, "w") as jf:
-        json.dump(all_results, jf, indent=2)
+                    # Write updated JSON
+                    with open(results_json, "w") as jf:
+                        json.dump(all_results, jf, indent=2)
 
-    # Save CSV (flattened metrics)
-    if all_results:
-        # Gather all codebert keys
-        codebert_keys = []
-        for r in all_results:
-            if "metrics" in r and "codebert_score" in r["metrics"]:
-                codebert_keys = list(r["metrics"]["codebert_score"].keys())
-                break
+                    # Flatten for CSV
+                    flat = {
+                        "cve_id": cve_id,
+                        "downstream_version": downstream_version,
+                        "file_name": file_name,
+                        "relative_line_count_similarity": metrics.get("relative_line_count_similarity"),
+                        "token_level_edit_similarity": metrics.get("token_level_edit_similarity"),
+                        "normalized_edit_similarity": metrics.get("normalized_edit_similarity"),
+                        "cosine_similarity_openai": metrics.get("cosine_similarity_openai"),
+                    }
 
-        fieldnames = [
-            "cve_id", "downstream_version", "file_name",
-            "relative_line_count_similarity", "token_level_edit_similarity",
-            "normalized_edit_similarity", "cosine_similarity_openai"
-        ] + [f"codebert_{k}" for k in codebert_keys]
+                    if "codebert_score" in metrics:
+                        codebert_dict = metrics["codebert_score"]
+                        if isinstance(codebert_dict, dict):
+                            for k, v in codebert_dict.items():
+                                flat[f"codebert_{k}"] = v
 
-        with open(results_csv, "w", newline="") as cf:
-            writer = csv.DictWriter(cf, fieldnames=fieldnames)
-            writer.writeheader()
-            for row in all_results:
-                flat = {
-                    "cve_id": row["cve_id"],
-                    "downstream_version": row["downstream_version"],
-                    "file_name": row["file_name"],
-                }
-                metrics = row.get("metrics", {})
-                flat["relative_line_count_similarity"] = metrics.get("relative_line_count_similarity")
-                flat["token_level_edit_similarity"] = metrics.get("token_level_edit_similarity")
-                flat["normalized_edit_similarity"] = metrics.get("normalized_edit_similarity")
-                flat["cosine_similarity_openai"] = metrics.get("cosine_similarity_openai")
-                if "codebert_score" in metrics:
-                    for k in codebert_keys:
-                        flat[f"codebert_{k}"] = metrics["codebert_score"].get(k)
-                writer.writerow(flat)
+                    # Write to CSV
+                    with open(results_csv, "a", newline="") as cf:
+                        writer = csv.DictWriter(cf, fieldnames=flat.keys())
+                        if not header_written:
+                            writer.writeheader()
+                            header_written = True
+                        writer.writerow(flat)
 
-    print(f"\n✅ Results saved to:\n  JSON: {results_json}\n  CSV: {results_csv}")
+    print(f"\n✅ Incremental results saved to:\n  JSON: {results_json}\n  CSV: {results_csv}")
 
 if __name__ == "__main__":
     main()
