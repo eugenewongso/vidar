@@ -2,7 +2,7 @@ import re
 from rapidfuzz.distance import Levenshtein #type: ignore
 from tree_sitter import Language, Parser #type: ignore
 
-MAX_TOKENS = 8192
+MAX_TOKENS = 17000 # if len of each upstream and downstream code is > 17000, skip the metric
 
 # TODO: use tree-sitter for tokenization
 """

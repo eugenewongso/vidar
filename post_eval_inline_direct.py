@@ -155,6 +155,9 @@ def main():
                         "token_level_edit_similarity": metrics.get("token_level_edit_similarity"),
                         "normalized_edit_similarity": metrics.get("normalized_edit_similarity"),
                         "cosine_similarity_openai": metrics.get("cosine_similarity_openai"),
+                        "total_tokens": metrics.get("token_count_total"),
+                        "token_count_upstream": metrics.get("token_count_upstream"),
+                        "token_count_downstream": metrics.get("token_count_downstream"),
                     }
 
                     if "codebert_score" in metrics:
