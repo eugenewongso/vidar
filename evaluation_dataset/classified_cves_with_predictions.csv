@@ -1,0 +1,3107 @@
+CVE,upstream_patch_SHA,upstream_patch_diff,downstream_patch_SHA,downstream_patch_diff,error_message,loc_diff_size,num_methods,num_classes,diff_line_count,has_merge_error,num_authors,merged_in_master,label,predicted_label
+CVE-2025-21811,367a9bffabe08c04f6d725032cce3d891b2b9e1a,"From 367a9bffabe08c04f6d725032cce3d891b2b9e1a Mon Sep 17 00:00:00 2001
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Wed, 8 Jan 2025 05:00:47 +0900
+Subject: [PATCH] nilfs2: protect access to buffers with no active references
+
+nilfs_lookup_dirty_data_buffers(), which iterates through the buffers
+attached to dirty data folios/pages, accesses the attached buffers without
+locking the folios/pages.
+
+For data cache, nilfs_clear_folio_dirty() may be called asynchronously
+when the file system degenerates to read only, so
+nilfs_lookup_dirty_data_buffers() still has the potential to cause use
+after free issues when buffers lose the protection of their dirty state
+midway due to this asynchronous clearing and are unintentionally freed by
+try_to_free_buffers().
+
+Eliminate this race issue by adjusting the lock section in this function.
+
+Link: https://lkml.kernel.org/r/20250107200202.6432-3-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Fixes: 8c26c4e2694a (""nilfs2: fix issue with flush kernel thread after remount in RO mode because of driver's internal error or metadata corruption"")
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ fs/nilfs2/segment.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 587251830897..58a598b548fa 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -734,7 +734,6 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
+                 if (!head)
+                         head = create_empty_buffers(folio,
+                                         i_blocksize(inode), 0);
+-                folio_unlock(folio);
+ 
+                 bh = head;
+                 do {
+@@ -744,11 +743,14 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
+                         list_add_tail(&bh->b_assoc_buffers, listp);
+                         ndirties++;
+                         if (unlikely(ndirties >= nlimit)) {
++                                folio_unlock(folio);
+                                 folio_batch_release(&fbatch);
+                                 cond_resched();
+                                 return ndirties;
+                         }
+                 } while (bh = bh->b_this_page, bh != head);
++
++                folio_unlock(folio);
+         }
+         folio_batch_release(&fbatch);
+         cond_resched();
+-- 
+2.39.5 (Apple Git-154)
+
+",e1fc4a90a90ea8514246c45435662531975937d9,"From e1fc4a90a90ea8514246c45435662531975937d9 Mon Sep 17 00:00:00 2001
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Fri, 7 Feb 2025 23:23:49 +0900
+Subject: [PATCH] nilfs2: protect access to buffers with no active references
+
+commit 367a9bffabe08c04f6d725032cce3d891b2b9e1a upstream.
+
+nilfs_lookup_dirty_data_buffers(), which iterates through the buffers
+attached to dirty data folios/pages, accesses the attached buffers without
+locking the folios/pages.
+
+For data cache, nilfs_clear_folio_dirty() may be called asynchronously
+when the file system degenerates to read only, so
+nilfs_lookup_dirty_data_buffers() still has the potential to cause use
+after free issues when buffers lose the protection of their dirty state
+midway due to this asynchronous clearing and are unintentionally freed by
+try_to_free_buffers().
+
+Eliminate this race issue by adjusting the lock section in this function.
+
+[konishi.ryusuke@gmail.com: adjusted for page/folio conversion]
+Link: https://lkml.kernel.org/r/20250107200202.6432-3-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Fixes: 8c26c4e2694a (""nilfs2: fix issue with flush kernel thread after remount in RO mode because of driver's internal error or metadata corruption"")
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/nilfs2/segment.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 9a5dd4106c3d..ad28737122ca 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -732,7 +732,6 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
+ 		}
+ 		if (!page_has_buffers(page))
+ 			create_empty_buffers(page, i_blocksize(inode), 0);
+-		unlock_page(page);
+ 
+ 		bh = head = page_buffers(page);
+ 		do {
+@@ -742,11 +741,14 @@ static size_t nilfs_lookup_dirty_data_buffers(struct inode *inode,
+ 			list_add_tail(&bh->b_assoc_buffers, listp);
+ 			ndirties++;
+ 			if (unlikely(ndirties >= nlimit)) {
++				unlock_page(page);
+ 				pagevec_release(&pvec);
+ 				cond_resched();
+ 				return ndirties;
+ 			}
+ 		} while (bh = bh->b_this_page, bh != head);
++
++		unlock_page(page);
+ 	}
+ 	pagevec_release(&pvec);
+ 	cond_resched();
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file fs/nilfs2/segment.c\nHunk #1 FAILED at 734.\nHunk #2 FAILED at 744.\n2 out of 2 hunks FAILED -- saving rejects to file fs/nilfs2/segment.c.rej,5,0,2,56,1,3,1,DISJOINT,DISJOINT
+CVE-2025-21823,8c8ecc98f5c65947b0070a24bac11e12e47cc65d,"From 8c8ecc98f5c65947b0070a24bac11e12e47cc65d Mon Sep 17 00:00:00 2001
+From: Sven Eckelmann <sven@narfation.org>
+Date: Mon, 20 Jan 2025 00:06:11 +0100
+Subject: [PATCH] batman-adv: Drop unmanaged ELP metric worker
+
+The ELP worker needs to calculate new metric values for all neighbors
+""reachable"" over an interface. Some of the used metric sources require
+locks which might need to sleep. This sleep is incompatible with the RCU
+list iterator used for the recorded neighbors. The initial approach to work
+around of this problem was to queue another work item per neighbor and then
+run this in a new context.
+
+Even when this solved the RCU vs might_sleep() conflict, it has a major
+problems: Nothing was stopping the work item in case it is not needed
+anymore - for example because one of the related interfaces was removed or
+the batman-adv module was unloaded - resulting in potential invalid memory
+accesses.
+
+Directly canceling the metric worker also has various problems:
+
+* cancel_work_sync for a to-be-deactivated interface is called with
+  rtnl_lock held. But the code in the ELP metric worker also tries to use
+  rtnl_lock() - which will never return in this case. This also means that
+  cancel_work_sync would never return because it is waiting for the worker
+  to finish.
+* iterating over the neighbor list for the to-be-deactivated interface is
+  currently done using the RCU specific methods. Which means that it is
+  possible to miss items when iterating over it without the associated
+  spinlock - a behaviour which is acceptable for a periodic metric check
+  but not for a cleanup routine (which must ""stop"" all still running
+  workers)
+
+The better approch is to get rid of the per interface neighbor metric
+worker and handle everything in the interface worker. The original problems
+are solved by:
+
+* creating a list of neighbors which require new metric information inside
+  the RCU protected context, gathering the metric according to the new list
+  outside the RCU protected context
+* only use rcu_trylock inside metric gathering code to avoid a deadlock
+  when the cancel_delayed_work_sync is called in the interface removal code
+  (which is called with the rtnl_lock held)
+
+Cc: stable@vger.kernel.org
+Fixes: c833484e5f38 (""batman-adv: ELP - compute the metric based on the estimated throughput"")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+---
+ net/batman-adv/bat_v.c     |  2 --
+ net/batman-adv/bat_v_elp.c | 71 ++++++++++++++++++++++++++------------
+ net/batman-adv/bat_v_elp.h |  2 --
+ net/batman-adv/types.h     |  3 --
+ 4 files changed, 48 insertions(+), 30 deletions(-)
+
+diff --git a/net/batman-adv/bat_v.c b/net/batman-adv/bat_v.c
+index ac11f1f08db0..d35479c465e2 100644
+--- a/net/batman-adv/bat_v.c
++++ b/net/batman-adv/bat_v.c
+@@ -113,8 +113,6 @@ static void
+ batadv_v_hardif_neigh_init(struct batadv_hardif_neigh_node *hardif_neigh)
+ {
+         ewma_throughput_init(&hardif_neigh->bat_v.throughput);
+-        INIT_WORK(&hardif_neigh->bat_v.metric_work,
+-                  batadv_v_elp_throughput_metric_update);
+ }
+ 
+ /**
+diff --git a/net/batman-adv/bat_v_elp.c b/net/batman-adv/bat_v_elp.c
+index 65e52de52bcd..b065578b4436 100644
+--- a/net/batman-adv/bat_v_elp.c
++++ b/net/batman-adv/bat_v_elp.c
+@@ -18,6 +18,7 @@
+ #include <linux/if_ether.h>
+ #include <linux/jiffies.h>
+ #include <linux/kref.h>
++#include <linux/list.h>
+ #include <linux/minmax.h>
+ #include <linux/netdevice.h>
+ #include <linux/nl80211.h>
+@@ -26,6 +27,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/skbuff.h>
++#include <linux/slab.h>
+ #include <linux/stddef.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
+@@ -41,6 +43,18 @@
+ #include ""routing.h""
+ #include ""send.h""
+ 
++/**
++ * struct batadv_v_metric_queue_entry - list of hardif neighbors which require
++ *  and metric update
++ */
++struct batadv_v_metric_queue_entry {
++        /** @hardif_neigh: hardif neighbor scheduled for metric update */
++        struct batadv_hardif_neigh_node *hardif_neigh;
++
++        /** @list: list node for metric_queue */
++        struct list_head list;
++};
++
+ /**
+  * batadv_v_elp_start_timer() - restart timer for ELP periodic work
+  * @hard_iface: the interface for which the timer has to be reset
+@@ -137,10 +151,17 @@ static bool batadv_v_elp_get_throughput(struct batadv_hardif_neigh_node *neigh,
+                 goto default_throughput;
+         }
+ 
++        /* only use rtnl_trylock because the elp worker will be cancelled while
++         * the rntl_lock is held. the cancel_delayed_work_sync() would otherwise
++         * wait forever when the elp work_item was started and it is then also
++         * trying to rtnl_lock
++         */
++        if (!rtnl_trylock())
++                return false;
++
+         /* if not a wifi interface, check if this device provides data via
+          * ethtool (e.g. an Ethernet adapter)
+          */
+-        rtnl_lock();
+         ret = __ethtool_get_link_ksettings(hard_iface->net_dev, &link_settings);
+         rtnl_unlock();
+         if (ret == 0) {
+@@ -175,31 +196,19 @@ static bool batadv_v_elp_get_throughput(struct batadv_hardif_neigh_node *neigh,
+ /**
+  * batadv_v_elp_throughput_metric_update() - worker updating the throughput
+  *  metric of a single hop neighbour
+- * @work: the work queue item
++ * @neigh: the neighbour to probe
+  */
+-void batadv_v_elp_throughput_metric_update(struct work_struct *work)
++static void
++batadv_v_elp_throughput_metric_update(struct batadv_hardif_neigh_node *neigh)
+ {
+-        struct batadv_hardif_neigh_node_bat_v *neigh_bat_v;
+-        struct batadv_hardif_neigh_node *neigh;
+         u32 throughput;
+         bool valid;
+ 
+-        neigh_bat_v = container_of(work, struct batadv_hardif_neigh_node_bat_v,
+-                                   metric_work);
+-        neigh = container_of(neigh_bat_v, struct batadv_hardif_neigh_node,
+-                             bat_v);
+-
+         valid = batadv_v_elp_get_throughput(neigh, &throughput);
+         if (!valid)
+-                goto put_neigh;
++                return;
+ 
+         ewma_throughput_add(&neigh->bat_v.throughput, throughput);
+-
+-put_neigh:
+-        /* decrement refcounter to balance increment performed before scheduling
+-         * this task
+-         */
+-        batadv_hardif_neigh_put(neigh);
+ }
+ 
+ /**
+@@ -273,14 +282,16 @@ batadv_v_elp_wifi_neigh_probe(struct batadv_hardif_neigh_node *neigh)
+  */
+ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ {
++        struct batadv_v_metric_queue_entry *metric_entry;
++        struct batadv_v_metric_queue_entry *metric_safe;
+         struct batadv_hardif_neigh_node *hardif_neigh;
+         struct batadv_hard_iface *hard_iface;
+         struct batadv_hard_iface_bat_v *bat_v;
+         struct batadv_elp_packet *elp_packet;
++        struct list_head metric_queue;
+         struct batadv_priv *bat_priv;
+         struct sk_buff *skb;
+         u32 elp_interval;
+-        bool ret;
+ 
+         bat_v = container_of(work, struct batadv_hard_iface_bat_v, elp_wq.work);
+         hard_iface = container_of(bat_v, struct batadv_hard_iface, bat_v);
+@@ -316,6 +327,8 @@ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ 
+         atomic_inc(&hard_iface->bat_v.elp_seqno);
+ 
++        INIT_LIST_HEAD(&metric_queue);
++
+         /* The throughput metric is updated on each sent packet. This way, if a
+          * node is dead and no longer sends packets, batman-adv is still able to
+          * react timely to its death.
+@@ -340,16 +353,28 @@ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ 
+                 /* Reading the estimated throughput from cfg80211 is a task that
+                  * may sleep and that is not allowed in an rcu protected
+-                 * context. Therefore schedule a task for that.
++                 * context. Therefore add it to metric_queue and process it
++                 * outside rcu protected context.
+                  */
+-                ret = queue_work(batadv_event_workqueue,
+-                                 &hardif_neigh->bat_v.metric_work);
+-
+-                if (!ret)
++                metric_entry = kzalloc(sizeof(*metric_entry), GFP_ATOMIC);
++                if (!metric_entry) {
+                         batadv_hardif_neigh_put(hardif_neigh);
++                        continue;
++                }
++
++                metric_entry->hardif_neigh = hardif_neigh;
++                list_add(&metric_entry->list, &metric_queue);
+         }
+         rcu_read_unlock();
+ 
++        list_for_each_entry_safe(metric_entry, metric_safe, &metric_queue, list) {
++                batadv_v_elp_throughput_metric_update(metric_entry->hardif_neigh);
++
++                batadv_hardif_neigh_put(metric_entry->hardif_neigh);
++                list_del(&metric_entry->list);
++                kfree(metric_entry);
++        }
++
+ restart_timer:
+         batadv_v_elp_start_timer(hard_iface);
+ out:
+diff --git a/net/batman-adv/bat_v_elp.h b/net/batman-adv/bat_v_elp.h
+index 9e2740195fa2..c9cb0a307100 100644
+--- a/net/batman-adv/bat_v_elp.h
++++ b/net/batman-adv/bat_v_elp.h
+@@ -10,7 +10,6 @@
+ #include ""main.h""
+ 
+ #include <linux/skbuff.h>
+-#include <linux/workqueue.h>
+ 
+ int batadv_v_elp_iface_enable(struct batadv_hard_iface *hard_iface);
+ void batadv_v_elp_iface_disable(struct batadv_hard_iface *hard_iface);
+@@ -19,6 +18,5 @@ void batadv_v_elp_iface_activate(struct batadv_hard_iface *primary_iface,
+ void batadv_v_elp_primary_iface_set(struct batadv_hard_iface *primary_iface);
+ int batadv_v_elp_packet_recv(struct sk_buff *skb,
+                              struct batadv_hard_iface *if_incoming);
+-void batadv_v_elp_throughput_metric_update(struct work_struct *work);
+ 
+ #endif /* _NET_BATMAN_ADV_BAT_V_ELP_H_ */
+diff --git a/net/batman-adv/types.h b/net/batman-adv/types.h
+index 04f6398b3a40..85a50096f5b2 100644
+--- a/net/batman-adv/types.h
++++ b/net/batman-adv/types.h
+@@ -596,9 +596,6 @@ struct batadv_hardif_neigh_node_bat_v {
+          *  neighbor
+          */
+         unsigned long last_unicast_tx;
+-
+-        /** @metric_work: work queue callback item for metric update */
+-        struct work_struct metric_work;
+ };
+ 
+ /**
+-- 
+2.39.5 (Apple Git-154)
+
+",1c334629176c2d644befc31a20d4bf75542f7631,"From 1c334629176c2d644befc31a20d4bf75542f7631 Mon Sep 17 00:00:00 2001
+From: Sven Eckelmann <sven@narfation.org>
+Date: Mon, 20 Jan 2025 00:06:11 +0100
+Subject: [PATCH] batman-adv: Drop unmanaged ELP metric worker
+
+commit 8c8ecc98f5c65947b0070a24bac11e12e47cc65d upstream.
+
+The ELP worker needs to calculate new metric values for all neighbors
+""reachable"" over an interface. Some of the used metric sources require
+locks which might need to sleep. This sleep is incompatible with the RCU
+list iterator used for the recorded neighbors. The initial approach to work
+around of this problem was to queue another work item per neighbor and then
+run this in a new context.
+
+Even when this solved the RCU vs might_sleep() conflict, it has a major
+problems: Nothing was stopping the work item in case it is not needed
+anymore - for example because one of the related interfaces was removed or
+the batman-adv module was unloaded - resulting in potential invalid memory
+accesses.
+
+Directly canceling the metric worker also has various problems:
+
+* cancel_work_sync for a to-be-deactivated interface is called with
+  rtnl_lock held. But the code in the ELP metric worker also tries to use
+  rtnl_lock() - which will never return in this case. This also means that
+  cancel_work_sync would never return because it is waiting for the worker
+  to finish.
+* iterating over the neighbor list for the to-be-deactivated interface is
+  currently done using the RCU specific methods. Which means that it is
+  possible to miss items when iterating over it without the associated
+  spinlock - a behaviour which is acceptable for a periodic metric check
+  but not for a cleanup routine (which must ""stop"" all still running
+  workers)
+
+The better approch is to get rid of the per interface neighbor metric
+worker and handle everything in the interface worker. The original problems
+are solved by:
+
+* creating a list of neighbors which require new metric information inside
+  the RCU protected context, gathering the metric according to the new list
+  outside the RCU protected context
+* only use rcu_trylock inside metric gathering code to avoid a deadlock
+  when the cancel_delayed_work_sync is called in the interface removal code
+  (which is called with the rtnl_lock held)
+
+Cc: stable@vger.kernel.org
+Fixes: c833484e5f38 (""batman-adv: ELP - compute the metric based on the estimated throughput"")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/batman-adv/bat_v.c     |  2 --
+ net/batman-adv/bat_v_elp.c | 74 +++++++++++++++++++++++++-------------
+ net/batman-adv/bat_v_elp.h |  2 --
+ net/batman-adv/types.h     |  3 --
+ 4 files changed, 50 insertions(+), 31 deletions(-)
+
+diff --git a/net/batman-adv/bat_v.c b/net/batman-adv/bat_v.c
+index 64054edc2e3c..8a68f68109bf 100644
+--- a/net/batman-adv/bat_v.c
++++ b/net/batman-adv/bat_v.c
+@@ -115,8 +115,6 @@ static void
+ batadv_v_hardif_neigh_init(struct batadv_hardif_neigh_node *hardif_neigh)
+ {
+         ewma_throughput_init(&hardif_neigh->bat_v.throughput);
+-        INIT_WORK(&hardif_neigh->bat_v.metric_work,
+-                  batadv_v_elp_throughput_metric_update);
+ }
+ 
+ #ifdef CONFIG_BATMAN_ADV_DEBUGFS
+diff --git a/net/batman-adv/bat_v_elp.c b/net/batman-adv/bat_v_elp.c
+index aa98637fe83c..b6d580494b89 100644
+--- a/net/batman-adv/bat_v_elp.c
++++ b/net/batman-adv/bat_v_elp.c
+@@ -18,6 +18,7 @@
+ #include <linux/jiffies.h>
+ #include <linux/kernel.h>
+ #include <linux/kref.h>
++#include <linux/list.h>
+ #include <linux/netdevice.h>
+ #include <linux/nl80211.h>
+ #include <linux/random.h>
+@@ -25,6 +26,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/skbuff.h>
++#include <linux/slab.h>
+ #include <linux/stddef.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
+@@ -40,6 +42,18 @@
+ #include ""routing.h""
+ #include ""send.h""
+ 
++/**
++ * struct batadv_v_metric_queue_entry - list of hardif neighbors which require
++ *  and metric update
++ */
++struct batadv_v_metric_queue_entry {
++        /** @hardif_neigh: hardif neighbor scheduled for metric update */
++        struct batadv_hardif_neigh_node *hardif_neigh;
++
++        /** @list: list node for metric_queue */
++        struct list_head list;
++};
++
+ /**
+  * batadv_v_elp_start_timer() - restart timer for ELP periodic work
+  * @hard_iface: the interface for which the timer has to be reset
+@@ -126,11 +140,19 @@ static bool batadv_v_elp_get_throughput(struct batadv_hardif_neigh_node *neigh,
+                 return true;
+         }
+ 
++        memset(&link_settings, 0, sizeof(link_settings));
++
++        /* only use rtnl_trylock because the elp worker will be cancelled while
++         * the rntl_lock is held. the cancel_delayed_work_sync() would otherwise
++         * wait forever when the elp work_item was started and it is then also
++         * trying to rtnl_lock
++         */
++        if (!rtnl_trylock())
++                return false;
++
+         /* if not a wifi interface, check if this device provides data via
+          * ethtool (e.g. an Ethernet adapter)
+          */
+-        memset(&link_settings, 0, sizeof(link_settings));
+-        rtnl_lock();
+         ret = __ethtool_get_link_ksettings(hard_iface->net_dev, &link_settings);
+         rtnl_unlock();
+         if (ret == 0) {
+@@ -165,31 +187,19 @@ default_throughput:
+ /**
+  * batadv_v_elp_throughput_metric_update() - worker updating the throughput
+  *  metric of a single hop neighbour
+- * @work: the work queue item
++ * @neigh: the neighbour to probe
+  */
+-void batadv_v_elp_throughput_metric_update(struct work_struct *work)
++static void
++batadv_v_elp_throughput_metric_update(struct batadv_hardif_neigh_node *neigh)
+ {
+-        struct batadv_hardif_neigh_node_bat_v *neigh_bat_v;
+-        struct batadv_hardif_neigh_node *neigh;
+         u32 throughput;
+         bool valid;
+ 
+-        neigh_bat_v = container_of(work, struct batadv_hardif_neigh_node_bat_v,
+-                                   metric_work);
+-        neigh = container_of(neigh_bat_v, struct batadv_hardif_neigh_node,
+-                             bat_v);
+-
+         valid = batadv_v_elp_get_throughput(neigh, &throughput);
+         if (!valid)
+-                goto put_neigh;
++                return;
+ 
+         ewma_throughput_add(&neigh->bat_v.throughput, throughput);
+-
+-put_neigh:
+-        /* decrement refcounter to balance increment performed before scheduling
+-         * this task
+-         */
+-        batadv_hardif_neigh_put(neigh);
+ }
+ 
+ /**
+@@ -263,14 +273,16 @@ batadv_v_elp_wifi_neigh_probe(struct batadv_hardif_neigh_node *neigh)
+  */
+ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ {
++        struct batadv_v_metric_queue_entry *metric_entry;
++        struct batadv_v_metric_queue_entry *metric_safe;
+         struct batadv_hardif_neigh_node *hardif_neigh;
+         struct batadv_hard_iface *hard_iface;
+         struct batadv_hard_iface_bat_v *bat_v;
+         struct batadv_elp_packet *elp_packet;
++        struct list_head metric_queue;
+         struct batadv_priv *bat_priv;
+         struct sk_buff *skb;
+         u32 elp_interval;
+-        bool ret;
+ 
+         bat_v = container_of(work, struct batadv_hard_iface_bat_v, elp_wq.work);
+         hard_iface = container_of(bat_v, struct batadv_hard_iface, bat_v);
+@@ -306,6 +318,8 @@ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ 
+         atomic_inc(&hard_iface->bat_v.elp_seqno);
+ 
++        INIT_LIST_HEAD(&metric_queue);
++
+         /* The throughput metric is updated on each sent packet. This way, if a
+          * node is dead and no longer sends packets, batman-adv is still able to
+          * react timely to its death.
+@@ -330,16 +344,28 @@ static void batadv_v_elp_periodic_work(struct work_struct *work)
+ 
+                 /* Reading the estimated throughput from cfg80211 is a task that
+                  * may sleep and that is not allowed in an rcu protected
+-                 * context. Therefore schedule a task for that.
++                 * context. Therefore add it to metric_queue and process it
++                 * outside rcu protected context.
+                  */
+-                ret = queue_work(batadv_event_workqueue,
+-                                 &hardif_neigh->bat_v.metric_work);
+-
+-                if (!ret)
++                metric_entry = kzalloc(sizeof(*metric_entry), GFP_ATOMIC);
++                if (!metric_entry) {
+                         batadv_hardif_neigh_put(hardif_neigh);
++                        continue;
++                }
++
++                metric_entry->hardif_neigh = hardif_neigh;
++                list_add(&metric_entry->list, &metric_queue);
+         }
+         rcu_read_unlock();
+ 
++        list_for_each_entry_safe(metric_entry, metric_safe, &metric_queue, list) {
++                batadv_v_elp_throughput_metric_update(metric_entry->hardif_neigh);
++
++                batadv_hardif_neigh_put(metric_entry->hardif_neigh);
++                list_del(&metric_entry->list);
++                kfree(metric_entry);
++        }
++
+ restart_timer:
+         batadv_v_elp_start_timer(hard_iface);
+ out:
+diff --git a/net/batman-adv/bat_v_elp.h b/net/batman-adv/bat_v_elp.h
+index 1a29505f4f66..5595fa531d7c 100644
+--- a/net/batman-adv/bat_v_elp.h
++++ b/net/batman-adv/bat_v_elp.h
+@@ -10,7 +10,6 @@
+ #include ""main.h""
+ 
+ #include <linux/skbuff.h>
+-#include <linux/workqueue.h>
+ 
+ int batadv_v_elp_iface_enable(struct batadv_hard_iface *hard_iface);
+ void batadv_v_elp_iface_disable(struct batadv_hard_iface *hard_iface);
+@@ -19,6 +18,5 @@ void batadv_v_elp_iface_activate(struct batadv_hard_iface *primary_iface,
+ void batadv_v_elp_primary_iface_set(struct batadv_hard_iface *primary_iface);
+ int batadv_v_elp_packet_recv(struct sk_buff *skb,
+                              struct batadv_hard_iface *if_incoming);
+-void batadv_v_elp_throughput_metric_update(struct work_struct *work);
+ 
+ #endif /* _NET_BATMAN_ADV_BAT_V_ELP_H_ */
+diff --git a/net/batman-adv/types.h b/net/batman-adv/types.h
+index 9fdf1be9b99b..a4a4c0c0c887 100644
+--- a/net/batman-adv/types.h
++++ b/net/batman-adv/types.h
+@@ -603,9 +603,6 @@ struct batadv_hardif_neigh_node_bat_v {
+          *  neighbor
+          */
+         unsigned long last_unicast_tx;
+-
+-        /** @metric_work: work queue callback item for metric update */
+-        struct work_struct metric_work;
+ };
+ 
+ /**
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file net/batman-adv/bat_v.c\nHunk #1 succeeded at 115 with fuzz 1 (offset 2 lines).\npatching file net/batman-adv/bat_v_elp.c\nHunk #1 FAILED at 18.\nHunk #2 succeeded at 25 (offset -1 lines).\nHunk #3 succeeded at 41 (offset -1 lines).\nHunk #4 FAILED at 150.\nHunk #5 succeeded at 178 (offset -10 lines).\nHunk #6 succeeded at 264 (offset -10 lines).\nHunk #7 succeeded at 309 (offset -10 lines).\nHunk #8 succeeded at 335 (offset -10 lines).\n2 out of 8 hunks FAILED -- saving rejects to file net/batman-adv/bat_v_elp.c.rej\npatching file net/batman-adv/bat_v_elp.h\npatching file net/batman-adv/types.h\nHunk #1 succeeded at 603 (offset 7 lines).,79,2,37,258,1,1,0,DELETE,DELETE
+CVE-2025-21655,c9a40292a44e78f71258b8522655bffaf5753bdb,"From c9a40292a44e78f71258b8522655bffaf5753bdb Mon Sep 17 00:00:00 2001
+From: Jens Axboe <axboe@kernel.dk>
+Date: Wed, 8 Jan 2025 10:28:05 -0700
+Subject: [PATCH] io_uring/eventfd: ensure io_eventfd_signal() defers another
+ RCU period
+
+io_eventfd_do_signal() is invoked from an RCU callback, but when
+dropping the reference to the io_ev_fd, it calls io_eventfd_free()
+directly if the refcount drops to zero. This isn't correct, as any
+potential freeing of the io_ev_fd should be deferred another RCU grace
+period.
+
+Just call io_eventfd_put() rather than open-code the dec-and-test and
+free, which will correctly defer it another RCU grace period.
+
+Fixes: 21a091b970cd (""io_uring: signal registered eventfd to process deferred task work"")
+Reported-by: Jann Horn <jannh@google.com>
+Cc: stable@vger.kernel.org
+Tested-by: Li Zetao <lizetao1@huawei.com>
+Reviewed-by: Li Zetao<lizetao1@huawei.com>
+Reviewed-by: Prasanna Kumar T S M <ptsm@linux.microsoft.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ io_uring/eventfd.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/io_uring/eventfd.c b/io_uring/eventfd.c
+index fab936d31ba8..100d5da94cb9 100644
+--- a/io_uring/eventfd.c
++++ b/io_uring/eventfd.c
+@@ -33,20 +33,18 @@ static void io_eventfd_free(struct rcu_head *rcu)
+         kfree(ev_fd);
+ }
+ 
+-static void io_eventfd_do_signal(struct rcu_head *rcu)
++static void io_eventfd_put(struct io_ev_fd *ev_fd)
+ {
+-        struct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);
+-
+-        eventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);
+-
+         if (refcount_dec_and_test(&ev_fd->refs))
+-                io_eventfd_free(rcu);
++                call_rcu(&ev_fd->rcu, io_eventfd_free);
+ }
+ 
+-static void io_eventfd_put(struct io_ev_fd *ev_fd)
++static void io_eventfd_do_signal(struct rcu_head *rcu)
+ {
+-        if (refcount_dec_and_test(&ev_fd->refs))
+-                call_rcu(&ev_fd->rcu, io_eventfd_free);
++        struct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);
++
++        eventfd_signal_mask(ev_fd->cq_ev_fd, EPOLL_URING_WAKE);
++        io_eventfd_put(ev_fd);
+ }
+ 
+ static void io_eventfd_release(struct io_ev_fd *ev_fd, bool put_ref)
+-- 
+2.39.5 (Apple Git-154)
+
+",6b63308c28987c6010b1180c72a6db4df6c68033,"From 6b63308c28987c6010b1180c72a6db4df6c68033 Mon Sep 17 00:00:00 2001
+From: Jens Axboe <axboe@kernel.dk>
+Date: Wed, 8 Jan 2025 11:16:13 -0700
+Subject: [PATCH] io_uring/eventfd: ensure io_eventfd_signal() defers another
+ RCU period
+
+Commit c9a40292a44e78f71258b8522655bffaf5753bdb upstream.
+
+io_eventfd_do_signal() is invoked from an RCU callback, but when
+dropping the reference to the io_ev_fd, it calls io_eventfd_free()
+directly if the refcount drops to zero. This isn't correct, as any
+potential freeing of the io_ev_fd should be deferred another RCU grace
+period.
+
+Just call io_eventfd_put() rather than open-code the dec-and-test and
+free, which will correctly defer it another RCU grace period.
+
+Fixes: 21a091b970cd (""io_uring: signal registered eventfd to process deferred task work"")
+Reported-by: Jann Horn <jannh@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ io_uring/io_uring.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 9b58ba4616d4..480752fc3eb6 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -479,6 +479,13 @@ static __cold void io_queue_deferred(struct io_ring_ctx *ctx)
+         }
+ }
+ 
++static void io_eventfd_free(struct rcu_head *rcu)
++{
++        struct io_ev_fd *ev_fd = container_of(rcu, struct io_ev_fd, rcu);
++
++        eventfd_ctx_put(ev_fd->cq_ev_fd);
++        kfree(ev_fd);
++}
+ 
+ static void io_eventfd_ops(struct rcu_head *rcu)
+ {
+@@ -492,10 +499,8 @@ static void io_eventfd_ops(struct rcu_head *rcu)
+          * ordering in a race but if references are 0 we know we have to free
+          * it regardless.
+          */
+-        if (atomic_dec_and_test(&ev_fd->refs)) {
+-                eventfd_ctx_put(ev_fd->cq_ev_fd);
+-                kfree(ev_fd);
+-        }
++        if (atomic_dec_and_test(&ev_fd->refs))
++                call_rcu(&ev_fd->rcu, io_eventfd_free);
+ }
+ 
+ static void io_eventfd_signal(struct io_ring_ctx *ctx)
+-- 
+2.39.5 (Apple Git-154)
+
+","can't find file to patch at input line 31\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|From c9a40292a44e78f71258b8522655bffaf5753bdb Mon Sep 17 00:00:00 2001\n|From: Jens Axboe <axboe@kernel.dk>\n|Date: Wed, 8 Jan 2025 10:28:05 -0700\n|Subject: [PATCH] io_uring/eventfd: ensure io_eventfd_signal() defers another\n| RCU period\n|\n|io_eventfd_do_signal() is invoked from an RCU callback, but when\n|dropping the reference to the io_ev_fd, it calls io_eventfd_free()\n|directly if the refcount drops to zero. This isn't correct, as any\n|potential freeing of the io_ev_fd should be deferred another RCU grace\n|period.\n|\n|Just call io_eventfd_put() rather than open-code the dec-and-test and\n|free, which will correctly defer it another RCU grace period.\n|\n|Fixes: 21a091b970cd (\""io_uring: signal registered eventfd to process deferred task work\"")\n|Reported-by: Jann Horn <jannh@google.com>\n|Cc: stable@vger.kernel.org\n|Tested-by: Li Zetao <lizetao1@huawei.com>\n|Reviewed-by: Li Zetao<lizetao1@huawei.com>\n|Reviewed-by: Prasanna Kumar T S M <ptsm@linux.microsoft.com>\n|Signed-off-by: Jens Axboe <axboe@kernel.dk>\n|---\n| io_uring/eventfd.c | 16 +++++++---------\n| 1 file changed, 7 insertions(+), 9 deletions(-)\n|\n|diff --git a/io_uring/eventfd.c b/io_uring/eventfd.c\n|index fab936d31ba8..100d5da94cb9 100644\n|--- a/io_uring/eventfd.c\n|+++ b/io_uring/eventfd.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n1 out of 1 hunk ignored",17,2,10,61,1,2,1,OTHER,COMMENTS
+CVE-2025-21757,c71a192976ded2f2f416d03c4f595cdd4478b825,"From c71a192976ded2f2f416d03c4f595cdd4478b825 Mon Sep 17 00:00:00 2001
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Wed, 29 Jan 2025 19:15:18 -0800
+Subject: [PATCH] net: ipv6: fix dst refleaks in rpl, seg6 and ioam6 lwtunnels
+
+dst_cache_get() gives us a reference, we need to release it.
+
+Discovered by the ioam6.sh test, kmemleak was recently fixed
+to catch per-cpu memory leaks.
+
+Fixes: 985ec6f5e623 (""net: ipv6: rpl_iptunnel: mitigate 2-realloc issue"")
+Fixes: 40475b63761a (""net: ipv6: seg6_iptunnel: mitigate 2-realloc issue"")
+Fixes: dce525185bc9 (""net: ipv6: ioam6_iptunnel: mitigate 2-realloc issue"")
+Reviewed-by: Justin Iurman <justin.iurman@uliege.be>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://patch.msgid.link/20250130031519.2716843-1-kuba@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ net/ipv6/ioam6_iptunnel.c | 5 +++--
+ net/ipv6/rpl_iptunnel.c   | 6 ++++--
+ net/ipv6/seg6_iptunnel.c  | 6 ++++--
+ 3 files changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/net/ipv6/ioam6_iptunnel.c b/net/ipv6/ioam6_iptunnel.c
+index 28e5a89dc255..3936c137a572 100644
+--- a/net/ipv6/ioam6_iptunnel.c
++++ b/net/ipv6/ioam6_iptunnel.c
+@@ -336,7 +336,7 @@ static int ioam6_do_encap(struct net *net, struct sk_buff *skb,
+ 
+ static int ioam6_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ {
+-        struct dst_entry *dst = skb_dst(skb), *cache_dst;
++        struct dst_entry *dst = skb_dst(skb), *cache_dst = NULL;
+         struct in6_addr orig_daddr;
+         struct ioam6_lwt *ilwt;
+         int err = -EINVAL;
+@@ -407,7 +407,6 @@ static int ioam6_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+                 cache_dst = ip6_route_output(net, NULL, &fl6);
+                 if (cache_dst->error) {
+                         err = cache_dst->error;
+-                        dst_release(cache_dst);
+                         goto drop;
+                 }
+ 
+@@ -426,8 +425,10 @@ static int ioam6_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+                 return dst_output(net, sk, skb);
+         }
+ out:
++        dst_release(cache_dst);
+         return dst->lwtstate->orig_output(net, sk, skb);
+ drop:
++        dst_release(cache_dst);
+         kfree_skb(skb);
+         return err;
+ }
+diff --git a/net/ipv6/rpl_iptunnel.c b/net/ipv6/rpl_iptunnel.c
+index 7ba22d2f2bfe..9b7d03563115 100644
+--- a/net/ipv6/rpl_iptunnel.c
++++ b/net/ipv6/rpl_iptunnel.c
+@@ -232,7 +232,6 @@ static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+                 dst = ip6_route_output(net, NULL, &fl6);
+                 if (dst->error) {
+                         err = dst->error;
+-                        dst_release(dst);
+                         goto drop;
+                 }
+ 
+@@ -251,6 +250,7 @@ static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+         return dst_output(net, sk, skb);
+ 
+ drop:
++        dst_release(dst);
+         kfree_skb(skb);
+         return err;
+ }
+@@ -269,8 +269,10 @@ static int rpl_input(struct sk_buff *skb)
+         local_bh_enable();
+ 
+         err = rpl_do_srh(skb, rlwt, dst);
+-        if (unlikely(err))
++        if (unlikely(err)) {
++                dst_release(dst);
+                 goto drop;
++        }
+ 
+         if (!dst) {
+                 ip6_route_input(skb);
+diff --git a/net/ipv6/seg6_iptunnel.c b/net/ipv6/seg6_iptunnel.c
+index 4bf937bfc263..eacc4e91b48e 100644
+--- a/net/ipv6/seg6_iptunnel.c
++++ b/net/ipv6/seg6_iptunnel.c
+@@ -482,8 +482,10 @@ static int seg6_input_core(struct net *net, struct sock *sk,
+         local_bh_enable();
+ 
+         err = seg6_do_srh(skb, dst);
+-        if (unlikely(err))
++        if (unlikely(err)) {
++                dst_release(dst);
+                 goto drop;
++        }
+ 
+         if (!dst) {
+                 ip6_route_input(skb);
+@@ -571,7 +573,6 @@ static int seg6_output_core(struct net *net, struct sock *sk,
+                 dst = ip6_route_output(net, NULL, &fl6);
+                 if (dst->error) {
+                         err = dst->error;
+-                        dst_release(dst);
+                         goto drop;
+                 }
+ 
+@@ -593,6 +594,7 @@ static int seg6_output_core(struct net *net, struct sock *sk,
+ 
+         return dst_output(net, sk, skb);
+ drop:
++        dst_release(dst);
+         kfree_skb(skb);
+         return err;
+ }
+-- 
+2.39.5 (Apple Git-154)
+",bf500b0d0cfe92ee62dfd4c2ace7f6353cf3a4c8,"From bf500b0d0cfe92ee62dfd4c2ace7f6353cf3a4c8 Mon Sep 17 00:00:00 2001
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Wed, 29 Jan 2025 19:15:18 -0800
+Subject: [PATCH] net: ipv6: fix dst refleaks in rpl, seg6 and ioam6 lwtunnels
+
+commit c71a192976ded2f2f416d03c4f595cdd4478b825 upstream.
+
+dst_cache_get() gives us a reference, we need to release it.
+
+Discovered by the ioam6.sh test, kmemleak was recently fixed
+to catch per-cpu memory leaks.
+
+Fixes: 985ec6f5e623 (""net: ipv6: rpl_iptunnel: mitigate 2-realloc issue"")
+Fixes: 40475b63761a (""net: ipv6: seg6_iptunnel: mitigate 2-realloc issue"")
+Fixes: dce525185bc9 (""net: ipv6: ioam6_iptunnel: mitigate 2-realloc issue"")
+Reviewed-by: Justin Iurman <justin.iurman@uliege.be>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://patch.msgid.link/20250130031519.2716843-1-kuba@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/ipv6/rpl_iptunnel.c  | 6 ++++--
+ net/ipv6/seg6_iptunnel.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/net/ipv6/rpl_iptunnel.c b/net/ipv6/rpl_iptunnel.c
+index 862ac1e2e191..6bf95aba0efc 100644
+--- a/net/ipv6/rpl_iptunnel.c
++++ b/net/ipv6/rpl_iptunnel.c
+@@ -232,7 +232,6 @@ static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+                 dst = ip6_route_output(net, NULL, &fl6);
+                 if (dst->error) {
+                         err = dst->error;
+-                        dst_release(dst);
+                         goto drop;
+                 }
+ 
+@@ -251,6 +250,7 @@ static int rpl_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+         return dst_output(net, sk, skb);
+ 
+ drop:
++        dst_release(dst);
+         kfree_skb(skb);
+         return err;
+ }
+@@ -277,8 +277,10 @@ static int rpl_input(struct sk_buff *skb)
+         local_bh_enable();
+ 
+         err = rpl_do_srh(skb, rlwt, dst);
+-        if (unlikely(err))
++        if (unlikely(err)) {
++                dst_release(dst);
+                 goto drop;
++        }
+ 
+         skb_dst_drop(skb);
+ 
+diff --git a/net/ipv6/seg6_iptunnel.c b/net/ipv6/seg6_iptunnel.c
+index b186d85ec5b3..4188c1675483 100644
+--- a/net/ipv6/seg6_iptunnel.c
++++ b/net/ipv6/seg6_iptunnel.c
+@@ -490,8 +490,10 @@ static int seg6_input_core(struct net *net, struct sock *sk,
+         local_bh_enable();
+ 
+         err = seg6_do_srh(skb, dst);
+-        if (unlikely(err))
++        if (unlikely(err)) {
++                dst_release(dst);
+                 goto drop;
++        }
+ 
+         skb_dst_drop(skb);
+ 
+@@ -582,7 +584,6 @@ static int seg6_output_core(struct net *net, struct sock *sk,
+                 dst = ip6_route_output(net, NULL, &fl6);
+                 if (dst->error) {
+                         err = dst->error;
+-                        dst_release(dst);
+                         goto drop;
+                 }
+ 
+@@ -604,6 +605,7 @@ static int seg6_output_core(struct net *net, struct sock *sk,
+ 
+         return dst_output(net, sk, skb);
+ drop:
++        dst_release(dst);
+         kfree_skb(skb);
+         return err;
+ }
+-- 
+2.39.5 (Apple Git-154)
+",patching file net/ipv6/ioam6_iptunnel.c\nHunk #1 FAILED at 336.\nHunk #2 FAILED at 407.\nHunk #3 FAILED at 426.\n3 out of 3 hunks FAILED -- saving rejects to file net/ipv6/ioam6_iptunnel.c.rej\npatching file net/ipv6/rpl_iptunnel.c\nHunk #3 succeeded at 277 with fuzz 2 (offset 8 lines).\npatching file net/ipv6/seg6_iptunnel.c\nHunk #1 succeeded at 490 with fuzz 2 (offset 8 lines).\nHunk #2 succeeded at 584 (offset 11 lines).\nHunk #3 succeeded at 605 (offset 11 lines).,18,1,28,121,1,4,0,COMMENTS,OTHER
+CVE-2025-21836,8802766324e1f5d414a81ac43365c20142e85603,"From 8802766324e1f5d414a81ac43365c20142e85603 Mon Sep 17 00:00:00 2001
+From: Pavel Begunkov <asml.silence@gmail.com>
+Date: Wed, 12 Feb 2025 13:46:46 +0000
+Subject: [PATCH] io_uring/kbuf: reallocate buf lists on upgrade
+
+IORING_REGISTER_PBUF_RING can reuse an old struct io_buffer_list if it
+was created for legacy selected buffer and has been emptied. It violates
+the requirement that most of the field should stay stable after publish.
+Always reallocate it instead.
+
+Cc: stable@vger.kernel.org
+Reported-by: Pumpkin Chang <pumpkin@devco.re>
+Fixes: 2fcabce2d7d34 (""io_uring: disallow mixed provided buffer group registrations"")
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ io_uring/kbuf.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/io_uring/kbuf.c b/io_uring/kbuf.c
+index 04bf493eecae..8e72de7712ac 100644
+--- a/io_uring/kbuf.c
++++ b/io_uring/kbuf.c
+@@ -415,6 +415,13 @@ void io_destroy_buffers(struct io_ring_ctx *ctx)
+         }
+ }
+ 
++static void io_destroy_bl(struct io_ring_ctx *ctx, struct io_buffer_list *bl)
++{
++        scoped_guard(mutex, &ctx->mmap_lock)
++                WARN_ON_ONCE(xa_erase(&ctx->io_bl_xa, bl->bgid) != bl);
++        io_put_bl(ctx, bl);
++}
++
+ int io_remove_buffers_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ {
+         struct io_provide_buf *p = io_kiocb_to_cmd(req, struct io_provide_buf);
+@@ -636,12 +643,13 @@ int io_register_pbuf_ring(struct io_ring_ctx *ctx, void __user *arg)
+                 /* if mapped buffer ring OR classic exists, don't allow */
+                 if (bl->flags & IOBL_BUF_RING || !list_empty(&bl->buf_list))
+                         return -EEXIST;
+-        } else {
+-                free_bl = bl = kzalloc(sizeof(*bl), GFP_KERNEL);
+-                if (!bl)
+-                        return -ENOMEM;
++                io_destroy_bl(ctx, bl);
+         }
+ 
++        free_bl = bl = kzalloc(sizeof(*bl), GFP_KERNEL);
++        if (!bl)
++                return -ENOMEM;
++
+         mmap_offset = (unsigned long)reg.bgid << IORING_OFF_PBUF_SHIFT;
+         ring_size = flex_array_size(br, bufs, reg.ring_entries);
+ 
+-- 
+2.39.5 (Apple Git-154)
+",146a185f6c05ee263db715f860620606303c4633,"From 146a185f6c05ee263db715f860620606303c4633 Mon Sep 17 00:00:00 2001
+From: Pavel Begunkov <asml.silence@gmail.com>
+Date: Wed, 12 Feb 2025 13:46:46 +0000
+Subject: [PATCH] io_uring/kbuf: reallocate buf lists on upgrade
+
+commit 8802766324e1f5d414a81ac43365c20142e85603 upstream.
+
+IORING_REGISTER_PBUF_RING can reuse an old struct io_buffer_list if it
+was created for legacy selected buffer and has been emptied. It violates
+the requirement that most of the field should stay stable after publish.
+Always reallocate it instead.
+
+Cc: stable@vger.kernel.org
+Reported-by: Pumpkin Chang <pumpkin@devco.re>
+Fixes: 2fcabce2d7d34 (""io_uring: disallow mixed provided buffer group registrations"")
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ io_uring/kbuf.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/io_uring/kbuf.c b/io_uring/kbuf.c
+index 702c08c26cd4..b6fbae874f27 100644
+--- a/io_uring/kbuf.c
++++ b/io_uring/kbuf.c
+@@ -301,6 +301,12 @@ void io_destroy_buffers(struct io_ring_ctx *ctx)
+         }
+ }
+ 
++static void io_destroy_bl(struct io_ring_ctx *ctx, struct io_buffer_list *bl)
++{
++        xa_erase(&ctx->io_bl_xa, bl->bgid);
++        io_put_bl(ctx, bl);
++}
++
+ int io_remove_buffers_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ {
+         struct io_provide_buf *p = io_kiocb_to_cmd(req, struct io_provide_buf);
+@@ -642,12 +648,13 @@ int io_register_pbuf_ring(struct io_ring_ctx *ctx, void __user *arg)
+                 /* if mapped buffer ring OR classic exists, don't allow */
+                 if (bl->is_mapped || !list_empty(&bl->buf_list))
+                         return -EEXIST;
+-        } else {
+-                free_bl = bl = kzalloc(sizeof(*bl), GFP_KERNEL);
+-                if (!bl)
+-                        return -ENOMEM;
++                io_destroy_bl(ctx, bl);
+         }
+ 
++        free_bl = bl = kzalloc(sizeof(*bl), GFP_KERNEL);
++        if (!bl)
++                return -ENOMEM;
++
+         if (!(reg.flags & IOU_PBUF_RING_MMAP))
+                 ret = io_pin_pbuf_ring(&reg, bl);
+         else
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file io_uring/kbuf.c\nHunk #1 succeeded at 301 (offset -114 lines).\nHunk #2 FAILED at 643.\n1 out of 2 hunks FAILED -- saving rejects to file io_uring/kbuf.c.rej,17,1,9,57,1,2,1,DISJOINT,OTHER
+CVE-2025-21722,ca76bb226bf47ff04c782cacbd299f12ddee1ec1,"From ca76bb226bf47ff04c782cacbd299f12ddee1ec1 Mon Sep 17 00:00:00 2001
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Wed, 8 Jan 2025 05:00:46 +0900
+Subject: [PATCH] nilfs2: do not force clear folio if buffer is referenced
+
+Patch series ""nilfs2: protect busy buffer heads from being force-cleared"".
+
+This series fixes the buffer head state inconsistency issues reported by
+syzbot that occurs when the filesystem is corrupted and falls back to
+read-only, and the associated buffer head use-after-free issue.
+
+
+This patch (of 2):
+
+Syzbot has reported that after nilfs2 detects filesystem corruption and
+falls back to read-only, inconsistencies in the buffer state may occur.
+
+One of the inconsistencies is that when nilfs2 calls mark_buffer_dirty()
+to set a data or metadata buffer as dirty, but it detects that the buffer
+is not in the uptodate state:
+
+ WARNING: CPU: 0 PID: 6049 at fs/buffer.c:1177 mark_buffer_dirty+0x2e5/0x520
+  fs/buffer.c:1177
+ ...
+ Call Trace:
+  <TASK>
+  nilfs_palloc_commit_alloc_entry+0x4b/0x160 fs/nilfs2/alloc.c:598
+  nilfs_ifile_create_inode+0x1dd/0x3a0 fs/nilfs2/ifile.c:73
+  nilfs_new_inode+0x254/0x830 fs/nilfs2/inode.c:344
+  nilfs_mkdir+0x10d/0x340 fs/nilfs2/namei.c:218
+  vfs_mkdir+0x2f9/0x4f0 fs/namei.c:4257
+  do_mkdirat+0x264/0x3a0 fs/namei.c:4280
+  __do_sys_mkdirat fs/namei.c:4295 [inline]
+  __se_sys_mkdirat fs/namei.c:4293 [inline]
+  __x64_sys_mkdirat+0x87/0xa0 fs/namei.c:4293
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The other is when nilfs_btree_propagate(), which propagates the dirty
+state to the ancestor nodes of a b-tree that point to a dirty buffer,
+detects that the origin buffer is not dirty, even though it should be:
+
+ WARNING: CPU: 0 PID: 5245 at fs/nilfs2/btree.c:2089
+  nilfs_btree_propagate+0xc79/0xdf0 fs/nilfs2/btree.c:2089
+ ...
+ Call Trace:
+  <TASK>
+  nilfs_bmap_propagate+0x75/0x120 fs/nilfs2/bmap.c:345
+  nilfs_collect_file_data+0x4d/0xd0 fs/nilfs2/segment.c:587
+  nilfs_segctor_apply_buffers+0x184/0x340 fs/nilfs2/segment.c:1006
+  nilfs_segctor_scan_file+0x28c/0xa50 fs/nilfs2/segment.c:1045
+  nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1216 [inline]
+  nilfs_segctor_collect fs/nilfs2/segment.c:1540 [inline]
+  nilfs_segctor_do_construct+0x1c28/0x6b90 fs/nilfs2/segment.c:2115
+  nilfs_segctor_construct+0x181/0x6b0 fs/nilfs2/segment.c:2479
+  nilfs_segctor_thread_construct fs/nilfs2/segment.c:2587 [inline]
+  nilfs_segctor_thread+0x69e/0xe80 fs/nilfs2/segment.c:2701
+  kthread+0x2f0/0x390 kernel/kthread.c:389
+  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+  </TASK>
+
+Both of these issues are caused by the callbacks that handle the
+page/folio write requests, forcibly clear various states, including the
+working state of the buffers they hold, at unexpected times when they
+detect read-only fallback.
+
+Fix these issues by checking if the buffer is referenced before clearing
+the page/folio state, and skipping the clear if it is.
+
+Link: https://lkml.kernel.org/r/20250107200202.6432-1-konishi.ryusuke@gmail.com
+Link: https://lkml.kernel.org/r/20250107200202.6432-2-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Reported-by: syzbot+b2b14916b77acf8626d7@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b2b14916b77acf8626d7
+Reported-by: syzbot+d98fd19acd08b36ff422@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=d98fd19acd08b36ff422
+Fixes: 8c26c4e2694a (""nilfs2: fix issue with flush kernel thread after remount in RO mode because of driver's internal error or metadata corruption"")
+Tested-by: syzbot+b2b14916b77acf8626d7@syzkaller.appspotmail.com
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ fs/nilfs2/page.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/fs/nilfs2/page.c b/fs/nilfs2/page.c
+index 9de2a494a069..899686d2e5f7 100644
+--- a/fs/nilfs2/page.c
++++ b/fs/nilfs2/page.c
+@@ -392,6 +392,11 @@ void nilfs_clear_dirty_pages(struct address_space *mapping)
+ /**
+  * nilfs_clear_folio_dirty - discard dirty folio
+  * @folio: dirty folio that will be discarded
++ *
++ * nilfs_clear_folio_dirty() clears working states including dirty state for
++ * the folio and its buffers.  If the folio has buffers, clear only if it is
++ * confirmed that none of the buffer heads are busy (none have valid
++ * references and none are locked).
+  */
+ void nilfs_clear_folio_dirty(struct folio *folio)
+ {
+@@ -399,10 +404,6 @@ void nilfs_clear_folio_dirty(struct folio *folio)
+ 
+ 	BUG_ON(!folio_test_locked(folio));
+ 
+-	folio_clear_uptodate(folio);
+-	folio_clear_mappedtodisk(folio);
+-	folio_clear_checked(folio);
+-
+ 	head = folio_buffers(folio);
+ 	if (head) {
+ 		const unsigned long clear_bits =
+@@ -410,6 +411,25 @@ void nilfs_clear_folio_dirty(struct folio *folio)
+ 			 BIT(BH_Async_Write) | BIT(BH_NILFS_Volatile) |
+ 			 BIT(BH_NILFS_Checked) | BIT(BH_NILFS_Redirected) |
+ 			 BIT(BH_Delay));
++		bool busy, invalidated = false;
++
++recheck_buffers:
++		busy = false;
++		bh = head;
++		do {
++			if (atomic_read(&bh->b_count) | buffer_locked(bh)) {
++				busy = true;
++				break;
++			}
++		} while (bh = bh->b_this_page, bh != head);
++
++		if (busy) {
++			if (invalidated)
++				return;
++			invalidate_bh_lrus();
++			invalidated = true;
++			goto recheck_buffers;
++		}
+ 
+ 		bh = head;
+ 		do {
+@@ -419,6 +439,9 @@ void nilfs_clear_folio_dirty(struct folio *folio)
+ 		} while (bh = bh->b_this_page, bh != head);
+ 	}
+ 
++	folio_clear_uptodate(folio);
++	folio_clear_mappedtodisk(folio);
++	folio_clear_checked(folio);
+ 	__nilfs_clear_folio_dirty(folio);
+ }
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",4d042811c72f71be7c14726db2c72b67025a7cb5,"From 4d042811c72f71be7c14726db2c72b67025a7cb5 Mon Sep 17 00:00:00 2001
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Fri, 7 Feb 2025 23:23:48 +0900
+Subject: [PATCH] nilfs2: do not force clear folio if buffer is referenced
+
+commit ca76bb226bf47ff04c782cacbd299f12ddee1ec1 upstream.
+
+Patch series ""nilfs2: protect busy buffer heads from being force-cleared"".
+
+This series fixes the buffer head state inconsistency issues reported by
+syzbot that occurs when the filesystem is corrupted and falls back to
+read-only, and the associated buffer head use-after-free issue.
+
+This patch (of 2):
+
+Syzbot has reported that after nilfs2 detects filesystem corruption and
+falls back to read-only, inconsistencies in the buffer state may occur.
+
+One of the inconsistencies is that when nilfs2 calls mark_buffer_dirty()
+to set a data or metadata buffer as dirty, but it detects that the buffer
+is not in the uptodate state:
+
+ WARNING: CPU: 0 PID: 6049 at fs/buffer.c:1177 mark_buffer_dirty+0x2e5/0x520
+  fs/buffer.c:1177
+ ...
+ Call Trace:
+  <TASK>
+  nilfs_palloc_commit_alloc_entry+0x4b/0x160 fs/nilfs2/alloc.c:598
+  nilfs_ifile_create_inode+0x1dd/0x3a0 fs/nilfs2/ifile.c:73
+  nilfs_new_inode+0x254/0x830 fs/nilfs2/inode.c:344
+  nilfs_mkdir+0x10d/0x340 fs/nilfs2/namei.c:218
+  vfs_mkdir+0x2f9/0x4f0 fs/namei.c:4257
+  do_mkdirat+0x264/0x3a0 fs/namei.c:4280
+  __do_sys_mkdirat fs/namei.c:4295 [inline]
+  __se_sys_mkdirat fs/namei.c:4293 [inline]
+  __x64_sys_mkdirat+0x87/0xa0 fs/namei.c:4293
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+The other is when nilfs_btree_propagate(), which propagates the dirty
+state to the ancestor nodes of a b-tree that point to a dirty buffer,
+detects that the origin buffer is not dirty, even though it should be:
+
+ WARNING: CPU: 0 PID: 5245 at fs/nilfs2/btree.c:2089
+  nilfs_btree_propagate+0xc79/0xdf0 fs/nilfs2/btree.c:2089
+ ...
+ Call Trace:
+  <TASK>
+  nilfs_bmap_propagate+0x75/0x120 fs/nilfs2/bmap.c:345
+  nilfs_collect_file_data+0x4d/0xd0 fs/nilfs2/segment.c:587
+  nilfs_segctor_apply_buffers+0x184/0x340 fs/nilfs2/segment.c:1006
+  nilfs_segctor_scan_file+0x28c/0xa50 fs/nilfs2/segment.c:1045
+  nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1216 [inline]
+  nilfs_segctor_collect fs/nilfs2/segment.c:1540 [inline]
+  nilfs_segctor_do_construct+0x1c28/0x6b90 fs/nilfs2/segment.c:2115
+  nilfs_segctor_construct+0x181/0x6b0 fs/nilfs2/segment.c:2479
+  nilfs_segctor_thread_construct fs/nilfs2/segment.c:2587 [inline]
+  nilfs_segctor_thread+0x69e/0xe80 fs/nilfs2/segment.c:2701
+  kthread+0x2f0/0x390 kernel/kthread.c:389
+  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+  </TASK>
+
+Both of these issues are caused by the callbacks that handle the
+page/folio write requests, forcibly clear various states, including the
+working state of the buffers they hold, at unexpected times when they
+detect read-only fallback.
+
+Fix these issues by checking if the buffer is referenced before clearing
+the page/folio state, and skipping the clear if it is.
+
+[konishi.ryusuke@gmail.com: adjusted for page/folio conversion]
+Link: https://lkml.kernel.org/r/20250107200202.6432-1-konishi.ryusuke@gmail.com
+Link: https://lkml.kernel.org/r/20250107200202.6432-2-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Reported-by: syzbot+b2b14916b77acf8626d7@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b2b14916b77acf8626d7
+Reported-by: syzbot+d98fd19acd08b36ff422@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=d98fd19acd08b36ff422
+Fixes: 8c26c4e2694a (""nilfs2: fix issue with flush kernel thread after remount in RO mode because of driver's internal error or metadata corruption"")
+Tested-by: syzbot+b2b14916b77acf8626d7@syzkaller.appspotmail.com
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/nilfs2/page.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
+
+diff --git a/fs/nilfs2/page.c b/fs/nilfs2/page.c
+index 93f24fa3ab10..ce5947cf4bd5 100644
+--- a/fs/nilfs2/page.c
++++ b/fs/nilfs2/page.c
+@@ -388,24 +388,44 @@ void nilfs_clear_dirty_pages(struct address_space *mapping)
+ /**
+  * nilfs_clear_dirty_page - discard dirty page
+  * @page: dirty page that will be discarded
++ *
++ * nilfs_clear_dirty_page() clears working states including dirty state for
++ * the page and its buffers.  If the page has buffers, clear only if it is
++ * confirmed that none of the buffer heads are busy (none have valid
++ * references and none are locked).
+  */
+ void nilfs_clear_dirty_page(struct page *page)
+ {
+ 	BUG_ON(!PageLocked(page));
+ 
+-	ClearPageUptodate(page);
+-	ClearPageMappedToDisk(page);
+-	ClearPageChecked(page);
+-
+ 	if (page_has_buffers(page)) {
+-		struct buffer_head *bh, *head;
++		struct buffer_head *bh, *head = page_buffers(page);
+ 		const unsigned long clear_bits =
+ 			(BIT(BH_Uptodate) | BIT(BH_Dirty) | BIT(BH_Mapped) |
+ 			 BIT(BH_Async_Write) | BIT(BH_NILFS_Volatile) |
+ 			 BIT(BH_NILFS_Checked) | BIT(BH_NILFS_Redirected) |
+ 			 BIT(BH_Delay));
++		bool busy, invalidated = false;
+ 
+-		bh = head = page_buffers(page);
++recheck_buffers:
++		busy = false;
++		bh = head;
++		do {
++			if (atomic_read(&bh->b_count) | buffer_locked(bh)) {
++				busy = true;
++				break;
++			}
++		} while (bh = bh->b_this_page, bh != head);
++
++		if (busy) {
++			if (invalidated)
++				return;
++			invalidate_bh_lrus();
++			invalidated = true;
++			goto recheck_buffers;
++		}
++
++		bh = head;
+ 		do {
+ 			lock_buffer(bh);
+ 			set_mask_bits(&bh->b_state, clear_bits, 0);
+@@ -413,6 +433,9 @@ void nilfs_clear_dirty_page(struct page *page)
+ 		} while (bh = bh->b_this_page, bh != head);
+ 	}
+ 
++	ClearPageUptodate(page);
++	ClearPageMappedToDisk(page);
++	ClearPageChecked(page);
+ 	__nilfs_clear_page_dirty(page);
+ }
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file fs/nilfs2/page.c\nHunk #1 FAILED at 392.\nHunk #2 FAILED at 399.\nHunk #3 succeeded at 404 with fuzz 2 (offset -6 lines).\nHunk #4 FAILED at 438.\n3 out of 4 hunks FAILED -- saving rejects to file fs/nilfs2/page.c.rej,32,1,5,151,1,1,0,OTHER,DELETE
+CVE-2025-21670,2cb7c756f605ec02ffe562fb26828e4bcc5fdfc2,"From 2cb7c756f605ec02ffe562fb26828e4bcc5fdfc1 Mon Sep 17 00:00:00 2001
+From: Stefano Garzarella <sgarzare@redhat.com>
+Date: Fri, 10 Jan 2025 09:35:07 +0100
+Subject: [PATCH] vsock/virtio: discard packets if the transport changes
+
+If the socket has been de-assigned or assigned to another transport,
+we must discard any packets received because they are not expected
+and would cause issues when we access vsk->transport.
+
+A possible scenario is described by Hyunwoo Kim in the attached link,
+where after a first connect() interrupted by a signal, and a second
+connect() failed, we can find `vsk->transport` at NULL, leading to a
+NULL pointer dereference.
+
+Fixes: c0cfa2d8a788 (""vsock: add multi-transports support"")
+Cc: stable@vger.kernel.org
+Reported-by: Hyunwoo Kim <v4bel@theori.io>
+Reported-by: Wongi Lee <qwerty@theori.io>
+Closes: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Hyunwoo Kim <v4bel@theori.io>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+---
+ net/vmw_vsock/virtio_transport_common.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index 9acc13ab3f82..51a494b69be8 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1628,8 +1628,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 
+         lock_sock(sk);
+ 
+-        /* Check if sk has been closed before lock_sock */
+-        if (sock_flag(sk, SOCK_DONE)) {
++        /* Check if sk has been closed or assigned to another transport before
++         * lock_sock (note: listener sockets are not assigned to any transport)
++         */
++        if (sock_flag(sk, SOCK_DONE) ||
++            (sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {
+                 (void)virtio_transport_reset_no_sock(t, skb);
+                 release_sock(sk);
+                 sock_put(sk);
+-- 
+2.39.5 (Apple Git-154)
+",18a7fc371d1dbf8deff16c2dd9292bcc73f43040,"From 18a7fc371d1dbf8deff16c2dd9292bcc73f43040 Mon Sep 17 00:00:00 2001
+From: Stefano Garzarella <sgarzare@redhat.com>
+Date: Fri, 10 Jan 2025 09:35:07 +0100
+Subject: [PATCH] vsock/virtio: discard packets if the transport changes
+
+commit 2cb7c756f605ec02ffe562fb26828e4bcc5fdfc1 upstream.
+
+If the socket has been de-assigned or assigned to another transport,
+we must discard any packets received because they are not expected
+and would cause issues when we access vsk->transport.
+
+A possible scenario is described by Hyunwoo Kim in the attached link,
+where after a first connect() interrupted by a signal, and a second
+connect() failed, we can find `vsk->transport` at NULL, leading to a
+NULL pointer dereference.
+
+Fixes: c0cfa2d8a788 (""vsock: add multi-transports support"")
+Cc: stable@vger.kernel.org
+Reported-by: Hyunwoo Kim <v4bel@theori.io>
+Reported-by: Wongi Lee <qwerty@theori.io>
+Closes: https://lore.kernel.org/netdev/Z2LvdTTQR7dBmPb5@v4bel-B760M-AORUS-ELITE-AX/
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Hyunwoo Kim <v4bel@theori.io>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+[SG: fixed context conflict since this tree is missing commit 71dc9ec9ac7d
+ (""virtio/vsock: replace virtio_vsock_pkt with sk_buff"")]
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/vmw_vsock/virtio_transport_common.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index b1c034fa1d6f..cbe8d777d511 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1171,8 +1171,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 
+ 	lock_sock(sk);
+ 
+-	/* Check if sk has been closed before lock_sock */
+-	if (sock_flag(sk, SOCK_DONE)) {
++	/* Check if sk has been closed or assigned to another transport before
++	 * lock_sock (note: listener sockets are not assigned to any transport)
++	 */
++	if (sock_flag(sk, SOCK_DONE) ||
++	    (sk->sk_state != TCP_LISTEN && vsk->transport != &t->transport)) {
+ 		(void)virtio_transport_reset_no_sock(t, pkt);
+ 		release_sock(sk);
+ 		sock_put(sk);
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file net/vmw_vsock/virtio_transport_common.c\nHunk #1 FAILED at 1628.\n1 out of 1 hunk FAILED -- saving rejects to file net/vmw_vsock/virtio_transport_common.c.rej,8,0,1,46,1,4,1,FORMATTING,DISJOINT
+CVE-2025-21649,737d4d91d35b5f7fa5bb442651472277318b0bfd,"From 737d4d91d35b5f7fa5bb442651472277318b0bfd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Date: Tue, 7 Jan 2025 13:01:05 +0100
+Subject: [PATCH] sched: sch_cake: add bounds checks to host bulk flow fairness
+ counts
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Even though we fixed a logic error in the commit cited below, syzbot
+still managed to trigger an underflow of the per-host bulk flow
+counters, leading to an out of bounds memory access.
+
+To avoid any such logic errors causing out of bounds memory accesses,
+this commit factors out all accesses to the per-host bulk flow counters
+to a series of helpers that perform bounds-checking before any
+increments and decrements. This also has the benefit of improving
+readability by moving the conditional checks for the flow mode into
+these helpers, instead of having them spread out throughout the
+code (which was the cause of the original logic error).
+
+As part of this change, the flow quantum calculation is consolidated
+into a helper function, which means that the dithering applied to the
+ost load scaling is now applied both in the DRR rotation and when a
+sparse flow's quantum is first initiated. The only user-visible effect
+of this is that the maximum packet size that can be sent while a flow
+stays sparse will now vary with +/- one byte in some cases. This should
+not make a noticeable difference in practice, and thus it's not worth
+complicating the code to preserve the old behaviour.
+
+Fixes: 546ea84d07e3 (""sched: sch_cake: fix bulk flow accounting logic for host fairness"")
+Reported-by: syzbot+f63600d288bfb7057424@syzkaller.appspotmail.com
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Acked-by: Dave Taht <dave.taht@gmail.com>
+Link: https://patch.msgid.link/20250107120105.70685-1-toke@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ net/sched/sch_cake.c | 140 +++++++++++++++++++++++--------------------
+ 1 file changed, 75 insertions(+), 65 deletions(-)
+
+diff --git a/net/sched/sch_cake.c b/net/sched/sch_cake.c
+index 8d8b2db4653c..2c2e2a67f3b2 100644
+--- a/net/sched/sch_cake.c
++++ b/net/sched/sch_cake.c
+@@ -627,6 +627,63 @@ static bool cake_ddst(int flow_mode)
+ 	return (flow_mode & CAKE_FLOW_DUAL_DST) == CAKE_FLOW_DUAL_DST;
+ }
+ 
++static void cake_dec_srchost_bulk_flow_count(struct cake_tin_data *q,
++					     struct cake_flow *flow,
++					     int flow_mode)
++{
++	if (likely(cake_dsrc(flow_mode) &&
++		   q->hosts[flow->srchost].srchost_bulk_flow_count))
++		q->hosts[flow->srchost].srchost_bulk_flow_count--;
++}
++
++static void cake_inc_srchost_bulk_flow_count(struct cake_tin_data *q,
++					     struct cake_flow *flow,
++					     int flow_mode)
++{
++	if (likely(cake_dsrc(flow_mode) &&
++		   q->hosts[flow->srchost].srchost_bulk_flow_count < CAKE_QUEUES))
++		q->hosts[flow->srchost].srchost_bulk_flow_count++;
++}
++
++static void cake_dec_dsthost_bulk_flow_count(struct cake_tin_data *q,
++					     struct cake_flow *flow,
++					     int flow_mode)
++{
++	if (likely(cake_ddst(flow_mode) &&
++		   q->hosts[flow->dsthost].dsthost_bulk_flow_count))
++		q->hosts[flow->dsthost].dsthost_bulk_flow_count--;
++}
++
++static void cake_inc_dsthost_bulk_flow_count(struct cake_tin_data *q,
++					     struct cake_flow *flow,
++					     int flow_mode)
++{
++	if (likely(cake_ddst(flow_mode) &&
++		   q->hosts[flow->dsthost].dsthost_bulk_flow_count < CAKE_QUEUES))
++		q->hosts[flow->dsthost].dsthost_bulk_flow_count++;
++}
++
++static u16 cake_get_flow_quantum(struct cake_tin_data *q,
++				 struct cake_flow *flow,
++				 int flow_mode)
++{
++	u16 host_load = 1;
++
++	if (cake_dsrc(flow_mode))
++		host_load = max(host_load,
++				q->hosts[flow->srchost].srchost_bulk_flow_count);
++
++	if (cake_ddst(flow_mode))
++		host_load = max(host_load,
++				q->hosts[flow->dsthost].dsthost_bulk_flow_count);
++
++	/* The get_random_u16() is a way to apply dithering to avoid
++	 * accumulating roundoff errors
++	 */
++	return (q->flow_quantum * quantum_div[host_load] +
++		get_random_u16()) >> 16;
++}
++
+ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+ 		     int flow_mode, u16 flow_override, u16 host_override)
+ {
+@@ -773,10 +830,8 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+ 		allocate_dst = cake_ddst(flow_mode);
+ 
+ 		if (q->flows[outer_hash + k].set == CAKE_SET_BULK) {
+-			if (allocate_src)
+-				q->hosts[q->flows[reduced_hash].srchost].srchost_bulk_flow_count--;
+-			if (allocate_dst)
+-				q->hosts[q->flows[reduced_hash].dsthost].dsthost_bulk_flow_count--;
++			cake_dec_srchost_bulk_flow_count(q, &q->flows[outer_hash + k], flow_mode);
++			cake_dec_dsthost_bulk_flow_count(q, &q->flows[outer_hash + k], flow_mode);
+ 		}
+ found:
+ 		/* reserve queue for future packets in same flow */
+@@ -801,9 +856,10 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+ 			q->hosts[outer_hash + k].srchost_tag = srchost_hash;
+ found_src:
+ 			srchost_idx = outer_hash + k;
+-			if (q->flows[reduced_hash].set == CAKE_SET_BULK)
+-				q->hosts[srchost_idx].srchost_bulk_flow_count++;
+ 			q->flows[reduced_hash].srchost = srchost_idx;
++
++			if (q->flows[reduced_hash].set == CAKE_SET_BULK)
++				cake_inc_srchost_bulk_flow_count(q, &q->flows[reduced_hash], flow_mode);
+ 		}
+ 
+ 		if (allocate_dst) {
+@@ -824,9 +880,10 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+ 			q->hosts[outer_hash + k].dsthost_tag = dsthost_hash;
+ found_dst:
+ 			dsthost_idx = outer_hash + k;
+-			if (q->flows[reduced_hash].set == CAKE_SET_BULK)
+-				q->hosts[dsthost_idx].dsthost_bulk_flow_count++;
+ 			q->flows[reduced_hash].dsthost = dsthost_idx;
++
++			if (q->flows[reduced_hash].set == CAKE_SET_BULK)
++				cake_inc_dsthost_bulk_flow_count(q, &q->flows[reduced_hash], flow_mode);
+ 		}
+ 	}
+ 
+@@ -1839,10 +1896,6 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 
+ 	/* flowchain */
+ 	if (!flow->set || flow->set == CAKE_SET_DECAYING) {
+-		struct cake_host *srchost = &b->hosts[flow->srchost];
+-		struct cake_host *dsthost = &b->hosts[flow->dsthost];
+-		u16 host_load = 1;
+-
+ 		if (!flow->set) {
+ 			list_add_tail(&flow->flowchain, &b->new_flows);
+ 		} else {
+@@ -1852,18 +1905,8 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 		flow->set = CAKE_SET_SPARSE;
+ 		b->sparse_flow_count++;
+ 
+-		if (cake_dsrc(q->flow_mode))
+-			host_load = max(host_load, srchost->srchost_bulk_flow_count);
+-
+-		if (cake_ddst(q->flow_mode))
+-			host_load = max(host_load, dsthost->dsthost_bulk_flow_count);
+-
+-		flow->deficit = (b->flow_quantum *
+-				 quantum_div[host_load]) >> 16;
++		flow->deficit = cake_get_flow_quantum(b, flow, q->flow_mode);
+ 	} else if (flow->set == CAKE_SET_SPARSE_WAIT) {
+-		struct cake_host *srchost = &b->hosts[flow->srchost];
+-		struct cake_host *dsthost = &b->hosts[flow->dsthost];
+-
+ 		/* this flow was empty, accounted as a sparse flow, but actually
+ 		 * in the bulk rotation.
+ 		 */
+@@ -1871,12 +1914,8 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 		b->sparse_flow_count--;
+ 		b->bulk_flow_count++;
+ 
+-		if (cake_dsrc(q->flow_mode))
+-			srchost->srchost_bulk_flow_count++;
+-
+-		if (cake_ddst(q->flow_mode))
+-			dsthost->dsthost_bulk_flow_count++;
+-
++		cake_inc_srchost_bulk_flow_count(b, flow, q->flow_mode);
++		cake_inc_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 	}
+ 
+ 	if (q->buffer_used > q->buffer_max_used)
+@@ -1933,13 +1972,11 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ {
+ 	struct cake_sched_data *q = qdisc_priv(sch);
+ 	struct cake_tin_data *b = &q->tins[q->cur_tin];
+-	struct cake_host *srchost, *dsthost;
+ 	ktime_t now = ktime_get();
+ 	struct cake_flow *flow;
+ 	struct list_head *head;
+ 	bool first_flow = true;
+ 	struct sk_buff *skb;
+-	u16 host_load;
+ 	u64 delay;
+ 	u32 len;
+ 
+@@ -2039,11 +2076,6 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 	q->cur_flow = flow - b->flows;
+ 	first_flow = false;
+ 
+-	/* triple isolation (modified DRR++) */
+-	srchost = &b->hosts[flow->srchost];
+-	dsthost = &b->hosts[flow->dsthost];
+-	host_load = 1;
+-
+ 	/* flow isolation (DRR++) */
+ 	if (flow->deficit <= 0) {
+ 		/* Keep all flows with deficits out of the sparse and decaying
+@@ -2055,11 +2087,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 				b->sparse_flow_count--;
+ 				b->bulk_flow_count++;
+ 
+-				if (cake_dsrc(q->flow_mode))
+-					srchost->srchost_bulk_flow_count++;
+-
+-				if (cake_ddst(q->flow_mode))
+-					dsthost->dsthost_bulk_flow_count++;
++				cake_inc_srchost_bulk_flow_count(b, flow, q->flow_mode);
++				cake_inc_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 
+ 				flow->set = CAKE_SET_BULK;
+ 			} else {
+@@ -2071,19 +2100,7 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 			}
+ 		}
+ 
+-		if (cake_dsrc(q->flow_mode))
+-			host_load = max(host_load, srchost->srchost_bulk_flow_count);
+-
+-		if (cake_ddst(q->flow_mode))
+-			host_load = max(host_load, dsthost->dsthost_bulk_flow_count);
+-
+-		WARN_ON(host_load > CAKE_QUEUES);
+-
+-		/* The get_random_u16() is a way to apply dithering to avoid
+-		 * accumulating roundoff errors
+-		 */
+-		flow->deficit += (b->flow_quantum * quantum_div[host_load] +
+-				  get_random_u16()) >> 16;
++		flow->deficit += cake_get_flow_quantum(b, flow, q->flow_mode);
+ 		list_move_tail(&flow->flowchain, &b->old_flows);
+ 
+ 		goto retry;
+@@ -2107,11 +2124,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 				if (flow->set == CAKE_SET_BULK) {
+ 					b->bulk_flow_count--;
+ 
+-					if (cake_dsrc(q->flow_mode))
+-						srchost->srchost_bulk_flow_count--;
+-
+-					if (cake_ddst(q->flow_mode))
+-						dsthost->dsthost_bulk_flow_count--;
++					cake_dec_srchost_bulk_flow_count(b, flow, q->flow_mode);
++					cake_dec_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 
+ 					b->decaying_flow_count++;
+ 				} else if (flow->set == CAKE_SET_SPARSE ||
+@@ -2129,12 +2143,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 				else if (flow->set == CAKE_SET_BULK) {
+ 					b->bulk_flow_count--;
+ 
+-					if (cake_dsrc(q->flow_mode))
+-						srchost->srchost_bulk_flow_count--;
+-
+-					if (cake_ddst(q->flow_mode))
+-						dsthost->dsthost_bulk_flow_count--;
+-
++					cake_dec_srchost_bulk_flow_count(b, flow, q->flow_mode);
++					cake_dec_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 				} else
+ 					b->decaying_flow_count--;
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",bb0245fa72b783cb23a9949c5048781341e91423,"From bb0245fa72b783cb23a9949c5048781341e91423 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Date: Tue, 7 Jan 2025 13:01:05 +0100
+Subject: [PATCH] sched: sch_cake: add bounds checks to host bulk flow fairness
+ counts
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+commit 737d4d91d35b5f7fa5bb442651472277318b0bfd upstream.
+
+Even though we fixed a logic error in the commit cited below, syzbot
+still managed to trigger an underflow of the per-host bulk flow
+counters, leading to an out of bounds memory access.
+
+To avoid any such logic errors causing out of bounds memory accesses,
+this commit factors out all accesses to the per-host bulk flow counters
+to a series of helpers that perform bounds-checking before any
+increments and decrements. This also has the benefit of improving
+readability by moving the conditional checks for the flow mode into
+these helpers, instead of having them spread out throughout the
+code (which was the cause of the original logic error).
+
+As part of this change, the flow quantum calculation is consolidated
+into a helper function, which means that the dithering applied to the
+ost load scaling is now applied both in the DRR rotation and when a
+sparse flow's quantum is first initiated. The only user-visible effect
+of this is that the maximum packet size that can be sent while a flow
+stays sparse will now vary with +/- one byte in some cases. This should
+not make a noticeable difference in practice, and thus it's not worth
+complicating the code to preserve the old behaviour.
+
+Fixes: 546ea84d07e3 (""sched: sch_cake: fix bulk flow accounting logic for host fairness"")
+Reported-by: syzbot+f63600d288bfb7057424@syzkaller.appspotmail.com
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Acked-by: Dave Taht <dave.taht@gmail.com>
+Link: https://patch.msgid.link/20250107120105.70685-1-toke@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+[Hagar: needed contextual fixes due to missing commit 7e3cf0843fe5]
+Signed-off-by: Hagar Hemdan <hagarhem@amazon.com>
+Reviewed-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/sched/sch_cake.c | 140 +++++++++++++++++++++++--------------------
+ 1 file changed, 75 insertions(+), 65 deletions(-)
+
+diff --git a/net/sched/sch_cake.c b/net/sched/sch_cake.c
+index eeb418165755..8429d7f8aba4 100644
+--- a/net/sched/sch_cake.c
++++ b/net/sched/sch_cake.c
+@@ -643,6 +643,63 @@ static bool cake_ddst(int flow_mode)
+         return (flow_mode & CAKE_FLOW_DUAL_DST) == CAKE_FLOW_DUAL_DST;
+ }
+ 
++static void cake_dec_srchost_bulk_flow_count(struct cake_tin_data *q,
++                                             struct cake_flow *flow,
++                                             int flow_mode)
++{
++        if (likely(cake_dsrc(flow_mode) &&
++                   q->hosts[flow->srchost].srchost_bulk_flow_count))
++                q->hosts[flow->srchost].srchost_bulk_flow_count--;
++}
++
++static void cake_inc_srchost_bulk_flow_count(struct cake_tin_data *q,
++                                             struct cake_flow *flow,
++                                             int flow_mode)
++{
++        if (likely(cake_dsrc(flow_mode) &&
++                   q->hosts[flow->srchost].srchost_bulk_flow_count < CAKE_QUEUES))
++                q->hosts[flow->srchost].srchost_bulk_flow_count++;
++}
++
++static void cake_dec_dsthost_bulk_flow_count(struct cake_tin_data *q,
++                                             struct cake_flow *flow,
++                                             int flow_mode)
++{
++        if (likely(cake_ddst(flow_mode) &&
++                   q->hosts[flow->dsthost].dsthost_bulk_flow_count))
++                q->hosts[flow->dsthost].dsthost_bulk_flow_count--;
++}
++
++static void cake_inc_dsthost_bulk_flow_count(struct cake_tin_data *q,
++                                             struct cake_flow *flow,
++                                             int flow_mode)
++{
++        if (likely(cake_ddst(flow_mode) &&
++                   q->hosts[flow->dsthost].dsthost_bulk_flow_count < CAKE_QUEUES))
++                q->hosts[flow->dsthost].dsthost_bulk_flow_count++;
++}
++
++static u16 cake_get_flow_quantum(struct cake_tin_data *q,
++                                 struct cake_flow *flow,
++                                 int flow_mode)
++{
++        u16 host_load = 1;
++
++        if (cake_dsrc(flow_mode))
++                host_load = max(host_load,
++                                q->hosts[flow->srchost].srchost_bulk_flow_count);
++
++        if (cake_ddst(flow_mode))
++                host_load = max(host_load,
++                                q->hosts[flow->dsthost].dsthost_bulk_flow_count);
++
++        /* The shifted prandom_u32() is a way to apply dithering to avoid
++         * accumulating roundoff errors
++         */
++        return (q->flow_quantum * quantum_div[host_load] +
++                (prandom_u32() >> 16)) >> 16;
++}
++
+ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+                      int flow_mode, u16 flow_override, u16 host_override)
+ {
+@@ -789,10 +846,8 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+                 allocate_dst = cake_ddst(flow_mode);
+ 
+                 if (q->flows[outer_hash + k].set == CAKE_SET_BULK) {
+-                        if (allocate_src)
+-                                q->hosts[q->flows[reduced_hash].srchost].srchost_bulk_flow_count--;
+-                        if (allocate_dst)
+-                                q->hosts[q->flows[reduced_hash].dsthost].dsthost_bulk_flow_count--;
++                        cake_dec_srchost_bulk_flow_count(q, &q->flows[outer_hash + k], flow_mode);
++                        cake_dec_dsthost_bulk_flow_count(q, &q->flows[outer_hash + k], flow_mode);
+                 }
+ found:
+                 /* reserve queue for future packets in same flow */
+@@ -817,9 +872,10 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+                         q->hosts[outer_hash + k].srchost_tag = srchost_hash;
+ found_src:
+                         srchost_idx = outer_hash + k;
+-                        if (q->flows[reduced_hash].set == CAKE_SET_BULK)
+-                                q->hosts[srchost_idx].srchost_bulk_flow_count++;
+                         q->flows[reduced_hash].srchost = srchost_idx;
++
++                        if (q->flows[reduced_hash].set == CAKE_SET_BULK)
++                                cake_inc_srchost_bulk_flow_count(q, &q->flows[reduced_hash], flow_mode);
+                 }
+ 
+                 if (allocate_dst) {
+@@ -840,9 +896,10 @@ static u32 cake_hash(struct cake_tin_data *q, const struct sk_buff *skb,
+                         q->hosts[outer_hash + k].dsthost_tag = dsthost_hash;
+ found_dst:
+                         dsthost_idx = outer_hash + k;
+-                        if (q->flows[reduced_hash].set == CAKE_SET_BULK)
+-                                q->hosts[dsthost_idx].dsthost_bulk_flow_count++;
+                         q->flows[reduced_hash].dsthost = dsthost_idx;
++
++                        if (q->flows[reduced_hash].set == CAKE_SET_BULK)
++                                cake_inc_dsthost_bulk_flow_count(q, &q->flows[reduced_hash], flow_mode);
+                 }
+         }
+ 
+@@ -1855,10 +1912,6 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 
+         /* flowchain */
+         if (!flow->set || flow->set == CAKE_SET_DECAYING) {
+-                struct cake_host *srchost = &b->hosts[flow->srchost];
+-                struct cake_host *dsthost = &b->hosts[flow->dsthost];
+-                u16 host_load = 1;
+-
+                 if (!flow->set) {
+                         list_add_tail(&flow->flowchain, &b->new_flows);
+                 } else {
+@@ -1868,18 +1921,8 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+                 flow->set = CAKE_SET_SPARSE;
+                 b->sparse_flow_count++;
+ 
+-                if (cake_dsrc(q->flow_mode))
+-                        host_load = max(host_load, srchost->srchost_bulk_flow_count);
+-
+-                if (cake_ddst(q->flow_mode))
+-                        host_load = max(host_load, dsthost->dsthost_bulk_flow_count);
+-
+-                flow->deficit = (b->flow_quantum *
+-                                 quantum_div[host_load]) >> 16;
++                flow->deficit = cake_get_flow_quantum(b, flow, q->flow_mode);
+         } else if (flow->set == CAKE_SET_SPARSE_WAIT) {
+-                struct cake_host *srchost = &b->hosts[flow->srchost];
+-                struct cake_host *dsthost = &b->hosts[flow->dsthost];
+-
+                 /* this flow was empty, accounted as a sparse flow, but actually
+                  * in the bulk rotation.
+                  */
+@@ -1887,12 +1930,8 @@ static s32 cake_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+                 b->sparse_flow_count--;
+                 b->bulk_flow_count++;
+ 
+-                if (cake_dsrc(q->flow_mode))
+-                        srchost->srchost_bulk_flow_count++;
+-
+-                if (cake_ddst(q->flow_mode))
+-                        dsthost->dsthost_bulk_flow_count++;
+-
++                cake_inc_srchost_bulk_flow_count(b, flow, q->flow_mode);
++                cake_inc_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+         }
+ 
+         if (q->buffer_used > q->buffer_max_used)
+@@ -1949,13 +1988,11 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ {
+         struct cake_sched_data *q = qdisc_priv(sch);
+         struct cake_tin_data *b = &q->tins[q->cur_tin];
+-        struct cake_host *srchost, *dsthost;
+         ktime_t now = ktime_get();
+         struct cake_flow *flow;
+         struct list_head *head;
+         bool first_flow = true;
+         struct sk_buff *skb;
+-        u16 host_load;
+         u64 delay;
+         u32 len;
+ 
+@@ -2055,11 +2092,6 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+         q->cur_flow = flow - b->flows;
+         first_flow = false;
+ 
+-        /* triple isolation (modified DRR++) */
+-        srchost = &b->hosts[flow->srchost];
+-        dsthost = &b->hosts[flow->dsthost];
+-        host_load = 1;
+-
+         /* flow isolation (DRR++) */
+         if (flow->deficit <= 0) {
+                 /* Keep all flows with deficits out of the sparse and decaying
+@@ -2071,11 +2103,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+                                 b->sparse_flow_count--;
+                                 b->bulk_flow_count++;
+ 
+-                                if (cake_dsrc(q->flow_mode))
+-                                        srchost->srchost_bulk_flow_count++;
+-
+-                                if (cake_ddst(q->flow_mode))
+-                                        dsthost->dsthost_bulk_flow_count++;
++                                cake_inc_srchost_bulk_flow_count(b, flow, q->flow_mode);
++                                cake_inc_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 
+                                 flow->set = CAKE_SET_BULK;
+                         } else {
+@@ -2087,19 +2116,7 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+                         }
+                 }
+ 
+-                if (cake_dsrc(q->flow_mode))
+-                        host_load = max(host_load, srchost->srchost_bulk_flow_count);
+-
+-                if (cake_ddst(q->flow_mode))
+-                        host_load = max(host_load, dsthost->dsthost_bulk_flow_count);
+-
+-                WARN_ON(host_load > CAKE_QUEUES);
+-
+-                /* The shifted prandom_u32() is a way to apply dithering to
+-                 * avoid accumulating roundoff errors
+-                 */
+-                flow->deficit += (b->flow_quantum * quantum_div[host_load] +
+-                                  (prandom_u32() >> 16)) >> 16;
++                flow->deficit += cake_get_flow_quantum(b, flow, q->flow_mode);
+                 list_move_tail(&flow->flowchain, &b->old_flows);
+ 
+                 goto retry;
+@@ -2123,11 +2140,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+                                 if (flow->set == CAKE_SET_BULK) {
+                                         b->bulk_flow_count--;
+ 
+-                                        if (cake_dsrc(q->flow_mode))
+-                                                srchost->srchost_bulk_flow_count--;
+-
+-                                        if (cake_ddst(q->flow_mode))
+-                                                dsthost->dsthost_bulk_flow_count--;
++                                        cake_dec_srchost_bulk_flow_count(b, flow, q->flow_mode);
++                                        cake_dec_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+ 
+                                         b->decaying_flow_count++;
+                                 } else if (flow->set == CAKE_SET_SPARSE ||
+@@ -2145,12 +2159,8 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+                                 else if (flow->set == CAKE_SET_BULK) {
+                                         b->bulk_flow_count--;
+ 
+-                                        if (cake_dsrc(q->flow_mode))
+-                                                srchost->srchost_bulk_flow_count--;
+-
+-                                        if (cake_ddst(q->flow_mode))
+-                                                dsthost->dsthost_bulk_flow_count--;
+-
++                                        cake_dec_srchost_bulk_flow_count(b, flow, q->flow_mode);
++                                        cake_dec_dsthost_bulk_flow_count(b, flow, q->flow_mode);
+                                 } else
+                                         b->decaying_flow_count--;
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file net/sched/sch_cake.c\nHunk #1 succeeded at 643 (offset 16 lines).\nHunk #2 succeeded at 846 (offset 16 lines).\nHunk #3 succeeded at 872 (offset 16 lines).\nHunk #4 succeeded at 896 (offset 16 lines).\nHunk #5 succeeded at 1912 (offset 16 lines).\nHunk #6 succeeded at 1921 (offset 16 lines).\nHunk #7 succeeded at 1930 (offset 16 lines).\nHunk #8 succeeded at 1988 (offset 16 lines).\nHunk #9 succeeded at 2092 (offset 16 lines).\nHunk #10 succeeded at 2103 (offset 16 lines).\nHunk #11 FAILED at 2100.\nHunk #12 succeeded at 2152 (offset 16 lines).\nHunk #13 succeeded at 2171 (offset 16 lines).\n1 out of 13 hunks FAILED -- saving rejects to file net/sched/sch_cake.c.rej,141,4,46,286,1,4,1,FORMATTING,COMMENTS
+CVE-2025-21702,647cef20e649c576dff271e018d5d15d998b629d,"From 647cef20e649c576dff271e018d5d15d998b629d Mon Sep 17 00:00:00 2001
+From: Quang Le <quanglex97@gmail.com>
+Date: Mon, 3 Feb 2025 16:58:38 -0800
+Subject: [PATCH] pfifo_tail_enqueue: Drop new packet when sch->limit == 0
+
+Expected behaviour:
+In case we reach scheduler's limit, pfifo_tail_enqueue() will drop a
+packet in scheduler's queue and decrease scheduler's qlen by one.
+Then, pfifo_tail_enqueue() enqueue new packet and increase
+scheduler's qlen by one. Finally, pfifo_tail_enqueue() return
+`NET_XMIT_CN` status code.
+
+Weird behaviour:
+In case we set `sch->limit == 0` and trigger pfifo_tail_enqueue() on a
+scheduler that has no packet, the 'drop a packet' step will do nothing.
+This means the scheduler's qlen still has value equal 0.
+Then, we continue to enqueue new packet and increase scheduler's qlen by
+one. In summary, we can leverage pfifo_tail_enqueue() to increase qlen by
+one and return `NET_XMIT_CN` status code.
+
+The problem is:
+Let's say we have two qdiscs: Qdisc_A and Qdisc_B.
+ - Qdisc_A's type must have '->graft()' function to create parent/child relationship.
+   Let's say Qdisc_A's type is `hfsc`. Enqueue packet to this qdisc will trigger `hfsc_enqueue`.
+ - Qdisc_B's type is pfifo_head_drop. Enqueue packet to this qdisc will trigger `pfifo_tail_enqueue`.
+ - Qdisc_B is configured to have `sch->limit == 0`.
+ - Qdisc_A is configured to route the enqueued's packet to Qdisc_B.
+
+Enqueue packet through Qdisc_A will lead to:
+ - hfsc_enqueue(Qdisc_A) -> pfifo_tail_enqueue(Qdisc_B)
+ - Qdisc_B->q.qlen += 1
+ - pfifo_tail_enqueue() return `NET_XMIT_CN`
+ - hfsc_enqueue() check for `NET_XMIT_SUCCESS` and see `NET_XMIT_CN` => hfsc_enqueue() don't increase qlen of Qdisc_A.
+
+The whole process lead to a situation where Qdisc_A->q.qlen == 0 and Qdisc_B->q.qlen == 1.
+Replace 'hfsc' with other type (for example: 'drr') still lead to the same problem.
+This violate the design where parent's qlen should equal to the sum of its childrens'qlen.
+
+Bug impact: This issue can be used for user->kernel privilege escalation when it is reachable.
+
+Fixes: 57dbb2d83d10 (""sched: add head drop fifo queue"")
+Reported-by: Quang Le <quanglex97@gmail.com>
+Signed-off-by: Quang Le <quanglex97@gmail.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://patch.msgid.link/20250204005841.223511-2-xiyou.wangcong@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ net/sched/sch_fifo.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/sched/sch_fifo.c b/net/sched/sch_fifo.c
+index b50b2c2cc09b..e6bfd39ff339 100644
+--- a/net/sched/sch_fifo.c
++++ b/net/sched/sch_fifo.c
+@@ -40,6 +40,9 @@ static int pfifo_tail_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ {
+ 	unsigned int prev_backlog;
+ 
++	if (unlikely(READ_ONCE(sch->limit) == 0))
++		return qdisc_drop(skb, sch, to_free);
++
+ 	if (likely(sch->q.qlen < READ_ONCE(sch->limit)))
+ 		return qdisc_enqueue_tail(skb, sch);
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",79a955ea4a2e5ddf4a36328959de0de496419888,"From 79a955ea4a2e5ddf4a36328959de0de496419888 Mon Sep 17 00:00:00 2001
+From: Quang Le <quanglex97@gmail.com>
+Date: Mon, 3 Feb 2025 16:58:38 -0800
+Subject: [PATCH] pfifo_tail_enqueue: Drop new packet when sch->limit == 0
+
+commit 647cef20e649c576dff271e018d5d15d998b629d upstream.
+
+Expected behaviour:
+In case we reach scheduler's limit, pfifo_tail_enqueue() will drop a
+packet in scheduler's queue and decrease scheduler's qlen by one.
+Then, pfifo_tail_enqueue() enqueue new packet and increase
+scheduler's qlen by one. Finally, pfifo_tail_enqueue() return
+`NET_XMIT_CN` status code.
+
+Weird behaviour:
+In case we set `sch->limit == 0` and trigger pfifo_tail_enqueue() on a
+scheduler that has no packet, the 'drop a packet' step will do nothing.
+This means the scheduler's qlen still has value equal 0.
+Then, we continue to enqueue new packet and increase scheduler's qlen by
+one. In summary, we can leverage pfifo_tail_enqueue() to increase qlen by
+one and return `NET_XMIT_CN` status code.
+
+The problem is:
+Let's say we have two qdiscs: Qdisc_A and Qdisc_B.
+ - Qdisc_A's type must have '->graft()' function to create parent/child relationship.
+   Let's say Qdisc_A's type is `hfsc`. Enqueue packet to this qdisc will trigger `hfsc_enqueue`.
+ - Qdisc_B's type is pfifo_head_drop. Enqueue packet to this qdisc will trigger `pfifo_tail_enqueue`.
+ - Qdisc_B is configured to have `sch->limit == 0`.
+ - Qdisc_A is configured to route the enqueued's packet to Qdisc_B.
+
+Enqueue packet through Qdisc_A will lead to:
+ - hfsc_enqueue(Qdisc_A) -> pfifo_tail_enqueue(Qdisc_B)
+ - Qdisc_B->q.qlen += 1
+ - pfifo_tail_enqueue() return `NET_XMIT_CN`
+ - hfsc_enqueue() check for `NET_XMIT_SUCCESS` and see `NET_XMIT_CN` => hfsc_enqueue() don't increase qlen of Qdisc_A.
+
+The whole process lead to a situation where Qdisc_A->q.qlen == 0 and Qdisc_B->q.qlen == 1.
+Replace 'hfsc' with other type (for example: 'drr') still lead to the same problem.
+This violate the design where parent's qlen should equal to the sum of its childrens'qlen.
+
+Bug impact: This issue can be used for user->kernel privilege escalation when it is reachable.
+
+Fixes: 57dbb2d83d10 (""sched: add head drop fifo queue"")
+Reported-by: Quang Le <quanglex97@gmail.com>
+Signed-off-by: Quang Le <quanglex97@gmail.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://patch.msgid.link/20250204005841.223511-2-xiyou.wangcong@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/sched/sch_fifo.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/sched/sch_fifo.c b/net/sched/sch_fifo.c
+index e1040421b797..1080d89f9178 100644
+--- a/net/sched/sch_fifo.c
++++ b/net/sched/sch_fifo.c
+@@ -39,6 +39,9 @@ static int pfifo_tail_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ {
+ 	unsigned int prev_backlog;
+ 
++	if (unlikely(sch->limit == 0))
++		return qdisc_drop(skb, sch, to_free);
++
+ 	if (likely(sch->q.qlen < sch->limit))
+ 		return qdisc_enqueue_tail(skb, sch);
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file net/sched/sch_fifo.c\nHunk #1 FAILED at 40.\n1 out of 1 hunk FAILED -- saving rejects to file net/sched/sch_fifo.c.rej,4,0,2,67,1,3,1,DELETE,DISJOINT
+CVE-2025-21846,56d5f3eba3f5de0efdd556de4ef381e109b973a9,"From 56d5f3eba3f5de0efdd556de4ef381e109b973a9 Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Tue, 11 Feb 2025 18:15:59 +0100
+Subject: [PATCH] acct: perform last write from workqueue
+
+In [1] it was reported that the acct(2) system call can be used to
+trigger NULL deref in cases where it is set to write to a file that
+triggers an internal lookup. This can e.g., happen when pointing acc(2)
+to /sys/power/resume. At the point the where the write to this file
+happens the calling task has already exited and called exit_fs(). A
+lookup will thus trigger a NULL-deref when accessing current->fs.
+
+Reorganize the code so that the the final write happens from the
+workqueue but with the caller's credentials. This preserves the
+(strange) permission model and has almost no regression risk.
+
+This api should stop to exist though.
+
+Link: https://lore.kernel.org/r/20250127091811.3183623-1-quzicheng@huawei.com [1]
+Link: https://lore.kernel.org/r/20250211-work-acct-v1-1-1c16aecab8b3@kernel.org
+Fixes: 1da177e4c3f4 (""Linux-2.6.12-rc2"")
+Reported-by: Zicheng Qu <quzicheng@huawei.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+ kernel/acct.c | 120 +++++++++++++++++++++++++++++---------------------
+ 1 file changed, 70 insertions(+), 50 deletions(-)
+
+diff --git a/kernel/acct.c b/kernel/acct.c
+index 31222e8cd534..48283efe8a12 100644
+--- a/kernel/acct.c
++++ b/kernel/acct.c
+@@ -103,48 +103,50 @@ struct bsd_acct_struct {
+         atomic_long_t                count;
+         struct rcu_head                rcu;
+         struct mutex                lock;
+-        int                        active;
++        bool                        active;
++        bool                        check_space;
+         unsigned long                needcheck;
+         struct file                *file;
+         struct pid_namespace        *ns;
+         struct work_struct        work;
+         struct completion        done;
++        acct_t                        ac;
+ };
+ 
+-static void do_acct_process(struct bsd_acct_struct *acct);
++static void fill_ac(struct bsd_acct_struct *acct);
++static void acct_write_process(struct bsd_acct_struct *acct);
+ 
+ /*
+  * Check the amount of free space and suspend/resume accordingly.
+  */
+-static int check_free_space(struct bsd_acct_struct *acct)
++static bool check_free_space(struct bsd_acct_struct *acct)
+ {
+         struct kstatfs sbuf;
+ 
+-        if (time_is_after_jiffies(acct->needcheck))
+-                goto out;
++        if (!acct->check_space)
++                return acct->active;
+ 
+         /* May block */
+         if (vfs_statfs(&acct->file->f_path, &sbuf))
+-                goto out;
++                return acct->active;
+ 
+         if (acct->active) {
+                 u64 suspend = sbuf.f_blocks * SUSPEND;
+                 do_div(suspend, 100);
+                 if (sbuf.f_bavail <= suspend) {
+-                        acct->active = 0;
++                        acct->active = false;
+                         pr_info(""Process accounting paused\n"");
+                 }
+         } else {
+                 u64 resume = sbuf.f_blocks * RESUME;
+                 do_div(resume, 100);
+                 if (sbuf.f_bavail >= resume) {
+-                        acct->active = 1;
++                        acct->active = true;
+                         pr_info(""Process accounting resumed\n"");
+                 }
+         }
+ 
+         acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+-out:
+         return acct->active;
+ }
+ 
+@@ -189,7 +191,11 @@ static void acct_pin_kill(struct fs_pin *pin)
+ {
+         struct bsd_acct_struct *acct = to_acct(pin);
+         mutex_lock(&acct->lock);
+-        do_acct_process(acct);
++        /*
++         * Fill the accounting struct with the exiting task's info
++         * before punting to the workqueue.
++         */
++        fill_ac(acct);
+         schedule_work(&acct->work);
+         wait_for_completion(&acct->done);
+         cmpxchg(&acct->ns->bacct, pin, NULL);
+@@ -202,6 +208,9 @@ static void close_work(struct work_struct *work)
+ {
+         struct bsd_acct_struct *acct = container_of(work, struct bsd_acct_struct, work);
+         struct file *file = acct->file;
++
++        /* We were fired by acct_pin_kill() which holds acct->lock. */
++        acct_write_process(acct);
+         if (file->f_op->flush)
+                 file->f_op->flush(file, NULL);
+         __fput_sync(file);
+@@ -430,13 +439,27 @@ static u32 encode_float(u64 value)
+  *  do_exit() or when switching to a different output file.
+  */
+ 
+-static void fill_ac(acct_t *ac)
++static void fill_ac(struct bsd_acct_struct *acct)
+ {
+         struct pacct_struct *pacct = &current->signal->pacct;
++        struct file *file = acct->file;
++        acct_t *ac = &acct->ac;
+         u64 elapsed, run_time;
+         time64_t btime;
+         struct tty_struct *tty;
+ 
++        lockdep_assert_held(&acct->lock);
++
++        if (time_is_after_jiffies(acct->needcheck)) {
++                acct->check_space = false;
++
++                /* Don't fill in @ac if nothing will be written. */
++                if (!acct->active)
++                        return;
++        } else {
++                acct->check_space = true;
++        }
++
+         /*
+          * Fill the accounting struct with the needed info as recorded
+          * by the different kernel functions.
+@@ -484,64 +507,61 @@ static void fill_ac(acct_t *ac)
+         ac->ac_majflt = encode_comp_t(pacct->ac_majflt);
+         ac->ac_exitcode = pacct->ac_exitcode;
+         spin_unlock_irq(&current->sighand->siglock);
+-}
+-/*
+- *  do_acct_process does all actual work. Caller holds the reference to file.
+- */
+-static void do_acct_process(struct bsd_acct_struct *acct)
+-{
+-        acct_t ac;
+-        unsigned long flim;
+-        const struct cred *orig_cred;
+-        struct file *file = acct->file;
+-
+-        /*
+-         * Accounting records are not subject to resource limits.
+-         */
+-        flim = rlimit(RLIMIT_FSIZE);
+-        current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
+-        /* Perform file operations on behalf of whoever enabled accounting */
+-        orig_cred = override_creds(file->f_cred);
+ 
+-        /*
+-         * First check to see if there is enough free_space to continue
+-         * the process accounting system.
+-         */
+-        if (!check_free_space(acct))
+-                goto out;
+-
+-        fill_ac(&ac);
+         /* we really need to bite the bullet and change layout */
+-        ac.ac_uid = from_kuid_munged(file->f_cred->user_ns, orig_cred->uid);
+-        ac.ac_gid = from_kgid_munged(file->f_cred->user_ns, orig_cred->gid);
++        ac->ac_uid = from_kuid_munged(file->f_cred->user_ns, current_uid());
++        ac->ac_gid = from_kgid_munged(file->f_cred->user_ns, current_gid());
+ #if ACCT_VERSION == 1 || ACCT_VERSION == 2
+         /* backward-compatible 16 bit fields */
+-        ac.ac_uid16 = ac.ac_uid;
+-        ac.ac_gid16 = ac.ac_gid;
++        ac->ac_uid16 = ac->ac_uid;
++        ac->ac_gid16 = ac->ac_gid;
+ #elif ACCT_VERSION == 3
+         {
+                 struct pid_namespace *ns = acct->ns;
+ 
+-                ac.ac_pid = task_tgid_nr_ns(current, ns);
++                ac->ac_pid = task_tgid_nr_ns(current, ns);
+                 rcu_read_lock();
+-                ac.ac_ppid = task_tgid_nr_ns(rcu_dereference(current->real_parent),
+-                                             ns);
++                ac->ac_ppid = task_tgid_nr_ns(rcu_dereference(current->real_parent), ns);
+                 rcu_read_unlock();
+         }
+ #endif
++}
++
++static void acct_write_process(struct bsd_acct_struct *acct)
++{
++        struct file *file = acct->file;
++        const struct cred *cred;
++        acct_t *ac = &acct->ac;
++
++        /* Perform file operations on behalf of whoever enabled accounting */
++        cred = override_creds(file->f_cred);
++
+         /*
+-         * Get freeze protection. If the fs is frozen, just skip the write
+-         * as we could deadlock the system otherwise.
++         * First check to see if there is enough free_space to continue
++         * the process accounting system. Then get freeze protection. If
++         * the fs is frozen, just skip the write as we could deadlock
++         * the system otherwise.
+          */
+-        if (file_start_write_trylock(file)) {
++        if (check_free_space(acct) && file_start_write_trylock(file)) {
+                 /* it's been opened O_APPEND, so position is irrelevant */
+                 loff_t pos = 0;
+-                __kernel_write(file, &ac, sizeof(acct_t), &pos);
++                __kernel_write(file, ac, sizeof(acct_t), &pos);
+                 file_end_write(file);
+         }
+-out:
++
++        revert_creds(cred);
++}
++
++static void do_acct_process(struct bsd_acct_struct *acct)
++{
++        unsigned long flim;
++
++        /* Accounting records are not subject to resource limits. */
++        flim = rlimit(RLIMIT_FSIZE);
++        current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
++        fill_ac(acct);
++        acct_write_process(acct);
+         current->signal->rlim[RLIMIT_FSIZE].rlim_cur = flim;
+-        revert_creds(orig_cred);
+ }
+ 
+ /**
+-- 
+2.39.5 (Apple Git-154)
+
+",8acbf4a88c6a98c8ed00afd1a7d1abcca9b4735e,"From 8acbf4a88c6a98c8ed00afd1a7d1abcca9b4735e Mon Sep 17 00:00:00 2001
+From: Christian Brauner <brauner@kernel.org>
+Date: Tue, 11 Feb 2025 18:15:59 +0100
+Subject: [PATCH] acct: perform last write from workqueue
+
+[ Upstream commit 56d5f3eba3f5de0efdd556de4ef381e109b973a9 ]
+
+In [1] it was reported that the acct(2) system call can be used to
+trigger NULL deref in cases where it is set to write to a file that
+triggers an internal lookup. This can e.g., happen when pointing acc(2)
+to /sys/power/resume. At the point the where the write to this file
+happens the calling task has already exited and called exit_fs(). A
+lookup will thus trigger a NULL-deref when accessing current->fs.
+
+Reorganize the code so that the the final write happens from the
+workqueue but with the caller's credentials. This preserves the
+(strange) permission model and has almost no regression risk.
+
+This api should stop to exist though.
+
+Link: https://lore.kernel.org/r/20250127091811.3183623-1-quzicheng@huawei.com [1]
+Link: https://lore.kernel.org/r/20250211-work-acct-v1-1-1c16aecab8b3@kernel.org
+Fixes: 1da177e4c3f4 (""Linux-2.6.12-rc2"")
+Reported-by: Zicheng Qu <quzicheng@huawei.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/acct.c | 120 +++++++++++++++++++++++++++++---------------------
+ 1 file changed, 70 insertions(+), 50 deletions(-)
+
+diff --git a/kernel/acct.c b/kernel/acct.c
+index cdfe1b0ce0e3..bddb31472f9e 100644
+--- a/kernel/acct.c
++++ b/kernel/acct.c
+@@ -85,48 +85,50 @@ struct bsd_acct_struct {
+         atomic_long_t                count;
+         struct rcu_head                rcu;
+         struct mutex                lock;
+-        int                        active;
++        bool                        active;
++        bool                        check_space;
+         unsigned long                needcheck;
+         struct file                *file;
+         struct pid_namespace        *ns;
+         struct work_struct        work;
+         struct completion        done;
++        acct_t                        ac;
+ };
+ 
+-static void do_acct_process(struct bsd_acct_struct *acct);
++static void fill_ac(struct bsd_acct_struct *acct);
++static void acct_write_process(struct bsd_acct_struct *acct);
+ 
+ /*
+  * Check the amount of free space and suspend/resume accordingly.
+  */
+-static int check_free_space(struct bsd_acct_struct *acct)
++static bool check_free_space(struct bsd_acct_struct *acct)
+ {
+         struct kstatfs sbuf;
+ 
+-        if (time_is_after_jiffies(acct->needcheck))
+-                goto out;
++        if (!acct->check_space)
++                return acct->active;
+ 
+         /* May block */
+         if (vfs_statfs(&acct->file->f_path, &sbuf))
+-                goto out;
++                return acct->active;
+ 
+         if (acct->active) {
+                 u64 suspend = sbuf.f_blocks * SUSPEND;
+                 do_div(suspend, 100);
+                 if (sbuf.f_bavail <= suspend) {
+-                        acct->active = 0;
++                        acct->active = false;
+                         pr_info(""Process accounting paused\n"");
+                 }
+         } else {
+                 u64 resume = sbuf.f_blocks * RESUME;
+                 do_div(resume, 100);
+                 if (sbuf.f_bavail >= resume) {
+-                        acct->active = 1;
++                        acct->active = true;
+                         pr_info(""Process accounting resumed\n"");
+                 }
+         }
+ 
+         acct->needcheck = jiffies + ACCT_TIMEOUT*HZ;
+-out:
+         return acct->active;
+ }
+ 
+@@ -171,7 +173,11 @@ static void acct_pin_kill(struct fs_pin *pin)
+ {
+         struct bsd_acct_struct *acct = to_acct(pin);
+         mutex_lock(&acct->lock);
+-        do_acct_process(acct);
++        /*
++         * Fill the accounting struct with the exiting task's info
++         * before punting to the workqueue.
++         */
++        fill_ac(acct);
+         schedule_work(&acct->work);
+         wait_for_completion(&acct->done);
+         cmpxchg(&acct->ns->bacct, pin, NULL);
+@@ -184,6 +190,9 @@ static void close_work(struct work_struct *work)
+ {
+         struct bsd_acct_struct *acct = container_of(work, struct bsd_acct_struct, work);
+         struct file *file = acct->file;
++
++        /* We were fired by acct_pin_kill() which holds acct->lock. */
++        acct_write_process(acct);
+         if (file->f_op->flush)
+                 file->f_op->flush(file, NULL);
+         __fput_sync(file);
+@@ -426,12 +435,26 @@ static u32 encode_float(u64 value)
+  *  do_exit() or when switching to a different output file.
+  */
+ 
+-static void fill_ac(acct_t *ac)
++static void fill_ac(struct bsd_acct_struct *acct)
+ {
+         struct pacct_struct *pacct = &current->signal->pacct;
++        struct file *file = acct->file;
++        acct_t *ac = &acct->ac;
+         u64 elapsed, run_time;
+         struct tty_struct *tty;
+ 
++        lockdep_assert_held(&acct->lock);
++
++        if (time_is_after_jiffies(acct->needcheck)) {
++                acct->check_space = false;
++
++                /* Don't fill in @ac if nothing will be written. */
++                if (!acct->active)
++                        return;
++        } else {
++                acct->check_space = true;
++        }
++
+         /*
+          * Fill the accounting struct with the needed info as recorded
+          * by the different kernel functions.
+@@ -478,64 +501,61 @@ static void fill_ac(acct_t *ac)
+         ac->ac_majflt = encode_comp_t(pacct->ac_majflt);
+         ac->ac_exitcode = pacct->ac_exitcode;
+         spin_unlock_irq(&current->sighand->siglock);
+-}
+-/*
+- *  do_acct_process does all actual work. Caller holds the reference to file.
+- */
+-static void do_acct_process(struct bsd_acct_struct *acct)
+-{
+-        acct_t ac;
+-        unsigned long flim;
+-        const struct cred *orig_cred;
+-        struct file *file = acct->file;
+-
+-        /*
+-         * Accounting records are not subject to resource limits.
+-         */
+-        flim = rlimit(RLIMIT_FSIZE);
+-        current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
+-        /* Perform file operations on behalf of whoever enabled accounting */
+-        orig_cred = override_creds(file->f_cred);
+ 
+-        /*
+-         * First check to see if there is enough free_space to continue
+-         * the process accounting system.
+-         */
+-        if (!check_free_space(acct))
+-                goto out;
+-
+-        fill_ac(&ac);
+         /* we really need to bite the bullet and change layout */
+-        ac.ac_uid = from_kuid_munged(file->f_cred->user_ns, orig_cred->uid);
+-        ac.ac_gid = from_kgid_munged(file->f_cred->user_ns, orig_cred->gid);
++        ac->ac_uid = from_kuid_munged(file->f_cred->user_ns, current_uid());
++        ac->ac_gid = from_kgid_munged(file->f_cred->user_ns, current_gid());
+ #if ACCT_VERSION == 1 || ACCT_VERSION == 2
+         /* backward-compatible 16 bit fields */
+-        ac.ac_uid16 = ac.ac_uid;
+-        ac.ac_gid16 = ac.ac_gid;
++        ac->ac_uid16 = ac->ac_uid;
++        ac->ac_gid16 = ac->ac_gid;
+ #elif ACCT_VERSION == 3
+         {
+                 struct pid_namespace *ns = acct->ns;
+ 
+-                ac.ac_pid = task_tgid_nr_ns(current, ns);
++                ac->ac_pid = task_tgid_nr_ns(current, ns);
+                 rcu_read_lock();
+-                ac.ac_ppid = task_tgid_nr_ns(rcu_dereference(current->real_parent),
+-                                             ns);
++                ac->ac_ppid = task_tgid_nr_ns(rcu_dereference(current->real_parent), ns);
+                 rcu_read_unlock();
+         }
+ #endif
++}
++
++static void acct_write_process(struct bsd_acct_struct *acct)
++{
++        struct file *file = acct->file;
++        const struct cred *cred;
++        acct_t *ac = &acct->ac;
++
++        /* Perform file operations on behalf of whoever enabled accounting */
++        cred = override_creds(file->f_cred);
++
+         /*
+-         * Get freeze protection. If the fs is frozen, just skip the write
+-         * as we could deadlock the system otherwise.
++         * First check to see if there is enough free_space to continue
++         * the process accounting system. Then get freeze protection. If
++         * the fs is frozen, just skip the write as we could deadlock
++         * the system otherwise.
+          */
+-        if (file_start_write_trylock(file)) {
++        if (check_free_space(acct) && file_start_write_trylock(file)) {
+                 /* it's been opened O_APPEND, so position is irrelevant */
+                 loff_t pos = 0;
+-                __kernel_write(file, &ac, sizeof(acct_t), &pos);
++                __kernel_write(file, ac, sizeof(acct_t), &pos);
+                 file_end_write(file);
+         }
+-out:
++
++        revert_creds(cred);
++}
++
++static void do_acct_process(struct bsd_acct_struct *acct)
++{
++        unsigned long flim;
++
++        /* Accounting records are not subject to resource limits. */
++        flim = rlimit(RLIMIT_FSIZE);
++        current->signal->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
++        fill_ac(acct);
++        acct_write_process(acct);
+         current->signal->rlim[RLIMIT_FSIZE].rlim_cur = flim;
+-        revert_creds(orig_cred);
+ }
+ 
+ /**
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file kernel/acct.c\nHunk #1 succeeded at 85 (offset -18 lines).\nHunk #2 succeeded at 173 (offset -18 lines).\nHunk #3 succeeded at 190 (offset -18 lines).\nHunk #4 FAILED at 439.\nHunk #5 succeeded at 487 (offset -6 lines).\n1 out of 5 hunks FAILED -- saving rejects to file kernel/acct.c.rej,121,4,33,248,1,2,1,SEMANTIC,COMMENTS
+CVE-2025-21820,b06f388994500297bb91be60ffaf6825ecfd2afe,"From b06f388994500297bb91be60ffaf6825ecfd2afe Mon Sep 17 00:00:00 2001
+From: Sean Anderson <sean.anderson@linux.dev>
+Date: Fri, 10 Jan 2025 16:38:22 -0500
+Subject: [PATCH] tty: xilinx_uartps: split sysrq handling
+
+lockdep detects the following circular locking dependency:
+
+CPU 0                      CPU 1
+========================== ============================
+cdns_uart_isr()            printk()
+  uart_port_lock(port)       console_lock()
+			     cdns_uart_console_write()
+                               if (!port->sysrq)
+                                 uart_port_lock(port)
+  uart_handle_break()
+    port->sysrq = ...
+  uart_handle_sysrq_char()
+    printk()
+      console_lock()
+
+The fixed commit attempts to avoid this situation by only taking the
+port lock in cdns_uart_console_write if port->sysrq unset. However, if
+(as shown above) cdns_uart_console_write runs before port->sysrq is set,
+then it will try to take the port lock anyway. This may result in a
+deadlock.
+
+Fix this by splitting sysrq handling into two parts. We use the prepare
+helper under the port lock and defer handling until we release the lock.
+
+Fixes: 74ea66d4ca06 (""tty: xuartps: Improve sysrq handling"")
+Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+Cc: stable@vger.kernel.org # c980248179d: serial: xilinx_uartps: Use port lock wrappers
+Acked-by: John Ogness <john.ogness@linutronix.de>
+Link: https://lore.kernel.org/r/20250110213822.2107462-1-sean.anderson@linux.dev
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/serial/xilinx_uartps.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index beb151be4d32..92ec51870d1d 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -287,7 +287,7 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
+ 				continue;
+ 		}
+ 
+-		if (uart_handle_sysrq_char(port, data))
++		if (uart_prepare_sysrq_char(port, data))
+ 			continue;
+ 
+ 		if (is_rxbs_support) {
+@@ -495,7 +495,7 @@ static irqreturn_t cdns_uart_isr(int irq, void *dev_id)
+ 	    !(readl(port->membase + CDNS_UART_CR) & CDNS_UART_CR_RX_DIS))
+ 		cdns_uart_handle_rx(dev_id, isrstatus);
+ 
+-	uart_port_unlock(port);
++	uart_unlock_and_check_sysrq(port);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -1380,9 +1380,7 @@ static void cdns_uart_console_write(struct console *co, const char *s,
+ 	unsigned int imr, ctrl;
+ 	int locked = 1;
+ 
+-	if (port->sysrq)
+-		locked = 0;
+-	else if (oops_in_progress)
++	if (oops_in_progress)
+ 		locked = uart_port_trylock_irqsave(port, &flags);
+ 	else
+ 		uart_port_lock_irqsave(port, &flags);
+-- 
+2.39.5 (Apple Git-154)
+
+",de5bd24197bd9ee37ec1e379a3d882bbd15c5065,"From de5bd24197bd9ee37ec1e379a3d882bbd15c5065 Mon Sep 17 00:00:00 2001
+From: Sean Anderson <sean.anderson@linux.dev>
+Date: Fri, 10 Jan 2025 16:38:22 -0500
+Subject: [PATCH] tty: xilinx_uartps: split sysrq handling
+
+commit b06f388994500297bb91be60ffaf6825ecfd2afe upstream.
+
+lockdep detects the following circular locking dependency:
+
+CPU 0                      CPU 1
+========================== ============================
+cdns_uart_isr()            printk()
+  uart_port_lock(port)       console_lock()
+			     cdns_uart_console_write()
+                               if (!port->sysrq)
+                                 uart_port_lock(port)
+  uart_handle_break()
+    port->sysrq = ...
+  uart_handle_sysrq_char()
+    printk()
+      console_lock()
+
+The fixed commit attempts to avoid this situation by only taking the
+port lock in cdns_uart_console_write if port->sysrq unset. However, if
+(as shown above) cdns_uart_console_write runs before port->sysrq is set,
+then it will try to take the port lock anyway. This may result in a
+deadlock.
+
+Fix this by splitting sysrq handling into two parts. We use the prepare
+helper under the port lock and defer handling until we release the lock.
+
+Fixes: 74ea66d4ca06 (""tty: xuartps: Improve sysrq handling"")
+Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+Cc: stable@vger.kernel.org # c980248179d: serial: xilinx_uartps: Use port lock wrappers
+Acked-by: John Ogness <john.ogness@linutronix.de>
+Link: https://lore.kernel.org/r/20250110213822.2107462-1-sean.anderson@linux.dev
+Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/serial/xilinx_uartps.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 2eff7cff57c4..29afcc6d9bb7 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -268,7 +268,7 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
+ 				continue;
+ 		}
+ 
+-		if (uart_handle_sysrq_char(port, data))
++		if (uart_prepare_sysrq_char(port, data))
+ 			continue;
+ 
+ 		if (is_rxbs_support) {
+@@ -371,7 +371,7 @@ static irqreturn_t cdns_uart_isr(int irq, void *dev_id)
+ 	    !(readl(port->membase + CDNS_UART_CR) & CDNS_UART_CR_RX_DIS))
+ 		cdns_uart_handle_rx(dev_id, isrstatus);
+ 
+-	spin_unlock(&port->lock);
++	uart_unlock_and_check_sysrq(port);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -1231,10 +1231,8 @@ static void cdns_uart_console_write(struct console *co, const char *s,
+ 	unsigned int imr, ctrl;
+ 	int locked = 1;
+ 
+-	if (port->sysrq)
+-		locked = 0;
+-	else if (oops_in_progress)
+-		locked = spin_trylock_irqsave(&port->lock, flags);
++	if (oops_in_progress)
++		locked = uart_port_trylock_irqsave(port, &flags);
+ 	else
+ 		spin_lock_irqsave(&port->lock, flags);
+ 
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file drivers/tty/serial/xilinx_uartps.c\nHunk #1 succeeded at 268 (offset -19 lines).\nHunk #2 FAILED at 495.\nHunk #3 FAILED at 1380.\n2 out of 3 hunks FAILED -- saving rejects to file drivers/tty/serial/xilinx_uartps.c.rej,9,0,1,75,1,3,0,DISJOINT,DELETE
+CVE-2025-21640,9fc17b76fc70763780aa78b38fcf4742384044a6,"From 9fc17b76fc70763780aa78b38fcf4742384044a5 Mon Sep 17 00:00:00 2001
+From: ""Matthieu Baerts (NGI0)"" <matttbe@kernel.org>
+Date: Wed, 8 Jan 2025 16:34:33 +0100
+Subject: [PATCH] sctp: sysctl: rto_min/max: avoid using current->nsproxy
+
+As mentioned in a previous commit of this series, using the 'net'
+structure via 'current' is not recommended for different reasons:
+
+- Inconsistency: getting info from the reader's/writer's netns vs only
+  from the opener's netns.
+
+- current->nsproxy can be NULL in some cases, resulting in an 'Oops'
+  (null-ptr-deref), e.g. when the current task is exiting, as spotted by
+  syzbot [1] using acct(2).
+
+The 'net' structure can be obtained from the table->data using
+container_of().
+
+Note that table->data could also be used directly, as this is the only
+member needed from the 'net' structure, but that would increase the size
+of this fix, to use '*data' everywhere 'net->sctp.rto_min/max' is used.
+
+Fixes: 4f3fdf3bc59c (""sctp: add check rto_min and rto_max in sysctl"")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/67769ecb.050a0220.3a8527.003f.GAE@google.com [1]
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Link: https://patch.msgid.link/20250108-net-sysctl-current-nsproxy-v1-5-5df34b2083e8@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+ net/sctp/sysctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/sctp/sysctl.c b/net/sctp/sysctl.c
+index 9848d19630a4..a5285815264d 100644
+--- a/net/sctp/sysctl.c
++++ b/net/sctp/sysctl.c
+@@ -433,7 +433,7 @@ static int proc_sctp_do_hmac_alg(const struct ctl_table *ctl, int write,
+ static int proc_sctp_do_rto_min(const struct ctl_table *ctl, int write,
+                                 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-        struct net *net = current->nsproxy->net_ns;
++        struct net *net = container_of(ctl->data, struct net, sctp.rto_min);
+         unsigned int min = *(unsigned int *) ctl->extra1;
+         unsigned int max = *(unsigned int *) ctl->extra2;
+         struct ctl_table tbl;
+@@ -461,7 +461,7 @@ static int proc_sctp_do_rto_min(const struct ctl_table *ctl, int write,
+ static int proc_sctp_do_rto_max(const struct ctl_table *ctl, int write,
+                                 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-        struct net *net = current->nsproxy->net_ns;
++        struct net *net = container_of(ctl->data, struct net, sctp.rto_max);
+         unsigned int min = *(unsigned int *) ctl->extra1;
+         unsigned int max = *(unsigned int *) ctl->extra2;
+         struct ctl_table tbl;
+-- 
+2.39.5 (Apple Git-154)
+",246428bfb9e7db15c5cd08e1d0eca41b65af2b06,"From 246428bfb9e7db15c5cd08e1d0eca41b65af2b06 Mon Sep 17 00:00:00 2001
+From: ""Matthieu Baerts (NGI0)"" <matttbe@kernel.org>
+Date: Wed, 8 Jan 2025 16:34:33 +0100
+Subject: [PATCH] sctp: sysctl: rto_min/max: avoid using current->nsproxy
+
+[ Upstream commit 9fc17b76fc70763780aa78b38fcf4742384044a5 ]
+
+As mentioned in a previous commit of this series, using the 'net'
+structure via 'current' is not recommended for different reasons:
+
+- Inconsistency: getting info from the reader's/writer's netns vs only
+  from the opener's netns.
+
+- current->nsproxy can be NULL in some cases, resulting in an 'Oops'
+  (null-ptr-deref), e.g. when the current task is exiting, as spotted by
+  syzbot [1] using acct(2).
+
+The 'net' structure can be obtained from the table->data using
+container_of().
+
+Note that table->data could also be used directly, as this is the only
+member needed from the 'net' structure, but that would increase the size
+of this fix, to use '*data' everywhere 'net->sctp.rto_min/max' is used.
+
+Fixes: 4f3fdf3bc59c (""sctp: add check rto_min and rto_max in sysctl"")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/67769ecb.050a0220.3a8527.003f.GAE@google.com [1]
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Link: https://patch.msgid.link/20250108-net-sysctl-current-nsproxy-v1-5-5df34b2083e8@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/sctp/sysctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/sctp/sysctl.c b/net/sctp/sysctl.c
+index 8be80096fbb6..82b736843c9d 100644
+--- a/net/sctp/sysctl.c
++++ b/net/sctp/sysctl.c
+@@ -396,7 +396,7 @@ static int proc_sctp_do_hmac_alg(struct ctl_table *ctl, int write,
+ static int proc_sctp_do_rto_min(struct ctl_table *ctl, int write,
+                                 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-        struct net *net = current->nsproxy->net_ns;
++        struct net *net = container_of(ctl->data, struct net, sctp.rto_min);
+         unsigned int min = *(unsigned int *) ctl->extra1;
+         unsigned int max = *(unsigned int *) ctl->extra2;
+         struct ctl_table tbl;
+@@ -424,7 +424,7 @@ static int proc_sctp_do_rto_min(struct ctl_table *ctl, int write,
+ static int proc_sctp_do_rto_max(struct ctl_table *ctl, int write,
+                                 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-        struct net *net = current->nsproxy->net_ns;
++        struct net *net = container_of(ctl->data, struct net, sctp.rto_max);
+         unsigned int min = *(unsigned int *) ctl->extra1;
+         unsigned int max = *(unsigned int *) ctl->extra2;
+         struct ctl_table tbl;
+-- 
+2.39.5 (Apple Git-154)
+
+",patching file net/sctp/sysctl.c\nHunk #1 succeeded at 424 with fuzz 1 (offset -9 lines).\nHunk #2 FAILED at 461.\n1 out of 2 hunks FAILED -- saving rejects to file net/sctp/sysctl.c.rej,7,2,12,57,1,1,1,COMMENTS,SEMANTIC
+CVE-2025-21748,aab98e2dbd648510f8f51b83fbf4721206ccae45,"From aab98e2dbd648510f8f51b83fbf4721206ccae45 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@linaro.org>
+Date: Wed, 15 Jan 2025 09:28:35 +0900
+Subject: [PATCH] ksmbd: fix integer overflows on 32 bit systems
+
+On 32bit systems the addition operations in ipc_msg_alloc() can
+potentially overflow leading to memory corruption.
+Add bounds checking using KSMBD_IPC_MAX_PAYLOAD to avoid overflow.
+
+Fixes: 0626e6641f6b (""cifsd: add server handler for central processing and tranport layers"")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+---
+ fs/smb/server/transport_ipc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/fs/smb/server/transport_ipc.c b/fs/smb/server/transport_ipc.c
+index c0bb8c7722d7..0460ebea6ff0 100644
+--- a/fs/smb/server/transport_ipc.c
++++ b/fs/smb/server/transport_ipc.c
+@@ -627,6 +627,9 @@ ksmbd_ipc_spnego_authen_request(const char *spnego_blob, int blob_len)
+ 	struct ksmbd_spnego_authen_request *req;
+ 	struct ksmbd_spnego_authen_response *resp;
+ 
++	if (blob_len > KSMBD_IPC_MAX_PAYLOAD)
++		return NULL;
++
+ 	msg = ipc_msg_alloc(sizeof(struct ksmbd_spnego_authen_request) +
+ 			blob_len + 1);
+ 	if (!msg)
+@@ -806,6 +809,9 @@ struct ksmbd_rpc_command *ksmbd_rpc_write(struct ksmbd_session *sess, int handle
+ 	struct ksmbd_rpc_command *req;
+ 	struct ksmbd_rpc_command *resp;
+ 
++	if (payload_sz > KSMBD_IPC_MAX_PAYLOAD)
++		return NULL;
++
+ 	msg = ipc_msg_alloc(sizeof(struct ksmbd_rpc_command) + payload_sz + 1);
+ 	if (!msg)
+ 		return NULL;
+@@ -854,6 +860,9 @@ struct ksmbd_rpc_command *ksmbd_rpc_ioctl(struct ksmbd_session *sess, int handle
+ 	struct ksmbd_rpc_command *req;
+ 	struct ksmbd_rpc_command *resp;
+ 
++	if (payload_sz > KSMBD_IPC_MAX_PAYLOAD)
++		return NULL;
++
+ 	msg = ipc_msg_alloc(sizeof(struct ksmbd_rpc_command) + payload_sz + 1);
+ 	if (!msg)
+ 		return NULL;
+-- 
+2.39.5 (Apple Git-154)
+",f3b9fb2764591d792d160f375851013665a9e820,"From f3b9fb2764591d792d160f375851013665a9e820 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@linaro.org>
+Date: Wed, 15 Jan 2025 09:28:35 +0900
+Subject: [PATCH] ksmbd: fix integer overflows on 32 bit systems
+
+[ Upstream commit aab98e2dbd648510f8f51b83fbf4721206ccae45 ]
+
+On 32bit systems the addition operations in ipc_msg_alloc() can
+potentially overflow leading to memory corruption.
+Add bounds checking using KSMBD_IPC_MAX_PAYLOAD to avoid overflow.
+
+Fixes: 0626e6641f6b (""cifsd: add server handler for central processing and tranport layers"")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ksmbd/transport_ipc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/fs/ksmbd/transport_ipc.c b/fs/ksmbd/transport_ipc.c
+index d62ebbff1e0f..0d096a11ba30 100644
+--- a/fs/ksmbd/transport_ipc.c
++++ b/fs/ksmbd/transport_ipc.c
+@@ -566,6 +566,9 @@ ksmbd_ipc_spnego_authen_request(const char *spnego_blob, int blob_len)
+         struct ksmbd_spnego_authen_request *req;
+         struct ksmbd_spnego_authen_response *resp;
+ 
++        if (blob_len > KSMBD_IPC_MAX_PAYLOAD)
++                return NULL;
++
+         msg = ipc_msg_alloc(sizeof(struct ksmbd_spnego_authen_request) +
+                         blob_len + 1);
+         if (!msg)
+@@ -745,6 +748,9 @@ struct ksmbd_rpc_command *ksmbd_rpc_write(struct ksmbd_session *sess, int handle
+         struct ksmbd_rpc_command *req;
+         struct ksmbd_rpc_command *resp;
+ 
++        if (payload_sz > KSMBD_IPC_MAX_PAYLOAD)
++                return NULL;
++
+         msg = ipc_msg_alloc(sizeof(struct ksmbd_rpc_command) + payload_sz + 1);
+         if (!msg)
+                 return NULL;
+@@ -793,6 +799,9 @@ struct ksmbd_rpc_command *ksmbd_rpc_ioctl(struct ksmbd_session *sess, int handle
+         struct ksmbd_rpc_command *req;
+         struct ksmbd_rpc_command *resp;
+ 
++        if (payload_sz > KSMBD_IPC_MAX_PAYLOAD)
++                return NULL;
++
+         msg = ipc_msg_alloc(sizeof(struct ksmbd_rpc_command) + payload_sz + 1);
+         if (!msg)
+                 return NULL;
+-- 
+2.39.5 (Apple Git-154)
+
+","can't find file to patch at input line 23\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|From aab98e2dbd648510f8f51b83fbf4721206ccae45 Mon Sep 17 00:00:00 2001\n|From: Dan Carpenter <dan.carpenter@linaro.org>\n|Date: Wed, 15 Jan 2025 09:28:35 +0900\n|Subject: [PATCH] ksmbd: fix integer overflows on 32 bit systems\n|\n|On 32bit systems the addition operations in ipc_msg_alloc() can\n|potentially overflow leading to memory corruption.\n|Add bounds checking using KSMBD_IPC_MAX_PAYLOAD to avoid overflow.\n|\n|Fixes: 0626e6641f6b (\""cifsd: add server handler for central processing and tranport layers\"")\n|Cc: stable@vger.kernel.org\n|Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>\n|Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>\n|Signed-off-by: Steve French <stfrench@microsoft.com>\n|---\n| fs/smb/server/transport_ipc.c | 9 +++++++++\n| 1 file changed, 9 insertions(+)\n|\n|diff --git a/fs/smb/server/transport_ipc.c b/fs/smb/server/transport_ipc.c\n|index c0bb8c7722d7..0460ebea6ff0 100644\n|--- a/fs/smb/server/transport_ipc.c\n|+++ b/fs/smb/server/transport_ipc.c\n--------------------------\nFile to patch: \nSkip this patch? [y] \nSkipping patch.\n3 out of 3 hunks ignored",10,0,13,54,1,4,1,DELETE,OTHER
