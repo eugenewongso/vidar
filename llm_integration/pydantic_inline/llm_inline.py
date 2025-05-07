@@ -7,6 +7,7 @@ from pydantic_ai.providers.google_vertex import GoogleVertexProvider
 from dotenv import load_dotenv
 from unidiff import PatchSet
 from pathlib import Path
+import re
 
 # Load environment variables
 load_dotenv()
@@ -31,14 +32,53 @@ if service_account_path and provider is None:
 if provider is None:
     raise ValueError("❌ No valid Google Vertex AI credentials found.")
 
+
+def fix_hunk_headers(patch_text: str) -> str:
+    lines = patch_text.splitlines()
+    fixed_lines = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.startswith('@@'):
+            header_match = re.match(r'@@ -(\d+),?(\d*) \+(\d+),?(\d*) @@', line)
+            if not header_match:
+                fixed_lines.append(line)
+                i += 1
+                continue
+
+            old_start, old_count, new_start, new_count = header_match.groups()
+            old_start = int(old_start)
+            new_start = int(new_start)
+            old_count = int(old_count) if old_count else 1
+            new_count = int(new_count) if new_count else 1
+
+            # Collect hunk body
+            hunk_body = []
+            i += 1
+            while i < len(lines) and not lines[i].startswith('@@') and not lines[i].startswith('---') and not lines[i].startswith('+++'):
+                hunk_body.append(lines[i])
+                i += 1
+
+            # Count actual lines
+            actual_old = sum(1 for l in hunk_body if l.startswith('-') or l.startswith(' '))
+            actual_new = sum(1 for l in hunk_body if l.startswith('+') or l.startswith(' '))
+
+            fixed_header = f"@@ -{old_start},{actual_old} +{new_start},{actual_new} @@"
+            fixed_lines.append(fixed_header)
+            fixed_lines.extend(hunk_body)
+        else:
+            fixed_lines.append(line)
+            i += 1
+
+    return '\n'.join(fixed_lines) + '\n'
+
+
 @dataclass
 class MergeDeps:
     api_key: str
 
-model = GeminiModel(
-    "gemini-2.0-pro-exp-02-05",
-    provider=provider
-)
+model = GeminiModel("gemini-2.5-pro-preview-03-25", provider=provider)
+
 
 merge_agent = Agent(model, system_prompt=(
     "You are a skilled AI assistant specializing in resolving inline merge conflicts in code.\n"
@@ -100,9 +140,18 @@ async def resolve_conflict(
         print("❌ AI response was empty. Skipping.")
         return None
 
+    # DEBUG: Print raw LLM output before formatting
+    print("\n🧾 Raw AI response:")
+    print("=" * 60)
+    print(response.data)
+    print("=" * 60)
+
+
     # 🧼 Clean markdown formatting if present
     patch = response.data.strip()
     patch = patch.replace("```diff", "").replace("```", "").strip() + "\n"
+    patch = fix_hunk_headers(patch)  # 🧩 Fix malformed hunk headers
+
 
     return patch
 

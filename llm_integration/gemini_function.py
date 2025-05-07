@@ -14,7 +14,7 @@ class LLMPatchGenerator:
             project=project_id,
             location=location
         )
-        self.model = "gemini-2.0-pro-exp-02-05"
+        self.model = "gemini-2.5-pro-preview-03-25"
         self.kernel_path = kernel_path  # Path to the kernel source directory
 
     def load_file(self, file_path, base_path=None):
