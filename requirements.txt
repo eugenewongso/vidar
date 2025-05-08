@@ -15,3 +15,5 @@ pandas
 requests
 matplotlib
 tree-sitter==0.20.1
+logfire
+google.generativeai
