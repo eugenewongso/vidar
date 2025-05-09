@@ -1,0 +1,36 @@
+diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java
+index 2660e74..2075d77 100644
+--- a/core/java/android/view/KeyboardShortcutInfo.java
++++ b/core/java/android/view/KeyboardShortcutInfo.java
+@@ -29,7 +29,7 @@
+  */
+ public final class KeyboardShortcutInfo implements Parcelable {
+     private final CharSequence mLabel;
+-    private final Icon mIcon;
++    private Icon mIcon;
+     private final char mBaseCharacter;
+     private final int mKeycode;
+     private final int mModifiers;
+@@ -116,6 +116,15 @@
+     }
+ 
+     /**
++     * Removes an icon that was previously set.
++     *
++     * @hide
++     */
++    public void clearIcon() {
++        mIcon = null;
++    }
++
++    /**
+      * Returns the base keycode that, combined with the modifiers, triggers this shortcut. If the
+      * base character was set instead, returns {@link KeyEvent#KEYCODE_UNKNOWN}. Valid keycodes are
+      * defined as constants in {@link KeyEvent}.
+@@ -165,4 +174,4 @@
+             return new KeyboardShortcutInfo[size];
+         }
+     };
+-}
+\ No newline at end of file
++}

@@ -1,0 +1,16 @@
+diff --git a/src/com/android/phone/PhoneInterfaceManager.java b/src/com/android/phone/PhoneInterfaceManager.java
+index e22f51a..af8caa4 100644
+--- a/src/com/android/phone/PhoneInterfaceManager.java
++++ b/src/com/android/phone/PhoneInterfaceManager.java
+@@ -4267,10 +4267,9 @@
+     public void enableVisualVoicemailSmsFilter(String callingPackage, int subId,
+             VisualVoicemailSmsFilterSettings settings) {
+         mAppOps.checkPackage(Binder.getCallingUid(), callingPackage);
+-
++        enforceVisualVoicemailPackage(callingPackage, subId);
+         enforceTelephonyFeatureWithException(callingPackage,
+                 PackageManager.FEATURE_TELEPHONY_CALLING, "enableVisualVoicemailSmsFilter");
+-
+         final long identity = Binder.clearCallingIdentity();
+         try {
+             VisualVoicemailSmsFilterConfig.enableVisualVoicemailSmsFilter(

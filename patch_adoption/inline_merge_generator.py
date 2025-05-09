@@ -121,7 +121,7 @@ class InlineMergeGenerator:
 
 
 if __name__ == "__main__":
-    KERNEL_PATH = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    KERNEL_PATH = "/Volumes/GitRepo/school/capstone/android/base"
     REPORT_PATH = "reports/patch_application_report.json"
 
     generator = InlineMergeGenerator(KERNEL_PATH, REPORT_PATH)

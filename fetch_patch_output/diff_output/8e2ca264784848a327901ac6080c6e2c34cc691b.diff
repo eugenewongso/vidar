@@ -1,0 +1,170 @@
+diff --git a/libs/gui/ISurfaceComposer.cpp b/libs/gui/ISurfaceComposer.cpp
+index b526a6c..fc619c3 100644
+--- a/libs/gui/ISurfaceComposer.cpp
++++ b/libs/gui/ISurfaceComposer.cpp
+@@ -61,7 +61,7 @@
+ 
+     status_t setTransactionState(
+             const FrameTimelineInfo& frameTimelineInfo, Vector<ComposerState>& state,
+-            const Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
++            Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
+             InputWindowCommands commands, int64_t desiredPresentTime, bool isAutoTimestamp,
+             const std::vector<client_cache_t>& uncacheBuffers, bool hasListenerCallbacks,
+             const std::vector<ListenerCallbacks>& listenerCallbacks, uint64_t transactionId,
+diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
+index 0fda358..4c561cc 100644
+--- a/libs/gui/SurfaceComposerClient.cpp
++++ b/libs/gui/SurfaceComposerClient.cpp
+@@ -1047,7 +1047,8 @@
+     uncacheBuffer.token = BufferCache::getInstance().getToken();
+     uncacheBuffer.id = cacheId;
+     Vector<ComposerState> composerStates;
+-    status_t status = sf->setTransactionState(FrameTimelineInfo{}, composerStates, {},
++    Vector<DisplayState> displayStates;
++    status_t status = sf->setTransactionState(FrameTimelineInfo{}, composerStates, displayStates,
+                                               ISurfaceComposer::eOneWay,
+                                               Transaction::getDefaultApplyToken(), {}, systemTime(),
+                                               true, {uncacheBuffer}, false, {}, generateId(), {});
+diff --git a/libs/gui/include/gui/ISurfaceComposer.h b/libs/gui/include/gui/ISurfaceComposer.h
+index 3ff6735..2790167 100644
+--- a/libs/gui/include/gui/ISurfaceComposer.h
++++ b/libs/gui/include/gui/ISurfaceComposer.h
+@@ -113,7 +113,7 @@
+     /* open/close transactions. requires ACCESS_SURFACE_FLINGER permission */
+     virtual status_t setTransactionState(
+             const FrameTimelineInfo& frameTimelineInfo, Vector<ComposerState>& state,
+-            const Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
++            Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
+             InputWindowCommands inputWindowCommands, int64_t desiredPresentTime,
+             bool isAutoTimestamp, const std::vector<client_cache_t>& uncacheBuffer,
+             bool hasListenerCallbacks, const std::vector<ListenerCallbacks>& listenerCallbacks,
+diff --git a/libs/gui/tests/Surface_test.cpp b/libs/gui/tests/Surface_test.cpp
+index 8d7cf07..d351e28 100644
+--- a/libs/gui/tests/Surface_test.cpp
++++ b/libs/gui/tests/Surface_test.cpp
+@@ -697,7 +697,7 @@
+ 
+     status_t setTransactionState(
+             const FrameTimelineInfo& /*frameTimelineInfo*/, Vector<ComposerState>& /*state*/,
+-            const Vector<DisplayState>& /*displays*/, uint32_t /*flags*/,
++            Vector<DisplayState>& /*displays*/, uint32_t /*flags*/,
+             const sp<IBinder>& /*applyToken*/, InputWindowCommands /*inputWindowCommands*/,
+             int64_t /*desiredPresentTime*/, bool /*isAutoTimestamp*/,
+             const std::vector<client_cache_t>& /*cachedBuffer*/, bool /*hasListenerCallbacks*/,
+diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
+index d606788..e90b66e 100644
+--- a/services/surfaceflinger/SurfaceFlinger.cpp
++++ b/services/surfaceflinger/SurfaceFlinger.cpp
+@@ -4502,7 +4502,7 @@
+ 
+ status_t SurfaceFlinger::setTransactionState(
+         const FrameTimelineInfo& frameTimelineInfo, Vector<ComposerState>& states,
+-        const Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
++        Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
+         InputWindowCommands inputWindowCommands, int64_t desiredPresentTime, bool isAutoTimestamp,
+         const std::vector<client_cache_t>& uncacheBuffers, bool hasListenerCallbacks,
+         const std::vector<ListenerCallbacks>& listenerCallbacks, uint64_t transactionId,
+@@ -4517,7 +4517,7 @@
+         composerState.state.sanitize(permissions);
+     }
+ 
+-    for (DisplayState display : displays) {
++    for (DisplayState& display : displays) {
+         display.sanitize(permissions);
+     }
+ 
+diff --git a/services/surfaceflinger/SurfaceFlinger.h b/services/surfaceflinger/SurfaceFlinger.h
+index d4700a4..aa2f074 100644
+--- a/services/surfaceflinger/SurfaceFlinger.h
++++ b/services/surfaceflinger/SurfaceFlinger.h
+@@ -517,7 +517,7 @@
+     sp<IBinder> getPhysicalDisplayToken(PhysicalDisplayId displayId) const;
+     status_t setTransactionState(
+             const FrameTimelineInfo& frameTimelineInfo, Vector<ComposerState>& state,
+-            const Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
++            Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
+             InputWindowCommands inputWindowCommands, int64_t desiredPresentTime,
+             bool isAutoTimestamp, const std::vector<client_cache_t>& uncacheBuffers,
+             bool hasListenerCallbacks, const std::vector<ListenerCallbacks>& listenerCallbacks,
+diff --git a/services/surfaceflinger/tests/Credentials_test.cpp b/services/surfaceflinger/tests/Credentials_test.cpp
+index 2d18166..0599858 100644
+--- a/services/surfaceflinger/tests/Credentials_test.cpp
++++ b/services/surfaceflinger/tests/Credentials_test.cpp
+@@ -27,6 +27,7 @@
+ #include <private/android_filesystem_config.h>
+ #include <private/gui/ComposerServiceAIDL.h>
+ #include <ui/DisplayMode.h>
++#include <ui/DisplayState.h>
+ #include <ui/DynamicDisplayInfo.h>
+ #include <utils/String8.h>
+ #include <functional>
+@@ -439,6 +440,56 @@
+     }
+ }
+ 
++TEST_F(CredentialsTest, DisplayTransactionPermissionTest) {
++    const auto display = getFirstDisplayToken();
++
++    ui::DisplayState displayState;
++    ASSERT_EQ(NO_ERROR, SurfaceComposerClient::getDisplayState(display, &displayState));
++    const ui::Rotation initialOrientation = displayState.orientation;
++
++    // Set display orientation from an untrusted process. This should fail silently.
++    {
++        UIDFaker f{AID_BIN};
++        Transaction transaction;
++        Rect layerStackRect;
++        Rect displayRect;
++        transaction.setDisplayProjection(display, initialOrientation + ui::ROTATION_90,
++                                         layerStackRect, displayRect);
++        transaction.apply(/*synchronous=*/true);
++    }
++
++    // Verify that the display orientation did not change.
++    ASSERT_EQ(NO_ERROR, SurfaceComposerClient::getDisplayState(display, &displayState));
++    ASSERT_EQ(initialOrientation, displayState.orientation);
++
++    // Set display orientation from a trusted process.
++    {
++        UIDFaker f{AID_SYSTEM};
++        Transaction transaction;
++        Rect layerStackRect;
++        Rect displayRect;
++        transaction.setDisplayProjection(display, initialOrientation + ui::ROTATION_90,
++                                         layerStackRect, displayRect);
++        transaction.apply(/*synchronous=*/true);
++    }
++
++    // Verify that the display orientation did change.
++    ASSERT_EQ(NO_ERROR, SurfaceComposerClient::getDisplayState(display, &displayState));
++    ASSERT_EQ(initialOrientation + ui::ROTATION_90, displayState.orientation);
++
++    // Reset orientation
++    {
++        UIDFaker f{AID_SYSTEM};
++        Transaction transaction;
++        Rect layerStackRect;
++        Rect displayRect;
++        transaction.setDisplayProjection(display, initialOrientation, layerStackRect, displayRect);
++        transaction.apply(/*synchronous=*/true);
++    }
++    ASSERT_EQ(NO_ERROR, SurfaceComposerClient::getDisplayState(display, &displayState));
++    ASSERT_EQ(initialOrientation, displayState.orientation);
++}
++
+ } // namespace android
+ 
+ // TODO(b/129481165): remove the #pragma below and fix conversion issues
+diff --git a/services/surfaceflinger/tests/unittests/TestableSurfaceFlinger.h b/services/surfaceflinger/tests/unittests/TestableSurfaceFlinger.h
+index 945e488..2464f53 100644
+--- a/services/surfaceflinger/tests/unittests/TestableSurfaceFlinger.h
++++ b/services/surfaceflinger/tests/unittests/TestableSurfaceFlinger.h
+@@ -468,7 +468,7 @@
+ 
+     auto setTransactionState(
+             const FrameTimelineInfo& frameTimelineInfo, Vector<ComposerState>& states,
+-            const Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
++            Vector<DisplayState>& displays, uint32_t flags, const sp<IBinder>& applyToken,
+             const InputWindowCommands& inputWindowCommands, int64_t desiredPresentTime,
+             bool isAutoTimestamp, const std::vector<client_cache_t>& uncacheBuffers,
+             bool hasListenerCallbacks, std::vector<ListenerCallbacks>& listenerCallbacks,

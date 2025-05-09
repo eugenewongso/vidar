@@ -1,0 +1,17 @@
+diff --git a/PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java b/PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java
+index 5a7c3f2..14f3497 100644
+--- a/PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java
++++ b/PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java
+@@ -267,11 +267,11 @@
+             PermissionControllerStatsLog.write(REVIEW_PERMISSIONS_FRAGMENT_RESULT_REPORTED,
+                     changeId, mViewModel.getPackageInfo().applicationInfo.uid,
+                     group.getPackageName(),
+-                    permission.getName(), permission.isGrantedIncludingAppOp());
++                    permission.getName(), permission.isGranted());
+             Log.i(LOG_TAG, "Permission grant via permission review changeId=" + changeId + " uid="
+                     + mViewModel.getPackageInfo().applicationInfo.uid + " packageName="
+                     + group.getPackageName() + " permission="
+-                    + permission.getName() + " granted=" + permission.isGrantedIncludingAppOp());
++                    + permission.getName() + " granted=" + permission.isGranted());
+         }
+     }

@@ -1,0 +1,18 @@
+diff --git a/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java b/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java
+index c3729c0..212da9f 100644
+--- a/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java
++++ b/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java
+@@ -122,8 +122,11 @@
+         final Intent launchingIntent = getIntent();
+         mReviewGrantedConsentRequired = launchingIntent.getBooleanExtra(
+                 EXTRA_USER_REVIEW_GRANTED_CONSENT, false);
+-
+-        mPackageName = getCallingPackage();
++        if (com.android.systemui.Flags.mediaProjectionRequestAttributionFix()) {
++            mPackageName = getLaunchedFromPackage();
++        } else {
++            mPackageName = getCallingPackage();
++        }
+ 
+         // This activity is launched directly by an app, or system server. System server provides
+         // the package name through the intent if so.

@@ -1,0 +1,52 @@
+diff --git a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java
+index c8bcabf..261c722 100644
+--- a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java
++++ b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java
+@@ -138,23 +138,37 @@
+         }
+ 
+         final PackageManager pmWrapper = mContext.getPackageManager();
++        // Add requesting apps, with full validation
+         List<ResolveInfo> installedServices = pmWrapper.queryIntentServicesAsUser(
+                 new Intent(mIntentAction), flags, user);
+         for (ResolveInfo resolveInfo : installedServices) {
+             ServiceInfo info = resolveInfo.serviceInfo;
+ 
+-            if (!mPermission.equals(info.permission)) {
+-                Slog.w(mTag, "Skipping " + mNoun + " service "
+-                        + info.packageName + "/" + info.name
+-                        + ": it does not require the permission "
+-                        + mPermission);
+-                continue;
++            if (!mEnabledServices.contains(info.getComponentName())) {
++                if (!mPermission.equals(info.permission)) {
++                    Slog.w(mTag, "Skipping " + mNoun + " service "
++                            + info.packageName + "/" + info.name
++                            + ": it does not require the permission "
++                            + mPermission);
++                    continue;
++                }
++                if (mValidator != null && !mValidator.test(info)) {
++                    continue;
++                }
++                mServices.add(info);
+             }
+-            if (mValidator != null && !mValidator.test(info)) {
+-                continue;
+-            }
+-            mServices.add(info);
+         }
++
++        // Add all apps with access, in case prior approval was granted without full validation
++        for (ComponentName cn : mEnabledServices) {
++            List<ResolveInfo> enabledServices = pmWrapper.queryIntentServicesAsUser(
++                    new Intent().setComponent(cn), flags, user);
++            for (ResolveInfo resolveInfo : enabledServices) {
++                ServiceInfo info = resolveInfo.serviceInfo;
++                mServices.add(info);
++            }
++        }
++
+         for (Callback callback : mCallbacks) {
+             callback.onServicesReloaded(mServices);
+         }

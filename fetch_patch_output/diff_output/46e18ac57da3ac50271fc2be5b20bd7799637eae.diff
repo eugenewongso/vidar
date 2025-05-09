@@ -1,0 +1,75 @@
+diff --git a/src/com/android/phone/CdmaCallOptions.java b/src/com/android/phone/CdmaCallOptions.java
+index 4f94b58..fe6d777 100644
+--- a/src/com/android/phone/CdmaCallOptions.java
++++ b/src/com/android/phone/CdmaCallOptions.java
+@@ -59,6 +59,10 @@
+     protected void onCreate(Bundle icicle) {
+         super.onCreate(icicle);
+ 
++        getWindow().addSystemFlags(
++                android.view.WindowManager.LayoutParams
++                        .SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         addPreferencesFromResource(R.xml.cdma_call_privacy);
+ 
+         SubscriptionInfoHelper subInfoHelper = new SubscriptionInfoHelper(this, getIntent());
+diff --git a/src/com/android/phone/ChangeIccPinScreen.java b/src/com/android/phone/ChangeIccPinScreen.java
+index 0784495..898b21b 100644
+--- a/src/com/android/phone/ChangeIccPinScreen.java
++++ b/src/com/android/phone/ChangeIccPinScreen.java
+@@ -95,6 +95,10 @@
+     public void onCreate(Bundle icicle) {
+         super.onCreate(icicle);
+ 
++        getWindow().addSystemFlags(
++                android.view.WindowManager.LayoutParams
++                        .SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         mUserManager = this.getSystemService(UserManager.class);
+         if (mUserManager.hasUserRestriction(UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS)) {
+             mDisallowedConfig = true;
+diff --git a/src/com/android/phone/EmergencyDialer.java b/src/com/android/phone/EmergencyDialer.java
+index d4fdca6..6b3dc9e 100644
+--- a/src/com/android/phone/EmergencyDialer.java
++++ b/src/com/android/phone/EmergencyDialer.java
+@@ -257,6 +257,10 @@
+     protected void onCreate(Bundle icicle) {
+         super.onCreate(icicle);
+ 
++        getWindow().addSystemFlags(
++                android.view.WindowManager.LayoutParams
++                        .SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         mEntryType = getIntent().getIntExtra(EXTRA_ENTRY_TYPE, ENTRY_TYPE_UNKNOWN);
+         Log.d(LOG_TAG, "Launched from " + entryTypeToString(mEntryType));
+ 
+diff --git a/src/com/android/phone/EnableIccPinScreen.java b/src/com/android/phone/EnableIccPinScreen.java
+index 092fa64..2e6ce6e 100644
+--- a/src/com/android/phone/EnableIccPinScreen.java
++++ b/src/com/android/phone/EnableIccPinScreen.java
+@@ -68,6 +68,10 @@
+     protected void onCreate(Bundle icicle) {
+         super.onCreate(icicle);
+ 
++        getWindow().addSystemFlags(
++                android.view.WindowManager.LayoutParams
++                        .SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         mUserManager = this.getSystemService(UserManager.class);
+         if (mUserManager.hasUserRestriction(UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS)) {
+             mDisallowedConfig = true;
+diff --git a/src/com/android/phone/settings/fdn/GetPin2Screen.java b/src/com/android/phone/settings/fdn/GetPin2Screen.java
+index 09cab46..7f3b60c 100644
+--- a/src/com/android/phone/settings/fdn/GetPin2Screen.java
++++ b/src/com/android/phone/settings/fdn/GetPin2Screen.java
+@@ -48,6 +48,10 @@
+     protected void onCreate(Bundle icicle) {
+         super.onCreate(icicle);
+ 
++        getWindow().addSystemFlags(
++                android.view.WindowManager.LayoutParams
++                        .SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         setContentView(R.layout.get_pin2_screen);
+ 
+         mPin2Field = (EditText) findViewById(R.id.pin);

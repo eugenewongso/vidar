@@ -1,0 +1,45 @@
+diff --git a/services/core/java/com/android/server/wm/ActivityStartController.java b/services/core/java/com/android/server/wm/ActivityStartController.java
+index a6e5040..4de02f7 100644
+--- a/services/core/java/com/android/server/wm/ActivityStartController.java
++++ b/services/core/java/com/android/server/wm/ActivityStartController.java
+@@ -43,7 +43,6 @@
+ import android.content.pm.PackageManager;
+ import android.content.pm.ResolveInfo;
+ import android.os.Binder;
+-import android.os.Bundle;
+ import android.os.IBinder;
+ import android.os.Trace;
+ import android.os.UserHandle;
+@@ -529,14 +528,14 @@
+      * Starts an activity in the TaskFragment.
+      * @param taskFragment TaskFragment {@link TaskFragment} to start the activity in.
+      * @param activityIntent intent to start the activity.
+-     * @param activityOptions ActivityOptions to start the activity with.
++     * @param activityOptions SafeActivityOptions to start the activity with.
+      * @param resultTo the caller activity
+      * @param callingUid the caller uid
+      * @param callingPid the caller pid
+      * @return the start result.
+      */
+     int startActivityInTaskFragment(@NonNull TaskFragment taskFragment,
+-            @NonNull Intent activityIntent, @Nullable Bundle activityOptions,
++            @NonNull Intent activityIntent, @Nullable SafeActivityOptions activityOptions,
+             @Nullable IBinder resultTo, int callingUid, int callingPid,
+             @Nullable IBinder errorCallbackToken) {
+         final ActivityRecord caller =
+diff --git a/services/core/java/com/android/server/wm/WindowOrganizerController.java b/services/core/java/com/android/server/wm/WindowOrganizerController.java
+index 027ab97..7b59d6fb 100644
+--- a/services/core/java/com/android/server/wm/WindowOrganizerController.java
++++ b/services/core/java/com/android/server/wm/WindowOrganizerController.java
+@@ -1189,8 +1189,10 @@
+                 final IBinder callerActivityToken = operation.getActivityToken();
+                 final Intent activityIntent = operation.getActivityIntent();
+                 final Bundle activityOptions = operation.getBundle();
++                final SafeActivityOptions safeOptions =
++                        SafeActivityOptions.fromBundle(activityOptions, caller.mPid, caller.mUid);
+                 final int result = mService.getActivityStartController()
+-                        .startActivityInTaskFragment(taskFragment, activityIntent, activityOptions,
++                        .startActivityInTaskFragment(taskFragment, activityIntent, safeOptions,
+                                 callerActivityToken, caller.mUid, caller.mPid,
+                                 errorCallbackToken);
+                 if (!isStartResultSuccessful(result)) {

@@ -1,0 +1,52 @@
+diff --git a/system/stack/gatt/gatt_sr.cc b/system/stack/gatt/gatt_sr.cc
+index 6f81b90..c61df52 100644
+--- a/system/stack/gatt/gatt_sr.cc
++++ b/system/stack/gatt/gatt_sr.cc
+@@ -734,6 +734,11 @@
+ 
+   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);
+ 
++  // This can happen if the channel is already closed.
++  if (payload_size == 0) {
++    return;
++  }
++
+   uint16_t msg_len =
+       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);
+   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);
+@@ -769,6 +774,12 @@
+   }
+ 
+   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);
++
++  // This can happen if the channel is already closed.
++  if (payload_size == 0) {
++    return;
++  }
++
+   uint16_t buf_len =
+       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);
+ 
+@@ -902,6 +913,11 @@
+ 
+   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);
+ 
++  // This can happen if the channel is already closed.
++  if (payload_size == 0) {
++    return;
++  }
++
+   size_t msg_len = sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET;
+   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);
+   uint8_t* p = (uint8_t*)(p_msg + 1) + L2CAP_MIN_OFFSET;
+@@ -1049,6 +1065,11 @@
+                                    uint8_t* p_data) {
+   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);
+ 
++  // This can happen if the channel is already closed.
++  if (payload_size == 0) {
++    return;
++  }
++
+   size_t buf_len = sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET;
+   uint16_t offset = 0;

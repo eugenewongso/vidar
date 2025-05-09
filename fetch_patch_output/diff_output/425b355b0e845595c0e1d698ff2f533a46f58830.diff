@@ -1,0 +1,19 @@
+diff --git a/src/com/android/server/telecom/callredirection/CallRedirectionProcessor.java b/src/com/android/server/telecom/callredirection/CallRedirectionProcessor.java
+index 02debcd..1b25441 100644
+--- a/src/com/android/server/telecom/callredirection/CallRedirectionProcessor.java
++++ b/src/com/android/server/telecom/callredirection/CallRedirectionProcessor.java
+@@ -133,6 +133,14 @@
+                             + mServiceType + " call redirection service");
+                 }
+             }
++            Log.i(this, "notifyTimeout: call redirection has timed out so "
++                    + "unbinding the connection");
++            if (mConnection != null) {
++                // We still need to call unbind even if the service disconnected.
++                mContext.unbindService(mConnection);
++                mConnection = null;
++            }
++            mService = null;
+         }
+ 
+         private class CallRedirectionServiceConnection implements ServiceConnection {

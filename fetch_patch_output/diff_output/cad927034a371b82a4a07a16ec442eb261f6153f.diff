@@ -1,0 +1,30 @@
+diff --git a/system/stack/eatt/eatt.h b/system/stack/eatt/eatt.h
+index 62bf248..0a1a591 100644
+--- a/system/stack/eatt/eatt.h
++++ b/system/stack/eatt/eatt.h
+@@ -100,6 +100,7 @@
+ 
+   void EattChannelSetTxMTU(uint16_t tx_mtu) {
+     this->tx_mtu_ = std::min<uint16_t>(tx_mtu, EATT_MAX_TX_MTU);
++    this->tx_mtu_ = std::max<uint16_t>(tx_mtu, EATT_MIN_MTU_MPS);
+   }
+ };
+ 
+diff --git a/system/stack/gatt/gatt_sr.cc b/system/stack/gatt/gatt_sr.cc
+index 9c40fed..1785372 100644
+--- a/system/stack/gatt/gatt_sr.cc
++++ b/system/stack/gatt/gatt_sr.cc
+@@ -162,6 +162,13 @@
+   uint8_t* p;
+   bool is_overflow = false;
+ 
++  // We need at least one extra byte for the opcode
++  if (mtu == 0) {
++    log::error("Invalid MTU");
++    p_cmd->status = GATT_ILLEGAL_PARAMETER;
++    return;
++  }
++
+   len = sizeof(BT_HDR) + L2CAP_MIN_OFFSET + mtu;
+   BT_HDR* p_buf = (BT_HDR*)osi_calloc(len);
+   p_buf->offset = L2CAP_MIN_OFFSET;

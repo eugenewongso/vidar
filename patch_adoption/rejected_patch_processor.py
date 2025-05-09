@@ -106,7 +106,7 @@ if __name__ == "__main__":
     process_merge = args.merge or not (args.ast or args.merge or args.conflict)
     process_conflict = args.conflict or not (args.ast or args.merge or args.conflict)
 
-    KERNEL_PATH = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    KERNEL_PATH = "/Volumes/GitRepo/school/capstone/android/base"
     REPORT_PATH = "reports/patch_application_report.json"
 
     processor = RejectedPatchProcessor(KERNEL_PATH, REPORT_PATH, process_ast, process_merge, process_conflict)

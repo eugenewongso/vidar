@@ -1,0 +1,37 @@
+diff --git a/services/core/java/com/android/server/am/PendingIntentRecord.java b/services/core/java/com/android/server/am/PendingIntentRecord.java
+index 3817ba1..0b78901 100644
+--- a/services/core/java/com/android/server/am/PendingIntentRecord.java
++++ b/services/core/java/com/android/server/am/PendingIntentRecord.java
+@@ -305,6 +305,10 @@
+         this.stringName = null;
+     }
+ 
++    @VisibleForTesting TempAllowListDuration getAllowlistDurationLocked(IBinder allowlistToken) {
++        return mAllowlistDuration.get(allowlistToken);
++    }
++
+     void setAllowBgActivityStarts(IBinder token, int flags) {
+         if (token == null) return;
+         if ((flags & FLAG_ACTIVITY_SENDER) != 0) {
+@@ -323,6 +327,12 @@
+         mAllowBgActivityStartsForActivitySender.remove(token);
+         mAllowBgActivityStartsForBroadcastSender.remove(token);
+         mAllowBgActivityStartsForServiceSender.remove(token);
++        if (mAllowlistDuration != null) {
++            mAllowlistDuration.remove(token);
++            if (mAllowlistDuration.isEmpty()) {
++                mAllowlistDuration = null;
++            }
++        }
+     }
+ 
+     public void registerCancelListenerLocked(IResultReceiver receiver) {
+@@ -703,7 +713,7 @@
+         return res;
+     }
+ 
+-    private BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(
++    @VisibleForTesting BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(
+             IBinder allowlistToken) {
+         return mAllowBgActivityStartsForActivitySender.contains(allowlistToken)
+                 ? BackgroundStartPrivileges.allowBackgroundActivityStarts(allowlistToken)

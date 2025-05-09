@@ -1,0 +1,47 @@
+diff --git a/system/btif/include/btif_storage.h b/system/btif/include/btif_storage.h
+index a8bf67e..392d99e 100644
+--- a/system/btif/include/btif_storage.h
++++ b/system/btif/include/btif_storage.h
+@@ -218,6 +218,29 @@
+ 
+ /*******************************************************************************
+  *
++ * Function         btif_storage_set_hid_connection_policy
++ *
++ * Description      Stores connection policy info in nvram
++ *
++ * Returns          BT_STATUS_SUCCESS
++ *
++ ******************************************************************************/
++bt_status_t btif_storage_set_hid_connection_policy(const RawAddress& addr,
++                                                   bool reconnect_allowed);
++/*******************************************************************************
++ *
++ * Function         btif_storage_get_hid_connection_policy
++ *
++ * Description      get connection policy info from nvram
++ *
++ * Returns          BT_STATUS_SUCCESS
++ *
++ ******************************************************************************/
++bt_status_t btif_storage_get_hid_connection_policy(const RawAddress& addr,
++                                                   bool* reconnect_allowed);
++
++/*******************************************************************************
++ *
+  * Function         btif_storage_add_hid_device_info
+  *
+  * Description      BTIF storage API - Adds the hid information of bonded hid
+diff --git a/system/include/hardware/bt_hh.h b/system/include/hardware/bt_hh.h
+index f6e6e83..0700ed4 100644
+--- a/system/include/hardware/bt_hh.h
++++ b/system/include/hardware/bt_hh.h
+@@ -179,7 +179,7 @@
+   bt_status_t (*connect)(RawAddress* bd_addr);
+ 
+   /** dis-connect from hid device */
+-  bt_status_t (*disconnect)(RawAddress* bd_addr);
++  bt_status_t (*disconnect)(RawAddress* bd_addr, bool reconnect_allowed);
+ 
+   /** Virtual UnPlug (VUP) the specified HID device */
+   bt_status_t (*virtual_unplug)(RawAddress* bd_addr);

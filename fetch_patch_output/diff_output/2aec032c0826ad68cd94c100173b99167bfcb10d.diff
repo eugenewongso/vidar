@@ -1,0 +1,37 @@
+diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
+index 617708f..0670307 100644
+--- a/libs/binder/Parcel.cpp
++++ b/libs/binder/Parcel.cpp
+@@ -796,6 +796,10 @@
+         //printf("Writing %ld bytes, padded to %ld\n", len, padded);
+         uint8_t* const data = mData+mDataPos;
+ 
++        if (status_t status = validateReadData(mDataPos + padded); status != OK) {
++            return nullptr; // drops status
++        }
++
+         // Need to pad at end?
+         if (padded != len) {
+ #if BYTE_ORDER == BIG_ENDIAN
+@@ -1313,6 +1317,10 @@
+     const bool enoughObjects = mObjectsSize < mObjectsCapacity;
+     if (enoughData && enoughObjects) {
+ restart_write:
++        if (status_t status = validateReadData(mDataPos + sizeof(val)); status != OK) {
++            return status;
++        }
++
+         *reinterpret_cast<flat_binder_object*>(mData+mDataPos) = val;
+ 
+         // remember if it's a file descriptor
+@@ -1505,6 +1513,10 @@
+ 
+     if ((mDataPos+sizeof(val)) <= mDataCapacity) {
+ restart_write:
++        if (status_t status = validateReadData(mDataPos + sizeof(val)); status != OK) {
++            return status;
++        }
++
+         *reinterpret_cast<T*>(mData+mDataPos) = val;
+         return finishWrite(sizeof(val));
+     }

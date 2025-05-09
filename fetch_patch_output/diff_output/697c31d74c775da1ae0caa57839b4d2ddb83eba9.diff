@@ -1,0 +1,170 @@
+diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java
+index 862b785..dfbb7cc 100644
+--- a/core/java/android/app/Notification.java
++++ b/core/java/android/app/Notification.java
+@@ -2598,8 +2598,11 @@
+         if (mAllowlistToken == null) {
+             mAllowlistToken = processAllowlistToken;
+         }
+-        // Propagate this token to all pending intents that are unmarshalled from the parcel.
+-        parcel.setClassCookie(PendingIntent.class, mAllowlistToken);
++        // Propagate this token to all pending intents that are unmarshalled from the parcel,
++        // or keep the one we're already propagating, if that's the case.
++        if (!parcel.hasClassCookie(PendingIntent.class)) {
++            parcel.setClassCookie(PendingIntent.class, mAllowlistToken);
++        }
+ 
+         when = parcel.readLong();
+         creationTime = parcel.readLong();
+@@ -3059,9 +3062,24 @@
+             });
+         }
+         try {
+-            // IMPORTANT: Add marshaling code in writeToParcelImpl as we
+-            // want to intercept all pending events written to the parcel.
+-            writeToParcelImpl(parcel, flags);
++            boolean mustClearCookie = false;
++            if (!parcel.hasClassCookie(Notification.class)) {
++                // This is the "root" notification, and not an "inner" notification (including
++                // publicVersion or anything else that might be embedded in extras). So we want
++                // to use its token for every inner notification (might be null).
++                parcel.setClassCookie(Notification.class, mAllowlistToken);
++                mustClearCookie = true;
++            }
++            try {
++                // IMPORTANT: Add marshaling code in writeToParcelImpl as we
++                // want to intercept all pending events written to the parcel.
++                writeToParcelImpl(parcel, flags);
++            } finally {
++                if (mustClearCookie) {
++                    parcel.removeClassCookie(Notification.class, mAllowlistToken);
++                }
++            }
++
+             synchronized (this) {
+                 // Must be written last!
+                 parcel.writeArraySet(allPendingIntents);
+@@ -3076,7 +3094,10 @@
+     private void writeToParcelImpl(Parcel parcel, int flags) {
+         parcel.writeInt(1);
+ 
+-        parcel.writeStrongBinder(mAllowlistToken);
++        // Always use the same token as the root notification (might be null).
++        IBinder rootNotificationToken = (IBinder) parcel.getClassCookie(Notification.class);
++        parcel.writeStrongBinder(rootNotificationToken);
++
+         parcel.writeLong(when);
+         parcel.writeLong(creationTime);
+         if (mSmallIcon == null && icon != 0) {
+@@ -3469,18 +3490,23 @@
+      * Sets the token used for background operations for the pending intents associated with this
+      * notification.
+      *
+-     * This token is automatically set during deserialization for you, you usually won't need to
+-     * call this unless you want to change the existing token, if any.
++     * Note: Should <em>only</em> be invoked by NotificationManagerService, since this is normally
++     * populated by unparceling (and also used there). Any other usage is suspect.
+      *
+      * @hide
+      */
+-    public void clearAllowlistToken() {
+-        mAllowlistToken = null;
++    public void overrideAllowlistToken(IBinder token) {
++        mAllowlistToken = token;
+         if (publicVersion != null) {
+-            publicVersion.clearAllowlistToken();
++            publicVersion.overrideAllowlistToken(token);
+         }
+     }
+ 
++    /** @hide */
++    public IBinder getAllowlistToken() {
++        return mAllowlistToken;
++    }
++
+     /**
+      * @hide
+      */
+diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java
+index e784c26..453aba3 100644
+--- a/core/java/android/os/Parcel.java
++++ b/core/java/android/os/Parcel.java
+@@ -816,6 +816,28 @@
+     }
+ 
+     /** @hide */
++    public void removeClassCookie(Class clz, Object expectedCookie) {
++        if (mClassCookies != null) {
++            Object removedCookie = mClassCookies.remove(clz);
++            if (removedCookie != expectedCookie) {
++                Log.wtf(TAG, "Expected to remove " + expectedCookie + " (with key=" + clz
++                        + ") but instead removed " + removedCookie);
++            }
++        } else {
++            Log.wtf(TAG, "Expected to remove " + expectedCookie + " (with key=" + clz
++                    + ") but no cookies were present");
++        }
++    }
++
++    /**
++     * Whether {@link #setClassCookie} has been called with the specified {@code clz}.
++     * @hide
++     */
++    public boolean hasClassCookie(Class clz) {
++        return mClassCookies != null && mClassCookies.containsKey(clz);
++    }
++
++    /** @hide */
+     public final void adoptClassCookies(Parcel from) {
+         mClassCookies = from.mClassCookies;
+     }
+diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java
+index cf67ef3..b62fd61 100644
+--- a/services/core/java/com/android/server/notification/NotificationManagerService.java
++++ b/services/core/java/com/android/server/notification/NotificationManagerService.java
+@@ -667,7 +667,7 @@
+ 
+     private static final int MY_UID = Process.myUid();
+     private static final int MY_PID = Process.myPid();
+-    private static final IBinder ALLOWLIST_TOKEN = new Binder();
++    static final IBinder ALLOWLIST_TOKEN = new Binder();
+     protected RankingHandler mRankingHandler;
+     private long mLastOverRateLogTime;
+     private float mMaxPackageEnqueueRate = DEFAULT_MAX_NOTIFICATION_ENQUEUE_RATE;
+@@ -4472,7 +4472,7 @@
+                     // Remove background token before returning notification to untrusted app, this
+                     // ensures the app isn't able to perform background operations that are
+                     // associated with notification interactions.
+-                    notification.clearAllowlistToken();
++                    notification.overrideAllowlistToken(null);
+                     return new StatusBarNotification(
+                             sbn.getPackageName(),
+                             sbn.getOpPkg(),
+@@ -6713,6 +6713,15 @@
+                     + " trying to post for invalid pkg " + pkg + " in user " + incomingUserId);
+         }
+ 
++        IBinder allowlistToken = notification.getAllowlistToken();
++        if (allowlistToken != null && allowlistToken != ALLOWLIST_TOKEN) {
++            throw new SecurityException(
++                    "Unexpected allowlist token received from " + callingUid);
++        }
++        // allowlistToken is populated by unparceling, so it can be null if the notification was
++        // posted from inside system_server. Ensure it's the expected value.
++        notification.overrideAllowlistToken(ALLOWLIST_TOKEN);
++
+         checkRestrictedCategories(notification);
+ 
+         // Notifications passed to setForegroundService() have FLAG_FOREGROUND_SERVICE,
+@@ -7776,6 +7785,11 @@
+          */
+         private boolean enqueueNotification() {
+             synchronized (mNotificationLock) {
++                // allowlistToken is populated by unparceling, so it will be absent if the
++                // EnqueueNotificationRunnable is created directly by NMS (as we do for group
++                // summaries) instead of via notify(). Fix that.
++                r.getNotification().overrideAllowlistToken(ALLOWLIST_TOKEN);
++
+                 final long snoozeAt =
+                         mSnoozeHelper.getSnoozeTimeForUnpostedNotification(
+                                 r.getUser().getIdentifier(),

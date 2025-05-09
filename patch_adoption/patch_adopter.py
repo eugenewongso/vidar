@@ -35,21 +35,25 @@ class PatchAdopter:
             return {
                 "patch_file": os.path.basename(patch_file),
                 "patch_url": patch_url,
-                "status": "Rejected",
+                "status": "Rejected: Missing Patch File",
                 "rejected_files": [],
                 "message_output": "Patch file not found."
             }
 
         try:
-            # Run the patch command
+            # Run the patch command with -f flag to avoid interactive prompts
             result = subprocess.run(
-                [self.patch_command, "-p", str(self.strip_level), "-i", patch_file],
+                [self.patch_command, "-p", str(self.strip_level), "-i", patch_file, "-f"],
                 text=True,
-                capture_output=True
+                capture_output=True,
+                input=""  # Provide empty input to avoid interactive prompts
             )
 
             console_output = result.stdout + result.stderr
             print(console_output)
+
+            # Determine the detailed status based on the console output
+            detailed_status = self.determine_detailed_status(console_output)
 
             # Extract failed file paths from the output
             rejected_files = self.extract_failed_files(console_output)
@@ -60,13 +64,18 @@ class PatchAdopter:
             # Map failed files to their corresponding .rej files
             formatted_rejected_files = self.map_rejected_files(rejected_files, reject_file_paths)
 
-            # Determine patch status
-            status = "Applied Successfully" if not formatted_rejected_files else "Rejected"
+            # Overall status (for backward compatibility)
+            overall_status = "Applied Successfully" if not formatted_rejected_files else "Rejected"
+            
+            # If the detailed status indicates files weren't found, override the overall_status
+            if detailed_status == "Skipped: Files Not Found" and overall_status == "Applied Successfully":
+                overall_status = "Applied Successfully"
 
             return {
                 "patch_file": os.path.basename(patch_file),
                 "patch_url": patch_url,
-                "status": status,
+                "status": overall_status,
+                "detailed_status": detailed_status,
                 "rejected_files": formatted_rejected_files,
                 "message_output": console_output
             }
@@ -78,9 +87,36 @@ class PatchAdopter:
                 "patch_file": os.path.basename(patch_file),
                 "patch_url": patch_url,
                 "status": "Rejected",
+                "detailed_status": "Rejected: Error Running Patch Command",
                 "rejected_files": [],
                 "message_output": console_output
             }
+
+    def determine_detailed_status(self, console_output):
+        """
+        Determines the detailed status of the patch application.
+
+        :param console_output: The output of the patch command.
+        :return: Detailed status string.
+        """
+        # Check if patch was already applied
+        if "Reversed (or previously applied) patch detected" in console_output:
+            return "Applied Successfully: Already Applied"
+        
+        # Check if files weren't found
+        if "can't find file to patch" in console_output:
+            return "Skipped: Files Not Found"
+        
+        # Check if any hunks failed
+        if "FAILED" in console_output and "hunk" in console_output:
+            return "Rejected: Failed Hunks"
+        
+        # Check if there were offsets but all hunks were applied
+        if "offset" in console_output and "FAILED" not in console_output:
+            return "Applied Successfully: With Offsets"
+        
+        # Default to clean application if none of the above
+        return "Applied Successfully: Clean"
 
     def extract_failed_files(self, console_output):
         """
@@ -148,12 +184,35 @@ class PatchAdopter:
 
         print(f"📄 Patch report saved to: {self.report_output_path}")
 
+    def generate_summary(self):
+        """
+        Generates a summary of patch application results by detailed status.
+        """
+        status_counts = {}
+        
+        for patch in self.patch_results["patches"]:
+            detailed_status = patch.get("detailed_status", "Unknown")
+            status_counts[detailed_status] = status_counts.get(detailed_status, 0) + 1
+        
+        summary = {
+            "total_patches": len(self.patch_results["patches"]),
+            "status_counts": status_counts
+        }
+        
+        print("\n===== Patch Application Summary =====")
+        print(f"Total patches processed: {summary['total_patches']}")
+        print("Status breakdown:")
+        for status, count in status_counts.items():
+            print(f"  - {status}: {count}")
+        
+        return summary
+
 
 # === Main Patch Application Logic ===
 
 if __name__ == "__main__":
     # Paths
-    kernel_path = "/Volumes/GitRepo/school/capstone/android/Xiaomi_Kernel_OpenSource"
+    kernel_path = "/data/androidOS14"
     patch_dir = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/fetch_patch_output/diff_output"
     parsed_report_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/parsed_report.json"
     report_output_path = "/Users/theophilasetiawan/Desktop/files/capstone/vidar/reports/patch_application_report.json"
@@ -184,3 +243,6 @@ if __name__ == "__main__":
 
     # Save the final report
     patcher.save_report()
+    
+    # Generate and display summary
+    patcher.generate_summary()

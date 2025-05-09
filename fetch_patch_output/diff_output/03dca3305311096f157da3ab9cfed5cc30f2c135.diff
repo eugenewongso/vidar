@@ -1,0 +1,13 @@
+diff --git a/system/include/hardware/bt_hh.h b/system/include/hardware/bt_hh.h
+index dfe47f7..c64e465 100644
+--- a/system/include/hardware/bt_hh.h
++++ b/system/include/hardware/bt_hh.h
+@@ -173,7 +173,7 @@
+   bt_status_t (*connect)(RawAddress* bd_addr);
+ 
+   /** dis-connect from hid device */
+-  bt_status_t (*disconnect)(RawAddress* bd_addr);
++  bt_status_t (*disconnect)(RawAddress* bd_addr, bool reconnect_allowed);
+ 
+   /** Virtual UnPlug (VUP) the specified HID device */
+   bt_status_t (*virtual_unplug)(RawAddress* bd_addr);

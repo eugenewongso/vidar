@@ -1,0 +1,74 @@
+diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java
+index b20117d..c99d37b 100644
+--- a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java
++++ b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java
+@@ -19,6 +19,7 @@
+ import static android.Manifest.permission;
+ import static android.content.pm.PackageManager.GET_PERMISSIONS;
+ import static android.content.pm.PackageManager.MATCH_ARCHIVED_PACKAGES;
++import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
+ 
+ import android.app.Activity;
+ import android.app.DialogFragment;
+@@ -53,6 +54,8 @@
+ 
+     @Override
+     public void onCreate(Bundle icicle) {
++        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         super.onCreate(null);
+ 
+         int callingUid = getLaunchedFromUid();
+diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java
+index 42dd382..fbb0fa4 100644
+--- a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java
++++ b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java
+@@ -21,10 +21,14 @@
+ import android.app.DialogFragment;
+ import android.content.DialogInterface;
+ import android.os.Bundle;
++import android.widget.Button;
+ 
+ public class UnarchiveFragment extends DialogFragment implements
+         DialogInterface.OnClickListener {
+ 
++    private Dialog mDialog;
++    private Button mRestoreButton;
++
+     @Override
+     public Dialog onCreateDialog(Bundle savedInstanceState) {
+         String appTitle = getArguments().getString(UnarchiveActivity.APP_TITLE);
+@@ -40,7 +44,32 @@
+         dialogBuilder.setPositiveButton(R.string.restore, this);
+         dialogBuilder.setNegativeButton(android.R.string.cancel, this);
+ 
+-        return dialogBuilder.create();
++        mDialog = dialogBuilder.create();
++        return mDialog;
++    }
++
++    @Override
++    public void onStart() {
++        super.onStart();
++        if (mDialog != null) {
++            mRestoreButton = ((AlertDialog) mDialog).getButton(DialogInterface.BUTTON_POSITIVE);
++        }
++    }
++
++    @Override
++    public void onPause() {
++        super.onPause();
++        if (mRestoreButton != null) {
++            mRestoreButton.setEnabled(false);
++        }
++    }
++
++    @Override
++    public void onResume() {
++        super.onResume();
++        if (mRestoreButton != null) {
++            mRestoreButton.setEnabled(true);
++        }
+     }
+ 
+     @Override
