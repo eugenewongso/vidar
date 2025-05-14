@@ -1,4 +1,0 @@
-cve_id,downstream_version,file_name,relative_line_count_similarity,token_level_edit_similarity,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_precision,codebert_recall,codebert_f1,codebert_f3
-ASB-A-363248394,12,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,0.8895,0.8717,0.1283,0.9686,1012,530,482,0.9308,0.9112,0.9209,0.9131
-ASB-A-363248394,12L,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,0.8895,0.8717,0.1283,0.9686,1012,530,482,0.9308,0.9112,0.9209,0.9131
-ASB-A-277207798,13,core/java/com/android/internal/app/ChooserActivity.java,0.9334,0.1926,0.8074,skipped,25429,13166,12263,0.9389,0.9322,0.9355,0.9329

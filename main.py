@@ -748,7 +748,8 @@ def main():
     
     # Setup paths
     current_path = os.getcwd()
-    report_output_path = "outputs/application_reports"
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    report_output_path = f"outputs/application_reports{timestamp}.json"
     combined_current_path = os.path.join(current_path, report_output_path)
     
     print("Applying patches...")

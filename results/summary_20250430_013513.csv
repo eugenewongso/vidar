@@ -1,3 +1,0 @@
-cve_id,downstream_version,file_name,relative_line_count_similarity,token_level_edit_similarity,normalized_edit_similarity,cosine_similarity_openai,codebert_precision,codebert_recall,codebert_f1,codebert_f3
-ASB-A-363248394,12,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,0.8895,0.8717,0.1283,0.9686,0.9308,0.9112,0.9209,0.9131
-ASB-A-363248394,12L,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,0.8895,0.8717,0.1283,0.9686,0.9308,0.9112,0.9209,0.9131

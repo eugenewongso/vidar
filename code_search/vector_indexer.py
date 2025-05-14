@@ -34,13 +34,14 @@ def load_c_files_manually(repo_path):
     print(f"✅ Loaded {len(docs)} C files.")
     return docs
 
-def index_repo(repo_path: str, commit_hash: str, output_dir: str):
-    print(f"]Indexing repo snapshot for commit {commit_hash}")
+def index_repo(repo_path: str, output_dir: str):
+    print(f"Indexing repo snapshot for commit")
 
     docs = load_c_files_manually(repo_path)
 
     print("Splitting documents into chunks...")
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+
     chunks = []
     for doc in tqdm(docs, desc="Splitting"):
         split_docs = splitter.split_documents([doc])
@@ -63,7 +64,7 @@ def index_repo(repo_path: str, commit_hash: str, output_dir: str):
     print("Initial index created.")
 
     # Add remaining chunks in batches with progress bar
-    batch_size = 800 # Adjust batch size as needed based on performance/memory and OPENAI API limit
+    batch_size = 500 # Adjust batch size as needed based on performance/memory and OPENAI API limit
     print(f"Adding remaining {len(chunks) - 1} chunks in batches of {batch_size}...")
     for i in tqdm(range(1, len(chunks), batch_size), desc="Generating embeddings and indexing"):
         batch = chunks[i:i + batch_size]
@@ -71,7 +72,7 @@ def index_repo(repo_path: str, commit_hash: str, output_dir: str):
              db.add_documents(batch) 
 
     print("Finished adding all chunks.")
-    index_path = os.path.join(output_dir, f"faiss_index_{commit_hash}")
+    index_path = os.path.join(output_dir, f"faiss_index_")
     os.makedirs(index_path, exist_ok=True)
     db.save_local(index_path)
 
@@ -81,8 +82,7 @@ def index_repo(repo_path: str, commit_hash: str, output_dir: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Index C source files from a Linux repo for semantic search fallback.")
     parser.add_argument("--repo_path", required=True, help="Path to the repo at a specific commit")
-    parser.add_argument("--commit_hash", required=True, help="Commit hash used to tag the index")
     parser.add_argument("--output_dir", default="./vector_indexes", help="Where to store FAISS index folders")
     args = parser.parse_args()
 
-    index_repo(args.repo_path, args.commit_hash, args.output_dir)
+    index_repo(args.repo_path, args.output_dir)

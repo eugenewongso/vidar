@@ -1,2 +1,0 @@
-cve_id,downstream_version,file_name,relative_line_count_similarity,token_level_edit_similarity,normalized_edit_similarity,cosine_similarity_openai,codebert_precision,codebert_recall,codebert_f1,codebert_f3
-ASB-A-317203980,13,services/core/java/com/android/server/media/MediaSessionRecord.java,0.9002,0.4302,0.5698,skipped,0.9468,0.9356,0.9412,0.9367
