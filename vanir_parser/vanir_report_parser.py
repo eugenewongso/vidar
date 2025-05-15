@@ -3,11 +3,43 @@ import json
 import re
 
 class VanirParser:
-    """A class to handle parsing, structuring, and extracting metadata from a Vanir report."""
+    """
+    Parser for Vanir security vulnerability reports.
+    
+    This class is responsible for:
+    1. Loading raw Vanir vulnerability reports in JSON format
+    2. Extracting structured information about security patches
+    3. Organizing patch data by affected files and functions
+    4. Saving the processed data in a structured format for further processing
+    
+    The parser extracts key information such as:
+    - Patch URLs (from Googlesource or CodeLinaro)
+    - Commit hashes from patch URLs
+    - Affected files and functions
+    
+    The output is a structured JSON file that maps patches to their affected files,
+    which is used by subsequent modules for downloading and applying patches.
+    
+    Usage:
+        parser = VanirParser('path/to/vanir_report.json')
+        # Parsing is done automatically in __init__
+    """
 
     def __init__(self, file_path, output_path=None):
+        """
+        Initialize the parser with input and output file paths.
+        
+        The parser loads the Vanir report, processes it, and automatically 
+        writes the parsed data to the output file.
+        
+        :param file_path: Path to the input Vanir report JSON file
+        :param output_path: Path to save the parsed output (default: reports/parsed_report.json)
+        """
+        # Get the project root directory
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
         self.file_path = file_path
-        self.output_path = output_path or os.path.abspath("reports/parsed_report.json")
+        self.output_path = output_path or os.path.join(project_root, "reports", "parsed_report.json")
 
         # Load, parse, and write the report automatically
         self.vanir_report = self.load_vanir_report()
@@ -15,17 +47,44 @@ class VanirParser:
         self.write_output_to_json()
 
     def load_vanir_report(self):
-        """Loads the Vanir report from a file."""
+        """
+        Loads the Vanir security report from a JSON file.
+        
+        This method simply reads the Vanir report file and parses it as JSON.
+        
+        :return: The loaded JSON data as a Python dictionary.
+        """
         with open(self.file_path, "r") as file:
             return json.load(file)
 
     def extract_patch_hash(self, patch_url):
-        """Extracts the commit hash from a patch URL using regex."""
+        """
+        Extracts the commit hash from a patch URL using regex.
+        
+        The function looks for a 40-character hexadecimal string at the end of the URL,
+        which is the standard format for Git commit hashes.
+        
+        :param patch_url: URL of the patch, typically from Googlesource or CodeLinaro.
+        :return: The commit hash if found, otherwise "N/A".
+        """
         match = re.search(r"([a-f0-9]{40})$", patch_url)  # Match 40-char commit hashes
         return match.group(1) if match else "N/A"
 
     def parse_vanir_report(self):
-        """Parses the Vanir report into a structured format with a list of patch entries."""
+        """
+        Parses the Vanir report into a structured format.
+        
+        This method:
+        1. Extracts patch URLs and affected files/functions from the report
+        2. Organizes patches by URL, avoiding duplicates
+        3. Maps each patch to its affected files and functions
+        4. Creates a structured representation suitable for downstream processing
+        
+        The result is a dictionary with a "patches" key containing a list of patch entries,
+        each with patch URL, filename, and affected files with their functions.
+        
+        :return: Dictionary with structured patch information.
+        """
         patch_list = []
 
         for patch_info in self.vanir_report.get("missing_patches", []):
@@ -63,12 +122,31 @@ class VanirParser:
         return {"patches": patch_list}
 
     def write_output_to_json(self):
-        """Writes the parsed structured data to a JSON file."""
+        """
+        Writes the parsed structured data to a JSON file.
+        
+        This method saves the processed patch information to a JSON file,
+        which will be used by subsequent processing steps (downloading patches,
+        applying patches, etc.).
+        """
         with open(self.output_path, "w") as file:
             json.dump(self.reorganized_report, file, indent=4)
         print(f"✅ Parsed report saved to {self.output_path}")
 
+
 # Automatically execute when the script is run directly
 if __name__ == "__main__":
-    VANIR_REPORT_PATH = os.path.abspath("reports/xiaomi_output.json")
+    """
+    Main entry point for Vanir report parsing.
+    
+    When executed directly, this script:
+    1. Defines the path to the Vanir output file
+    2. Creates a VanirParser instance to process the report
+    3. The parser automatically loads, processes, and saves the structured data
+    """
+    # Get the project root directory
+    PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # Use vanir_output.json for the input file
+    VANIR_REPORT_PATH = os.path.join(PROJECT_ROOT, "reports", "vanir_output.json")
     VanirParser(VANIR_REPORT_PATH)

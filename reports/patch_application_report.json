@@ -44,131 +44,97 @@
             "patch_file": "73b54cdf4b70831c4f952d7556274609cb46214e.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/73b54cdf4b70831c4f952d7556274609cb46214e",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\nHunk #3 succeeded at 10328 (offset 47 lines).\nHunk #4 succeeded at 10352 (offset 47 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n|index 582cd4e..e11c31c 100644\n|--- a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n|+++ b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\nHunk #1 FAILED at 2663.\nHunk #2 FAILED at 2678.\nHunk #3 FAILED at 2688.\nHunk #4 FAILED at 10192.\nHunk #5 FAILED at 10214.\nHunk #6 FAILED at 11131.\nHunk #7 FAILED at 11140.\nHunk #8 FAILED at 24460.\n8 out of 8 hunks FAILED -- saving rejects to file services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n|index 1549677..59ca615 100644\n|--- a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n|+++ b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n8 out of 8 hunks ignored\n"
         },
         {
             "patch_file": "2a75f7166b028150ea0dcd142e1ede51f7861eb3.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2a75f7166b028150ea0dcd142e1ede51f7861eb3",
             "status": "Applied Successfully",
-            "detailed_status": "Rejected: Failed Hunks",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\nHunk #1 succeeded at 241 with fuzz 2 (offset 24 lines).\nHunk #2 FAILED at 2284.\nHunk #3 succeeded at 2689 with fuzz 1 (offset 397 lines).\nHunk #4 FAILED at 3600.\n2 out of 4 hunks FAILED -- saving rejects to file services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java.rej\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java b/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n|index 569615e..f9b731db 100644\n|--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n|+++ b/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "ae39a3f6538e5a5a73aea4daf8b552539247227f.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ae39a3f6538e5a5a73aea4daf8b552539247227f",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java.rej"
-                }
-            ],
-            "message_output": "patching file services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\nHunk #1 FAILED at 170.\nHunk #2 FAILED at 1698.\nHunk #3 succeeded at 2707 with fuzz 2 (offset 1001 lines).\nHunk #4 FAILED at 2851.\n3 out of 4 hunks FAILED -- saving rejects to file services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java b/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n|index f5063ac..356613a 100644\n|--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n|+++ b/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "7366b99644fa61279591eec54ea725d86d6e2e93.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7366b99644fa61279591eec54ea725d86d6e2e93",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/wm/Transition.java\nHunk #1 succeeded at 1498 (offset -6 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/Transition.java b/services/core/java/com/android/server/wm/Transition.java\n|index 37cc0d2..27683b2 100644\n|--- a/services/core/java/com/android/server/wm/Transition.java\n|+++ b/services/core/java/com/android/server/wm/Transition.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "806927c67cbb308739b06efe78ee474c83b66e24.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/806927c67cbb308739b06efe78ee474c83b66e24",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/wm/Transition.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/wm/Transition.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/wm/Transition.java\nHunk #1 FAILED at 1240.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/wm/Transition.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/Transition.java b/services/core/java/com/android/server/wm/Transition.java\n|index 2ac3125..6037fa5 100644\n|--- a/services/core/java/com/android/server/wm/Transition.java\n|+++ b/services/core/java/com/android/server/wm/Transition.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "b4945cf98c97121821c178713a613a6a6e830c3a.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: Clean",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/wm/LockTaskController.java\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/LockTaskController.java b/services/core/java/com/android/server/wm/LockTaskController.java\n|index 0604953..559b063 100644\n|--- a/services/core/java/com/android/server/wm/LockTaskController.java\n|+++ b/services/core/java/com/android/server/wm/LockTaskController.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "ea329372d8426c6cdbc2d5570c10bef1003d9912.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ea329372d8426c6cdbc2d5570c10bef1003d9912",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/wm/EmbeddedWindowController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/wm/EmbeddedWindowController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/wm/EmbeddedWindowController.java\nHunk #1 FAILED at 181.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/wm/EmbeddedWindowController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/EmbeddedWindowController.java b/services/core/java/com/android/server/wm/EmbeddedWindowController.java\n|index 5514294e..e007b1d 100644\n|--- a/services/core/java/com/android/server/wm/EmbeddedWindowController.java\n|+++ b/services/core/java/com/android/server/wm/EmbeddedWindowController.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "20c568e77eae5d469cd5e594b644d8645d830dbd.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/20c568e77eae5d469cd5e594b644d8645d830dbd",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/wm/ActivityStartController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/wm/ActivityStartController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/wm/ActivityStartController.java\nHunk #1 FAILED at 43.\nHunk #2 FAILED at 550.\n2 out of 2 hunks FAILED -- saving rejects to file services/core/java/com/android/server/wm/ActivityStartController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/ActivityStartController.java b/services/core/java/com/android/server/wm/ActivityStartController.java\n|index 35ec5ad..0580d4a 100644\n|--- a/services/core/java/com/android/server/wm/ActivityStartController.java\n|+++ b/services/core/java/com/android/server/wm/ActivityStartController.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/wm/ActivityStartController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/wm/ActivityStartController.java.rej"
-                },
-                {
-                    "failed_file": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/wm/WindowOrganizerController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/wm/ActivityStartController.java\nHunk #1 FAILED at 43.\nHunk #2 FAILED at 529.\n2 out of 2 hunks FAILED -- saving rejects to file services/core/java/com/android/server/wm/ActivityStartController.java.rej\npatching file services/core/java/com/android/server/wm/WindowOrganizerController.java\nHunk #1 FAILED at 1189.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/wm/WindowOrganizerController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/ActivityStartController.java b/services/core/java/com/android/server/wm/ActivityStartController.java\n|index a6e5040..4de02f7 100644\n|--- a/services/core/java/com/android/server/wm/ActivityStartController.java\n|+++ b/services/core/java/com/android/server/wm/ActivityStartController.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\ncan't find file to patch at input line 34\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/wm/WindowOrganizerController.java b/services/core/java/com/android/server/wm/WindowOrganizerController.java\n|index 027ab97..7b59d6fb 100644\n|--- a/services/core/java/com/android/server/wm/WindowOrganizerController.java\n|+++ b/services/core/java/com/android/server/wm/WindowOrganizerController.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "155a686755e5012d591223c451304f3326dc2e78.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: Clean",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/am/PendingIntentRecord.java\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/PendingIntentRecord.java b/services/core/java/com/android/server/am/PendingIntentRecord.java\n|index 3817ba1..0b78901 100644\n|--- a/services/core/java/com/android/server/am/PendingIntentRecord.java\n|+++ b/services/core/java/com/android/server/am/PendingIntentRecord.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "8aef21b72dca756458d25a42599779997d199f09.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8aef21b72dca756458d25a42599779997d199f09",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: Clean",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file core/java/android/app/BackgroundStartPrivileges.java\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/BackgroundStartPrivileges.java b/core/java/android/app/BackgroundStartPrivileges.java\n|index 20278ea..adea0a8 100644\n|--- a/core/java/android/app/BackgroundStartPrivileges.java\n|+++ b/core/java/android/app/BackgroundStartPrivileges.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "0e91977c4ebfdfe4e2124373d22f99dfe211a06b.diff",
@@ -180,546 +146,354 @@
         {
             "patch_file": "3ae94b0da53aed63380263131795746b12296391.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3ae94b0da53aed63380263131795746b12296391",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/am/ActivityManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/am/ActivityManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/am/ActivityManagerService.java\nHunk #1 FAILED at 13804.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/am/ActivityManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/ActivityManagerService.java b/services/core/java/com/android/server/am/ActivityManagerService.java\n|index 46adc79..4f6b855 100644\n|--- a/services/core/java/com/android/server/am/ActivityManagerService.java\n|+++ b/services/core/java/com/android/server/am/ActivityManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: Clean",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/UserController.java b/services/core/java/com/android/server/am/UserController.java\n|index c31b9ef..ec74f60 100644\n|--- a/services/core/java/com/android/server/am/UserController.java\n|+++ b/services/core/java/com/android/server/am/UserController.java\n--------------------------\nNo file to patch.  Skipping patch.\n6 out of 6 hunks ignored\n"
         },
         {
             "patch_file": "65ee48d1eb9fe60039c2c461ca49f31ad180faef.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/am/UserController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/am/UserController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\nHunk #1 FAILED at 160.\nHunk #2 succeeded at 177 (offset 1 line).\nHunk #3 FAILED at 1923.\nHunk #4 FAILED at 1932.\nHunk #5 FAILED at 1998.\nHunk #6 FAILED at 2299.\nHunk #7 FAILED at 2530.\n6 out of 7 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/UserController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/UserController.java b/services/core/java/com/android/server/am/UserController.java\n|index c31b9ef..70f2a8e 100644\n|--- a/services/core/java/com/android/server/am/UserController.java\n|+++ b/services/core/java/com/android/server/am/UserController.java\n--------------------------\nNo file to patch.  Skipping patch.\n7 out of 7 hunks ignored\n"
         },
         {
             "patch_file": "bd1399244a3cef79f5d8e3b07b2e29452685ff0a.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/bd1399244a3cef79f5d8e3b07b2e29452685ff0a",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/am/UserController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/am/UserController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\nHunk #1 FAILED at 1980.\nHunk #2 succeeded at 2341 with fuzz 2 (offset 56 lines).\nHunk #3 FAILED at 2519.\n2 out of 3 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/UserController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/UserController.java b/services/core/java/com/android/server/am/UserController.java\n|index fb55700..262c76e 100644\n|--- a/services/core/java/com/android/server/am/UserController.java\n|+++ b/services/core/java/com/android/server/am/UserController.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "8f012349dc728dda8a7d5ba9ae43fae0ecc7d322.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8f012349dc728dda8a7d5ba9ae43fae0ecc7d322",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/am/UserController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/am/UserController.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\nHunk #1 FAILED at 156.\nHunk #2 FAILED at 223.\nHunk #3 FAILED at 1988.\nHunk #4 FAILED at 2606.\nHunk #5 FAILED at 4100.\nHunk #6 succeeded at 4235 with fuzz 2 (offset 71 lines).\n5 out of 6 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/UserController.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/am/UserController.java b/services/core/java/com/android/server/am/UserController.java\n|index b186eaa..fb55700 100644\n|--- a/services/core/java/com/android/server/am/UserController.java\n|+++ b/services/core/java/com/android/server/am/UserController.java\n--------------------------\nNo file to patch.  Skipping patch.\n6 out of 6 hunks ignored\n"
         },
         {
             "patch_file": "c32cfc60ccf531470f6125b6019d8ab2452b3617.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c32cfc60ccf531470f6125b6019d8ab2452b3617",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/pm/PackageInstallerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/pm/PackageInstallerService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/pm/PackageInstallerService.java\nHunk #1 FAILED at 673.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/pm/PackageInstallerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/pm/PackageInstallerService.java b/services/core/java/com/android/server/pm/PackageInstallerService.java\n|index b99e66f..d331f31 100644\n|--- a/services/core/java/com/android/server/pm/PackageInstallerService.java\n|+++ b/services/core/java/com/android/server/pm/PackageInstallerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "eec34e2716bfa613be30b0a0b9a173e2005a6c00.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/eec34e2716bfa613be30b0a0b9a173e2005a6c00",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/appop/AppOpsService.java\nHunk #2 succeeded at 1706 (offset -2 lines).\nHunk #3 succeeded at 1715 (offset -2 lines).\nHunk #4 succeeded at 1732 (offset -2 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/appop/AppOpsService.java b/services/core/java/com/android/server/appop/AppOpsService.java\n|index d2073aa..7f69f15 100644\n|--- a/services/core/java/com/android/server/appop/AppOpsService.java\n|+++ b/services/core/java/com/android/server/appop/AppOpsService.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "790b7c82c0169752311dbd213f4669e05714fada.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/790b7c82c0169752311dbd213f4669e05714fada",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/appop/AppOpsService.java\nHunk #1 succeeded at 610 (offset 7 lines).\nHunk #2 succeeded at 3109 (offset 23 lines).\nHunk #3 succeeded at 3311 with fuzz 1 (offset 11 lines).\nHunk #4 succeeded at 3898 (offset 2 lines).\nHunk #5 succeeded at 3938 (offset 2 lines).\nHunk #6 succeeded at 4065 (offset 2 lines).\nHunk #7 succeeded at 4624 (offset 2 lines).\nHunk #8 succeeded at 4729 (offset 2 lines).\nHunk #9 succeeded at 4753 (offset 2 lines).\nHunk #10 succeeded at 4805 (offset 2 lines).\nHunk #11 succeeded at 5636 (offset 2 lines).\nHunk #12 succeeded at 6736 (offset 2 lines).\nHunk #13 succeeded at 7191 (offset 2 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/appop/AppOpsService.java b/services/core/java/com/android/server/appop/AppOpsService.java\n|index d2073aa..d3a5cc4 100644\n|--- a/services/core/java/com/android/server/appop/AppOpsService.java\n|+++ b/services/core/java/com/android/server/appop/AppOpsService.java\n--------------------------\nNo file to patch.  Skipping patch.\n13 out of 13 hunks ignored\n"
         },
         {
             "patch_file": "ec8a2057c7aab9bf61acd24f9b02ee7afb699043.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ec8a2057c7aab9bf61acd24f9b02ee7afb699043",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/appop/AppOpsService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/appop/AppOpsService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/appop/AppOpsService.java\nHunk #1 FAILED at 589.\nHunk #2 FAILED at 2503.\nHunk #3 FAILED at 2636.\nHunk #4 FAILED at 3178.\nHunk #5 FAILED at 3671.\nHunk #6 FAILED at 3760.\nHunk #7 FAILED at 3783.\nHunk #8 FAILED at 3834.\nHunk #9 FAILED at 4613.\nHunk #10 FAILED at 5628.\nHunk #11 FAILED at 6077.\n11 out of 11 hunks FAILED -- saving rejects to file services/core/java/com/android/server/appop/AppOpsService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/appop/AppOpsService.java b/services/core/java/com/android/server/appop/AppOpsService.java\n|index e2388e2..fe98aa0 100644\n|--- a/services/core/java/com/android/server/appop/AppOpsService.java\n|+++ b/services/core/java/com/android/server/appop/AppOpsService.java\n--------------------------\nNo file to patch.  Skipping patch.\n11 out of 11 hunks ignored\n"
         },
         {
             "patch_file": "c1e79495a49bd4d3e380136fe4bca7ac1a9ed763.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c1e79495a49bd4d3e380136fe4bca7ac1a9ed763",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/accounts/AccountManagerService.java\nHunk #1 succeeded at 5109 with fuzz 1 (offset 57 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java\n|index 3201223..458749d 100644\n|--- a/services/core/java/com/android/server/accounts/AccountManagerService.java\n|+++ b/services/core/java/com/android/server/accounts/AccountManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "f483640dfc954f4c6028f8cb35c1582dd1482c4b.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f483640dfc954f4c6028f8cb35c1582dd1482c4b",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/accounts/AccountManagerService.java\nHunk #1 succeeded at 5112 with fuzz 1 (offset 217 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java\n|index 43944b0..d55be44 100644\n|--- a/services/core/java/com/android/server/accounts/AccountManagerService.java\n|+++ b/services/core/java/com/android/server/accounts/AccountManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "cde345a7ee06db716e613e12a2c218ce248ad1c4.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4",
             "status": "Applied Successfully",
-            "detailed_status": "Rejected: Failed Hunks",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file services/core/java/com/android/server/accounts/AccountManagerService.java\nHunk #1 succeeded at 905 with fuzz 2 (offset -4157 lines).\nHunk #2 FAILED at 5085.\n1 out of 2 hunks FAILED -- saving rejects to file services/core/java/com/android/server/accounts/AccountManagerService.java.rej\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java\n|index 3499a3a..0ca3b56 100644\n|--- a/services/core/java/com/android/server/accounts/AccountManagerService.java\n|+++ b/services/core/java/com/android/server/accounts/AccountManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "d04cea5ea08f91f55a14209c1e424e163e2d50ab.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/d04cea5ea08f91f55a14209c1e424e163e2d50ab",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/accounts/AccountManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/accounts/AccountManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/accounts/AccountManagerService.java\nHunk #1 FAILED at 4917.\nHunk #2 FAILED at 4938.\n2 out of 2 hunks FAILED -- saving rejects to file services/core/java/com/android/server/accounts/AccountManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java\n|index fe53752..70f66ca 100644\n|--- a/services/core/java/com/android/server/accounts/AccountManagerService.java\n|+++ b/services/core/java/com/android/server/accounts/AccountManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "4426de38dd5d622151d54aaa02b8b28c7df5458b.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/4426de38dd5d622151d54aaa02b8b28c7df5458b",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/Notification.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/Notification.java.rej"
-                },
-                {
-                    "failed_file": "services/core/java/com/android/server/notification/NotificationManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/notification/NotificationManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/Notification.java\nHunk #1 FAILED at 2654.\nHunk #2 FAILED at 3189.\nHunk #3 FAILED at 3206.\nHunk #4 FAILED at 3599.\n4 out of 4 hunks FAILED -- saving rejects to file core/java/android/app/Notification.java.rej\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 870 (offset 7 lines).\npatching file services/core/java/com/android/server/notification/NotificationManagerService.java\nHunk #1 FAILED at 701.\nHunk #2 FAILED at 4643.\nHunk #3 succeeded at 8039 with fuzz 2 (offset 799 lines).\n2 out of 3 hunks FAILED -- saving rejects to file services/core/java/com/android/server/notification/NotificationManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java\n|index fe261be..0b8a1cc 100644\n|--- a/core/java/android/app/Notification.java\n|+++ b/core/java/android/app/Notification.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 111\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index 35a3a5f..136c45d 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\ncan't find file to patch at input line 144\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java\n|index 24f6c70..cc04e24 100755\n|--- a/services/core/java/com/android/server/notification/NotificationManagerService.java\n|+++ b/services/core/java/com/android/server/notification/NotificationManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "697c31d74c775da1ae0caa57839b4d2ddb83eba9.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/697c31d74c775da1ae0caa57839b4d2ddb83eba9",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/Notification.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/Notification.java.rej"
-                },
-                {
-                    "failed_file": "services/core/java/com/android/server/notification/NotificationManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/notification/NotificationManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/Notification.java\nHunk #1 FAILED at 2598.\nHunk #2 FAILED at 3059.\nHunk #3 FAILED at 3076.\nHunk #4 FAILED at 3469.\n4 out of 4 hunks FAILED -- saving rejects to file core/java/android/app/Notification.java.rej\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 892 (offset 76 lines).\npatching file services/core/java/com/android/server/notification/NotificationManagerService.java\nHunk #1 FAILED at 667.\nHunk #2 FAILED at 4472.\nHunk #3 succeeded at 8050 with fuzz 1 (offset 1337 lines).\nHunk #4 FAILED at 7785.\n3 out of 4 hunks FAILED -- saving rejects to file services/core/java/com/android/server/notification/NotificationManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java\n|index 862b785..dfbb7cc 100644\n|--- a/core/java/android/app/Notification.java\n|+++ b/core/java/android/app/Notification.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 92\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index e784c26..453aba3 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\ncan't find file to patch at input line 125\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java\n|index cf67ef3..b62fd61 100644\n|--- a/services/core/java/com/android/server/notification/NotificationManagerService.java\n|+++ b/services/core/java/com/android/server/notification/NotificationManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "c18c614aec9e5345caab70446f058d8706185776.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c18c614aec9e5345caab70446f058d8706185776",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/core/java/com/android/server/notification/NotificationManagerService.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/core/java/com/android/server/notification/NotificationManagerService.java.rej"
-                }
-            ],
-            "message_output": "patching file services/core/java/com/android/server/notification/NotificationManagerService.java\nHunk #1 FAILED at 8565.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/notification/NotificationManagerService.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java\n|index f297708..a4f534e 100644\n|--- a/services/core/java/com/android/server/notification/NotificationManagerService.java\n|+++ b/services/core/java/com/android/server/notification/NotificationManagerService.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "492865ebcad4480562cb4f07c4b4e079af75fdf9.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/492865ebcad4480562cb4f07c4b4e079af75fdf9",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/Notification.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/Notification.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/Notification.java\nHunk #1 FAILED at 2511.\nHunk #2 FAILED at 2969.\nHunk #3 FAILED at 2986.\nHunk #4 FAILED at 3342.\n4 out of 4 hunks FAILED -- saving rejects to file core/java/android/app/Notification.java.rej\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 914 (offset 262 lines).\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java\n|index 3aeb363..fcf0f74 100644\n|--- a/core/java/android/app/Notification.java\n|+++ b/core/java/android/app/Notification.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 92\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index d0a77a0..403a5be 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "5d107bcde72620926566613c5efa7f0c4ce9f63c.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5d107bcde72620926566613c5efa7f0c4ce9f63c",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/Notification.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/Notification.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/Notification.java\nHunk #1 FAILED at 2519.\nHunk #2 FAILED at 2977.\nHunk #3 FAILED at 2994.\nHunk #4 FAILED at 3350.\n4 out of 4 hunks FAILED -- saving rejects to file core/java/android/app/Notification.java.rej\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 936 (offset 284 lines).\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java\n|index 04d20a9..3f4d5f0 100644\n|--- a/core/java/android/app/Notification.java\n|+++ b/core/java/android/app/Notification.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 88\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index d0a77a0..403a5be 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "61274fc61fb33a0ae9525188d969cb56503c124a.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/61274fc61fb33a0ae9525188d969cb56503c124a",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/Notification.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/Notification.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/Notification.java\nHunk #1 FAILED at 2565.\nHunk #2 FAILED at 3027.\nHunk #3 FAILED at 3044.\nHunk #4 FAILED at 3400.\n4 out of 4 hunks FAILED -- saving rejects to file core/java/android/app/Notification.java.rej\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 958 (offset 175 lines).\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/Notification.java b/core/java/android/app/Notification.java\n|index 787d920..c7d406f 100644\n|--- a/core/java/android/app/Notification.java\n|+++ b/core/java/android/app/Notification.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 92\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index a7349f9..4bdef89 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "73e2b35a63d8c5da528b7a2dad2091f40b0f49c1.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/73e2b35a63d8c5da528b7a2dad2091f40b0f49c1",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/Helper.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/Helper.java.rej"
-                },
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej"
-                }
-            ],
-            "message_output": "patching file services/autofill/java/com/android/server/autofill/Helper.java\nHunk #1 FAILED at 25.\nHunk #2 FAILED at 55.\nHunk #3 FAILED at 92.\nHunk #4 FAILED at 125.\n4 out of 4 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/Helper.java.rej\npatching file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\nHunk #1 FAILED at 27.\nHunk #2 FAILED at 83.\n2 out of 2 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/Helper.java b/services/autofill/java/com/android/server/autofill/Helper.java\n|index ad8f5e1..f32aac4 100644\n|--- a/services/autofill/java/com/android/server/autofill/Helper.java\n|+++ b/services/autofill/java/com/android/server/autofill/Helper.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 95\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|index 70443f9..3d22182 100644\n|--- a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|+++ b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "36875556fca3a0e9715d1cbd6cebff8e5720b2a0.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/36875556fca3a0e9715d1cbd6cebff8e5720b2a0",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej"
-                }
-            ],
-            "message_output": "patching file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\nHunk #1 FAILED at 27.\nHunk #2 succeeded at 40 (offset 1 line).\nHunk #3 FAILED at 75.\n2 out of 3 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|index 46d435d..83caf74 100644\n|--- a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|+++ b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "c5846894b27b4a1d8e7753611352844f31679158.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c5846894b27b4a1d8e7753611352844f31679158",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej"
-                }
-            ],
-            "message_output": "patching file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\nHunk #1 FAILED at 27.\nHunk #2 FAILED at 39.\nHunk #3 FAILED at 78.\n3 out of 3 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|index 46d435d..83caf74 100644\n|--- a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|+++ b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "046cc236501e4f12bfc4a26948b5b6b76695afb9.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/046cc236501e4f12bfc4a26948b5b6b76695afb9",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej"
-                }
-            ],
-            "message_output": "patching file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\nHunk #1 FAILED at 27.\nHunk #2 FAILED at 39.\nHunk #3 FAILED at 78.\n3 out of 3 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|index 46d435d..83caf74 100644\n|--- a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|+++ b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "df893defcf8cc6e1e223111e79ad3daf0ec7cd8b.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/df893defcf8cc6e1e223111e79ad3daf0ec7cd8b",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej"
-                }
-            ],
-            "message_output": "patching file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\nHunk #1 FAILED at 27.\nHunk #2 FAILED at 39.\nHunk #3 FAILED at 81.\n3 out of 3 hunks FAILED -- saving rejects to file services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|index 70443f9..024de4e 100644\n|--- a/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n|+++ b/services/autofill/java/com/android/server/autofill/ui/RemoteInlineSuggestionViewConnector.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "7c6ec68537ba8abf798afd9ab7c3e5889841171f.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7c6ec68537ba8abf798afd9ab7c3e5889841171f",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java.rej"
-                }
-            ],
-            "message_output": "patching file services/usb/java/com/android/server/usb/UsbDeviceManager.java\nHunk #1 FAILED at 80.\nHunk #2 FAILED at 880.\nHunk #3 succeeded at 2344 with fuzz 2 (offset 31 lines).\n2 out of 3 hunks FAILED -- saving rejects to file services/usb/java/com/android/server/usb/UsbDeviceManager.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/usb/java/com/android/server/usb/UsbDeviceManager.java b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n|index 1404413..6c1e1a4 100644\n|--- a/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n|+++ b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "37be5d18e529877fcd3c62063aec205a96660449.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/37be5d18e529877fcd3c62063aec205a96660449",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java.rej"
-                }
-            ],
-            "message_output": "patching file services/usb/java/com/android/server/usb/UsbDeviceManager.java\nHunk #1 FAILED at 819.\nHunk #2 FAILED at 2145.\n2 out of 2 hunks FAILED -- saving rejects to file services/usb/java/com/android/server/usb/UsbDeviceManager.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/services/usb/java/com/android/server/usb/UsbDeviceManager.java b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n|index 77b2638..3d012f6 100644\n|--- a/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n|+++ b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "1181fd1b6769e6f093cd409e2b9f7aa0f91d7ed9.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/1181fd1b6769e6f093cd409e2b9f7aa0f91d7ed9",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/app/NotificationChannel.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/app/NotificationChannel.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/app/NotificationChannel.java\nHunk #1 FAILED at 168.\nHunk #2 FAILED at 368.\nHunk #3 succeeded at 617 with fuzz 1 (offset 35 lines).\nHunk #4 FAILED at 702.\nHunk #5 FAILED at 748.\nHunk #6 FAILED at 1189.\nHunk #7 FAILED at 1382.\n6 out of 7 hunks FAILED -- saving rejects to file core/java/android/app/NotificationChannel.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/app/NotificationChannel.java b/core/java/android/app/NotificationChannel.java\n|index 789c99d..1b29b7a 100644\n|--- a/core/java/android/app/NotificationChannel.java\n|+++ b/core/java/android/app/NotificationChannel.java\n--------------------------\nNo file to patch.  Skipping patch.\n7 out of 7 hunks ignored\n"
         },
         {
             "patch_file": "81077e77a1eaf33a5404e0e937ff55e653c2310f.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/81077e77a1eaf33a5404e0e937ff55e653c2310f",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/view/KeyboardShortcutInfo.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/view/KeyboardShortcutInfo.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/view/KeyboardShortcutInfo.java\nHunk #1 FAILED at 28.\nHunk #2 succeeded at 142 (offset 26 lines).\nHunk #3 FAILED at 174.\n2 out of 3 hunks FAILED -- saving rejects to file core/java/android/view/KeyboardShortcutInfo.java.rej\npatching file packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java\nHunk #1 succeeded at 21 with fuzz 2 (offset 2 lines).\nHunk #2 FAILED at 42.\nHunk #3 FAILED at 141.\nHunk #4 succeeded at 153 with fuzz 2 (offset 5 lines).\nHunk #5 FAILED at 425.\nHunk #6 succeeded at 464 with fuzz 2 (offset -56 lines).\n3 out of 6 hunks FAILED -- saving rejects to file packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java.rej\npatching file packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java\nHunk #1 succeeded at 22 with fuzz 2 (offset 2 lines).\nHunk #2 FAILED at 44.\nHunk #3 FAILED at 98.\nHunk #4 succeeded at 141 with fuzz 2 (offset 7 lines).\nHunk #5 FAILED at 386.\nHunk #6 succeeded at 441 with fuzz 2 (offset 16 lines).\n3 out of 6 hunks FAILED -- saving rejects to file packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java\n|index 118b03c..3f6fd64 100644\n|--- a/core/java/android/view/KeyboardShortcutInfo.java\n|+++ b/core/java/android/view/KeyboardShortcutInfo.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\ncan't find file to patch at input line 42\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java b/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java\n|index 0d8030f..5268009 100644\n|--- a/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java\n|+++ b/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcutListSearch.java\n--------------------------\nNo file to patch.  Skipping patch.\n6 out of 6 hunks ignored\ncan't find file to patch at input line 203\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java b/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java\n|index 21f608e..d00916a 100644\n|--- a/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java\n|+++ b/packages/SystemUI/src/com/android/systemui/statusbar/KeyboardShortcuts.java\n--------------------------\nNo file to patch.  Skipping patch.\n6 out of 6 hunks ignored\n"
         },
         {
             "patch_file": "1e1774588914a7181357e9af99ef782fccfdcf1e.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/1e1774588914a7181357e9af99ef782fccfdcf1e",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/view/KeyboardShortcutInfo.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/view/KeyboardShortcutInfo.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/view/KeyboardShortcutInfo.java\nHunk #1 FAILED at 29.\nHunk #2 succeeded at 151 (offset 35 lines).\nHunk #3 FAILED at 174.\n2 out of 3 hunks FAILED -- saving rejects to file core/java/android/view/KeyboardShortcutInfo.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java\n|index 2660e74..2075d77 100644\n|--- a/core/java/android/view/KeyboardShortcutInfo.java\n|+++ b/core/java/android/view/KeyboardShortcutInfo.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "cb890a0619fc5b87faf79001834cb7629a80905b.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cb890a0619fc5b87faf79001834cb7629a80905b",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/view/KeyboardShortcutInfo.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/view/KeyboardShortcutInfo.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/view/KeyboardShortcutInfo.java\nHunk #1 FAILED at 29.\nHunk #2 succeeded at 160 (offset 44 lines).\nHunk #3 FAILED at 174.\n2 out of 3 hunks FAILED -- saving rejects to file core/java/android/view/KeyboardShortcutInfo.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java\n|index 2660e74..2075d77 100644\n|--- a/core/java/android/view/KeyboardShortcutInfo.java\n|+++ b/core/java/android/view/KeyboardShortcutInfo.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "cfead1ab1b0ea5e67b370dccf923217a8dd1a2f1.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cfead1ab1b0ea5e67b370dccf923217a8dd1a2f1",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/view/KeyboardShortcutInfo.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/view/KeyboardShortcutInfo.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/view/KeyboardShortcutInfo.java\nHunk #1 FAILED at 29.\nHunk #2 succeeded at 169 (offset 53 lines).\nHunk #3 FAILED at 174.\n2 out of 3 hunks FAILED -- saving rejects to file core/java/android/view/KeyboardShortcutInfo.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java\n|index 118b03c..3a79e5b 100644\n|--- a/core/java/android/view/KeyboardShortcutInfo.java\n|+++ b/core/java/android/view/KeyboardShortcutInfo.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "2c3c124ea436d76fd30cbf1541ef59867d9e7f43.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2c3c124ea436d76fd30cbf1541ef59867d9e7f43",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/view/KeyboardShortcutInfo.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/view/KeyboardShortcutInfo.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/view/KeyboardShortcutInfo.java\nHunk #1 FAILED at 29.\nHunk #2 succeeded at 178 (offset 62 lines).\nHunk #3 FAILED at 174.\n2 out of 3 hunks FAILED -- saving rejects to file core/java/android/view/KeyboardShortcutInfo.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/view/KeyboardShortcutInfo.java b/core/java/android/view/KeyboardShortcutInfo.java\n|index 118b03c..3a79e5b 100644\n|--- a/core/java/android/view/KeyboardShortcutInfo.java\n|+++ b/core/java/android/view/KeyboardShortcutInfo.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "6e34cc09669b6915caaff67c86e05028078f780d.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/6e34cc09669b6915caaff67c86e05028078f780d",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file core/java/android/os/BaseBundle.java\nHunk #1 succeeded at 475 (offset 4 lines).\nHunk #2 succeeded at 489 (offset 4 lines).\npatching file core/java/android/os/Parcel.java\nHunk #1 succeeded at 5648 (offset 313 lines).\nHunk #2 succeeded at 5658 (offset 313 lines).\nHunk #3 succeeded at 5679 (offset 313 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/BaseBundle.java b/core/java/android/os/BaseBundle.java\n|index 4e3adfb..9773134 100644\n|--- a/core/java/android/os/BaseBundle.java\n|+++ b/core/java/android/os/BaseBundle.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\ncan't find file to patch at input line 40\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index 453aba3..11eb5cc 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "61ccd0f4b94cea51503b19c184132cc9f4a223c6.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/61ccd0f4b94cea51503b19c184132cc9f4a223c6",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/os/Parcel.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/os/Parcel.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/os/Parcel.java\nHunk #1 FAILED at 5565.\nHunk #2 FAILED at 5575.\nHunk #3 FAILED at 5598.\n3 out of 3 hunks FAILED -- saving rejects to file core/java/android/os/Parcel.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index 4bbc61c..5ba6553 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "3adcf170c3ec509ac7af2438a00918348c4b5e73.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3adcf170c3ec509ac7af2438a00918348c4b5e73",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/os/Parcel.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/os/Parcel.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/os/Parcel.java\nHunk #1 FAILED at 5265.\nHunk #2 FAILED at 5275.\nHunk #3 FAILED at 5297.\n3 out of 3 hunks FAILED -- saving rejects to file core/java/android/os/Parcel.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/os/Parcel.java b/core/java/android/os/Parcel.java\n|index 4bdef89..f68e3c9 100644\n|--- a/core/java/android/os/Parcel.java\n|+++ b/core/java/android/os/Parcel.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "b85bee508793e31d6fe37fc9cd4e8fa3787113cc.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b85bee508793e31d6fe37fc9cd4e8fa3787113cc",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/content/Intent.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/content/Intent.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/content/Intent.java\nHunk #1 FAILED at 8157.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/Intent.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/content/Intent.java b/core/java/android/content/Intent.java\n|index c8cae82..02d62a2 100644\n|--- a/core/java/android/content/Intent.java\n|+++ b/core/java/android/content/Intent.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "68268563631f18bc984ac2295fb41f5cc9a8369d.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/68268563631f18bc984ac2295fb41f5cc9a8369d",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/content/Intent.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/content/Intent.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/content/Intent.java\nHunk #1 FAILED at 7306.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/Intent.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/content/Intent.java b/core/java/android/content/Intent.java\n|index 76c67fa..6102fd83 100644\n|--- a/core/java/android/content/Intent.java\n|+++ b/core/java/android/content/Intent.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "6853510bc3070ee43de4b68ba26c3ca2164f8317.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/6853510bc3070ee43de4b68ba26c3ca2164f8317",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/content/Intent.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/content/Intent.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/content/Intent.java\nHunk #1 FAILED at 7322.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/Intent.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/content/Intent.java b/core/java/android/content/Intent.java\n|index 6224758..ec67c72 100644\n|--- a/core/java/android/content/Intent.java\n|+++ b/core/java/android/content/Intent.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "e716a8dd586a647a809ac2b8331f5c7995c1a147.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e716a8dd586a647a809ac2b8331f5c7995c1a147",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/content/Intent.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/content/Intent.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/content/Intent.java\nHunk #1 FAILED at 7602.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/Intent.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/content/Intent.java b/core/java/android/content/Intent.java\n|index aa765e3..22839a0 100644\n|--- a/core/java/android/content/Intent.java\n|+++ b/core/java/android/content/Intent.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "fe93f1262d7a73080fbabacd0c800faa7c2d73e3.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/fe93f1262d7a73080fbabacd0c800faa7c2d73e3",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "core/java/android/content/Intent.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/core/java/android/content/Intent.java.rej"
-                }
-            ],
-            "message_output": "patching file core/java/android/content/Intent.java\nHunk #1 FAILED at 7855.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/Intent.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/android/content/Intent.java b/core/java/android/content/Intent.java\n|index e763e95..6f44a77 100644\n|--- a/core/java/android/content/Intent.java\n|+++ b/core/java/android/content/Intent.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "bad47a2280c7107e1213f4adc5a3825a62698d00.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/bad47a2280c7107e1213f4adc5a3825a62698d00",
             "status": "Applied Successfully",
-            "detailed_status": "Applied Successfully: With Offsets",
+            "detailed_status": "Skipped: Files Not Found",
             "rejected_files": [],
-            "message_output": "patching file core/java/com/android/internal/app/ChooserActivity.java\nHunk #6 succeeded at 4223 (offset -99 lines).\n"
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/core/java/com/android/internal/app/ChooserActivity.java b/core/java/com/android/internal/app/ChooserActivity.java\n|index f9d553f..ebd015f 100644\n|--- a/core/java/com/android/internal/app/ChooserActivity.java\n|+++ b/core/java/com/android/internal/app/ChooserActivity.java\n--------------------------\nNo file to patch.  Skipping patch.\n6 out of 6 hunks ignored\n"
         },
         {
             "patch_file": "0f8b55350b7bebc2424a21b8e8ffede2b809970f.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/0f8b55350b7bebc2424a21b8e8ffede2b809970f",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej"
-                }
-            ],
-            "message_output": "patching file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\nHunk #1 FAILED at 64.\nHunk #2 FAILED at 82.\nHunk #3 FAILED at 95.\n3 out of 3 hunks FAILED -- saving rejects to file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|index eadb726..2b515c9 100644\n|--- a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|+++ b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "27e4e6aed07238e1a9cbbf477a5b925be34df8a8.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/27e4e6aed07238e1a9cbbf477a5b925be34df8a8",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej"
-                }
-            ],
-            "message_output": "patching file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\nHunk #1 FAILED at 64.\nHunk #2 FAILED at 82.\nHunk #3 FAILED at 95.\n3 out of 3 hunks FAILED -- saving rejects to file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|index eadb726..2b515c9 100644\n|--- a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|+++ b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "b5df56f2e11022501fb2a06b64023b67ee6a5bd7.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b5df56f2e11022501fb2a06b64023b67ee6a5bd7",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej"
-                }
-            ],
-            "message_output": "patching file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\nHunk #1 FAILED at 64.\nHunk #2 FAILED at 82.\nHunk #3 FAILED at 95.\n3 out of 3 hunks FAILED -- saving rejects to file telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|index eadb726..2b515c9 100644\n|--- a/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n|+++ b/telephony/java/android/telephony/VisualVoicemailSmsFilterSettings.java\n--------------------------\nNo file to patch.  Skipping patch.\n3 out of 3 hunks ignored\n"
         },
         {
             "patch_file": "1c55f991ae08deaa1630beb2c24da16bcdc71f29.diff",
@@ -740,149 +514,90 @@
         {
             "patch_file": "234c5e843ca427b1dd47e91e3969f3309dd787bf.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/234c5e843ca427b1dd47e91e3969f3309dd787bf",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\nHunk #1 FAILED at 138.\n1 out of 1 hunk FAILED -- saving rejects to file packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n|index c8bcabf..261c722 100644\n|--- a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n|+++ b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "e81fa0c19c07a5b6509c3f844b69847a96c7a815.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e81fa0c19c07a5b6509c3f844b69847a96c7a815",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\nHunk #1 FAILED at 138.\n1 out of 1 hunk FAILED -- saving rejects to file packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n|index c8bcabf..261c722 100644\n|--- a/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n|+++ b/packages/SettingsLib/src/com/android/settingslib/applications/ServiceListing.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "b91437020051b4f7fb78dbe14b40dd2f7c754f48.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b91437020051b4f7fb78dbe14b40dd2f7c754f48",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\nHunk #1 FAILED at 16.\nHunk #2 FAILED at 61.\nHunk #3 FAILED at 89.\nHunk #4 FAILED at 309.\n4 out of 4 hunks FAILED -- saving rejects to file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|index 3409c29..defbc11 100644\n|--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|+++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "01006f7f97083ae49a546f9e0a94db7bdfd2a152.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/01006f7f97083ae49a546f9e0a94db7bdfd2a152",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\nHunk #1 FAILED at 16.\nHunk #2 FAILED at 61.\nHunk #3 FAILED at 89.\nHunk #4 FAILED at 308.\n4 out of 4 hunks FAILED -- saving rejects to file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|index 992de22..fdeccfa 100644\n|--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|+++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "7f1bc271379d97bed56e33f8470992d38bce5531.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7f1bc271379d97bed56e33f8470992d38bce5531",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\nHunk #1 FAILED at 16.\nHunk #2 FAILED at 61.\nHunk #3 FAILED at 89.\nHunk #4 FAILED at 309.\n4 out of 4 hunks FAILED -- saving rejects to file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|index 3409c29..defbc11 100644\n|--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|+++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "c984c3b842c2b458db2f1a29574af1d137f28143.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c984c3b842c2b458db2f1a29574af1d137f28143",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\nHunk #1 FAILED at 16.\nHunk #2 FAILED at 61.\nHunk #3 FAILED at 89.\nHunk #4 FAILED at 309.\n4 out of 4 hunks FAILED -- saving rejects to file packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|index 3409c29..defbc11 100644\n|--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n|+++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "8a7d97bda782673495e835fbb6270feaf9597180.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8a7d97bda782673495e835fbb6270feaf9597180",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java\nHunk #1 FAILED at 84.\nHunk #2 FAILED at 99.\nHunk #3 FAILED at 155.\nHunk #4 FAILED at 370.\n4 out of 4 hunks FAILED -- saving rejects to file packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java b/packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java\n|index 1b93c10..8bed945 100644\n|--- a/packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java\n|+++ b/packages/PackageInstaller/src/com/android/packageinstaller/PackageInstallerActivity.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\n"
         },
         {
             "patch_file": "585d5d6835dd2ddd65316fbbabd714c140da20fa.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/585d5d6835dd2ddd65316fbbabd714c140da20fa",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java\nHunk #1 FAILED at 47.\nHunk #2 FAILED at 181.\n2 out of 2 hunks FAILED -- saving rejects to file packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java b/packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java\n|index 170cb45..551f5230 100644\n|--- a/packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java\n|+++ b/packages/PackageInstaller/src/com/android/packageinstaller/UninstallerActivity.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "b1612955cb7fb2f69f1e04d437bb7fabd411ff7c.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b1612955cb7fb2f69f1e04d437bb7fabd411ff7c",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java.rej"
-                },
-                {
-                    "failed_file": "packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java\nHunk #1 FAILED at 19.\nHunk #2 FAILED at 53.\n2 out of 2 hunks FAILED -- saving rejects to file packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java.rej\npatching file packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java\nHunk #1 FAILED at 21.\nHunk #2 FAILED at 40.\n2 out of 2 hunks FAILED -- saving rejects to file packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java\n|index b20117d..c99d37b 100644\n|--- a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java\n|+++ b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveActivity.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\ncan't find file to patch at input line 26\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java\n|index 42dd382..fbb0fa4 100644\n|--- a/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java\n|+++ b/packages/PackageInstaller/src/com/android/packageinstaller/UnarchiveFragment.java\n--------------------------\nNo file to patch.  Skipping patch.\n2 out of 2 hunks ignored\n"
         },
         {
             "patch_file": "829da8849df35c00c110ebebdd54c1692d96f840.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/829da8849df35c00c110ebebdd54c1692d96f840",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java\nHunk #1 FAILED at 122.\n1 out of 1 hunk FAILED -- saving rejects to file packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java.rej\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java b/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java\n|index c3729c0..212da9f 100644\n|--- a/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java\n|+++ b/packages/SystemUI/src/com/android/systemui/mediaprojection/permission/MediaProjectionPermissionActivity.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "58d536c5733173c09f8d6e531d6230f838f64d1a.diff",
             "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/58d536c5733173c09f8d6e531d6230f838f64d1a",
-            "status": "Rejected",
-            "detailed_status": "Rejected: Failed Hunks",
-            "rejected_files": [
-                {
-                    "failed_file": "packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java",
-                    "reject_file": "/Volumes/GitRepo/school/capstone/android/base/packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java.rej"
-                }
-            ],
-            "message_output": "patching file packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java\nHunk #1 FAILED at 22.\nHunk #2 FAILED at 187.\nHunk #3 FAILED at 227.\nHunk #4 FAILED at 1259.\n4 out of 4 hunks FAILED -- saving rejects to file packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java.rej\npatching file packages/SystemUI/src/com/android/systemui/biometrics/AuthDialog.java\nHunk #1 succeeded at 100 with fuzz 2 (offset 6 lines).\n"
+            "status": "Applied Successfully",
+            "detailed_status": "Skipped: Files Not Found",
+            "rejected_files": [],
+            "message_output": "can't find file to patch at input line 5\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java b/packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java\n|index b466f31..cbd210b 100644\n|--- a/packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java\n|+++ b/packages/SystemUI/src/com/android/systemui/biometrics/AuthController.java\n--------------------------\nNo file to patch.  Skipping patch.\n4 out of 4 hunks ignored\ncan't find file to patch at input line 70\nPerhaps you used the wrong -p or --strip option?\nThe text leading up to this was:\n--------------------------\n|diff --git a/packages/SystemUI/src/com/android/systemui/biometrics/AuthDialog.java b/packages/SystemUI/src/com/android/systemui/biometrics/AuthDialog.java\n|index 3fd488c..8611916 100644\n|--- a/packages/SystemUI/src/com/android/systemui/biometrics/AuthDialog.java\n|+++ b/packages/SystemUI/src/com/android/systemui/biometrics/AuthDialog.java\n--------------------------\nNo file to patch.  Skipping patch.\n1 out of 1 hunk ignored\n"
         },
         {
             "patch_file": "f65da8a9d7b6869dc2ad5cdd3b48763b8e18ac46.diff",

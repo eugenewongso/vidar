@@ -1,26 +1,40 @@
+import json
+import sys
 import os
 import requests
 import re
 import base64
 import time
+from pathlib import Path
 from urllib.parse import urlparse
 
 """
 Patch Fetcher Module
 
-This module handles the downloading and processing of patch files from 
-various Git repositories (primarily Googlesource and CodeLinaro).
+This module handles all aspects of downloading, filtering, and processing 
+patch files from Git repositories (primarily Googlesource and CodeLinaro).
 
-Key features:
-1. Extracting commit hashes from patch URLs
+The module provides functionality for:
+1. Extracting commit hashes from repository URLs
 2. Handling rate limiting with exponential backoff
-3. Downloading patches from different repository types
-4. Base64 decoding for Googlesource patches
-5. Filtering patches to include only specific files
-6. Saving filtered patches to disk
+3. Downloading patches and processing their content
+4. Filtering patches to include only relevant files
+5. Batch processing of multiple patches from a Vanir report
 
-This module is used by run_diff_fetcher.py and is not typically run directly.
+Usage as a script:
+    python patch_fetcher.py
+
+Usage as a module:
+    from patch_fetcher import fetch_patch, process_patches_from_report
+    
+    # To fetch a single patch
+    patch_file = fetch_patch(commit_url, files_to_include)
+    
+    # To process all patches from a report
+    results = process_patches_from_report()
 """
+
+# --- UTILITY FUNCTIONS ---
 
 def extract_commit_hash(commit_url):
     """
@@ -54,6 +68,8 @@ def get_with_backoff(url, retries=5):
             continue
         return response
     return response  # Return the last response even if all retries failed
+
+# --- CORE PATCH FETCHING FUNCTIONALITY ---
 
 def fetch_patch(commit_url, files_to_include):
     """
@@ -153,3 +169,113 @@ def fetch_patch(commit_url, files_to_include):
 
     print(f"✅ Filtered diff file saved to: {output_filename}")
     return output_filename
+
+# --- BATCH PROCESSING FUNCTIONALITY ---
+
+def process_patches_from_report(report_path=None):
+    """
+    Processes all patches from a parsed Vanir report file.
+    
+    This function:
+    1. Loads the parsed report data
+    2. Processes each patch entry
+    3. Tracks successful and failed operations
+    4. Handles errors for individual patches
+    5. Returns a summary of the operations
+    
+    :param report_path: Path to the parsed report JSON (default: auto-detect)
+    :return: Dictionary with results of all patch fetching operations
+    """
+    # Get the project root directory
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # Define path to parsed report if not provided
+    if not report_path:
+        report_path = os.path.join(project_root, "reports", "parsed_report.json")
+    
+    results = {
+        "successful": [],
+        "failed": []
+    }
+    
+    # Load and validate the parsed report
+    try:
+        with open(report_path, "r") as f:
+            parsed_report = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"❌ Error loading parsed report: {e}")
+        return results
+
+    print(f"📄 Processing patches from report: {report_path}")
+    print(f"🔢 Total patches to process: {len(parsed_report.get('patches', []))}")
+
+    # Process each patch in the report
+    for patch in parsed_report.get("patches", []):
+        patch_url = patch.get("patch_url")
+        if not patch_url:
+            continue
+            
+        files_to_include = list(patch.get("files", {}).keys())
+        print(f"\n🔍 Processing patch: {patch_url}")
+        print(f"   Filtering files: {files_to_include}")
+
+        try:
+            # Call fetch_patch to download and filter the patch
+            diff_file = fetch_patch(patch_url, files_to_include)
+
+            if diff_file:
+                print(f"✅ Patch saved: {diff_file}")
+                results["successful"].append({
+                    "url": patch_url,
+                    "file": diff_file,
+                    "files_included": files_to_include
+                })
+            else:
+                print(f"❌ Failed to fetch patch: {patch_url}")
+                results["failed"].append({
+                    "url": patch_url,
+                    "reason": "Fetch failed",
+                    "files_requested": files_to_include
+                })
+
+        except Exception as e:
+            # Catch and report any exceptions, but continue processing other patches
+            print(f"⚠️ Error processing {patch_url}: {e}")
+            results["failed"].append({
+                "url": patch_url,
+                "reason": str(e),
+                "files_requested": files_to_include
+            })
+    
+    # Print a summary of the results
+    print("\n===== Patch Fetching Summary =====")
+    print(f"Total patches processed: {len(results['successful']) + len(results['failed'])}")
+    print(f"Successfully fetched: {len(results['successful'])}")
+    print(f"Failed to fetch: {len(results['failed'])}")
+    
+    return results
+
+# --- MAIN ENTRY POINT ---
+
+if __name__ == "__main__":
+    """
+    Main entry point for batch patch fetching.
+    
+    When executed directly, this script:
+    1. Looks for the parsed Vanir report
+    2. Processes all patches in the report
+    3. Downloads and filters each patch
+    4. Saves the patches to the output directory
+    5. Provides a summary of operations
+    
+    Command line usage:
+        python patch_fetcher.py
+    """
+    # Process all patches from the default report path
+    results = process_patches_from_report()
+    
+    # Exit with an error code if any patches failed
+    if len(results["failed"]) > 0:
+        sys.exit(1)
+    
+    sys.exit(0)
