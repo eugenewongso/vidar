@@ -1,0 +1,845 @@
+{
+    "timestamp": "20250507_013850",
+    "patches_processed": [
+        {
+            "patch_file": "0c47caf05209b8adadb6c71689b29b6608680329.diff",
+            "patch_url": "https://android.googlesource.com/platform/external/conscrypt/+/0c47caf05209b8adadb6c71689b29b6608680329",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "a6ede43ad88693f782f3a6c5b8b9b9c451151ac7.diff",
+            "patch_url": "https://android.googlesource.com/platform/external/giflib/+/a6ede43ad88693f782f3a6c5b8b9b9c451151ac7",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2cd3a5fbc14d8b42d3bcce1c4cd19b1221f1473b.diff",
+            "patch_url": "https://android.googlesource.com/platform/external/giflib/+/2cd3a5fbc14d8b42d3bcce1c4cd19b1221f1473b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f3ca2dbb3ea30e70971c116046868009a1e0957a.diff",
+            "patch_url": "https://android.googlesource.com/platform/external/giflib/+/f3ca2dbb3ea30e70971c116046868009a1e0957a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b5543cb8c6b95623743016055220378efe73eb93.diff",
+            "patch_url": "https://android.googlesource.com/platform/external/skia/+/b5543cb8c6b95623743016055220378efe73eb93",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "73b54cdf4b70831c4f952d7556274609cb46214e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/73b54cdf4b70831c4f952d7556274609cb46214e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2a75f7166b028150ea0dcd142e1ede51f7861eb3.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2a75f7166b028150ea0dcd142e1ede51f7861eb3",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "ae39a3f6538e5a5a73aea4daf8b552539247227f.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7366b99644fa61279591eec54ea725d86d6e2e93.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7366b99644fa61279591eec54ea725d86d6e2e93",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "806927c67cbb308739b06efe78ee474c83b66e24.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/806927c67cbb308739b06efe78ee474c83b66e24",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b4945cf98c97121821c178713a613a6a6e830c3a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "ea329372d8426c6cdbc2d5570c10bef1003d9912.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ea329372d8426c6cdbc2d5570c10bef1003d9912",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "20c568e77eae5d469cd5e594b644d8645d830dbd.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/20c568e77eae5d469cd5e594b644d8645d830dbd",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "155a686755e5012d591223c451304f3326dc2e78.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "8aef21b72dca756458d25a42599779997d199f09.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8aef21b72dca756458d25a42599779997d199f09",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "0e91977c4ebfdfe4e2124373d22f99dfe211a06b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/0e91977c4ebfdfe4e2124373d22f99dfe211a06b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "3ae94b0da53aed63380263131795746b12296391.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3ae94b0da53aed63380263131795746b12296391",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "65ee48d1eb9fe60039c2c461ca49f31ad180faef.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "bd1399244a3cef79f5d8e3b07b2e29452685ff0a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/bd1399244a3cef79f5d8e3b07b2e29452685ff0a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "8f012349dc728dda8a7d5ba9ae43fae0ecc7d322.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8f012349dc728dda8a7d5ba9ae43fae0ecc7d322",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c32cfc60ccf531470f6125b6019d8ab2452b3617.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c32cfc60ccf531470f6125b6019d8ab2452b3617",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "eec34e2716bfa613be30b0a0b9a173e2005a6c00.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/eec34e2716bfa613be30b0a0b9a173e2005a6c00",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "790b7c82c0169752311dbd213f4669e05714fada.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/790b7c82c0169752311dbd213f4669e05714fada",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "ec8a2057c7aab9bf61acd24f9b02ee7afb699043.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ec8a2057c7aab9bf61acd24f9b02ee7afb699043",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c1e79495a49bd4d3e380136fe4bca7ac1a9ed763.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c1e79495a49bd4d3e380136fe4bca7ac1a9ed763",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f483640dfc954f4c6028f8cb35c1582dd1482c4b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f483640dfc954f4c6028f8cb35c1582dd1482c4b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "cde345a7ee06db716e613e12a2c218ce248ad1c4.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cde345a7ee06db716e613e12a2c218ce248ad1c4",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "d04cea5ea08f91f55a14209c1e424e163e2d50ab.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/d04cea5ea08f91f55a14209c1e424e163e2d50ab",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4426de38dd5d622151d54aaa02b8b28c7df5458b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/4426de38dd5d622151d54aaa02b8b28c7df5458b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "697c31d74c775da1ae0caa57839b4d2ddb83eba9.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/697c31d74c775da1ae0caa57839b4d2ddb83eba9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c18c614aec9e5345caab70446f058d8706185776.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c18c614aec9e5345caab70446f058d8706185776",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "492865ebcad4480562cb4f07c4b4e079af75fdf9.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/492865ebcad4480562cb4f07c4b4e079af75fdf9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "5d107bcde72620926566613c5efa7f0c4ce9f63c.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5d107bcde72620926566613c5efa7f0c4ce9f63c",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "61274fc61fb33a0ae9525188d969cb56503c124a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/61274fc61fb33a0ae9525188d969cb56503c124a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "73e2b35a63d8c5da528b7a2dad2091f40b0f49c1.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/73e2b35a63d8c5da528b7a2dad2091f40b0f49c1",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "36875556fca3a0e9715d1cbd6cebff8e5720b2a0.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/36875556fca3a0e9715d1cbd6cebff8e5720b2a0",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c5846894b27b4a1d8e7753611352844f31679158.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c5846894b27b4a1d8e7753611352844f31679158",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "046cc236501e4f12bfc4a26948b5b6b76695afb9.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/046cc236501e4f12bfc4a26948b5b6b76695afb9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "df893defcf8cc6e1e223111e79ad3daf0ec7cd8b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/df893defcf8cc6e1e223111e79ad3daf0ec7cd8b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7c6ec68537ba8abf798afd9ab7c3e5889841171f.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7c6ec68537ba8abf798afd9ab7c3e5889841171f",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "37be5d18e529877fcd3c62063aec205a96660449.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/37be5d18e529877fcd3c62063aec205a96660449",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "1181fd1b6769e6f093cd409e2b9f7aa0f91d7ed9.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/1181fd1b6769e6f093cd409e2b9f7aa0f91d7ed9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "81077e77a1eaf33a5404e0e937ff55e653c2310f.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/81077e77a1eaf33a5404e0e937ff55e653c2310f",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "1e1774588914a7181357e9af99ef782fccfdcf1e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/1e1774588914a7181357e9af99ef782fccfdcf1e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "cb890a0619fc5b87faf79001834cb7629a80905b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cb890a0619fc5b87faf79001834cb7629a80905b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "cfead1ab1b0ea5e67b370dccf923217a8dd1a2f1.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cfead1ab1b0ea5e67b370dccf923217a8dd1a2f1",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2c3c124ea436d76fd30cbf1541ef59867d9e7f43.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2c3c124ea436d76fd30cbf1541ef59867d9e7f43",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "6e34cc09669b6915caaff67c86e05028078f780d.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/6e34cc09669b6915caaff67c86e05028078f780d",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "61ccd0f4b94cea51503b19c184132cc9f4a223c6.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/61ccd0f4b94cea51503b19c184132cc9f4a223c6",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "3adcf170c3ec509ac7af2438a00918348c4b5e73.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3adcf170c3ec509ac7af2438a00918348c4b5e73",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b85bee508793e31d6fe37fc9cd4e8fa3787113cc.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b85bee508793e31d6fe37fc9cd4e8fa3787113cc",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "68268563631f18bc984ac2295fb41f5cc9a8369d.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/68268563631f18bc984ac2295fb41f5cc9a8369d",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "6853510bc3070ee43de4b68ba26c3ca2164f8317.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/6853510bc3070ee43de4b68ba26c3ca2164f8317",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e716a8dd586a647a809ac2b8331f5c7995c1a147.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e716a8dd586a647a809ac2b8331f5c7995c1a147",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "fe93f1262d7a73080fbabacd0c800faa7c2d73e3.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/fe93f1262d7a73080fbabacd0c800faa7c2d73e3",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "bad47a2280c7107e1213f4adc5a3825a62698d00.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/bad47a2280c7107e1213f4adc5a3825a62698d00",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "0f8b55350b7bebc2424a21b8e8ffede2b809970f.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/0f8b55350b7bebc2424a21b8e8ffede2b809970f",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "27e4e6aed07238e1a9cbbf477a5b925be34df8a8.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/27e4e6aed07238e1a9cbbf477a5b925be34df8a8",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b5df56f2e11022501fb2a06b64023b67ee6a5bd7.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b5df56f2e11022501fb2a06b64023b67ee6a5bd7",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "1c55f991ae08deaa1630beb2c24da16bcdc71f29.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telephony/+/1c55f991ae08deaa1630beb2c24da16bcdc71f29",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "9aee7c7bea9d9454f98ce0e43e5ae8d1974cf483.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telephony/+/9aee7c7bea9d9454f98ce0e43e5ae8d1974cf483",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "234c5e843ca427b1dd47e91e3969f3309dd787bf.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/234c5e843ca427b1dd47e91e3969f3309dd787bf",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e81fa0c19c07a5b6509c3f844b69847a96c7a815.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e81fa0c19c07a5b6509c3f844b69847a96c7a815",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b91437020051b4f7fb78dbe14b40dd2f7c754f48.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b91437020051b4f7fb78dbe14b40dd2f7c754f48",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "01006f7f97083ae49a546f9e0a94db7bdfd2a152.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/01006f7f97083ae49a546f9e0a94db7bdfd2a152",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7f1bc271379d97bed56e33f8470992d38bce5531.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/7f1bc271379d97bed56e33f8470992d38bce5531",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c984c3b842c2b458db2f1a29574af1d137f28143.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c984c3b842c2b458db2f1a29574af1d137f28143",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "8a7d97bda782673495e835fbb6270feaf9597180.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8a7d97bda782673495e835fbb6270feaf9597180",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "585d5d6835dd2ddd65316fbbabd714c140da20fa.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/585d5d6835dd2ddd65316fbbabd714c140da20fa",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b1612955cb7fb2f69f1e04d437bb7fabd411ff7c.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b1612955cb7fb2f69f1e04d437bb7fabd411ff7c",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "829da8849df35c00c110ebebdd54c1692d96f840.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/829da8849df35c00c110ebebdd54c1692d96f840",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "58d536c5733173c09f8d6e531d6230f838f64d1a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/58d536c5733173c09f8d6e531d6230f838f64d1a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f65da8a9d7b6869dc2ad5cdd3b48763b8e18ac46.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/f65da8a9d7b6869dc2ad5cdd3b48763b8e18ac46",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b6ddf525be3c2abbde59ae1533494b18a7961087.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/b6ddf525be3c2abbde59ae1533494b18a7961087",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4e8200dec484fd6e5873f2a89c0b314467034eef.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/4e8200dec484fd6e5873f2a89c0b314467034eef",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "8e2ca264784848a327901ac6080c6e2c34cc691b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/8e2ca264784848a327901ac6080c6e2c34cc691b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c54dad65317f851ce9d016bd90ec6a7a04da09fc.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/c54dad65317f851ce9d016bd90ec6a7a04da09fc",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2aec032c0826ad68cd94c100173b99167bfcb10d.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/2aec032c0826ad68cd94c100173b99167bfcb10d",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4e76d6907ec1e8f065f7af3e4032e4b8cee6b2c1.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/4e76d6907ec1e8f065f7af3e4032e4b8cee6b2c1",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f2163b846228ded7187358048efb20681614779e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/f2163b846228ded7187358048efb20681614779e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e32c1ab25b3204e649e10743c239298f38203bc6.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/e32c1ab25b3204e649e10743c239298f38203bc6",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "608524d462278c2c9f6716cd94f126c85e9f2e91.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/608524d462278c2c9f6716cd94f126c85e9f2e91",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "0db4fced4d2c8325c93f61ac4ab385b47e041f23.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/0db4fced4d2c8325c93f61ac4ab385b47e041f23",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f50323a1538fc8da33a14c8ab2ee2fb02d45123d.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/native/+/f50323a1538fc8da33a14c8ab2ee2fb02d45123d",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "a06bbe8aa633e00c195866a8416ac9181c1fb652.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/platform/hardware/qcom/gps/commit/a06bbe8aa633e00c195866a8416ac9181c1fb652",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7551ccb1e1572029a084b9582629cfbe526d07e8.diff",
+            "patch_url": "https://git.codelinaro.org/clo/la/platform/hardware/qcom/gps/commit/7551ccb1e1572029a084b9582629cfbe526d07e8",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b7056d70f2cdd1596a95048e4ee80b6d91bcb3e0.diff",
+            "patch_url": "https://android.googlesource.com/platform/hardware/st/nfc/+/b7056d70f2cdd1596a95048e4ee80b6d91bcb3e0",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "549d249b9a83c9d82837799584afb6381e54254e.diff",
+            "patch_url": "https://android.googlesource.com/platform/libcore/+/549d249b9a83c9d82837799584afb6381e54254e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "f19514065f9807f579d3cbb45feee96184f36411.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/DocumentsUI/+/f19514065f9807f579d3cbb45feee96184f36411",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2de5d72a3cd83be5adafd00bfef50850784c21c9.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/DocumentsUI/+/2de5d72a3cd83be5adafd00bfef50850784c21c9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "14c45fc9056f9841e51533fda4805e8ee5cdce51.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/DocumentsUI/+/14c45fc9056f9841e51533fda4805e8ee5cdce51",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "0f5f4b53ad43b891cc04ef8bd059e28fba1cc44c.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/DocumentsUI/+/0f5f4b53ad43b891cc04ef8bd059e28fba1cc44c",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "841fb3846b25dee4ae5924fd798cd48709c69801.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/841fb3846b25dee4ae5924fd798cd48709c69801",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "8fa1dcb0345a2f5f751a465c208aa496f7be642a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/8fa1dcb0345a2f5f751a465c208aa496f7be642a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "d782f9c4bc72cdb0dbfb07a76e1582dafa9f49b3.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/d782f9c4bc72cdb0dbfb07a76e1582dafa9f49b3",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "0bd014c4977c3c4d35daf3df390cfcdc61d18b3e.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/0bd014c4977c3c4d35daf3df390cfcdc61d18b3e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7ae59a42eb13f643d842525208619037c074371a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/7ae59a42eb13f643d842525208619037c074371a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "d440f2ef05c20f81e1b1cad447cca427a25d77ec.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/d440f2ef05c20f81e1b1cad447cca427a25d77ec",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e4fe2f5b8134c007e29345ae11a64d37e8ef214a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/e4fe2f5b8134c007e29345ae11a64d37e8ef214a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "59cdc3e20ca4ac198b1c27e6a5372ececd155b16.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/59cdc3e20ca4ac198b1c27e6a5372ececd155b16",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "32e388ad3199de3c062bb2e2db5d3239f934d0eb.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/32e388ad3199de3c062bb2e2db5d3239f934d0eb",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "27315b3b921152b09a6a5d9128664cf30d98a087.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/27315b3b921152b09a6a5d9128664cf30d98a087",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "6253b87704bb097ad9963941bdddf3b86906a73e.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/apps/Settings/+/6253b87704bb097ad9963941bdddf3b86906a73e",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "b5d66a17fa296117b44f23ae45ff7338cee6ae85.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/b5d66a17fa296117b44f23ae45ff7338cee6ae85",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4dddbdda5ce8ee6bb04e6a518de20126b85b6119.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/4dddbdda5ce8ee6bb04e6a518de20126b85b6119",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "03dca3305311096f157da3ab9cfed5cc30f2c135.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/03dca3305311096f157da3ab9cfed5cc30f2c135",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "bdd92020a9c14c3f541b39624c5b1e0af599acc5.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/bdd92020a9c14c3f541b39624c5b1e0af599acc5",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "cad927034a371b82a4a07a16ec442eb261f6153f.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/cad927034a371b82a4a07a16ec442eb261f6153f",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e5ab6c617683a00c4e2996f1bc15c4c6e7f70f48.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/e5ab6c617683a00c4e2996f1bc15c4c6e7f70f48",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7de5617f7d5266fe57c990c428621b5d4e92728a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/7de5617f7d5266fe57c990c428621b5d4e92728a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "359bdee195ff58652663b2721e966b2604a93f94.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/359bdee195ff58652663b2721e966b2604a93f94",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "d493a3aa7dcca3219b139616c9de3c6ee8181f86.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Connectivity/+/d493a3aa7dcca3219b139616c9de3c6ee8181f86",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "85ef51a7a91de0e51dd65ce5f09badcd96835817.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/IntentResolver/+/85ef51a7a91de0e51dd65ce5f09badcd96835817",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "a8dcd86bb23f693772d1a5203828ce1b9b5d3cdf.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/IntentResolver/+/a8dcd86bb23f693772d1a5203828ce1b9b5d3cdf",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "960e1eaf465efa97ef07bc9d9a24785b1f96eb98.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/IntentResolver/+/960e1eaf465efa97ef07bc9d9a24785b1f96eb98",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7e1f7097f4a6895358bf1472e6d26c5198d00c11.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Permission/+/7e1f7097f4a6895358bf1472e6d26c5198d00c11",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4695447d05449dc66412a16bc643556443a344e3.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Permission/+/4695447d05449dc66412a16bc643556443a344e3",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "614473242f9e05a3f6e5e09ae8f18851c5061a15.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Permission/+/614473242f9e05a3f6e5e09ae8f18851c5061a15",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "46abb4e1fd365a88efdfe3f2b1f87da4d255b41b.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Permission/+/46abb4e1fd365a88efdfe3f2b1f87da4d255b41b",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4a7564305147e97cbd6f8df706c78bf2714eb200.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Wifi/+/4a7564305147e97cbd6f8df706c78bf2714eb200",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "3b2ff7586f6961e5f6394b821f926a34942f0f94.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/modules/Wifi/+/3b2ff7586f6961e5f6394b821f926a34942f0f94",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "aa443e673ee0e1ca984117025955cbd0614f2f87.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/aa443e673ee0e1ca984117025955cbd0614f2f87",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "85078731fba595a95d6d4dd62977e329557261af.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/85078731fba595a95d6d4dd62977e329557261af",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "a48808e0fcb882b1c71fa83aec2abc24afa74264.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/a48808e0fcb882b1c71fa83aec2abc24afa74264",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "48d6b0df91fb1c8c0b11891f878084c6d8f9fa8a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/48d6b0df91fb1c8c0b11891f878084c6d8f9fa8a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "4a358cfd8e403597651a6962e8e43c11ea906a59.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/4a358cfd8e403597651a6962e8e43c11ea906a59",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "425b355b0e845595c0e1d698ff2f533a46f58830.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/425b355b0e845595c0e1d698ff2f533a46f58830",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "9733de498bc44d9865b0061564ac3344426f4da9.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telecomm/+/9733de498bc44d9865b0061564ac3344426f4da9",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "46e18ac57da3ac50271fc2be5b20bd7799637eae.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telephony/+/46e18ac57da3ac50271fc2be5b20bd7799637eae",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "7fef8a3a84a138b29a5ffeae5da72a6b39fe448a.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telephony/+/7fef8a3a84a138b29a5ffeae5da72a6b39fe448a",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "77b3027a706b8d5a92e1375c84b0f273bb5ca916.diff",
+            "patch_url": "https://android.googlesource.com/platform/packages/services/Telephony/+/77b3027a706b8d5a92e1375c84b0f273bb5ca916",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "bc067ef9f0408f3b7c4f5dcae3b6aec51f386e4d.diff",
+            "patch_url": "https://android.googlesource.com/platform/system/core/+/bc067ef9f0408f3b7c4f5dcae3b6aec51f386e4d",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "c434d801d65372dd12d9bc8bd7717ef08f3fa984.diff",
+            "patch_url": "https://android.googlesource.com/platform/system/core/+/c434d801d65372dd12d9bc8bd7717ef08f3fa984",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "e68f6cd6c0a925fea1bbe7537f6029ef9b0e142c.diff",
+            "patch_url": "https://android.googlesource.com/platform/system/core/+/e68f6cd6c0a925fea1bbe7537f6029ef9b0e142c",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "d94e6c537fd8283a33d899d627ff154cc2af2d10.diff",
+            "patch_url": "https://android.googlesource.com/platform/system/core/+/d94e6c537fd8283a33d899d627ff154cc2af2d10",
+            "status": "Rejected",
+            "files_processed": []
+        },
+        {
+            "patch_file": "9b9233f4c1c31819fcd0fbc761f3b7ba6bd94344.diff",
+            "patch_url": "https://android.googlesource.com/platform/system/core/+/9b9233f4c1c31819fcd0fbc761f3b7ba6bd94344",
+            "status": "Rejected",
+            "files_processed": []
+        }
+    ]
+}
