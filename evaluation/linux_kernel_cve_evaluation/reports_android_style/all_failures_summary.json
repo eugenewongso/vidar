@@ -1,0 +1,52 @@
+[
+  {
+    "cve_id": "CVE-2025-21639",
+    "downstream_commit": null,
+    "downstream_patch": "c8d179f3b1c1d60bf4484f50aa67b4c70f91bff9",
+    "commit_date": "2025-02-01 18:18:49 +0100",
+    "error": "patching file net/sctp/sysctl.c\nHunk #1 succeeded at 401 with fuzz 2 (offset -32 lines).\nHunk #2 FAILED at 461.\n1 out of 2 hunks FAILED -- saving rejects to file net/sctp/sysctl.c.rej",
+    "total_hunks": 2,
+    "total_failed_hunks": 1,
+    "failed_hunks": [
+      2
+    ],
+    "file_conflicts": [
+      {
+        "file_name": "net/sctp/sysctl.c",
+        "rej_file_content": "```diff\n--- net/sctp/sysctl.c\n+++ net/sctp/sysctl.c\n@@ -461,7 +461,7 @@ static int proc_sctp_do_rto_min(const struct ctl_table *ctl, int write,\n static int proc_sctp_do_rto_max(const struct ctl_table *ctl, int write,\n \t\t\t\tvoid *buffer, size_t *lenp, loff_t *ppos)\n {\n-\tstruct net *net = current->nsproxy->net_ns;\n+\tstruct net *net = container_of(ctl->data, struct net, sctp.rto_max);\n \tunsigned int min = *(unsigned int *) ctl->extra1;\n \tunsigned int max = *(unsigned int *) ctl->extra2;\n \tstruct ctl_table tbl;\n```",
+        "inline_merge_conflicts": [
+          {
+            "hunk_number": 2,
+            "merge_conflict": "<<<<<<< DOWNSTREAM (version c8d179f3b1c1d60bf4484f50aa67b4c70f91bff9)\n\n=======\n\tstruct net *net = container_of(ctl->data, struct net, sctp.rto_max);\n\tunsigned int min = *(unsigned int *) ctl->extra1;\n\tunsigned int max = *(unsigned int *) ctl->extra2;\n\tstruct ctl_table tbl;\n>>>>>>> UPSTREAM PATCH (commit ea62dd1383913b5999f3d16ae99d411f41b528d4)"
+          }
+        ],
+        "patch_apply_output": "patching file net/sctp/sysctl.c\nHunk #1 succeeded at 401 with fuzz 2 (offset -32 lines).\nHunk #2 FAILED at 461.\n1 out of 2 hunks FAILED -- saving rejects to file net/sctp/sysctl.c.rej"
+      }
+    ]
+  },
+  {
+    "cve_id": "CVE-2025-21639",
+    "downstream_commit": null,
+    "downstream_patch": "246428bfb9e7db15c5cd08e1d0eca41b65af2b06",
+    "commit_date": "2025-02-01 18:22:26 +0100",
+    "error": "patching file net/sctp/sysctl.c\nHunk #1 succeeded at 424 with fuzz 1 (offset -9 lines).\nHunk #2 FAILED at 461.\n1 out of 2 hunks FAILED -- saving rejects to file net/sctp/sysctl.c.rej",
+    "total_hunks": 2,
+    "total_failed_hunks": 1,
+    "failed_hunks": [
+      2
+    ],
+    "file_conflicts": [
+      {
+        "file_name": "net/sctp/sysctl.c",
+        "rej_file_content": "```diff\n--- net/sctp/sysctl.c\n+++ net/sctp/sysctl.c\n@@ -461,7 +461,7 @@ static int proc_sctp_do_rto_min(const struct ctl_table *ctl, int write,\n static int proc_sctp_do_rto_max(const struct ctl_table *ctl, int write,\n \t\t\t\tvoid *buffer, size_t *lenp, loff_t *ppos)\n {\n-\tstruct net *net = current->nsproxy->net_ns;\n+\tstruct net *net = container_of(ctl->data, struct net, sctp.rto_max);\n \tunsigned int min = *(unsigned int *) ctl->extra1;\n \tunsigned int max = *(unsigned int *) ctl->extra2;\n \tstruct ctl_table tbl;\n```",
+        "inline_merge_conflicts": [
+          {
+            "hunk_number": 2,
+            "merge_conflict": "<<<<<<< DOWNSTREAM (version 246428bfb9e7db15c5cd08e1d0eca41b65af2b06)\n\tstruct net *net = container_of(ctl->data, struct net, sctp.auth_enable);\n=======\n\tstruct net *net = container_of(ctl->data, struct net, sctp.rto_max);\n\tunsigned int min = *(unsigned int *) ctl->extra1;\n\tunsigned int max = *(unsigned int *) ctl->extra2;\n>>>>>>> UPSTREAM PATCH (commit ea62dd1383913b5999f3d16ae99d411f41b528d4)"
+          }
+        ],
+        "patch_apply_output": "patching file net/sctp/sysctl.c\nHunk #1 succeeded at 424 with fuzz 1 (offset -9 lines).\nHunk #2 FAILED at 461.\n1 out of 2 hunks FAILED -- saving rejects to file net/sctp/sysctl.c.rej"
+      }
+    ]
+  }
+]
