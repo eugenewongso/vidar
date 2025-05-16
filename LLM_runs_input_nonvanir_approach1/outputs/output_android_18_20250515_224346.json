@@ -1,0 +1,93 @@
+[
+    {
+        "id": "TEST-VULN-001",
+        "vulnerability_url": "https://example.com/vuln/TEST-VULN-001",
+        "severity": "TestSeverity",
+        "failures": [
+            {
+                "downstream_version": "14",
+                "branch_used": "test-branch-14",
+                "downstream_patch": "test-patch-sha-1",
+                "repo_path": "test_org/test_repo1",
+                "result": "failure",
+                "file_conflicts": [
+                    {
+                        "file_name": "src/com/example/TestFile1.java",
+                        "rej_file_content": "--- a/src/com/example/TestFile1.java\n+++ b/src/com/example/TestFile1.java\n@@ -2,2 +2,2 @@\n public class TestFile1 {\n-    // Old line to be replaced\n+    // New line from rej_file_content\n     public void testMethod() {",
+                        "downstream_file_content": "package com.example;\npublic class TestFile1 {\n    // Old line to be replaced\n    public void testMethod() {\n        System.out.println(\"Hello from TestFile1\");\n    }\n}",
+                        "total_hunks": 1,
+                        "failed_hunks": [],
+                        "inline_merge_conflicts": [],
+                        "patch_apply_output": "Successfully applied",
+                        "inline_merge_output": "No conflicts",
+                        "upstream_file_content": "package com.example;\npublic class TestFile1 {\n    // Original upstream line\n    public void testMethod() {\n        System.out.println(\"Hello from TestFile1\");\n    }\n}"
+                    },
+                    {
+                        "file_name": "src/com/example/TestFile2.java",
+                        "rej_file_content": "--- a/src/com/example/TestFile2.java\n+++ b/src/com/example/TestFile2.java\n@@ -1,3 +1,3 @@\n public class TestFile2 {\n-    // Original content in TestFile2\n+    // Patched content from rej in TestFile2\n }",
+                        "downstream_file_content": "public class TestFile2 {\n    // Original content in TestFile2\n}"
+                    }
+                ]
+            },
+            {
+                "downstream_version": "13",
+                "branch_used": "test-branch-13",
+                "downstream_patch": "test-patch-sha-2",
+                "repo_path": "test_org/test_repo2",
+                "result": "failure",
+                "file_conflicts": [
+                    {
+                        "file_name": "src/com/example/OldVersionFile.java",
+                        "rej_file_content": "patch data for old version",
+                        "downstream_file_content": "old version file content"
+                    }
+                ]
+            },
+            {
+                "downstream_version": "14",
+                "branch_used": "test-branch-14b",
+                "downstream_patch": "test-patch-sha-3",
+                "repo_path": "test_org/test_repo3",
+                "result": "failure",
+                "file_conflicts": [
+                    {
+                        "file_name": "src/com/example/AnotherTest.java",
+                        "rej_file_content": "--- a/src/com/example/AnotherTest.java\n+++ b/src/com/example/AnotherTest.java\n@@ -1 +1 @@\n-public class AnotherTest { /* placeholder old */}\n+public class AnotherTest { /* placeholder new from rej */ }",
+                        "downstream_file_content": "public class AnotherTest { /* placeholder old */}"
+                    },
+                    {
+                        "file_name": "src/com/example/EmptyRej.java",
+                        "rej_file_content": "",
+                        "downstream_file_content": "public class EmptyRej {}"
+                    },
+                    {
+                        "file_name": "src/com/example/EmptyDownstream.java",
+                        "rej_file_content": "some rej content",
+                        "downstream_file_content": ""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "TEST-VULN-002",
+        "vulnerability_url": "https://example.com/vuln/TEST-VULN-002",
+        "severity": "Low",
+        "failures": [
+            {
+                "downstream_version": "14",
+                "branch_used": "test-branch-14c",
+                "downstream_patch": "test-patch-sha-4",
+                "repo_path": "another_org/another_repo",
+                "result": "failure",
+                "file_conflicts": [
+                    {
+                        "file_name": "src/com/another/Sample.java",
+                        "rej_file_content": "--- a/src/com/another/Sample.java\n+++ b/src/com/another/Sample.java\n@@ -1 +1 @@\n-    private String oldField;\n+    private String newFieldFromRej;",
+                        "downstream_file_content": "package com.another;\npublic class Sample {\n    private String oldField;\n}"
+                    }
+                ]
+            }
+        ]
+    }
+]
