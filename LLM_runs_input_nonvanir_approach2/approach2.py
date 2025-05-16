@@ -258,7 +258,7 @@ async def main():
     except IOError as e:
         print(f"Error writing main output JSON to '{output_json_path_to_use}': {e}")
 
-    report_dir = os.path.join("outputs", "report_approach2") # Differentiated report directory
+    report_dir = os.path.join("outputs", "report")
     os.makedirs(report_dir, exist_ok=True)
     report_filename = os.path.join(report_dir, f"report_diff_{args.target_downstream_version}_{timestamp_str}.json")
     try:
