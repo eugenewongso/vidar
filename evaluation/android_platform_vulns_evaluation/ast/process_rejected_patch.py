@@ -17,11 +17,11 @@ class RejectedPatchProcessorFromJSON:
         with open(self.json_path, "r") as f:
             data = json.load(f)
 
-        for entry in data:
+        for entry in data.get("failures", []):
             for failure in entry.get("failures", []):
                 for conflict in failure.get("file_conflicts", []):
                     file_path = conflict["file_name"]
-                    source_code = conflict.get("downstream_file_content", "")
+                    source_code = conflict.get("downstream_file_content_with_markers") or conflict.get("downstream_file_content", "")
                     if not source_code:
                         print(f"⚠️ No source content for {file_path}")
                         continue
@@ -38,6 +38,30 @@ class RejectedPatchProcessorFromJSON:
         with open(output_path, "w") as f:
             json.dump(data, f, indent=2)
         print(f"\n💾 Saved output to: {output_path}")
+
+
+    def extract_inline_merge_conflicts_with_context_list(self, source_code: str, context_lines: int):
+        lines = source_code.splitlines()
+        conflicts = []
+        i = 0
+        while i < len(lines):
+            if lines[i].lstrip().startswith("<<<<<<<"):
+                conflict_start = i
+                while i < len(lines) and not lines[i].lstrip().startswith(">>>>>>>"):
+                    i += 1
+                if i < len(lines):
+                    conflict_end = i
+                    start_idx = max(conflict_start - context_lines, 0)
+                    end_idx = min(conflict_end + 1 + context_lines, len(lines))
+                    snippet = "\n".join(lines[start_idx:end_idx])
+                    conflicts.append(snippet)
+                    i = conflict_end + 1
+                else:
+                    i += 1
+            else:
+                i += 1
+        return conflicts
+
 
     def process_with_ast(self, file_path, source_code, conflict):
         rej_content = conflict.get("rej_file_content", "")
@@ -84,54 +108,15 @@ class RejectedPatchProcessorFromJSON:
 
 
     def extract_context_block(self, file_path, source_code, conflict):
-        source_lines = source_code.splitlines()
-
-        # First: Try to match downstream blocks normally (if any)
-        conflict_blocks = conflict.get("inline_merge_conflicts", [])
-        fallback_done = False
-
         for ctx in self.context_lines:
-            context_blocks = []
-
-            for block in conflict_blocks:
-                text = block.get("merge_conflict", "")
-                if not text:
-                    continue
-
-                try:
-                    match = re.search(r"<<<<<<< DOWNSTREAM.*?\n(.*?)=======\n", text, re.DOTALL)
-                    if match:
-                        downstream_raw = match.group(1)
-                        downstream = downstream_raw.encode().decode("unicode_escape").strip()
-                    else:
-                        downstream = ""
-                except Exception as e:
-                    print(f"⚠️ Error parsing merge conflict: {e}")
-                    downstream = ""
-
-                if downstream:
-                    match_start_char = source_code.find(downstream)
-                    if match_start_char != -1:
-                        match_start_line = source_code[:match_start_char].count("\n")
-                        start = max(0, match_start_line - ctx)
-                        end = min(len(source_lines), match_start_line + downstream.count("\n") + ctx)
-                        snippet = "\n".join(source_lines[start:end])
-                        context_blocks.append(snippet)
-                        continue
-
-                # Fall back to line numbers if downstream snippet not found
-                fallback_done = True
-                context_blocks += self.extract_context_from_inline_output(conflict, source_lines, ctx)
-
+            context_blocks = self.extract_inline_merge_conflicts_with_context_list(source_code, ctx)
             key = f"downstream_file_content_context_{ctx}"
             if context_blocks:
                 conflict[key] = context_blocks
                 print(f"📌 Context ({ctx} lines) extracted for: {file_path}")
             else:
-                print(f"⚠️ No context blocks extracted for {ctx} lines: {file_path}")
+                print(f"⚠️ No conflict markers found for {ctx} lines: {file_path}")
 
-        if fallback_done:
-            print(f"🔁 Fallback used for: {file_path}")
 
 
     def extract_rejected_line_numbers(self, rej_diff_text):

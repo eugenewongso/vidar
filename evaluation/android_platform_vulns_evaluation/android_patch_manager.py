@@ -10,22 +10,32 @@ import tiktoken
 client = aiplatform_v1beta1.PredictionServiceClient()
 
 def parse_version(v):
-    """Turn '12L' or '14' into comparable tuples."""
+    """Convert version strings like '12L' or '14' into tuples for comparison."""
     if v.endswith('L'):
         return (int(v[:-1]), 1)
     return (int(v), 0)
 
 def is_newer_version(source, target):
-    """Return True if `source` is newer than `target`."""
+    """Check if the source version is newer than the target version."""
     return parse_version(source) > parse_version(target)
 
 
 class AndroidPatchManager:
-    PATCH_TOOL = "gpatch"
-    STRIP_LEVEL = 1
+    PATCH_TOOL = "gpatch"  # Default patch tool
+    STRIP_LEVEL = 1  # Default strip level for patch application
 
     @staticmethod
     def clone_repo(repo_url, repo_base):
+        """
+        Clone a Git repository or fetch updates if it already exists locally.
+
+        Args:
+            repo_url (str): URL of the repository to clone.
+            repo_base (str): Base directory to store the cloned repository.
+
+        Returns:
+            str: Path to the cloned repository.
+        """
         repo_name = repo_url.split('/')[-1]
         repo_path = os.path.join(repo_base, repo_name)
 
@@ -40,6 +50,18 @@ class AndroidPatchManager:
     
     @staticmethod
     def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-03-25"):
+        """
+        Count tokens using the Gemini model from Google Cloud AI Platform.
+
+        Args:
+            text (str): Input text to count tokens for.
+            project (str): Google Cloud project ID.
+            location (str): Location of the model.
+            model (str): Model name.
+
+        Returns:
+            int: Total token count.
+        """
         publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
         request = CountTokensRequest(
             endpoint=publisher_model,
@@ -50,6 +72,15 @@ class AndroidPatchManager:
     
     @staticmethod
     def count_tokens_general(text: str):
+        """
+        Estimate token count based on word and character counts.
+
+        Args:
+            text (str): Input text.
+
+        Returns:
+            dict: Estimated token counts based on words and characters.
+        """
         # Rough estimate: ~1 token = 0.75 words or ~4 chars/token
         word_count = len(re.findall(r'\w+', text))
         char_estimate = len(text) // 4
@@ -61,6 +92,16 @@ class AndroidPatchManager:
 
     @staticmethod
     def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
+        """
+        Count tokens using the Tiktoken library.
+
+        Args:
+            text (str): Input text.
+            model (str): Model name.
+
+        Returns:
+            int: Total token count.
+        """
         try:
             enc = tiktoken.encoding_for_model(model)
         except KeyError:
@@ -69,6 +110,17 @@ class AndroidPatchManager:
 
     @staticmethod
     def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
+        """
+        Get token counts from multiple methods (OpenAI, general, Gemini).
+
+        Args:
+            text (str): Input text.
+            project (str): Google Cloud project ID.
+            skip_gemini (bool): Whether to skip Gemini token counting.
+
+        Returns:
+            dict: Token counts from different methods.
+        """
         result = {
             "openai": AndroidPatchManager.count_tokens_tiktoken(text),
             "general": AndroidPatchManager.count_tokens_general(text),
@@ -80,6 +132,13 @@ class AndroidPatchManager:
 
     @staticmethod
     def filter_patch_file(patch_file_path, relevant_files):
+        """
+        Filter a patch file to include only changes for relevant files.
+
+        Args:
+            patch_file_path (str): Path to the patch file.
+            relevant_files (list): List of relevant file paths to include.
+        """
         with open(patch_file_path, 'r') as f:
             patch_lines = f.readlines()
 
@@ -103,6 +162,12 @@ class AndroidPatchManager:
     
     @staticmethod
     def clean_repo(repo_path):
+        """
+        Reset uncommitted changes and clean untracked files in a Git repository.
+
+        Args:
+            repo_path (str): Path to the repository.
+        """
         # Reset uncommitted changes and clean untracked files
         subprocess.run(["git", "reset", "--hard"], cwd=repo_path, check=True)
         subprocess.run(["git", "clean", "-fd"], cwd=repo_path, check=True)
@@ -110,6 +175,16 @@ class AndroidPatchManager:
 
     @staticmethod
     def checkout_downstream_branch(repo_path, downstream_version):
+        """
+        Checkout a downstream branch in the repository.
+
+        Args:
+            repo_path (str): Path to the repository.
+            downstream_version (str): Version of the downstream branch.
+
+        Returns:
+            str: Name of the checked-out branch.
+        """
         # Clean repo before checkout
         AndroidPatchManager.clean_repo(repo_path)
 
@@ -128,10 +203,27 @@ class AndroidPatchManager:
 
     @staticmethod
     def checkout_commit(repo_path, commit_hash):
+        """
+        Reset the repository to a specific commit.
+
+        Args:
+            repo_path (str): Path to the repository.
+            commit_hash (str): Commit hash to reset to.
+        """
         subprocess.run(["git", "reset", "--hard", commit_hash], cwd=repo_path, check=True)
 
     @staticmethod
     def generate_combined_patch(repo_path, commit_hashes):
+        """
+        Generate a combined patch file from multiple commits.
+
+        Args:
+            repo_path (str): Path to the repository.
+            commit_hashes (list): List of commit hashes.
+
+        Returns:
+            tuple: Path to the patch file and its content.
+        """
         patch_file = tempfile.NamedTemporaryFile(delete=False, suffix=".diff")
         combined_patch_content = ""
         with open(patch_file.name, "w") as f:
@@ -147,6 +239,17 @@ class AndroidPatchManager:
 
     @staticmethod
     def apply_patch(repo_path, patch_file, use_merge=False):
+        """
+        Apply a patch to the repository.
+
+        Args:
+            repo_path (str): Path to the repository.
+            patch_file (str): Path to the patch file.
+            use_merge (bool): Whether to use merge mode.
+
+        Returns:
+            tuple: Success status, output, total hunks, and failed hunks list.
+        """
         patch_cmd = [AndroidPatchManager.PATCH_TOOL, "-p", str(AndroidPatchManager.STRIP_LEVEL), "-i", patch_file, "--ignore-whitespace"]
         if use_merge:
             patch_cmd.insert(1, "--merge")
@@ -169,6 +272,21 @@ class AndroidPatchManager:
 
     @staticmethod
     def extract_conflicts(repo_path, patch_file, downstream_version, upstream_commit, patch_error_output, total_hunks, failed_hunks_list):
+        """
+        Extract conflicts from a failed patch application.
+
+        Args:
+            repo_path (str): Path to the repository.
+            patch_file (str): Path to the patch file.
+            downstream_version (str): Downstream version.
+            upstream_commit (str): Upstream commit hash.
+            patch_error_output (str): Output from the patch application.
+            total_hunks (int): Total hunks in the patch.
+            failed_hunks_list (list): List of failed hunks.
+
+        Returns:
+            list: Details of file conflicts.
+        """
         file_conflicts = []
         rej_files = list(Path(repo_path).rglob("*.rej"))
 
@@ -195,8 +313,9 @@ class AndroidPatchManager:
                     if include:
                         filtered.write(line)
 
-            AndroidPatchManager.clean_repo(repo_path)
+            # AndroidPatchManager.clean_repo(repo_path)
             _, merge_output, _, _ = AndroidPatchManager.apply_patch(repo_path, filtered_patch_path, use_merge=True)
+            downstream_with_conflict_markers = Path(file_path).read_text() if os.path.exists(file_path) else ""
 
             inline_conflicts = AndroidPatchManager.parse_inline_conflicts(repo_path, file_name, downstream_version, upstream_commit)
 
@@ -228,7 +347,9 @@ class AndroidPatchManager:
                 "upstream_file_content": f"```{file_name.split('.')[-1]}\n{upstream_content.strip()}\n```" if upstream_content else "",
                 "upstream_file_tokens": AndroidPatchManager.get_all_token_counts(upstream_content, project="neat-resolver-406722", skip_gemini=False),
                 "downstream_file_content": f"```{file_name.split('.')[-1]}\n{downstream_content.strip()}\n```" if downstream_content else "",
-                "downstream_file_tokens": AndroidPatchManager.get_all_token_counts(downstream_content, project="neat-resolver-406722", skip_gemini=False)
+                "downstream_file_tokens": AndroidPatchManager.get_all_token_counts(downstream_content, project="neat-resolver-406722", skip_gemini=False),
+                "downstream_file_content_with_markers": f"```{file_name.split('.')[-1]}\n{downstream_with_conflict_markers.strip()}\n```" if downstream_with_conflict_markers else "",
+
             })
 
 
@@ -247,6 +368,7 @@ class AndroidPatchManager:
                     "reason": f"File '{missing_file}' is missing in downstream repo",
                     "upstream_file_content": "",
                     "downstream_file_content": ""
+
                 })
 
 
@@ -258,6 +380,18 @@ class AndroidPatchManager:
 
     @staticmethod
     def parse_inline_conflicts(repo_path, file_name, downstream_version, upstream_commit):
+        """
+        Parse inline merge conflicts in a file.
+
+        Args:
+            repo_path (str): Path to the repository.
+            file_name (str): Name of the file with conflicts.
+            downstream_version (str): Downstream version.
+            upstream_commit (str): Upstream commit hash.
+
+        Returns:
+            list: Details of inline conflicts.
+        """
         file_path = os.path.join(repo_path, file_name)
         if not os.path.exists(file_path):
             return []
@@ -299,14 +433,213 @@ class AndroidPatchManager:
             conflicts.append({
                 "hunk_number": i,
                 "merge_conflict": formatted_block,
-                "merge_conflict_tokens": token_counts  # 🧠 added this field
+                "merge_conflict_tokens": token_counts
             })
         return conflicts
+
+    @staticmethod
+    def _prepare_patch_summary(repo_path, upstream_commits):
+        """
+        Prepare a summary of the upstream patch.
+
+        Args:
+            repo_path (str): Path to the repository.
+            upstream_commits (list): List of upstream commit hashes.
+
+        Returns:
+            tuple: Patch file path, patch content, and summary.
+        """
+        AndroidPatchManager.clean_repo(repo_path)
+        try:
+            subprocess.run(["git", "checkout", "main"], cwd=repo_path, check=True)
+            print(f"🔀 Checked out to upstream branch: main")
+        except subprocess.CalledProcessError:
+            raise RuntimeError("Main branch not found")
+
+        patch_file, upstream_patch_content = AndroidPatchManager.generate_combined_patch(repo_path, upstream_commits)
+        summary = {
+            "upstream_commits": upstream_commits,
+            "upstream_branch_used": "main",
+            "upstream_patch_content": upstream_patch_content,
+            "upstream_patch_tokens": AndroidPatchManager.get_all_token_counts(upstream_patch_content, project="neat-resolver-406722"),
+            "total_downstream_versions_tested": 0,
+            "successful_patches": 0,
+            "failed_patches": 0,
+            "patch_results": []
+        }
+        return patch_file, upstream_patch_content, summary
+
+
+    @staticmethod
+    def _apply_patch_to_downstream_versions(repo_path, patch_file, downstream_versions, upstream_commits):
+        """
+        Apply a patch to multiple downstream versions.
+
+        Args:
+            repo_path (str): Path to the repository.
+            patch_file (str): Path to the patch file.
+            downstream_versions (list): List of downstream versions.
+            upstream_commits (list): List of upstream commit hashes.
+
+        Returns:
+            dict: Summary of patch application results.
+        """
+        summary = {
+            "total_downstream_versions_tested": len(downstream_versions),
+            "successful_patches": 0,
+            "failed_patches": 0,
+            "patch_results": []
+        }
+
+        for dv in downstream_versions:
+            version = dv["version"]
+            ground_truth_commits = AndroidPatchManager.extract_commit_hashes(dv["fixes"])
+            ground_truth_commit = ground_truth_commits[0] if ground_truth_commits else None
+
+            if not ground_truth_commit:
+                summary["patch_results"].append({
+                    "downstream_version": version,
+                    "branch_used": None,
+                    "result": "skipped",
+                    "reason": "No ground truth commit",
+                    "downstream_patch": None
+                })
+                continue
+
+            try:
+                branch = AndroidPatchManager.checkout_downstream_branch(repo_path, version)
+            except Exception as e:
+                summary["patch_results"].append({
+                    "downstream_version": version,
+                    "result": "skipped",
+                    "reason": str(e),
+                    "downstream_patch": ground_truth_commit
+                })
+                continue
+
+            subprocess.run(["git", "cat-file", "-e", f"{ground_truth_commit}^{{commit}}"], cwd=repo_path, check=True)
+            subprocess.run(["git", "reset", "--hard", f"{ground_truth_commit}^"], cwd=repo_path, check=True)
+            AndroidPatchManager.clean_repo(repo_path)
+
+            success, output, total_hunks, failed_hunks = AndroidPatchManager.apply_patch(repo_path, patch_file)
+
+            downstream_patch_content = ""
+            try:
+                result = subprocess.run(["git", "show", ground_truth_commit], cwd=repo_path, capture_output=True, text=True, check=True)
+                downstream_patch_content = result.stdout
+            except subprocess.CalledProcessError:
+                pass
+
+            result_entry = {
+                "downstream_version": version,
+                "branch_used": branch,
+                "downstream_patch": ground_truth_commit,
+                "repo_path": repo_path,
+                "result": "success" if success else "failure",
+                "downstream_patch_content": downstream_patch_content,
+                "downstream_patch_tokens": AndroidPatchManager.get_all_token_counts(
+                    downstream_patch_content, project="neat-resolver-406722", skip_gemini=True
+                ),
+            }
+
+            if not success:
+                file_conflicts = AndroidPatchManager.extract_conflicts(
+                    repo_path, patch_file, version, upstream_commits[0], output, total_hunks, failed_hunks
+                )
+                result_entry["file_conflicts"] = file_conflicts
+                summary["failed_patches"] += 1
+            else:
+                summary["successful_patches"] += 1
+
+            summary["patch_results"].append(result_entry)
+
+        return summary
+    
+    @staticmethod
+    def _attempt_cross_patch_forwarding(repo_path, matched_versions, downstream_versions):
+        """
+        Attempt to forward patches across downstream versions.
+
+        Args:
+            repo_path (str): Path to the repository.
+            matched_versions (list): List of matched downstream versions.
+            downstream_versions (list): List of all downstream versions.
+
+        Returns:
+            list: Results of cross-patch forwarding attempts.
+        """
+        results = []
+        matched_versions_sorted = sorted(matched_versions, key=parse_version, reverse=True)
+
+        for source in matched_versions_sorted:
+            source_commit = None
+            for dv in downstream_versions:
+                if (dv["version"] == source):
+                    commits = AndroidPatchManager.extract_commit_hashes(dv["fixes"])
+                    source_commit = commits[0] if commits else None
+                    break
+            if not source_commit:
+                continue
+
+            try:
+                AndroidPatchManager.checkout_downstream_branch(repo_path, source)
+                patch_file, _ = AndroidPatchManager.generate_combined_patch(repo_path, [source_commit])
+            except Exception as e:
+                print(f"⚠️ Failed to generate patch from version {source}: {e}")
+                continue
+
+            for target in matched_versions_sorted:
+                if target == source or not is_newer_version(source, target):
+                    continue
+
+                try:
+                    AndroidPatchManager.clean_repo(repo_path)
+                    AndroidPatchManager.checkout_downstream_branch(repo_path, target)
+
+                    target_commit = None
+                    for dv in downstream_versions:
+                        if dv["version"] == target:
+                            commits = AndroidPatchManager.extract_commit_hashes(dv["fixes"])
+                            target_commit = commits[0] if commits else None
+                            break
+
+                    if not target_commit:
+                        raise Exception(f"❌ No ground-truth patch commit for target version {target}")
+
+                    subprocess.run(["git", "reset", "--hard", f"{target_commit}^"], cwd=repo_path, check=True)
+                    success, output, *_ = AndroidPatchManager.apply_patch(repo_path, patch_file)
+
+                    results.append({
+                        "from": source,
+                        "to": target,
+                        "result": "success" if success else "failure",
+                        "patch_output": output
+                    })
+                except Exception as e:
+                    print(f"⚠️ Cross-patch {source} → {target} failed: {e}")
+                    results.append({
+                        "from": source,
+                        "to": target,
+                        "result": "error",
+                        "reason": str(e)
+                    })
+
+        return results
 
 
 
     @staticmethod
-    def process_vulnerability(vuln_data, repo_base):
+    def process_vulnerability(vuln_data, repo_base, allowed_downstream_versions=None):
+        """
+        Process a vulnerability by applying patches and analyzing results.
+
+        Args:
+            vuln_data (dict): Vulnerability data.
+            repo_base (str): Base directory for repositories.
+
+        Returns:
+            dict: Results of the vulnerability processing.
+        """
         result_entry = {
             "id": vuln_data['id'],
             "aliases": vuln_data.get('aliases', []),
@@ -323,10 +656,13 @@ class AndroidPatchManager:
             if "next" in version:
                 upstream_fixes.extend(affected["ecosystem_specific"].get("fixes", []))
             elif version != "15":
+                if allowed_downstream_versions and version not in allowed_downstream_versions:
+                    continue
                 downstream_versions.append({
                     "version": version,
                     "fixes": affected["ecosystem_specific"].get("fixes", [])
                 })
+
 
         if not upstream_fixes:
             return {
@@ -335,14 +671,14 @@ class AndroidPatchManager:
                 "error": "No upstream fixes found"
             }
 
-        upstream_commits = AndroidPatchManager.extract_upstream_commits(upstream_fixes)
+        upstream_commits = AndroidPatchManager.extract_commit_hashes(upstream_fixes)
         repo_url = AndroidPatchManager.get_repo_url(vuln_data.get("affected", [])[0])
 
         mismatch_versions = []
         matched_versions = []
 
         for dv in downstream_versions:
-            downstream_commits = AndroidPatchManager.extract_upstream_commits(dv["fixes"])
+            downstream_commits = AndroidPatchManager.extract_commit_hashes(dv["fixes"])
             if len(upstream_commits) != len(downstream_commits):
                 mismatch_versions.append({
                     "downstream_version": dv["version"],
@@ -375,29 +711,14 @@ class AndroidPatchManager:
             repo_path = AndroidPatchManager.clone_repo(repo_url, repo_base)
 
             try:
-                AndroidPatchManager.clean_repo(repo_path)
-                subprocess.run(["git", "checkout", "main"], cwd=repo_path, check=True)
-                print(f"🔀 Checked out to upstream branch: main")
-            except subprocess.CalledProcessError:
-                print(f"⚠️ Failed to checkout 'main' branch in repo: {repo_url}")
+                patch_file, upstream_patch_content, patch_summary = AndroidPatchManager._prepare_patch_summary(repo_path, upstream_commits)
+            except RuntimeError as e:
+                print(f"⚠️ {e}")
                 return {
                     "vulnerability_url": result_entry["vulnerability_url"],
                     "skipped": True,
-                    "error": "Main branch not found"
+                    "error": str(e)
                 }
-
-            patch_file, upstream_patch_content = AndroidPatchManager.generate_combined_patch(repo_path, upstream_commits)
-
-            patch_summary = {
-                "upstream_commits": upstream_commits,
-                "upstream_branch_used": "main",
-                "upstream_patch_content": upstream_patch_content,
-                "upstream_patch_tokens": AndroidPatchManager.get_all_token_counts(upstream_patch_content, project="neat-resolver-406722"),
-                "total_downstream_versions_tested": len(downstream_versions),
-                "successful_patches": 0,
-                "failed_patches": 0,
-                "patch_results": []
-            }
 
             relevant_files = set()
             for affected in vuln_data.get("affected", []):
@@ -417,172 +738,16 @@ class AndroidPatchManager:
                     "error": "Filtered patch is empty"
                 }
 
-            for dv in downstream_versions:
-                version = dv["version"]
-                ground_truth_fixes = dv["fixes"]
-                ground_truth_commits = AndroidPatchManager.extract_upstream_commits(ground_truth_fixes)
-                ground_truth_commit = ground_truth_commits[0] if ground_truth_commits else None
-
-                if not ground_truth_commit:
-                    print(f"⚠️ No ground truth commit for downstream version {version}, skipping.")
-                    patch_summary["patch_results"].append({
-                        "downstream_version": version,
-                        "branch_used": None,
-                        "result": "skipped",
-                        "reason": "No ground truth commit",
-                        "downstream_patch": None
-                    })
-                    continue
-
-                try:
-                    used_branch = AndroidPatchManager.checkout_downstream_branch(repo_path, downstream_version=version)
-                except ValueError as e:
-                    print(f"⚠️ {e}, skipping version {version}")
-                    patch_summary["patch_results"].append({
-                        "downstream_version": version,
-                        "result": "skipped",
-                        "reason": str(e),
-                        "downstream_patch": ground_truth_commit
-                    })
-                    continue
-
-                try:
-                    subprocess.run(["git", "cat-file", "-e", f"{ground_truth_commit}^{{commit}}"], cwd=repo_path, check=True)
-                except subprocess.CalledProcessError:
-                    print(f"⚠️ Ground truth commit {ground_truth_commit} not found in repo, skipping version {version}.")
-                    patch_summary["patch_results"].append({
-                        "downstream_version": version,
-                        "result": "skipped",
-                        "reason": "Commit not found in repo",
-                        "downstream_patch": ground_truth_commit
-                    })
-                    continue
-
-                subprocess.run(["git", "reset", "--hard", f"{ground_truth_commit}^"], cwd=repo_path, check=True)
-                AndroidPatchManager.clean_repo(repo_path)
-
-                success, patch_output, total_hunks, failed_hunks_list = AndroidPatchManager.apply_patch(repo_path, patch_file)
-
-                downstream_patch_content = ""
-                try:
-                    result = subprocess.run(
-                        ["git", "show", ground_truth_commit],
-                        cwd=repo_path, capture_output=True, text=True, check=True
-                    )
-                    downstream_patch_content = result.stdout
-                except subprocess.CalledProcessError:
-                    print(f"⚠️ Could not retrieve downstream patch content for {ground_truth_commit}")
-
-                patch_result = {
-                    "downstream_version": version,
-                    "branch_used": used_branch,
-                    "downstream_patch": ground_truth_commit,
-                    "repo_path": repo_path,
-                    "result": "success" if success else "failure",
-                    "downstream_patch_content": downstream_patch_content,
-                    "downstream_patch_tokens": AndroidPatchManager.get_all_token_counts(
-                        downstream_patch_content, project="neat-resolver-406722", skip_gemini=True
-                    ),
-                }
-
-                if not success:
-                    file_conflicts = AndroidPatchManager.extract_conflicts(
-                        repo_path, patch_file, version, upstream_commits[0], patch_output, total_hunks, failed_hunks_list
-                    )
-                    patch_result["file_conflicts"] = file_conflicts
-                    patch_summary["failed_patches"] += 1
-                else:
-                    patch_summary["successful_patches"] += 1
-
-                patch_summary["patch_results"].append(patch_result)
-
+            downstream_patch_results = AndroidPatchManager._apply_patch_to_downstream_versions(
+                repo_path, patch_file, downstream_versions, upstream_commits
+            )
+            patch_summary.update(downstream_patch_results)
             result_entry["patch_attempts"].append(patch_summary)
-            result_entry["cross_patch_attempts"] = []
 
-            
-            matched_versions = sorted(matched_versions, key=parse_version, reverse=True)
-
-            for source in matched_versions:
-                source_commit = None
-                for dv in downstream_versions:
-                    if dv["version"] == source:
-                        fixes = dv["fixes"]
-                        commits = AndroidPatchManager.extract_upstream_commits(fixes)
-                        source_commit = commits[0] if commits else None
-                        break
-
-                if not source_commit:
-                    continue
-
-                try:
-                    AndroidPatchManager.checkout_downstream_branch(repo_path, source)
-                    patch_file, _ = AndroidPatchManager.generate_combined_patch(repo_path, [source_commit])
-                except Exception as e:
-                    print(f"⚠️ Failed to generate patch from version {source}: {e}")
-                    continue
-
-                for target in matched_versions:
-                    if target == source:
-                        continue
-                    if not is_newer_version(source, target):
-                        print(f"⏩ Skipping forward-port: {source} → {target}")
-                        continue
-
-                    try:
-                        # 1. Clean repo
-                        AndroidPatchManager.clean_repo(repo_path)
-
-                        # 2. Checkout target branch
-                        AndroidPatchManager.checkout_downstream_branch(repo_path, target)
-
-                        # 3. Reset to the parent of the target version's ground-truth patch
-                        target_commit = None
-                        for dv in downstream_versions:
-                            if dv["version"] == target:
-                                commits = AndroidPatchManager.extract_upstream_commits(dv["fixes"])
-                                target_commit = commits[0] if commits else None
-                                break
-
-                        if not target_commit:
-                            raise Exception(f"❌ No ground-truth patch commit for target version {target}")
-
-                        subprocess.run(["git", "reset", "--hard", f"{target_commit}^"], cwd=repo_path, check=True)
-
-
-                        # 4. Apply patch
-                        success, patch_output, _, _ = AndroidPatchManager.apply_patch(repo_path, patch_file)
-
-                        result_entry["cross_patch_attempts"].append({
-                            "from": source,
-                            "to": target,
-                            "result": "success" if success else "failure",
-                            "patch_output": patch_output
-                        })
-
-                    except Exception as e:
-                        print(f"⚠️ Cross-patch {source} → {target} failed: {e}")
-                        result_entry["cross_patch_attempts"].append({
-                            "from": source,
-                            "to": target,
-                            "result": "error",
-                            "reason": str(e)
-                        })
-
-                        result_entry["cross_patch_attempts"].append({
-                            "from": source,
-                            "to": target,
-                            "result": "success" if success else "failure",
-                            "patch_output": patch_output
-                        })
-
-                    except Exception as e:
-                        print(f"⚠️ Cross-patch {source} → {target} failed: {e}")
-                        result_entry["cross_patch_attempts"].append({
-                            "from": source,
-                            "to": target,
-                            "result": "error",
-                            "reason": str(e)
-                        })
+            cross_patch_attempts = AndroidPatchManager._attempt_cross_patch_forwarding(
+                repo_path, matched_versions, downstream_versions
+            )
+            result_entry["cross_patch_attempts"] = cross_patch_attempts
 
         except Exception as e:
             print(f"❌ Unexpected error while processing {vuln_data['id']}: {e}")
@@ -595,8 +760,18 @@ class AndroidPatchManager:
         return result_entry
 
 
+
     @staticmethod
     def get_repo_url(affected):
+        """
+        Get the repository URL for a given affected package.
+
+        Args:
+            affected (dict): Affected package data.
+
+        Returns:
+            str: Repository URL.
+        """
         package_name = affected.get("package", {}).get("name", "")
         if package_name.startswith("platform/"):
             return f"https://android.googlesource.com/{package_name}"
@@ -604,7 +779,16 @@ class AndroidPatchManager:
 
 
     @staticmethod
-    def extract_upstream_commits(fix_urls):
+    def extract_commit_hashes(fix_urls):
+        """
+        Extract commit hashes from fix URLs.
+
+        Args:
+            fix_urls (list): List of fix URLs.
+
+        Returns:
+            list: List of commit hashes.
+        """
         print(f"Fix URLs: {fix_urls}")
         commits = []
         for url in fix_urls:

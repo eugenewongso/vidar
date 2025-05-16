@@ -1,0 +1,131 @@
+diff --git a/services/core/java/com/android/server/appop/AppOpsService.java b/services/core/java/com/android/server/appop/AppOpsService.java
+--- a/services/core/java/com/android/server/appop/AppOpsService.java
++++ b/services/core/java/com/android/server/appop/AppOpsService.java
+@@ -3896,7 +3896,7 @@
+             // Test if the proxied operation will succeed before starting the proxy operation
+             final SyncNotedAppOp testProxiedOp = startOperationDryRun(code,
+                     proxiedUid, resolvedProxiedPackageName, proxiedAttributionTag,
+-                    proxiedVirtualDeviceId, resolvedProxyPackageName, proxiedFlags,
++                    proxiedVirtualDeviceId, proxyUid, resolvedProxyPackageName, proxiedFlags,
+                     startIfModeDefault);
+ 
+             if (!shouldStartForMode(testProxiedOp.getOpMode(), startIfModeDefault)) {
+@@ -3936,7 +3936,7 @@
+             int attributionChainId) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -4063,11 +4063,11 @@
+      */
+     private SyncNotedAppOp startOperationDryRun(int code, int uid,
+             @NonNull String packageName, @Nullable String attributionTag, int virtualDeviceId,
+-            String proxyPackageName, @OpFlags int flags,
++            int proxyUid, String proxyPackageName, @OpFlags int flags,
+             boolean startIfModeDefault) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -3896,7 +3896,7 @@
+             // Test if the proxied operation will succeed before starting the proxy operation
+             final SyncNotedAppOp testProxiedOp = startOperationDryRun(code,
+                     proxiedUid, resolvedProxiedPackageName, proxiedAttributionTag,
+-                    proxiedVirtualDeviceId, resolvedProxyPackageName, proxiedFlags,
++                    proxiedVirtualDeviceId, proxyUid, resolvedProxyPackageName, proxiedFlags,
+                     startIfModeDefault);
+ 
+             if (!shouldStartForMode(testProxiedOp.getOpMode(), startIfModeDefault)) {
+@@ -3936,7 +3936,7 @@
+             int attributionChainId) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -4063,11 +4063,11 @@
+      */
+     private SyncNotedAppOp startOperationDryRun(int code, int uid,
+             @NonNull String packageName, @Nullable String attributionTag, int virtualDeviceId,
+-            String proxyPackageName, @OpFlags int flags,
++            int proxyUid, String proxyPackageName, @OpFlags int flags,
+             boolean startIfModeDefault) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -3896,7 +3896,7 @@
+             // Test if the proxied operation will succeed before starting the proxy operation
+             final SyncNotedAppOp testProxiedOp = startOperationDryRun(code,
+                     proxiedUid, resolvedProxiedPackageName, proxiedAttributionTag,
+-                    proxiedVirtualDeviceId, resolvedProxyPackageName, proxiedFlags,
++                    proxiedVirtualDeviceId, proxyUid, resolvedProxyPackageName, proxiedFlags,
+                     startIfModeDefault);
+ 
+             if (!shouldStartForMode(testProxiedOp.getOpMode(), startIfModeDefault)) {
+@@ -3936,7 +3936,7 @@
+             int attributionChainId) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -4063,11 +4063,11 @@
+      */
+     private SyncNotedAppOp startOperationDryRun(int code, int uid,
+             @NonNull String packageName, @Nullable String attributionTag, int virtualDeviceId,
+-            String proxyPackageName, @OpFlags int flags,
++            int proxyUid, String proxyPackageName, @OpFlags int flags,
+             boolean startIfModeDefault) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -3896,7 +3896,7 @@
+             // Test if the proxied operation will succeed before starting the proxy operation
+             final SyncNotedAppOp testProxiedOp = startOperationDryRun(code,
+                     proxiedUid, resolvedProxiedPackageName, proxiedAttributionTag,
+-                    proxiedVirtualDeviceId, resolvedProxyPackageName, proxiedFlags,
++                    proxiedVirtualDeviceId, proxyUid, resolvedProxyPackageName, proxiedFlags,
+                     startIfModeDefault);
+ 
+             if (!shouldStartForMode(testProxiedOp.getOpMode(), startIfModeDefault)) {
+@@ -3936,7 +3936,7 @@
+             int attributionChainId) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }
+@@ -4063,11 +4063,11 @@
+      */
+     private SyncNotedAppOp startOperationDryRun(int code, int uid,
+             @NonNull String packageName, @Nullable String attributionTag, int virtualDeviceId,
+-            String proxyPackageName, @OpFlags int flags,
++            int proxyUid, String proxyPackageName, @OpFlags int flags,
+             boolean startIfModeDefault) {
+         PackageVerificationResult pvr;
+         try {
+-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);
++            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);
+             if (!pvr.isAttributionTagValid) {
+                 attributionTag = null;
+             }

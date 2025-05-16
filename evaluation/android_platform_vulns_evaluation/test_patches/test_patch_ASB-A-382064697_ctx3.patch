@@ -1,0 +1,40 @@
+diff --git a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java
+--- a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java
++++ b/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java
+@@ -2723,16 +2723,16 @@
+         }
+     }
+ 
+-    /**
+-     * Apply default restrictions that haven't been applied to a given admin yet.
+-     */
++    /** Apply default restrictions that haven't been applied to a given admin yet. */
+     private void maybeSetDefaultRestrictionsForAdminLocked(int userId, ActiveAdmin admin) {
+-        Set<String> defaultRestrictions =
+-                UserRestrictionsUtils.getDefaultEnabledForManagedProfiles();
+-        if (defaultRestrictions.equals(admin.defaultEnabledRestrictionsAlreadySet)) {
++        Set<String> newDefaultRestrictions = new HashSet(
++            UserRestrictionsUtils.getDefaultEnabledForManagedProfiles());
++        newDefaultRestrictions.removeAll(admin.defaultEnabledRestrictionsAlreadySet);
++        if (newDefaultRestrictions.isEmpty()) {
+             return; // The same set of default restrictions has been already applied.
+         }
+-        for (String restriction : defaultRestrictions) {
++
++        for (String restriction : newDefaultRestrictions) {
+             mDevicePolicyEngine.setLocalPolicy(
+                     PolicyDefinition.getPolicyDefinitionForUserRestriction(restriction),
+                     EnforcingAdmin.createEnterpriseEnforcingAdmin(
+@@ -2740,10 +2740,9 @@
+                             admin.getUserHandle().getIdentifier()),
+                     new BooleanPolicyValue(true),
+                     userId);
++            admin.defaultEnabledRestrictionsAlreadySet.add(restriction);
++            Slogf.i(LOG_TAG, "Enabled the following restriction by default: " + restriction);
+         }
+-        admin.defaultEnabledRestrictionsAlreadySet.addAll(defaultRestrictions);
+-        Slogf.i(LOG_TAG, "Enabled the following restrictions by default: "
+-                + defaultRestrictions);
+     }
+ 
+     private void maybeStartSecurityLogMonitorOnActivityManagerReady() {

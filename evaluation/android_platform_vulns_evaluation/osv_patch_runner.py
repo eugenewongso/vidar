@@ -11,6 +11,19 @@ from collections import OrderedDict
 DEFAULT_REPO_BASE = "android_repos"
 
 def fetch_with_retry(url, method="GET", json_data=None, retries=3, delay=2):
+    """
+    Fetch a URL with retry logic for handling transient failures.
+
+    Args:
+        url (str): The URL to fetch.
+        method (str): HTTP method to use ("GET" or "POST").
+        json_data (dict, optional): JSON data to send with a POST request.
+        retries (int): Number of retry attempts.
+        delay (int): Delay in seconds between retries.
+
+    Returns:
+        requests.Response or None: The response object if successful, otherwise None.
+    """
     for attempt in range(retries):
         try:
             if method == "POST":
@@ -29,10 +42,21 @@ def fetch_with_retry(url, method="GET", json_data=None, retries=3, delay=2):
     return None
 
 
-def retry_process_vulnerability(vuln, repo_base, retries=2):
+def retry_process_vulnerability(vuln, repo_base, retries=2, allowed_downstream_versions=None):
+    """
+    Retry processing a vulnerability multiple times in case of failure.
+
+    Args:
+        vuln (dict): Vulnerability data to process.
+        repo_base (str): Base directory for repositories.
+        retries (int): Number of retry attempts.
+
+    Returns:
+        dict: Result of the vulnerability processing or an error message if retries are exhausted.
+    """
     for attempt in range(retries):
         try:
-            result = AndroidPatchManager.process_vulnerability(vuln, repo_base=repo_base)
+            result = AndroidPatchManager.process_vulnerability(vuln, repo_base=repo_base, allowed_downstream_versions=allowed_downstream_versions)
             return result
         except Exception as e:
             print(f"⚠️ Processing failed for {vuln['id']} on attempt {attempt + 1}: {e}")
@@ -42,6 +66,17 @@ def retry_process_vulnerability(vuln, repo_base, retries=2):
 
 
 def load_local_android_vulns(data_dir, after_date=None, before_date=None):
+    """
+    Load Android vulnerabilities from local JSON files, applying filters.
+
+    Args:
+        data_dir (str): Directory containing vulnerability JSON files.
+        after_date (datetime, optional): Include vulnerabilities published after this date.
+        before_date (datetime, optional): Include vulnerabilities published before this date.
+
+    Returns:
+        list: Filtered list of vulnerabilities.
+    """
     vulns = []
     for filename in os.listdir(data_dir):
         if filename.endswith(".json"):
@@ -51,6 +86,7 @@ def load_local_android_vulns(data_dir, after_date=None, before_date=None):
                 for affected in vuln.get("affected", []):
                     package_name = affected.get("package", {}).get("name", "")
                     if not package_name.startswith("platform/"):
+                        # Skip non-platform packages
                         continue
 
                     # Filter SPL to only those ending in "-01"
@@ -65,46 +101,64 @@ def load_local_android_vulns(data_dir, after_date=None, before_date=None):
                     if before_date and pub_date > before_date:
                         continue
 
-                    # Passed all filters, include this vuln
+                    # Passed all filters, include this vulnerability
                     vulns.append(vuln)
-                    break  # Move to next vuln after valid affected entry
+                    break  # Move to the next vulnerability after finding a valid affected entry
     return vulns
 
 
 
 def load_existing_report(report_path):
+    """
+    Load an existing report from a JSON file or initialize a new report structure.
+
+    Args:
+        report_path (str): Path to the report JSON file.
+
+    Returns:
+        dict: Report data, either loaded from the file or initialized.
+    """
     if os.path.exists(report_path):
         with open(report_path, "r") as f:
             return json.load(f)
     return {
         "summary": {
-            "total_vulnerabilities_tested": 0,
-            "total_downstream_versions_tested": 0,
-            "total_failed_patches": 0,
-            "total_unique_downstream_versions_tested": 0,
-            "total_unique_downstream_failed_patches": 0,
-            "vulnerabilities_with_all_failures": 0,
-            "vulnerabilities_with_partial_failures": 0,
-            "vulnerabilities_with_all_successful_patches": 0,
-            "vulnerabilities_skipped": 0,
-            "vulnerabilities_with_commit_mismatch": 0,
-            "per_version_stats": {},
-            "total_tokens": {
+            "total_vulnerabilities_tested": 0,  # Total number of vulnerabilities processed
+            "total_downstream_versions_tested": 0,  # Total downstream versions tested
+            "total_failed_patches": 0,  # Total number of failed patches
+            "total_unique_downstream_versions_tested": 0,  # Unique downstream versions tested
+            "total_unique_downstream_failed_patches": 0,  # Unique downstream versions with failed patches
+            "vulnerabilities_with_all_failures": 0,  # Vulnerabilities where all patches failed
+            "vulnerabilities_with_partial_failures": 0,  # Vulnerabilities with mixed patch results
+            "vulnerabilities_with_all_successful_patches": 0,  # Vulnerabilities where all patches succeeded
+            "vulnerabilities_skipped": 0,  # Vulnerabilities skipped during processing
+            "vulnerabilities_with_commit_mismatch": 0,  # Vulnerabilities with mismatched commit counts
+            "per_version_stats": {},  # Statistics per downstream version
+            "total_tokens": {  # Token usage statistics
                 "upstream_patch": {"gemini": 0, "openai": 0, "general_word": 0, "general_char": 0},
                 "upstream_source": {"gemini": 0, "openai": 0, "general_word": 0, "general_char": 0},
                 "downstream_patch": {"gemini": 0, "openai": 0, "general_word": 0, "general_char": 0},
                 "downstream_source": {"gemini": 0, "openai": 0, "general_word": 0, "general_char": 0}
             }
         },
-        "vulnerabilities_with_all_failures": [],
-        "vulnerabilities_with_partial_failures": [],
-        "vulnerabilities_with_all_successful_patches": [],
-        "vulnerabilities_skipped": [],
-        "commit_mismatch_vulnerabilities": []
+        "vulnerabilities_with_all_failures": [],  # List of vulnerabilities with all failed patches
+        "vulnerabilities_with_partial_failures": [],  # List of vulnerabilities with mixed patch results
+        "vulnerabilities_with_all_successful_patches": [],  # List of vulnerabilities with all successful patches
+        "vulnerabilities_skipped": [],  # List of skipped vulnerabilities
+        "commit_mismatch_vulnerabilities": []  # List of vulnerabilities with commit mismatches
     }
 
 
 def compute_total_gemini_tokens(failure_entry):
+    """
+    Compute the total number of Gemini tokens used for a failure entry.
+
+    Args:
+        failure_entry (dict): A failure entry containing token data.
+
+    Returns:
+        int: Total number of Gemini tokens used.
+    """
     total = 0
     total += failure_entry.get("upstream_patch_tokens", {}).get("gemini", 0)
 
@@ -119,8 +173,32 @@ def compute_total_gemini_tokens(failure_entry):
 
     return total
 
+def update_token_totals(summary_section: dict, token_data: dict):
+    """
+    Update a summary section with values from token_data.
+
+    Args:
+        summary_section (dict): The section of summary["total_tokens"] to update.
+        token_data (dict): The token counts to add.
+    """
+    summary_section["gemini"] += token_data.get("gemini", 0)
+    summary_section["openai"] += token_data.get("openai", 0)
+    general = token_data.get("general", {})
+    summary_section["general_word"] += general.get("word_based", 0)
+    summary_section["general_char"] += general.get("char_based", 0)
+
+
 
 def save_report(report_data, report_path, failures=None, strip_sensitive=True):
+    """
+    Save the report data to a JSON file, optionally stripping sensitive information.
+
+    Args:
+        report_data (dict): The report data to save.
+        report_path (str): Path to the report JSON file.
+        failures (list, optional): List of failure entries to save in a separate file.
+        strip_sensitive (bool): Whether to strip sensitive information from the main report.
+    """
     os.makedirs(os.path.dirname(report_path), exist_ok=True)
 
     import copy
@@ -213,20 +291,14 @@ def save_report(report_data, report_path, failures=None, strip_sensitive=True):
         for entry in failures:
             # Top-level upstream patch tokens
             u_tokens = entry.get("upstream_patch_tokens", {})
-            for k in ["gemini", "openai"]:
-                total["upstream_patch"][k] += u_tokens.get(k, 0)
-            total["upstream_patch"]["general_word"] += u_tokens.get("general", {}).get("word_based", 0)
-            total["upstream_patch"]["general_char"] += u_tokens.get("general", {}).get("char_based", 0)
+            update_token_totals(total["upstream_patch"], u_tokens)
 
             for result in entry.get("failures", []):
                 count += 1  # Count per patch result
 
                 # Downstream patch
                 d_tokens = result.get("downstream_patch_tokens", {})
-                for k in ["gemini", "openai"]:
-                    total["downstream_patch"][k] += d_tokens.get(k, 0)
-                total["downstream_patch"]["general_word"] += d_tokens.get("general", {}).get("word_based", 0)
-                total["downstream_patch"]["general_char"] += d_tokens.get("general", {}).get("char_based", 0)
+                update_token_totals(total["downstream_patch"], d_tokens)
 
                 for fc in result.get("file_conflicts", []):
                     for side_key, section in [
@@ -235,10 +307,7 @@ def save_report(report_data, report_path, failures=None, strip_sensitive=True):
                         ("rej_file_tokens", "rej_file"),
                     ]:
                         tokens = fc.get(side_key, {})
-                        for k in ["gemini", "openai"]:
-                            total[section][k] += tokens.get(k, 0)
-                        total[section]["general_word"] += tokens.get("general", {}).get("word_based", 0)
-                        total[section]["general_char"] += tokens.get("general", {}).get("char_based", 0)
+                        update_token_totals(total[section], tokens)
 
                     # Inline merge conflicts
                     ims = fc.get("inline_merge_token_summary", {})
@@ -271,6 +340,12 @@ def save_report(report_data, report_path, failures=None, strip_sensitive=True):
 
 # Fill in missing Gemini token counts for upstream patches and downstream patches
 def fill_in_gemini_tokens(report_data):
+    """
+    Fill in missing Gemini token counts for upstream and downstream patches.
+
+    Args:
+        report_data (dict): The report data containing vulnerabilities and patch attempts.
+    """
     for group in [
         "vulnerabilities_with_all_failures",
         "vulnerabilities_with_partial_failures",
@@ -316,6 +391,9 @@ def fill_in_gemini_tokens(report_data):
 
 
 def main():
+    """
+    Main function to process Android vulnerabilities, generate reports, and handle CLI arguments.
+    """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     DEFAULT_REPORT_PATH = f"reports/android_platform_vulnerability_report_{timestamp}.json"
     parser = argparse.ArgumentParser(description="Android Patch Automation")
@@ -328,9 +406,17 @@ def main():
     parser.add_argument("--data_dir", type=str, default="osv_data_android", help="Directory containing OSV JSON files")
     parser.add_argument("--cve", type=str, help="Only process this specific CVE ID (e.g., CVE-2025-12345)")
     parser.add_argument("--asb_ids_file", type=str, help="Path to text file containing ASB IDs to filter by")
+    parser.add_argument("--downstream_versions_file", type=str, help="Path to file containing downstream versions to include")
 
 
     args = parser.parse_args()
+
+    allowed_downstream_versions = None
+    if args.downstream_versions_file:
+        with open(args.downstream_versions_file, "r") as f:
+            allowed_downstream_versions = {line.strip() for line in f if line.strip()}
+        print(f"🎯 Filtering to downstream versions: {allowed_downstream_versions}")
+
 
     asb_id_filter = set()
     if args.asb_ids_file:
@@ -355,11 +441,6 @@ def main():
         before_date=before_date
     )
 
-    vulns = load_local_android_vulns(
-    data_dir=args.data_dir,
-    after_date=after_date,
-    before_date=before_date
-    )
 
     # Filter to only specified ASB IDs if provided
     if asb_id_filter:
@@ -399,7 +480,10 @@ def main():
             continue
 
         print(f"🔄 Processing {vuln['id']}")
-        result = retry_process_vulnerability(vuln, repo_base=args.repo, retries=2)
+        result = retry_process_vulnerability(
+            vuln, repo_base=args.repo, retries=2, allowed_downstream_versions=allowed_downstream_versions
+        )
+
 
         if result.get("skipped"):
             if result.get("commit_mismatch"):
@@ -421,34 +505,22 @@ def main():
             for attempt in result.get("patch_attempts", []):
                 patch_tokens = attempt.get("upstream_patch_tokens", {})
                 if isinstance(patch_tokens, dict):
-                    report_data["summary"]["total_tokens"]["upstream_patch"]["gemini"] += patch_tokens.get("gemini", 0)
-                    report_data["summary"]["total_tokens"]["upstream_patch"]["openai"] += patch_tokens.get("openai", 0)
-                    report_data["summary"]["total_tokens"]["upstream_patch"]["general_word"] += patch_tokens.get("general", {}).get("word_based", 0)
-                    report_data["summary"]["total_tokens"]["upstream_patch"]["general_char"] += patch_tokens.get("general", {}).get("char_based", 0)
+                    update_token_totals(report_data["summary"]["total_tokens"]["upstream_patch"], patch_tokens)
 
                     for res in attempt.get("patch_results", []):
                         d_tokens = res.get("downstream_patch_tokens", {})
                         if isinstance(d_tokens, dict):
-                            report_data["summary"]["total_tokens"]["downstream_patch"]["gemini"] += d_tokens.get("gemini", 0)
-                            report_data["summary"]["total_tokens"]["downstream_patch"]["openai"] += d_tokens.get("openai", 0)
-                            report_data["summary"]["total_tokens"]["downstream_patch"]["general_word"] += d_tokens.get("general", {}).get("word_based", 0)
-                            report_data["summary"]["total_tokens"]["downstream_patch"]["general_char"] += d_tokens.get("general", {}).get("char_based", 0)
+                            update_token_totals(report_data["summary"]["total_tokens"]["downstream_patch"], d_tokens)
 
                         for fc in res.get("file_conflicts", []):
                             u_tokens = fc.get("upstream_file_tokens", {})
                             d_tokens = fc.get("downstream_file_tokens", {})
 
                             if isinstance(u_tokens, dict):
-                                report_data["summary"]["total_tokens"]["upstream_source"]["gemini"] += u_tokens.get("gemini", 0)
-                                report_data["summary"]["total_tokens"]["upstream_source"]["openai"] += u_tokens.get("openai", 0)
-                                report_data["summary"]["total_tokens"]["upstream_source"]["general_word"] += u_tokens.get("general", {}).get("word_based", 0)
-                                report_data["summary"]["total_tokens"]["upstream_source"]["general_char"] += u_tokens.get("general", {}).get("char_based", 0)
+                                update_token_totals(report_data["summary"]["total_tokens"]["upstream_source"], u_tokens)
 
                             if isinstance(d_tokens, dict):
-                                report_data["summary"]["total_tokens"]["downstream_source"]["gemini"] += d_tokens.get("gemini", 0)
-                                report_data["summary"]["total_tokens"]["downstream_source"]["openai"] += d_tokens.get("openai", 0)
-                                report_data["summary"]["total_tokens"]["downstream_source"]["general_word"] += d_tokens.get("general", {}).get("word_based", 0)
-                                report_data["summary"]["total_tokens"]["downstream_source"]["general_char"] += d_tokens.get("general", {}).get("char_based", 0)
+                                update_token_totals(report_data["summary"]["total_tokens"]["downstream_source"], d_tokens)
 
 
             unique_versions = set()

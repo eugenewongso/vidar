@@ -1,0 +1,493 @@
+[
+  {
+    "id": "ASB-A-296915500",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "2c5add83a18d87ea4a46bc8ab7f675e32c8d6a56",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "No patch found"
+      }
+    }
+  },
+  {
+    "id": "ASB-A-364027949",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n6 out of 6 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 6,
+        "llm_total_hunks": 6,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n8 out of 8 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 8,
+        "llm_total_hunks": 8,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\nNo such line -34 in input file, ignoring\n4 out of 6 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 4,
+        "llm_total_hunks": 6,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\npatch: **** misordered hunks! output would be garbled",
+        "llm_failed_hunks": 0,
+        "llm_total_hunks": 0,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      }
+    }
+  },
+  {
+    "id": "ASB-A-364025411",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n7 out of 7 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 7,
+        "llm_total_hunks": 7,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n7 out of 7 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 7,
+        "llm_total_hunks": 7,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n4 out of 5 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 4,
+        "llm_total_hunks": 5,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n3 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 3,
+        "llm_total_hunks": 4,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      }
+    }
+  },
+  {
+    "id": "ASB-A-340480881",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Permission",
+    "downstream_patch": "89aedebdb811ada35a283455a1779026fd84772e",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "No patch found"
+      }
+    }
+  },
+  {
+    "id": "ASB-A-369103643",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/base",
+    "downstream_patch": "198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "No patch found"
+      }
+    }
+  },
+  {
+    "id": "ASB-A-364026473",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n8 out of 8 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 8,
+        "llm_total_hunks": 8,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n7 out of 7 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 7,
+        "llm_total_hunks": 7,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\nNo such line 1539 in input file, ignoring\n5 out of 7 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 5,
+        "llm_total_hunks": 7,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n5 out of 6 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 5,
+        "llm_total_hunks": 6,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      }
+    }
+  },
+  {
+    "id": "ASB-A-364027038",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n7 out of 7 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 7,
+        "llm_total_hunks": 7,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n5 out of 5 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 5,
+        "llm_total_hunks": 5,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 3 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 3,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'system/stack/gatt/gatt_sr.cc'\npatch: **** misordered hunks! output would be garbled",
+        "llm_failed_hunks": 0,
+        "llm_total_hunks": 0,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'system/stack/gatt/gatt_sr.cc'\n2 out of 4 hunks failed--saving rejects to 'system/stack/gatt/gatt_sr.cc.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      }
+    }
+  },
+  {
+    "id": "ASB-A-352542820",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Settings",
+    "downstream_patch": "6e413c4cff2f306d18e9682b1e0be5ddc8427c5f",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "No patch found"
+      }
+    }
+  },
+  {
+    "id": "ASB-A-289375038",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "038b1e8626399ff3f374d5af987e3efd64a19321",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      }
+    }
+  },
+  {
+    "id": "ASB-A-289811388",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/Bluetooth",
+    "downstream_patch": "038b1e8626399ff3f374d5af987e3efd64a19321",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'android/app/src/com/android/bluetooth/btservice/AdapterService.java'\nNo such line 6120 in input file, ignoring\n2 out of 2 hunks failed--saving rejects to 'android/app/src/com/android/bluetooth/btservice/AdapterService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 2
+      }
+    }
+  },
+  {
+    "id": "ASB-A-375623125",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/base",
+    "downstream_patch": "ec8a2057c7aab9bf61acd24f9b02ee7afb699043",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\n9 out of 9 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "llm_failed_hunks": 9,
+        "llm_total_hunks": 9,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\nNo such line 7513 in input file, ignoring\n3 out of 13 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "upstream_failed_hunks": 3,
+        "upstream_total_hunks": 13
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\n6 out of 6 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "llm_failed_hunks": 6,
+        "llm_total_hunks": 6,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\nNo such line 7513 in input file, ignoring\n3 out of 13 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "upstream_failed_hunks": 3,
+        "upstream_total_hunks": 13
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\n12 out of 12 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "llm_failed_hunks": 12,
+        "llm_total_hunks": 12,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\nNo such line 7513 in input file, ignoring\n3 out of 13 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "upstream_failed_hunks": 3,
+        "upstream_total_hunks": 13
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\n12 out of 12 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "llm_failed_hunks": 12,
+        "llm_total_hunks": 12,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/appop/AppOpsService.java'\nNo such line 7513 in input file, ignoring\n3 out of 13 hunks failed--saving rejects to 'services/core/java/com/android/server/appop/AppOpsService.java.rej'",
+        "upstream_failed_hunks": 3,
+        "upstream_total_hunks": 13
+      }
+    }
+  },
+  {
+    "id": "ASB-A-353240784",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/base",
+    "downstream_patch": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "No patch found"
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "No patch found"
+      }
+    }
+  },
+  {
+    "id": "ASB-A-382064697",
+    "repo_path": "/Users/eugenewongso/Documents/School/google-capstone/vidar/evaluation/android_platform_vulns_evaluation/android_repos/base",
+    "downstream_patch": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+    "patch_attempts": {
+      "llm_patch_context_3": {
+        "applied": false,
+        "message": "patching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 2 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/pm/UserRestrictionsUtils.java'\npatching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 4 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_5": {
+        "applied": false,
+        "message": "patching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 2 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "llm_failed_hunks": 2,
+        "llm_total_hunks": 2,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/pm/UserRestrictionsUtils.java'\npatching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 4 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_10": {
+        "applied": false,
+        "message": "patching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n1 out of 1 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "llm_failed_hunks": 1,
+        "llm_total_hunks": 1,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/pm/UserRestrictionsUtils.java'\npatching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 4 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      },
+      "llm_patch_context_20": {
+        "applied": false,
+        "message": "patching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n1 out of 1 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "llm_failed_hunks": 1,
+        "llm_total_hunks": 1,
+        "upstream_applied": false,
+        "upstream_message": "patching file 'services/core/java/com/android/server/pm/UserRestrictionsUtils.java'\npatching file 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java'\n2 out of 4 hunks failed--saving rejects to 'services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java.rej'",
+        "upstream_failed_hunks": 2,
+        "upstream_total_hunks": 4
+      }
+    }
+  }
+]

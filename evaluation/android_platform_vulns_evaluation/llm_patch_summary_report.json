@@ -1,0 +1,109 @@
+{
+  "vulnerabilities_processed": 13,
+  "contexts_processed": [
+    3,
+    5,
+    10,
+    20
+  ],
+  "llm_patch_outputs": {
+    "llm_patch_context_10": 8,
+    "llm_patch_context_20": 8,
+    "llm_patch_context_3": 8,
+    "llm_patch_context_5": 8
+  },
+  "per_vulnerability_summary": [
+    {
+      "vulnerability_id": "ASB-A-296915500",
+      "llm_patch_counts_by_context": {}
+    },
+    {
+      "vulnerability_id": "ASB-A-364027949",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-364025411",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-340480881",
+      "llm_patch_counts_by_context": {}
+    },
+    {
+      "vulnerability_id": "ASB-A-369103643",
+      "llm_patch_counts_by_context": {}
+    },
+    {
+      "vulnerability_id": "ASB-A-364026473",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-364027038",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-352542820",
+      "llm_patch_counts_by_context": {}
+    },
+    {
+      "vulnerability_id": "ASB-A-289375038",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-289811388",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-375623125",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    },
+    {
+      "vulnerability_id": "ASB-A-353240784",
+      "llm_patch_counts_by_context": {}
+    },
+    {
+      "vulnerability_id": "ASB-A-382064697",
+      "llm_patch_counts_by_context": {
+        "3": 1,
+        "5": 1,
+        "10": 1,
+        "20": 1
+      }
+    }
+  ]
+}

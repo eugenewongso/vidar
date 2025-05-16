@@ -184,6 +184,59 @@ Requirements:
     patch = patch.replace("```diff", "").replace("```", "").strip() + "\n"
     return fix_hunk_headers(patch)
 
+async def resolve_conflict_per_reject(
+    ctx: RunContext[MergeDeps],
+    context_block_with_inline: str = "",
+    rej_content: str = ""
+) -> str:
+    """
+    Resolve a merge conflict using a combined context block that includes inline merge markers.
+
+    Args:
+        ctx (RunContext[MergeDeps]): The runtime context for the merge process.
+        context_block_with_inline (str): Code block including context and inline merge markers.
+        rej_content (str): Rejected patch content (.rej).
+
+    Returns:
+        str: A valid unified diff patch or None if resolution fails.
+    """
+    prompt = f"""
+You are an AI engineer tasked with resolving merge conflicts inside source code files.
+
+You are given one block of code that includes both the surrounding context and an inline merge conflict marked with <<<<<<<, =======, and >>>>>>>.
+
+---
+
+Here is the rejected patch hunk (.rej):
+{rej_content if rej_content.strip() else '[Not Provided]'}
+
+---
+
+Here is the full context block with inline merge conflict markers:
+{context_block_with_inline if context_block_with_inline.strip() else '[Not Provided]'}
+
+---
+
+Instructions:
+1. Analyze the conflict and surrounding context.
+2. Use the rejected patch to better understand the intended change.
+3. Decide which lines to keep, merge, or modify.
+4. Output ONLY a valid **unified diff patch** that resolves the conflict cleanly.
+5. DO NOT return anything except the patch (no prose, no markdown).
+
+Be concise, correct, and ensure the patch applies.
+"""
+
+    print("🟡 Sending per-reject request to AI agent...")
+    response = await merge_agent.run(prompt)
+
+    if not response or not response.data.strip():
+        print("❌ AI response was empty. Skipping.")
+        return None
+
+    patch = response.data.strip()
+    patch = patch.replace("```diff", "").replace("```", "").strip() + "\n"
+    return fix_hunk_headers(patch)
 
 
 async def process_merge_conflicts(kernel_root: str, conflict_dir: str, output_dir: str):
