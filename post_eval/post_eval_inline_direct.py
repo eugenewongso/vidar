@@ -52,7 +52,7 @@ def compute_metrics(upstream_code, downstream_code, file_name) -> dict:
     metrics["token_level_edit_similarity"] = round(tles, 4) if isinstance(tles, float) else tles
 
     nes = normalized_edit_distance(downstream_code, upstream_code)
-    metrics["normalized_edit_similarity"] = round(nes, 4) if isinstance(nes, float) else nes
+    metrics["normalized_edit_distance"] = round(nes, 4) if isinstance(nes, float) else nes
 
     tled = token_level_edit_distance(downstream_code, upstream_code)
     metrics["token_level_edit_distance"] = round(tled, 4) if isinstance(tled, float) else tled

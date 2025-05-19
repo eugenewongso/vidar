@@ -18,7 +18,7 @@ load_dotenv()
 logfire.configure(send_to_logfire='if-token-present')
 
 # Fetch API key from environment variable
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY1")
 
 # Ensure API key is set
 if not GOOGLE_API_KEY:
@@ -62,11 +62,11 @@ class GeminiAgent:
 #     "gemini-exp-1206",
 #     "gemini-2.0-flash",
 #     "gemini-2.0-flash-lite-preview-02-05",
-#     "gemini-2.0-pro-exp-02-05",
+#     "gemini-2.5-flash-preview-04-17",
 #     "gemini-2.5-pro-exp-03-25",
 # ]
 patch_porter_agent = GeminiAgent(
-    model_name='gemini-2.0-pro-exp-02-05',
+    model_name='gemini-2.5-flash-preview-04-17',
     system_prompt="""
     You are a patch porting agent specializing in resolving merge conflicts and applying diff-like patch content to remediate security vulnerabilities in codebases.
     
@@ -269,7 +269,7 @@ async def main():
                     )
 
                     if modified_code is not None:
-                        file_conflict["downstream_llm_output"] = modified_code
+                        file_conflict["downstream_patched_file_llm_output"] = modified_code
                         report_data["summary"]["files_successfully_processed_by_llm"] += 1
                         report_data["successfully_processed_files_log"].append({
                             "vulnerability_id": vulnerability_id,
