@@ -7,9 +7,8 @@ from metrics.line_metrics import relative_line_count_similarity
 from metrics.similarity.codeBERT import compute_codebert_score
 from metrics.similarity.openAI import compute_cosine_openai_embedding
 from metrics.distance.edit_distance import (
-    token_level_edit_similarity,
-    normalized_edit_distance,
     token_level_edit_distance,
+    normalized_edit_similarity,
 )
 from datetime import datetime
 
@@ -48,11 +47,8 @@ def compute_metrics(upstream_code, downstream_code, file_name) -> dict:
     rls = relative_line_count_similarity(downstream_code, upstream_code)
     metrics["relative_line_count_similarity"] = round(rls, 4) if isinstance(rls, float) else rls
 
-    tles = token_level_edit_similarity(downstream_code, upstream_code)
-    metrics["token_level_edit_similarity"] = round(tles, 4) if isinstance(tles, float) else tles
-
-    nes = normalized_edit_distance(downstream_code, upstream_code)
-    metrics["normalized_edit_distance"] = round(nes, 4) if isinstance(nes, float) else nes
+    nes = normalized_edit_similarity(downstream_code, upstream_code)
+    metrics["normalized_edit_similarity"] = round(nes, 4) if isinstance(nes, float) else nes
 
     tled = token_level_edit_distance(downstream_code, upstream_code)
     metrics["token_level_edit_distance"] = round(tled, 4) if isinstance(tled, float) else tled
@@ -152,7 +148,7 @@ def main():
                         "downstream_version": downstream_version,
                         "file_name": file_name,
                         "relative_line_count_similarity": metrics.get("relative_line_count_similarity"),
-                        "token_level_edit_similarity": metrics.get("token_level_edit_similarity"),
+                        "token_level_edit_distance": metrics.get("token_level_edit_distance"),
                         "normalized_edit_similarity": metrics.get("normalized_edit_similarity"),
                         "cosine_similarity_openai": metrics.get("cosine_similarity_openai"),
                         "total_tokens": metrics.get("token_count_total"),

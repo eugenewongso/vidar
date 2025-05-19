@@ -56,9 +56,10 @@ def token_level_edit_distance(code1: str, code2: str) -> int:
 )
 
 
-def token_level_edit_similarity(candidate_code, ground_truth_code):
+def normalized_edit_similarity(candidate_code, ground_truth_code):
     """
-    Normalized Levenshtein similarity (1 = identical, 0 = completely different).
+    Normalized Levenshtein similarity (1 = identical, 0 = completely different)
+    This is more sensitive since it compares from a token level
     """
     tokens1 = tokenize_code(candidate_code)
     tokens2 = tokenize_code(ground_truth_code)
@@ -96,22 +97,22 @@ def _test_edit_distance_metrics():
 
     print("Test 1: Identical code")
     print("  token_level_edit_distance:", token_level_edit_distance(code1, code2))  # Expect 0.0
-    # print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code2))  # Expect 1.0
+    print("  normalized_edit_similarity:", normalized_edit_similarity(code1, code2))  # Expect 1.0
     print("  normalized_edit_distance:", normalized_edit_distance(code1, code2))  # Expect 0.0
 
     print("\nTest 2: One variable changed")
     print("  token_level_edit_distance:", token_level_edit_distance(code1, code3))  # Small > 0.0
-    # print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code3))  # Close to 1.0
+    print("  normalized_edit_similarity:", normalized_edit_similarity(code1, code3))  # Close to 1.0
     print("  normalized_edit_distance:", normalized_edit_distance(code1, code3))
 
     print("\nTest 3: Completely different")
     print("  token_level_edit_distance:", token_level_edit_distance(code1, code4))  # Higher value
-    # print("  token_level_edit_similarity:", token_level_edit_similarity(code1, code4))
+    print("  normalized_edit_similarity:", normalized_edit_similarity(code1, code4))
     print("  normalized_edit_distance:", normalized_edit_distance(code1, code4))
 
     print("\nTest 4: Empty code")
     print("  token_level_edit_distance:", token_level_edit_distance("", ""))  # Expect 0.0
-    # print("  token_level_edit_similarity:", token_level_edit_similarity("", ""))  # Expect 1.0
+    print("  normalized_edit_similarity:", normalized_edit_similarity("", ""))  # Expect 1.0
     print("  normalized_edit_distance:", normalized_edit_distance("", ""))  # Expect 0.0
 
 # Run the test (uncomment to run tests)
