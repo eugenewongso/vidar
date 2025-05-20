@@ -1,0 +1,22 @@
+{
+    "run_timestamp": "20250519_230518",
+    "target_downstream_version": "13",
+    "input_json_file": "inputs/test_1_conflict.json",
+    "main_output_json_file": "outputs/output_android_13_20250519_230518.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 1,
+        "files_attempted_for_llm": 1,
+        "files_successfully_processed_by_llm": 1,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/OldVersionFile.java",
+            "patch_sha": "test-patch-sha-2",
+            "llm_time_taken_seconds": 66.04
+        }
+    ],
+    "skipped_or_errored_files_log": []
+}

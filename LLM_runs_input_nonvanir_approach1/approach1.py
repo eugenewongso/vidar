@@ -5,6 +5,8 @@ import sys
 import json
 import argparse
 import copy # Added for deepcopy
+import difflib # Added for generating diffs
+import time # Added for timing LLM calls
 import logfire
 from dataclasses import dataclass
 from dotenv import load_dotenv
@@ -63,10 +65,9 @@ class GeminiAgent:
 #     "gemini-2.0-flash",
 #     "gemini-2.0-flash-lite-preview-02-05",
 #     "gemini-2.5-flash-preview-04-17",
-#     "gemini-2.5-pro-exp-03-25",
 # ]
 patch_porter_agent = GeminiAgent(
-    model_name='gemini-2.5-flash-preview-04-17',
+    model_name='gemini-2.5-pro-preview-05-06',
     system_prompt="""
     You are a patch porting agent specializing in resolving merge conflicts and applying diff-like patch content to remediate security vulnerabilities in codebases.
     
@@ -87,23 +88,27 @@ async def process_single_entry(
 ):
     """
     Processes a single vulnerability entry using the Gemini agent.
-    Returns the modified code string or None.
+    Returns a tuple: (modified_code_string_or_None, reason_message_or_None, time_taken_or_None).
     """
     # Type checks for content fields
     if not isinstance(patch_content, str):
-        print(f"Skipping entry for {output_filename_base} in {vulnerability_id} because patch_content (from rej_file_content) is not a string.")
-        return None
+        reason = f"Skipping entry because patch_content (from rej_file_content) is not a string."
+        print(f"{reason} for {output_filename_base} in {vulnerability_id}")
+        return None, reason, None
     if not isinstance(vuln_code_content, str):
-        print(f"Skipping entry for {output_filename_base} in {vulnerability_id} because vuln_code_content (from downstream_file_content) is not a string.")
-        return None
+        reason = f"Skipping entry because vuln_code_content (from downstream_file_content) is not a string."
+        print(f"{reason} for {output_filename_base} in {vulnerability_id}")
+        return None, reason, None
 
     # Existing checks for empty/placeholder content (now safe due to type checks above)
     if not vuln_code_content or vuln_code_content.strip() == "```" or vuln_code_content.strip() == "":
-        print(f"Skipping entry for {output_filename_base} in {vulnerability_id} due to empty or placeholder vulnerable code content.")
-        return None
+        reason = "Skipping entry due to empty or placeholder vulnerable code content."
+        print(f"{reason} for {output_filename_base} in {vulnerability_id}")
+        return None, reason, None
     if not patch_content or patch_content.strip() == "```" or patch_content.strip() == "":
-        print(f"Skipping entry for {output_filename_base} in {vulnerability_id} due to empty or placeholder patch content.")
-        return None
+        reason = "Skipping entry due to empty or placeholder patch content."
+        print(f"{reason} for {output_filename_base} in {vulnerability_id}")
+        return None, reason, None
 
     dependencies = SupportDependencies(
         diff_content=patch_content,
@@ -140,16 +145,22 @@ async def process_single_entry(
     """
 
     print(f"Processing: {vulnerability_id} - {output_filename_base}")
+    start_time = time.time()
     try:
         result = await patch_porter_agent.run(task_prompt)
         modified_code = result.data.strip()
-        print(f"✅ LLM processing successful for: {vulnerability_id} - {output_filename_base}")
-        return modified_code
+        end_time = time.time()
+        time_taken = end_time - start_time
+        print(f"✅ LLM processing successful for: {vulnerability_id} - {output_filename_base} (took {time_taken:.2f}s)")
+        return modified_code, None, time_taken
     except Exception as e:
-        print(f"Error processing entry for {output_filename_base} in {vulnerability_id}: {e}")
+        end_time = time.time()
+        time_taken = end_time - start_time
+        reason = f"Error during LLM processing: {e}"
+        print(f"Error processing entry for {output_filename_base} in {vulnerability_id}: {e} (took {time_taken:.2f}s)")
         # Log more details from failure_details if needed
         print(f"  Failure details: Patch SHA: {failure_details.get('downstream_patch', 'N/A')}, Repo: {failure_details.get('repo_path', 'N/A')}")
-        return None
+        return None, reason, time_taken
 
 
 async def main():
@@ -212,26 +223,33 @@ async def main():
             continue
 
         vulnerability_id = vulnerability_item.get("id", "unknown_vuln_id")
-        failures = vulnerability_item.get("failures", []) # Get failures from the item in the copy
+        original_failures = vulnerability_item.get("failures", []) 
 
-        if not isinstance(failures, list):
-            print(f"Skipping vulnerability {vulnerability_id} due to invalid 'failures' format.")
+        if not isinstance(original_failures, list):
+            print(f"Skipping vulnerability {vulnerability_id} due to invalid 'failures' format (expected a list).")
+            # vulnerability_item["failures"] = [] 
             continue
-            
-        for failure in failures: # Iterate over failures in the copy
+        
+        filtered_failures_for_item = [] 
+
+        for failure in original_failures: 
             if not isinstance(failure, dict):
                 print(f"Skipping non-dictionary failure in {vulnerability_id}: {failure}")
                 continue
 
             if failure.get("downstream_version") == args.target_downstream_version:
-                file_conflicts = failure.get("file_conflicts", []) # Get file_conflicts from failure in copy
+                # This failure matches the target version, so we process it.
+                file_conflicts = failure.get("file_conflicts", []) 
                 if not isinstance(file_conflicts, list):
-                    print(f"Skipping failure in {vulnerability_id} (patch: {failure.get('downstream_patch','N/A')}) due to invalid 'file_conflicts' format.")
+                    print(f"Skipping failure in {vulnerability_id} (patch: {failure.get('downstream_patch','N/A')}) due to invalid 'file_conflicts' format (expected a list).")
+                    # failure["file_conflicts"] = [] 
+                    # filtered_failures_for_item.append(failure) # Add failure even if file_conflicts is broken, as it matches version
                     continue
 
-                for file_conflict in file_conflicts: # Iterate over file_conflicts in copy
+                # Process file_conflicts for this failure
+                for file_conflict in file_conflicts: 
                     if not isinstance(file_conflict, dict):
-                        print(f"Skipping non-dictionary file_conflict in {vulnerability_id}: {file_conflict}")
+                        print(f"Skipping non-dictionary file_conflict in {vulnerability_id} for failure {failure.get('downstream_patch','N/A')}: {file_conflict}")
                         continue
                     
                     patch_content = file_conflict.get("rej_file_content")
@@ -257,34 +275,73 @@ async def main():
                             "patch_sha": failure.get('downstream_patch', 'N/A'),
                             "reason": skip_reason
                         })
+                        file_conflict["downstream_patched_file_llm_output"] = f"skipped, {skip_reason}"
                         continue
                     
                     report_data["summary"]["files_attempted_for_llm"] += 1
-                    modified_code = await process_single_entry(
+                    modified_code, error_reason_from_processing, time_taken_for_llm = await process_single_entry(
                         patch_content=patch_content,
                         vuln_code_content=vuln_code_content,
                         output_filename_base=original_file_name,
                         vulnerability_id=vulnerability_id,
-                        failure_details=failure 
+                        failure_details=failure
                     )
 
                     if modified_code is not None:
                         file_conflict["downstream_patched_file_llm_output"] = modified_code
+                        if time_taken_for_llm is not None:
+                            file_conflict["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
+                        
+                        # Calculate and add LLM_diff_content
+                        if vuln_code_content and modified_code:
+                            diff = difflib.unified_diff(
+                                vuln_code_content.splitlines(keepends=True),
+                                modified_code.splitlines(keepends=True),
+                                fromfile='original',
+                                tofile='patched'
+                            )
+                            file_conflict["LLM_diff_content"] = "".join(diff)
+                        else:
+                            file_conflict["LLM_diff_content"] = "Could not generate diff (original or patched content missing)."
+
                         report_data["summary"]["files_successfully_processed_by_llm"] += 1
-                        report_data["successfully_processed_files_log"].append({
+                        log_entry = {
                             "vulnerability_id": vulnerability_id,
                             "file_name": original_file_name,
                             "patch_sha": failure.get('downstream_patch', 'N/A')
-                        })
+                        }
+                        if time_taken_for_llm is not None:
+                            log_entry["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
+                        report_data["successfully_processed_files_log"].append(log_entry)
+                        
                     else:
+                        # If modified_code is None, it means process_single_entry determined a skip/error.
+                        # error_reason_from_processing will contain the reason.
+                        reason_for_skip_in_output = error_reason_from_processing or "unknown processing error"
+                        file_conflict["downstream_patched_file_llm_output"] = f"skipped, {reason_for_skip_in_output}"
+                        if time_taken_for_llm is not None: # Store time even for errors if available
+                             file_conflict["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
                         report_data["summary"]["files_skipped_or_errored_in_processing_function"] += 1
-                        # The reason is printed by process_single_entry (type error, empty content, or LLM error)
-                        report_data["skipped_or_errored_files_log"].append({
+                        # Use the specific reason from process_single_entry
+                        log_entry = {
                             "vulnerability_id": vulnerability_id,
                             "file_name": original_file_name,
                             "patch_sha": failure.get('downstream_patch', 'N/A'),
-                            "reason": "Skipped or errored in processing function (see console for details)"
-                        })
+                            "reason": error_reason_from_processing or "Skipped or errored in processing function (unknown reason)"
+                        }
+                        if time_taken_for_llm is not None:
+                            log_entry["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
+                        report_data["skipped_or_errored_files_log"].append(log_entry)
+                
+                # After processing all file_conflicts for this failure, add the (modified) failure to our filtered list
+                filtered_failures_for_item.append(failure)
+            else:
+                # This failure's downstream_version does not match args.target_downstream_version.
+                # So, it's not added to filtered_failures_for_item, effectively filtering it out.
+                pass 
+        
+        # Replace the original 'failures' list in the vulnerability_item with our new filtered list
+        vulnerability_item["failures"] = filtered_failures_for_item
     
     # Write the main modified data to its output JSON file
     try:

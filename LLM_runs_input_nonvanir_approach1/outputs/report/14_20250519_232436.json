@@ -1,0 +1,96 @@
+{
+    "run_timestamp": "20250519_232436",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/filtered_failures_android_14_2025_with_context_3_5_10_20.json",
+    "main_output_json_file": "outputs/output_android_14_20250519_232436.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 13,
+        "files_attempted_for_llm": 13,
+        "files_successfully_processed_by_llm": 12,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 1
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "ASB-A-296915500",
+            "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+            "patch_sha": "2c5add83a18d87ea4a46bc8ab7f675e32c8d6a56",
+            "llm_time_taken_seconds": 126.58
+        },
+        {
+            "vulnerability_id": "ASB-A-364027949",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 163.86
+        },
+        {
+            "vulnerability_id": "ASB-A-364025411",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 142.16
+        },
+        {
+            "vulnerability_id": "ASB-A-340480881",
+            "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+            "patch_sha": "89aedebdb811ada35a283455a1779026fd84772e",
+            "llm_time_taken_seconds": 35.51
+        },
+        {
+            "vulnerability_id": "ASB-A-369103643",
+            "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+            "patch_sha": "198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e",
+            "llm_time_taken_seconds": 232.54
+        },
+        {
+            "vulnerability_id": "ASB-A-364026473",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 153.68
+        },
+        {
+            "vulnerability_id": "ASB-A-364027038",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 226.15
+        },
+        {
+            "vulnerability_id": "ASB-A-352542820",
+            "file_name": "src/com/android/settings/users/UserSettings.java",
+            "patch_sha": "6e413c4cff2f306d18e9682b1e0be5ddc8427c5f",
+            "llm_time_taken_seconds": 134.14
+        },
+        {
+            "vulnerability_id": "ASB-A-289375038",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 466.69
+        },
+        {
+            "vulnerability_id": "ASB-A-289811388",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 480.06
+        },
+        {
+            "vulnerability_id": "ASB-A-375623125",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "ec8a2057c7aab9bf61acd24f9b02ee7afb699043",
+            "llm_time_taken_seconds": 526.68
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "llm_time_taken_seconds": 434.86
+        }
+    ],
+    "skipped_or_errored_files_log": [
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+            "reason": "Error during LLM processing: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting",
+            "llm_time_taken_seconds": 599.59
+        }
+    ]
+}

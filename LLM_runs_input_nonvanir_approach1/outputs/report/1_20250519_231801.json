@@ -1,0 +1,15 @@
+{
+    "run_timestamp": "20250519_231801",
+    "target_downstream_version": "1",
+    "input_json_file": "inputs/test_1_conflict.json",
+    "main_output_json_file": "outputs/output_android_1_20250519_231801.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 0,
+        "files_attempted_for_llm": 0,
+        "files_successfully_processed_by_llm": 0,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [],
+    "skipped_or_errored_files_log": []
+}
