@@ -1,7 +1,7 @@
-import torch # type: ignore
-from transformers import RobertaTokenizer, RobertaModel # type: ignore
-from sklearn.metrics.pairwise import cosine_similarity # type: ignore
-import code_bert_score # type: ignore
+import torch 
+from transformers import RobertaTokenizer, RobertaModel 
+from sklearn.metrics.pairwise import cosine_similarity 
+import code_bert_score 
 
 # Load tokenizer and model once
 tokenizer = RobertaTokenizer.from_pretrained("microsoft/codebert-base") 
@@ -26,6 +26,7 @@ def compute_cosine_similarity_from_files(gt_path: str, candidate_path: str) -> f
 
     return float(cosine_similarity(gt_vec, candidate_vec)[0][0])
 
+# TODO: might change the codebert score model to neulab/codebert-python, neulab/codebert-c, etc. (language specific)
 def compute_codebert_score(candidate_code: str, ground_truth_code: str, language: str) -> dict:
     supported_languages = ["python", "java", "javascript", "c", "cpp", "c++", "js"]
     language = language.lower().strip()

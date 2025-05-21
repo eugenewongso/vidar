@@ -1,0 +1,15 @@
+{
+    "run_timestamp": "20250520_233353",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/filtered_failures_android_14_2025_failures_with_ground_truth.json",
+    "main_output_json_file": "outputs/output_android_14_20250520_233353.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 0,
+        "files_attempted_for_llm": 0,
+        "files_successfully_processed_by_llm": 0,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [],
+    "skipped_or_errored_files_log": []
+}

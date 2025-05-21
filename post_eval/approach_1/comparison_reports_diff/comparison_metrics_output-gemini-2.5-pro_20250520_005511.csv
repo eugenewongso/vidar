@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,metrics_status,codebert_f1,codebert_f3,codebert_precision,codebert_recall,cosine_similarity_openai,normalized_edit_similarity,relative_line_count_similarity,token_count_llm_diff,token_count_ref_diff,token_count_total,token_level_edit_distance
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,computed,0.9512,0.9526,0.9494,0.953,0.9633,0.74,1.0,71,77,148,44
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,computed,0.9042,0.8832,0.932,0.878,0.7895,0.6684,0.9545,84,114,198,65
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,computed,0.9042,0.8832,0.932,0.878,0.7896,0.6684,0.9545,84,114,198,65
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,computed,0.9574,0.9466,0.9713,0.9439,0.94,0.9323,0.9286,54,61,115,9
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,computed,0.8987,0.9051,0.8909,0.9067,0.8889,0.5733,0.7692,66,55,121,59
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,computed,0.9042,0.8832,0.932,0.878,0.7894,0.6684,0.9545,84,114,198,65
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,computed,0.9042,0.8832,0.932,0.878,0.7907,0.6684,0.9545,84,114,198,65
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,computed,0.9505,0.9436,0.9593,0.9419,0.8868,0.7586,1.0,49,49,98,29
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.7894,0.7465,0.8505,0.7365,0.6895,0.3387,0.6364,36,78,114,59
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.8309,0.85,0.8082,0.8549,0.753,0.2748,0.0,277,78,355,343
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,computed,0.8305,0.8723,0.7836,0.8834,0.7778,0.1039,0.0,980,153,1133,1597
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,computed,0.8679,0.8847,0.8477,0.889,0.8701,0.4258,0.0,518,283,801,470
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,"Metrics not computed due to: LLM processing was skipped (skipped, Error during LLM processing: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting).",,,,,,,,,,,

@@ -65,9 +65,10 @@ class GeminiAgent:
 #     "gemini-2.0-flash",
 #     "gemini-2.0-flash-lite-preview-02-05",
 #     "gemini-2.5-flash-preview-04-17",
+#     "gemini-2.5-pro-preview-05-06",
 # ]
 patch_porter_agent = GeminiAgent(
-    model_name='gemini-2.5-pro-preview-05-06',
+    model_name='gemini-2.5-flash-preview-04-17',
     system_prompt="""
     You are a patch porting agent specializing in resolving merge conflicts and applying diff-like patch content to remediate security vulnerabilities in codebases.
     

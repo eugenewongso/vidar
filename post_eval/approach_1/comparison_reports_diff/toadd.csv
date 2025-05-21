@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,metrics_status,codebert_f1,codebert_f3,codebert_precision,codebert_recall,cosine_similarity_openai,normalized_edit_similarity,relative_line_count_similarity,token_count_ground_truth,token_count_llm_output,token_count_total,token_level_edit_distance
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,computed,0.9515,0.9551,0.9469,0.956,0.9875,0.9664,0.9683,1149,1165,2314,46
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,computed,0.9746,0.9555,0.9996,0.9508,skipped,0.6959,0.4935,4704,2257,6961,1297
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,computed,0.9746,0.9555,0.9996,0.9508,skipped,0.6959,0.4935,4704,2257,6961,1297
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,computed,1.0,1.0,1.0,1.0,1.0,0.9997,1.0,1385,1385,2770,1
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,computed,0.9429,0.9049,0.9952,0.8958,skipped_max_tokens,0.6583,0.3438,7916,2834,10750,225
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,computed,0.9736,0.9548,0.9982,0.9502,skipped,0.6953,0.4935,4704,2256,6960,1298
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,computed,0.9746,0.9555,0.9996,0.9508,skipped,0.6959,0.4935,4704,2257,6961,1297
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,computed,0.9569,0.9285,0.995,0.9217,skipped,0.3971,0.4621,4699,2101,6800,3188
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.8976,0.8488,0.9671,0.8374,skipped_max_tokens,0.5693,0.1412,15700,2366,18066,29
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.8864,0.844,0.9457,0.834,skipped_max_tokens,0.5626,0.1412,15700,2372,18072,2485
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,computed,0.9145,0.8564,0.9991,0.8431,skipped_max_tokens,skipped,0.1212,21712,2411,24123,18705
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,computed,0.9054,0.8736,0.9484,0.866,skipped_max_tokens,0.2865,0.1673,16871,2570,19441,11534
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,computed,0.8566,0.7717,0.9932,0.753,skipped_max_tokens,skipped,0.0223,76096,1307,77403,44651

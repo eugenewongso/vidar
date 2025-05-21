@@ -1,0 +1,112 @@
+[
+    {
+        "cve_id": "TEST-VULN-001",
+        "downstream_version": "14",
+        "file_name": "src/com/example/TestFile1.java",
+        "ref_diff_file": "--- a/src/com/example/TestFile1.java\n+++ b/src/com/example/TestFile1.java\n@@ -2,2 +2,2 @@\n public class TestFile1 {\n-    // Old line to be replaced\n+    // New line from rej_file_content\n     public void testMethod() {",
+        "LLM_diff_file": "--- original\n+++ patched\n@@ -1,6 +1,6 @@\n package com.example;\n public class TestFile1 {\n-    // Old line to be replaced\n+    // New line from rej_file_content\n     public void testMethod() {\n         System.out.println(\"Hello from TestFile1\");\n     }\n",
+        "metrics": {
+            "relative_line_count_similarity": 0.5714,
+            "normalized_edit_similarity": 0.2909,
+            "token_level_edit_distance": 21,
+            "codebert_score": {
+                "precision": 0.8855,
+                "recall": 0.8482,
+                "f1": 0.8665,
+                "f3": 0.8518
+            },
+            "token_count_ref_diff": 29,
+            "token_count_llm_diff": 35,
+            "token_count_total": 64,
+            "cosine_similarity_openai": 0.8904
+        },
+        "metrics_status": "computed"
+    },
+    {
+        "cve_id": "TEST-VULN-001",
+        "downstream_version": "14",
+        "file_name": "src/com/example/TestFile2.java",
+        "ref_diff_file": "--- a/src/com/example/TestFile2.java\n+++ b/src/com/example/TestFile2.java\n@@ -1,3 +1,3 @@\n public class TestFile2 {\n-    // Original content in TestFile2\n+    // Patched content from rej in TestFile2\n }",
+        "LLM_diff_file": "--- original\n+++ patched\n@@ -1,3 +1,3 @@\n public class TestFile2 {\n-    // Original content in TestFile2\n+    // Patched content from rej in TestFile2\n }",
+        "metrics": {
+            "relative_line_count_similarity": 1.0,
+            "normalized_edit_similarity": 0.5686,
+            "token_level_edit_distance": 2,
+            "codebert_score": {
+                "precision": 0.9332,
+                "recall": 0.8498,
+                "f1": 0.8896,
+                "f3": 0.8575
+            },
+            "token_count_ref_diff": 27,
+            "token_count_llm_diff": 27,
+            "token_count_total": 54,
+            "cosine_similarity_openai": 0.949
+        },
+        "metrics_status": "computed"
+    },
+    {
+        "cve_id": "TEST-VULN-001",
+        "downstream_version": "14",
+        "file_name": "src/com/example/AnotherTest.java",
+        "ref_diff_file": "--- a/src/com/example/AnotherTest.java\n+++ b/src/com/example/AnotherTest.java\n@@ -1 +1 @@\n-public class AnotherTest { /* placeholder old */}\n+public class AnotherTest { /* placeholder new from rej */ }",
+        "LLM_diff_file": "--- original\n+++ patched\n@@ -1 +1 @@\n-public class AnotherTest { /* placeholder old */}+public class AnotherTest { /* placeholder new from rej */ }",
+        "metrics": {
+            "relative_line_count_similarity": 0.8,
+            "normalized_edit_similarity": 0.56,
+            "token_level_edit_distance": 2,
+            "codebert_score": {
+                "precision": 0.925,
+                "recall": 0.8324,
+                "f1": 0.8763,
+                "f3": 0.8408
+            },
+            "token_count_ref_diff": 27,
+            "token_count_llm_diff": 26,
+            "token_count_total": 53,
+            "cosine_similarity_openai": 0.8591
+        },
+        "metrics_status": "computed"
+    },
+    {
+        "cve_id": "TEST-VULN-001",
+        "downstream_version": "14",
+        "file_name": "src/com/example/EmptyRej.java",
+        "ref_diff_file": "",
+        "LLM_diff_file": "",
+        "metrics": {},
+        "metrics_status": "Metrics not computed due to: LLM processing was skipped (skipped, Missing 'rej_file_content')."
+    },
+    {
+        "cve_id": "TEST-VULN-001",
+        "downstream_version": "14",
+        "file_name": "src/com/example/EmptyDownstream.java",
+        "ref_diff_file": "some rej content",
+        "LLM_diff_file": "",
+        "metrics": {},
+        "metrics_status": "Metrics not computed due to: LLM processing was skipped (skipped, Missing 'downstream_file_content')."
+    },
+    {
+        "cve_id": "TEST-VULN-002",
+        "downstream_version": "14",
+        "file_name": "src/com/another/Sample.java",
+        "ref_diff_file": "--- a/src/com/another/Sample.java\n+++ b/src/com/another/Sample.java\n@@ -1 +1 @@\n-    private String oldField;\n+    private String newFieldFromRej;",
+        "LLM_diff_file": "--- original\n+++ patched\n@@ -1,4 +1,4 @@\n package com.another;\n public class Sample {\n-    private String oldField;\n+    private String newFieldFromRej;\n }",
+        "metrics": {
+            "relative_line_count_similarity": 0.4,
+            "normalized_edit_similarity": 0.3158,
+            "token_level_edit_distance": 16,
+            "codebert_score": {
+                "precision": 0.8635,
+                "recall": 0.8063,
+                "f1": 0.8339,
+                "f3": 0.8117
+            },
+            "token_count_ref_diff": 16,
+            "token_count_llm_diff": 23,
+            "token_count_total": 39,
+            "cosine_similarity_openai": 0.9075
+        },
+        "metrics_status": "computed"
+    }
+]

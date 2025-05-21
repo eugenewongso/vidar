@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,metrics_status,codebert_f1,codebert_f3,codebert_precision,codebert_recall,cosine_similarity_openai,normalized_edit_similarity,relative_line_count_similarity,token_count_ground_truth,token_count_llm_output,token_count_total,token_level_edit_distance
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,computed,0.9515,0.9552,0.947,0.9561,0.9874,0.9678,0.9683,1149,1165,2314,44
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,computed,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1385,1385,2770,0
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,computed,0.9925,0.9925,0.9925,0.9925,skipped_max_tokens,0.9991,1.0,7916,7918,15834,6
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,computed,0.9904,0.9905,0.9902,0.9905,skipped_max_tokens,0.9996,1.0,4699,4701,9400,1
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.986,0.986,0.986,0.986,skipped_max_tokens,0.9971,1.0,15700,15701,31401,17
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.9523,0.9525,0.952,0.9526,skipped_max_tokens,0.9938,0.9915,15700,15856,31556,36
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,computed,0.9838,0.9829,0.9849,0.9827,skipped_max_tokens,skipped,0.971,21712,21074,42786,6
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,computed,0.9494,0.9494,0.9493,0.9494,skipped_max_tokens,0.9972,0.9977,16871,16826,33697,43
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,"Metrics not computed: LLM output was 'skipped, Error during LLM processing: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting'.",,,,,,,,,,,

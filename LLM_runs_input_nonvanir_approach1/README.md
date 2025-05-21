@@ -150,3 +150,10 @@ The script generates two main outputs:
     -   Saves the `report_data` dictionary to the summary report JSON file.
 
 The script uses asynchronous operations (`async`/`await`) for potentially long-running LLM calls.
+
+
+
+Example command:
+```bash
+python approach1.py inputs/filtered_failures_android_14_2025_with_context_3_5_10_20.json 14
+```
