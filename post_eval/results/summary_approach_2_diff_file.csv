@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_precision,codebert_recall,codebert_f1,codebert_f3
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,0.7273,65,0.6889,0.9566,170,80,90,0.9049,0.9276,0.9161,0.9253
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,0.913,65,0.662,0.854,207,117,90,0.9316,0.8867,0.9086,0.891
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,1.0,55,0.7731,0.9805,218,117,101,0.9599,0.943,0.9514,0.9447
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,1.0,13,0.9249,0.989,122,64,58,0.9739,0.9612,0.9675,0.9625
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,1.0,51,0.7342,0.9692,114,58,56,0.9422,0.9299,0.936,0.9311
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,1.0,62,0.6759,0.8541,205,117,88,0.9344,0.885,0.909,0.8897
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,1.0,47,0.787,0.9699,216,117,99,0.9622,0.9378,0.9498,0.9402
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,1.0,27,0.8129,0.9711,102,52,50,0.9446,0.9206,0.9324,0.923
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,1.0,128,0.498,0.8768,190,81,109,0.8465,0.864,0.8551,0.8622
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,0.9565,228,0.5,0.9021,158,81,77,0.8757,0.8625,0.8691,0.8638
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,0.0,672,0.2351,0.8923,661,156,505,0.7996,0.8882,0.8416,0.8784
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,0.8542,116,0.7991,0.9458,584,286,298,0.9312,0.9057,0.9183,0.9082
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,0.9459,123,0.6125,0.9399,316,158,158,0.9109,0.9043,0.9076,0.9049
