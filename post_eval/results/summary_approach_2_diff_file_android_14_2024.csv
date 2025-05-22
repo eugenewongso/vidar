@@ -1,0 +1,15 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-242996380,14,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-316891059,14,src/com/android/settings/search/SearchResultTrampoline.java,103.21,0.963,33,0.88,0.9895,217,114,103,0.9636,0.9534,0.9585,0.9544
+ASB-A-333364513,14,src/com/android/settings/search/SearchResultTrampoline.java,87.31,0.963,33,0.88,0.9885,217,114,103,0.9638,0.954,0.9588,0.9549
+ASB-A-314333719,14,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,108.52,0.0,299,0.5512,0.8998,221,84,137,0.8734,0.9131,0.8928,0.9089
+ASB-A-328068777,14,service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java,53.25,1.0,41,0.6842,0.8666,85,46,39,0.8927,0.8531,0.8725,0.8569
+ASB-A-309938635,14,ojluni/src/main/java/java/util/zip/ZipFile.java,71.56,0.7727,114,0.3877,0.8342,229,133,96,0.825,0.7869,0.8055,0.7905
+ASB-A-313428840,14,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,95.69,0.2727,104,0.6323,0.9321,227,92,135,0.8806,0.9296,0.9044,0.9245
+ASB-A-353712853,14,services/usb/java/com/android/server/usb/UsbDeviceManager.java,85.45,0.9167,34,0.7113,0.9473,56,28,28,0.9139,0.9419,0.9277,0.939
+ASB-A-311374917,14,services/core/java/com/android/server/pm/InstallPackageHelper.java,29.36,1.0,10,0.92,0.9913,92,48,44,0.9682,0.9586,0.9634,0.9596
+ASB-A-319081336,14,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,149.35,0.9375,88,0.6871,0.96,307,146,161,0.9314,0.9528,0.942,0.9506
+ASB-A-318374503,14,system/stack/btm/btm_sec.cc,72.89,0.8889,12,0.8333,0.9857,60,30,30,0.9695,0.9695,0.9695,0.9695
+ASB-A-336323279,14,services/core/java/com/android/server/appop/AppOpsService.java,,0.0,322,0.0,0.0775,138,138,0,Candidate code and ground truth code must not be empty.
+ASB-A-293602970,14,services/core/java/com/android/server/pm/UserManagerService.java,5.86,1.0,12,0.9,0.9936,100,53,47,0.9722,0.9593,0.9657,0.9606
+ASB-A-304983146,14,services/core/java/com/android/server/appop/AppOpsService.java,106.93,1.0,44,0.8586,0.9419,391,198,193,0.8965,0.9041,0.9003,0.9034
