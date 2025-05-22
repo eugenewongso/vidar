@@ -10,6 +10,13 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 import google.generativeai as genai
 from typing import Optional, List, Dict, Any
+import re
+import tiktoken
+from google.cloud import aiplatform_v1beta1
+from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
+
+client = aiplatform_v1beta1.PredictionServiceClient()
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,6 +33,83 @@ if not GOOGLE_API_KEY:
 
 # Configure Google Generative AI with API key
 genai.configure(api_key=GOOGLE_API_KEY)
+
+def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
+    """
+    Count tokens using the Gemini model from Google Cloud AI Platform.
+
+    Args:
+        text (str): Input text to count tokens for.
+        project (str): Google Cloud project ID.
+        location (str): Location of the model.
+        model (str): Model name.
+
+    Returns:
+        int: Total token count.
+    """
+    publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
+    request = CountTokensRequest(
+        endpoint=publisher_model,
+        contents=[Content(role="user", parts=[Part(text=text)])]
+    )
+    response = client.count_tokens(request=request)
+    return response.total_tokens
+
+def count_tokens_general(text: str):
+    """
+    Estimate token count based on word and character counts.
+
+    Args:
+        text (str): Input text.
+
+    Returns:
+        dict: Estimated token counts based on words and characters.
+    """
+    # Rough estimate: ~1 token = 0.75 words or ~4 chars/token
+    word_count = len(re.findall(r'\w+', text))
+    char_estimate = len(text) // 4
+    return {
+        "word_based": word_count,
+        "char_based": char_estimate
+    }
+
+
+def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
+    """
+    Count tokens using the Tiktoken library.
+
+    Args:
+        text (str): Input text.
+        model (str): Model name.
+
+    Returns:
+        int: Total token count.
+    """
+    try:
+        enc = tiktoken.encoding_for_model(model)
+    except KeyError:
+        enc = tiktoken.get_encoding("cl100k_base")
+    return len(enc.encode(text))
+
+def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
+    """
+    Get token counts from multiple methods (OpenAI, general, Gemini).
+
+    Args:
+        text (str): Input text.
+        project (str): Google Cloud project ID.
+        skip_gemini (bool): Whether to skip Gemini token counting.
+
+    Returns:
+        dict: Token counts from different methods.
+    """
+    result = {
+        "openai": count_tokens_tiktoken(text),
+        "general": count_tokens_general(text),
+    }
+    if not skip_gemini:
+        result["gemini"] = count_tokens_gemini(text, project)
+    return result
 
 @dataclass
 class SupportDependencies: 
@@ -131,9 +215,12 @@ async def process_single_entry(
 
     print(f"Processing for diff generation: {vulnerability_id} - {target_filename_for_diff}")
     try:
+        import time
+        start_time = time.monotonic()
         result = await patch_porter_agent.run(task_prompt)
-        generated_diff = result.data.strip() 
-        
+        end_time = time.monotonic()
+        generated_diff = result.data.strip()
+
         # A simple validation for the diff format
         if not generated_diff.startswith("--- a/"):
             # If it doesn't start with "--- a/", it might be an error message or incorrect output from LLM.
@@ -143,7 +230,12 @@ async def process_single_entry(
             # For now, let it pass but log the warning.
         else:
             print(f"✅ LLM diff generation successful for: {vulnerability_id} - {target_filename_for_diff}")
-        return generated_diff
+        return {
+            "downstream_llm_diff_output": generated_diff,
+            "runtime_seconds": round(end_time - start_time, 2),
+            "token_counts": get_all_token_counts(generated_diff, project=os.getenv("GCP_PROJECT", "neat-resolver-406722"))
+        }
+
     except Exception as e:
         print(f"Error generating diff for {target_filename_for_diff} in {vulnerability_id}: {e}")
         print(f"  Failure details: Patch SHA: {failure_details.get('downstream_patch', 'N/A')}, Repo: {failure_details.get('repo_path', 'N/A')}")
@@ -236,12 +328,12 @@ async def main():
                     )
 
                     if generated_diff is not None: # Even if it's a warning, we store what LLM gave
-                        file_conflict["downstream_llm_diff_output"] = generated_diff # Changed key
+                        file_conflict.update(generated_diff)
                         report_data["summary"]["files_with_llm_diff_successfully_generated"] += 1
                         report_data["successfully_generated_diffs_log"].append({
                             "vulnerability_id": vulnerability_id, "file_name": target_filename,
                             "patch_sha": failure.get('downstream_patch', 'N/A'),
-                            "diff_preview": generated_diff[:100] + "..." if generated_diff else "None"
+                            "diff_preview": generated_diff["downstream_llm_diff_output"][:100] + "..." if generated_diff else "None"
                         })
                     else: # This means process_single_entry returned None (e.g. type error, empty content before LLM, or exception during LLM call)
                         report_data["summary"]["files_with_llm_diff_generation_errors_or_skipped_in_func"] += 1

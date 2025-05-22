@@ -1,0 +1,13 @@
+cve_id,downstream_version,file_name,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_ground_truth,token_count_patched,codebert_precision,codebert_recall,codebert_f1,codebert_f3
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,0.9767,40,0.9704,0.9948,2305,,,0.952,0.9461,0.9491,0.9467
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,0.9967,1,0.9997,skipped,9391,,,0.9877,0.9877,0.9877,0.9877
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,0.9934,1,0.9997,skipped,9374,,,0.9805,0.9806,0.9805,0.9806
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,1.0,0,1.0,1.0,2770,,,1.0,1.0,1.0,1.0
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,0.9989,20,0.9971,skipped,15825,,,0.9721,0.9722,0.9721,0.9721
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,0.9934,1,0.9997,skipped,9374,,,0.9805,0.9806,0.9805,0.9806
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,0.9934,1,0.9997,skipped,9374,,,0.9805,0.9806,0.9805,0.9806
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,0.9994,1,0.9996,skipped,9398,,,0.9812,0.9812,0.9812,0.9812
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,1.0,0,1.0,skipped,31400,,,1.0,1.0,1.0,1.0
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,0.9984,81,0.9862,skipped,31433,,,0.9722,0.9718,0.972,0.9719
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,1.0,5,skipped,skipped,43424,,,0.9907,0.9907,0.9907,0.9907
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,0.9935,9748,0.6058,skipped,33576,,,0.9605,0.9612,0.9609,0.9611
