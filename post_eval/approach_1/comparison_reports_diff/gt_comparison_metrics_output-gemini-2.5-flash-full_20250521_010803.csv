@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,metrics_status,codebert_error,cosine_similarity_openai,normalized_edit_similarity,relative_line_count_similarity,token_count_ground_truth,token_count_llm_output,token_count_total,token_level_edit_distance
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,computed,Not implemented,Error: Not implemented,Error: Not implemented,Error: Not implemented,1149,1165,2314,Error: Not implemented
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,4704,4704,9408,Error: Not implemented
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,4704,4704,9408,Error: Not implemented
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,computed,Not implemented,Error: Not implemented,Error: Not implemented,Error: Not implemented,1385,1385,2770,Error: Not implemented
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,7916,7924,15840,Error: Not implemented
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,4704,4704,9408,Error: Not implemented
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,4704,4704,9408,Error: Not implemented
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,4699,4701,9400,Error: Not implemented
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,15700,15903,31603,Error: Not implemented
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,15700,15796,31496,Error: Not implemented
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,21712,21064,42776,Error: Not implemented
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,16871,16909,33780,Error: Not implemented
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,computed,Not implemented,skipped_max_tokens,Error: Not implemented,Error: Not implemented,76096,17764,93860,Error: Not implemented

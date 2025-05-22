@@ -1,0 +1,22 @@
+{
+    "run_timestamp": "20250521_231610",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/test_error.json",
+    "main_output_json_file": "outputs/output_android_14_20250521_231610.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 1,
+        "files_attempted_for_llm": 1,
+        "files_successfully_processed_by_llm": 1,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+            "llm_time_taken_seconds": 192.82
+        }
+    ],
+    "skipped_or_errored_files_log": []
+}

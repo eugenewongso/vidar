@@ -1,0 +1,33 @@
+[
+    {
+        "id": "TEST-VULN-002",
+        "vulnerability_url": "https://example.com/vuln/TEST-VULN-002",
+        "severity": "Low",
+        "failures": [
+            {
+                "downstream_version": "14",
+                "branch_used": "test-branch-14c",
+                "downstream_patch": "test-patch-sha-4",
+                "repo_path": "another_org/another_repo",
+                "result": "failure",
+                "file_conflicts": [
+                    {
+                        "file_name": "src/com/another/Sample.java",
+                        "rej_file_content": "--- a/src/",
+                        "downstream_file_content": "--- a/src/",
+                        "llm_output_token_counts": {
+                            "openai": 4,
+                            "general": {
+                                "word_based": 2,
+                                "char_based": 2
+                            }
+                        },
+                        "downstream_patched_file_llm_output": "--- a/src/",
+                        "llm_time_taken_seconds": 1.45,
+                        "LLM_diff_content": ""
+                    }
+                ]
+            }
+        ]
+    }
+]
