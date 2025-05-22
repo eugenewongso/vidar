@@ -120,6 +120,7 @@ def main():
 
                 for conflict in file_conflicts:
                     file_name = conflict.get("file_name", "unknown")
+                    runtime_seconds = conflict.get("runtime_seconds", None)
                     upstream_content = clean_code(conflict.get("rej_file_content", ""))
                     downstream_content = clean_code(conflict.get("downstream_llm_diff_output", ""))
 
@@ -131,6 +132,7 @@ def main():
                         "cve_id": cve_id,
                         "downstream_version": downstream_version,
                         "file_name": file_name,
+                        "runtime_seconds": runtime_seconds,
                         "rej_file_diff": upstream_content,
                         "llm_generated_patch": downstream_content,
                         "metrics": metrics,
@@ -149,6 +151,7 @@ def main():
                         "cve_id": cve_id,
                         "downstream_version": downstream_version,
                         "file_name": file_name,
+                        "runtime_seconds": runtime_seconds,
                         "relative_line_count_similarity": metrics.get("relative_line_count_similarity"),
                         "token_level_edit_distance": metrics.get("token_level_edit_distance"),
                         "normalized_edit_similarity": metrics.get("normalized_edit_similarity"),
