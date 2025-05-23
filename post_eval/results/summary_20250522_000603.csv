@@ -1,0 +1,2 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-242996380,14,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
