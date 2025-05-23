@@ -1,0 +1,15 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-242996380,14,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-316891059,14,src/com/android/settings/search/SearchResultTrampoline.java,89.25,0.8889,35,0.72,0.8718,223,114,109,0.9444,0.8923,0.9176,0.8973
+ASB-A-333364513,14,src/com/android/settings/search/SearchResultTrampoline.java,13.94,0.8889,35,0.72,0.8721,223,114,109,0.9444,0.8923,0.9176,0.8973
+ASB-A-314333719,14,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,81.44,0.3333,164,0.4129,0.7777,192,84,108,0.8616,0.8531,0.8573,0.8539
+ASB-A-328068777,14,service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java,182.34,0.0,729,0.091,0.7136,390,46,344,0.7422,0.8492,0.7921,0.8371
+ASB-A-309938635,14,ojluni/src/main/java/java/util/zip/ZipFile.java,232.9,0.0,227,0.0,0.0806,133,133,0,Candidate code and ground truth code must not be empty.
+ASB-A-313428840,14,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,200.05,0.4545,98,0.6194,0.9142,204,92,112,0.8688,0.8805,0.8746,0.8793
+ASB-A-353712853,14,services/usb/java/com/android/server/usb/UsbDeviceManager.java,201.89,0.9167,32,0.4453,0.8195,56,28,28,0.8574,0.8316,0.8443,0.8341
+ASB-A-311374917,14,services/core/java/com/android/server/pm/InstallPackageHelper.java,454.57,1.0,10,0.664,0.9064,92,48,44,0.9287,0.8418,0.8831,0.8498
+ASB-A-319081336,14,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,183.46,0.9688,79,0.6381,0.9041,302,146,156,0.912,0.8966,0.9042,0.8981
+ASB-A-318374503,14,system/stack/btm/btm_sec.cc,528.51,1.0,16,0.5493,0.8136,55,30,25,0.9202,0.8374,0.8768,0.845
+ASB-A-336323279,14,services/core/java/com/android/server/appop/AppOpsService.java,509.96,0.0,6413,0.0334,skipped,4222,138,4084,0.7197,0.8826,0.7929,0.8631
+ASB-A-293602970,14,services/core/java/com/android/server/pm/UserManagerService.java,539.26,0.0,7344,0.0091,skipped,4804,53,4751,0.695,0.8339,0.7582,0.8176
+ASB-A-304983146,14,services/core/java/com/android/server/appop/AppOpsService.java,536.06,0.0,1736,0.1025,0.7524,1427,198,1229,0.755,0.8776,0.8117,0.8636

@@ -1,0 +1,22 @@
+[
+  {
+    "cve_id": "ASB-A-299441833",
+    "downstream_version": "12",
+    "file_name": "services/core/java/com/android/server/pm/InstallPackageHelper.java",
+    "runtime_seconds": null,
+    "rej_file_diff": "",
+    "llm_generated_patch": "",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 1.0,
+      "token_level_edit_distance": 0,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 0,
+      "token_count_total": 0,
+      "cosine_similarity_openai": 1.0
+    }
+  }
+]

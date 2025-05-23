@@ -121,7 +121,7 @@ def main():
                 for conflict in file_conflicts:
                     file_name = conflict.get("file_name", "unknown")
                     runtime_seconds = conflict.get("runtime_seconds", None)
-                    upstream_content = clean_code(conflict.get("rej_file_content", ""))
+                    upstream_content = clean_code(conflict.get("downstream_patch_content", ""))
                     downstream_content = clean_code(conflict.get("downstream_llm_diff_output", ""))
 
 

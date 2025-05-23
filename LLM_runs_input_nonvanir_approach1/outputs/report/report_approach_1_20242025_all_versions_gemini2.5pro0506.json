@@ -1,0 +1,422 @@
+{
+    "run_timestamp": "20250522_162919",
+    "target_downstream_version": null,
+    "input_json_file": "inputs/20242025_combined_failures.json",
+    "main_output_json_file": "outputs/approach_1_20242025_all_versions_gemini2.5pro0506.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 67,
+        "files_attempted_for_llm": 52,
+        "files_successfully_processed_by_llm": 49,
+        "files_skipped_pre_llm_call": 15,
+        "files_skipped_or_errored_in_processing_function": 3
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "ASB-A-293602970",
+            "file_name": "services/core/java/com/android/server/pm/UserManagerService.java",
+            "patch_sha": "33a90988cf3b59a3b8dc9f699d155688be8d5623",
+            "llm_time_taken_seconds": 509.18
+        },
+        {
+            "vulnerability_id": "ASB-A-293602970",
+            "file_name": "services/core/java/com/android/server/pm/UserManagerService.java",
+            "patch_sha": "8dc6feaee7c0a5cea093b5280acaad862921cf3e",
+            "llm_time_taken_seconds": 462.44
+        },
+        {
+            "vulnerability_id": "ASB-A-293602970",
+            "file_name": "services/core/java/com/android/server/pm/UserManagerService.java",
+            "patch_sha": "8dc6feaee7c0a5cea093b5280acaad862921cf3e",
+            "llm_time_taken_seconds": 456.88
+        },
+        {
+            "vulnerability_id": "ASB-A-304983146",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "63d122cf0e18ff6d8e77b7bcc8f0f3f8d4e4a018",
+            "llm_time_taken_seconds": 517.97
+        },
+        {
+            "vulnerability_id": "ASB-A-304983146",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "6219cbabc1e6eaefc0e3eab1e10f0d986d3ed546",
+            "llm_time_taken_seconds": 514.23
+        },
+        {
+            "vulnerability_id": "ASB-A-304983146",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "d9dc82face08025e6ccacb0ac6f7266fce5d2ea6",
+            "llm_time_taken_seconds": 515.88
+        },
+        {
+            "vulnerability_id": "ASB-A-304983146",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "2806d263c0b74da36d6d2bcc1583ea641266fd43",
+            "llm_time_taken_seconds": 505.41
+        },
+        {
+            "vulnerability_id": "ASB-A-296915500",
+            "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+            "patch_sha": "5bcfd347823f1d3893d843db2286f2013923fad8",
+            "llm_time_taken_seconds": 121.74
+        },
+        {
+            "vulnerability_id": "ASB-A-296915500",
+            "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+            "patch_sha": "2c5add83a18d87ea4a46bc8ab7f675e32c8d6a56",
+            "llm_time_taken_seconds": 85.94
+        },
+        {
+            "vulnerability_id": "ASB-A-366401629",
+            "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+            "patch_sha": "d782f9c4bc72cdb0dbfb07a76e1582dafa9f49b3",
+            "llm_time_taken_seconds": 25.09
+        },
+        {
+            "vulnerability_id": "ASB-A-366401629",
+            "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+            "patch_sha": "d782f9c4bc72cdb0dbfb07a76e1582dafa9f49b3",
+            "llm_time_taken_seconds": 54.96
+        },
+        {
+            "vulnerability_id": "ASB-A-366401629",
+            "file_name": "src/com/android/settings/accounts/AccountTypePreferenceLoader.java",
+            "patch_sha": "d782f9c4bc72cdb0dbfb07a76e1582dafa9f49b3",
+            "llm_time_taken_seconds": 24.7
+        },
+        {
+            "vulnerability_id": "ASB-A-363248394",
+            "file_name": "src/com/android/settings/notification/NotificationAccessConfirmationActivity.java",
+            "patch_sha": "59cdc3e20ca4ac198b1c27e6a5372ececd155b16",
+            "llm_time_taken_seconds": 76.65
+        },
+        {
+            "vulnerability_id": "ASB-A-363248394",
+            "file_name": "src/com/android/settings/notification/NotificationAccessConfirmationActivity.java",
+            "patch_sha": "59cdc3e20ca4ac198b1c27e6a5372ececd155b16",
+            "llm_time_taken_seconds": 53.19
+        },
+        {
+            "vulnerability_id": "ASB-A-317203980",
+            "file_name": "services/core/java/com/android/server/media/MediaSessionRecord.java",
+            "patch_sha": "4a1e3f85e00b0b7eba35f70096efe3dbd5287e7f",
+            "llm_time_taken_seconds": 161.52
+        },
+        {
+            "vulnerability_id": "ASB-A-364027949",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 180.73
+        },
+        {
+            "vulnerability_id": "ASB-A-364027949",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 153.86
+        },
+        {
+            "vulnerability_id": "ASB-A-364025411",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 140.49
+        },
+        {
+            "vulnerability_id": "ASB-A-364025411",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 141.43
+        },
+        {
+            "vulnerability_id": "ASB-A-277207798",
+            "file_name": "core/java/com/android/internal/app/ChooserActivity.java",
+            "patch_sha": "e73bb60fed12daa78ddad8308b31b0c78f1c3c66",
+            "llm_time_taken_seconds": 361.56
+        },
+        {
+            "vulnerability_id": "ASB-A-340480881",
+            "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+            "patch_sha": "89aedebdb811ada35a283455a1779026fd84772e",
+            "llm_time_taken_seconds": 35.93
+        },
+        {
+            "vulnerability_id": "ASB-A-340480881",
+            "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+            "patch_sha": "06e7a4b6dced97632ef42670539d71cb6c68785a",
+            "llm_time_taken_seconds": 102.09
+        },
+        {
+            "vulnerability_id": "ASB-A-340480881",
+            "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+            "patch_sha": "6843ffaa44ed01868c9b67bfc1c13bac4c2bd71a",
+            "llm_time_taken_seconds": 36.2
+        },
+        {
+            "vulnerability_id": "ASB-A-340480881",
+            "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+            "patch_sha": "2bf7a6ef16585b120dfeee6e4f701be62525ee12",
+            "llm_time_taken_seconds": 37.08
+        },
+        {
+            "vulnerability_id": "ASB-A-369103643",
+            "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+            "patch_sha": "198f7b559f9a13d5b9d26b41c6b95bc1e45fcb1e",
+            "llm_time_taken_seconds": 181.09
+        },
+        {
+            "vulnerability_id": "ASB-A-369103643",
+            "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+            "patch_sha": "ef9ea0faa26e0ce0ee5e8dc70a663f98e04b0ca0",
+            "llm_time_taken_seconds": 199.36
+        },
+        {
+            "vulnerability_id": "ASB-A-364026473",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 133.32
+        },
+        {
+            "vulnerability_id": "ASB-A-364026473",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 127.98
+        },
+        {
+            "vulnerability_id": "ASB-A-364027038",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 132.01
+        },
+        {
+            "vulnerability_id": "ASB-A-364027038",
+            "file_name": "system/stack/gatt/gatt_sr.cc",
+            "patch_sha": "2fc3087b9ac3019518c6ceb8a64d181d6bb04907",
+            "llm_time_taken_seconds": 170.31
+        },
+        {
+            "vulnerability_id": "ASB-A-352542820",
+            "file_name": "src/com/android/settings/users/UserSettings.java",
+            "patch_sha": "6e413c4cff2f306d18e9682b1e0be5ddc8427c5f",
+            "llm_time_taken_seconds": 134.97
+        },
+        {
+            "vulnerability_id": "ASB-A-352542820",
+            "file_name": "src/com/android/settings/users/UserSettings.java",
+            "patch_sha": "31e69deb2809887b5ea7b8b7a7893d7db90acdd2",
+            "llm_time_taken_seconds": 101.56
+        },
+        {
+            "vulnerability_id": "ASB-A-352542820",
+            "file_name": "src/com/android/settings/users/UserSettings.java",
+            "patch_sha": "4901c86b765f5e72075fb5e26374c097920a56f5",
+            "llm_time_taken_seconds": 96.7
+        },
+        {
+            "vulnerability_id": "ASB-A-352542820",
+            "file_name": "src/com/android/settings/users/UserSettings.java",
+            "patch_sha": "44a35ac07bcc076871b8054331096aaff8ee10f0",
+            "llm_time_taken_seconds": 150.09
+        },
+        {
+            "vulnerability_id": "ASB-A-370840874",
+            "file_name": "libs/binder/Parcel.cpp",
+            "patch_sha": "2aec032c0826ad68cd94c100173b99167bfcb10d",
+            "llm_time_taken_seconds": 238.7
+        },
+        {
+            "vulnerability_id": "ASB-A-370840874",
+            "file_name": "libs/binder/Parcel.cpp",
+            "patch_sha": "2aec032c0826ad68cd94c100173b99167bfcb10d",
+            "llm_time_taken_seconds": 227.04
+        },
+        {
+            "vulnerability_id": "ASB-A-289375038",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 411.35
+        },
+        {
+            "vulnerability_id": "ASB-A-289375038",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 492.66
+        },
+        {
+            "vulnerability_id": "ASB-A-369351375",
+            "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+            "patch_sha": "185048041e6f9d43c38829c09965e7a4740d2a6a",
+            "llm_time_taken_seconds": 512.51
+        },
+        {
+            "vulnerability_id": "ASB-A-369351375",
+            "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+            "patch_sha": "185048041e6f9d43c38829c09965e7a4740d2a6a",
+            "llm_time_taken_seconds": 535.04
+        },
+        {
+            "vulnerability_id": "ASB-A-360846772",
+            "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+            "patch_sha": "185048041e6f9d43c38829c09965e7a4740d2a6a",
+            "llm_time_taken_seconds": 499.0
+        },
+        {
+            "vulnerability_id": "ASB-A-360846772",
+            "file_name": "services/core/java/com/android/server/accounts/AccountManagerService.java",
+            "patch_sha": "185048041e6f9d43c38829c09965e7a4740d2a6a",
+            "llm_time_taken_seconds": 531.92
+        },
+        {
+            "vulnerability_id": "ASB-A-289811388",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 533.71
+        },
+        {
+            "vulnerability_id": "ASB-A-289811388",
+            "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+            "patch_sha": "038b1e8626399ff3f374d5af987e3efd64a19321",
+            "llm_time_taken_seconds": 487.9
+        },
+        {
+            "vulnerability_id": "ASB-A-375623125",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "ec8a2057c7aab9bf61acd24f9b02ee7afb699043",
+            "llm_time_taken_seconds": 511.02
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "llm_time_taken_seconds": 427.13
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "llm_time_taken_seconds": 430.1
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "llm_time_taken_seconds": 417.48
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "llm_time_taken_seconds": 461.68
+        }
+    ],
+    "skipped_or_errored_files_log": [
+        {
+            "vulnerability_id": "ASB-A-355411348",
+            "file_name": "PermissionController/role-controller/java/com/android/role/controller/model/Permissions.java",
+            "patch_sha": "71e09e5ad12d02b3129c7a5ce16f6de734fdd0da",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-283101289",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-283101289",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281666022",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281666022",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-283264674",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-283264674",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281665050",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281665050",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281534749",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281534749",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281848557",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281848557",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281533566",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-281533566",
+            "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+            "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+            "reason": "Missing 'rej_file_content'"
+        },
+        {
+            "vulnerability_id": "ASB-A-375623125",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "b645679d1d40d05944527eee4b5fe5cae0c3fc18",
+            "reason": "Error during LLM processing: Invalid operation: The `response.text` quick accessor requires the response to contain a valid `Part`, but none were returned. The candidate's [finish_reason](https://ai.google.dev/api/generate-content#finishreason) is 1.",
+            "llm_time_taken_seconds": 11.54
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+            "reason": "Error during LLM processing: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting",
+            "llm_time_taken_seconds": 599.59
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3298a1c9eb899d02e532f5dcf88904640a626dcd",
+            "reason": "Error during LLM processing: 500 An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting",
+            "llm_time_taken_seconds": 599.59
+        }
+    ]
+}

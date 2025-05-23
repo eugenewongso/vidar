@@ -1,0 +1,101 @@
+{
+    "run_timestamp": "20250522_092859",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/android_14_2024_filtered_failures_with_ground_truth.json",
+    "main_output_json_file": "outputs/approach_1_android_14_2024.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 14,
+        "files_attempted_for_llm": 13,
+        "files_successfully_processed_by_llm": 13,
+        "files_skipped_pre_llm_call": 1,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "ASB-A-316891059",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "ddc11bc03ab48e885f652b89df5f92ff283bcd4a",
+            "llm_time_taken_seconds": 89.25
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "ddc11bc03ab48e885f652b89df5f92ff283bcd4a",
+            "llm_time_taken_seconds": 13.94
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "patch_sha": "a441f4acd62cce1059818ce8e9b7ab93b0079e50",
+            "llm_time_taken_seconds": 81.44
+        },
+        {
+            "vulnerability_id": "ASB-A-328068777",
+            "file_name": "service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java",
+            "patch_sha": "cd228a3e21c9c8df83bc3851736d6f4e19956e46",
+            "llm_time_taken_seconds": 182.34
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "patch_sha": "c7b495dc8c466de602cd7b78468864acd6b2f9b3",
+            "llm_time_taken_seconds": 232.9
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "patch_sha": "54c968aaa66e9364bc0380c9a57af5c6844759aa",
+            "llm_time_taken_seconds": 200.05
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "patch_sha": "37be5d18e529877fcd3c62063aec205a96660449",
+            "llm_time_taken_seconds": 201.89
+        },
+        {
+            "vulnerability_id": "ASB-A-311374917",
+            "file_name": "services/core/java/com/android/server/pm/InstallPackageHelper.java",
+            "patch_sha": "06775341ad7d77410798f95117cbee7a1a02c201",
+            "llm_time_taken_seconds": 454.57
+        },
+        {
+            "vulnerability_id": "ASB-A-319081336",
+            "file_name": "core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp",
+            "patch_sha": "e4b3ba817073b66ee37da8f1aba93b345309b435",
+            "llm_time_taken_seconds": 183.46
+        },
+        {
+            "vulnerability_id": "ASB-A-318374503",
+            "file_name": "system/stack/btm/btm_sec.cc",
+            "patch_sha": "62944f39f502b28687a5142ec2d77585525591bc",
+            "llm_time_taken_seconds": 528.51
+        },
+        {
+            "vulnerability_id": "ASB-A-336323279",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "e31c33ea3586531ca99dd4c6d68a34ce07c1cebb",
+            "llm_time_taken_seconds": 509.96
+        },
+        {
+            "vulnerability_id": "ASB-A-293602970",
+            "file_name": "services/core/java/com/android/server/pm/UserManagerService.java",
+            "patch_sha": "33a90988cf3b59a3b8dc9f699d155688be8d5623",
+            "llm_time_taken_seconds": 539.26
+        },
+        {
+            "vulnerability_id": "ASB-A-304983146",
+            "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+            "patch_sha": "2806d263c0b74da36d6d2bcc1583ea641266fd43",
+            "llm_time_taken_seconds": 536.06
+        }
+    ],
+    "skipped_or_errored_files_log": [
+        {
+            "vulnerability_id": "ASB-A-242996380",
+            "file_name": "service/src/com/android/server/bluetooth/BtPermissionUtils.java",
+            "patch_sha": "5fe72f931db2898eb51a44e3b1b424c6370e8ad8",
+            "reason": "Missing 'rej_file_content'"
+        }
+    ]
+}

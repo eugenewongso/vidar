@@ -1,0 +1,129 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-299441833,12,services/core/java/com/android/server/pm/InstallPackageHelper.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-299441833,12L,services/core/java/com/android/server/pm/InstallPackageHelper.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-242996380,14,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-242996380,13,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-316891059,14,src/com/android/settings/search/SearchResultTrampoline.java,105.44,0.9259,34,0.8756,0.9884,218,114,104,0.9625,0.9537,0.958,0.9545
+ASB-A-317048495,13,packages/SystemUI/src/com/android/systemui/clipboardoverlay/ClipboardListener.java,176.13,0.4722,207,0.591,0.9687,343,139,204,0.8676,0.9201,0.8931,0.9145
+ASB-A-299931761,13,src/com/android/settings/wifi/WifiDialogActivity.java,82.47,0.75,50,0.6233,0.9463,95,47,48,0.8539,0.9026,0.8776,0.8975
+ASB-A-283099444,11,media/codec2/sfplugin/utils/Codec2BufferUtils.cpp,54.7,1.0,31,0.829,0.8961,175,91,84,0.9358,0.9081,0.9218,0.9108
+ASB-A-333364513,14,src/com/android/settings/search/SearchResultTrampoline.java,119.71,0.963,40,0.7067,0.9825,211,114,97,0.9448,0.9249,0.9348,0.9269
+ASB-A-333364513,12L,src/com/android/settings/search/SearchResultTrampoline.java,186.46,0.1111,313,0.4887,0.9752,424,150,274,0.8391,0.9138,0.8749,0.9058
+ASB-A-333364513,13,src/com/android/settings/search/SearchResultTrampoline.java,133.24,0.6667,118,0.7268,0.9829,329,150,179,0.8858,0.9174,0.9013,0.9141
+ASB-A-333364513,12,src/com/android/settings/search/SearchResultTrampoline.java,186.24,0.0,689,0.3259,0.8841,571,170,401,0.8145,0.8857,0.8486,0.878
+ASB-A-327749022,12L,src/com/android/settings/homepage/SettingsHomepageActivity.java,80.63,0.8235,26,0.7829,0.9664,160,83,77,0.93,0.9374,0.9337,0.9366
+ASB-A-327749022,12,src/com/android/settings/homepage/SettingsHomepageActivity.java,46.72,0.8824,30,0.7941,0.9419,159,83,76,0.9378,0.9055,0.9214,0.9087
+ASB-A-314333719,14,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,129.27,0.5238,136,0.5,0.9033,110,84,26,0.8981,0.8053,0.8492,0.8137
+ASB-A-314333719,13,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,161.34,0.381,218,0.5379,0.905,179,84,95,0.8636,0.8898,0.8765,0.8872
+ASB-A-314333719,12L,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,114.91,0.5938,197,0.3626,0.8844,170,130,40,0.8905,0.8021,0.844,0.8102
+ASB-A-314333719,12,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,131.08,0.25,355,0.5359,0.9012,299,130,169,0.8835,0.9068,0.895,0.9044
+ASB-A-283103220,12L,services/core/java/com/android/server/wm/ActivityClientController.java,75.88,0.9048,31,0.7795,0.9649,187,96,91,0.9415,0.9244,0.9329,0.9261
+ASB-A-283103220,12,services/core/java/com/android/server/wm/ActivityClientController.java,110.81,0.9524,40,0.6923,0.9662,177,96,81,0.9439,0.9067,0.9249,0.9103
+ASB-A-308414141,12L,services/core/java/com/android/server/notification/SnoozeHelper.java,123.74,0.9524,45,0.8057,0.9566,185,92,93,0.9344,0.9508,0.9425,0.9491
+ASB-A-308414141,12,services/core/java/com/android/server/notification/SnoozeHelper.java,123.24,0.8571,55,0.7536,0.9502,180,92,88,0.9197,0.9269,0.9233,0.9262
+ASB-A-308414141,13,services/core/java/com/android/server/notification/SnoozeHelper.java,164.89,0.5714,75,0.6929,0.9428,204,92,112,0.8955,0.9304,0.9126,0.9268
+ASB-A-307948424,12L,services/core/java/com/android/server/notification/SnoozeHelper.java,130.46,0.8571,60,0.7295,0.9442,180,92,88,0.9131,0.9223,0.9176,0.9213
+ASB-A-307948424,12,services/core/java/com/android/server/notification/SnoozeHelper.java,75.16,0.9524,40,0.732,0.9341,170,92,78,0.9264,0.9179,0.9222,0.9188
+ASB-A-307948424,13,services/core/java/com/android/server/notification/SnoozeHelper.java,132.27,0.9524,38,0.7371,0.9382,170,92,78,0.9259,0.9186,0.9223,0.9194
+ASB-A-328068777,14,service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java,52.92,0.9231,47,0.678,0.8689,86,46,40,0.8818,0.855,0.8682,0.8576
+ASB-A-300090204,12L,core/java/android/service/dreams/DreamService.java,142.41,0.0,657,0.2592,0.9008,631,207,424,0.8005,0.8719,0.8347,0.8642
+ASB-A-300090204,11,core/java/android/service/dreams/DreamService.java,149.22,0.9333,57,0.6522,0.9684,378,207,171,0.9414,0.8979,0.9191,0.902
+ASB-A-300090204,12,core/java/android/service/dreams/DreamService.java,131.15,0.0,401,0.3617,0.8801,569,207,362,0.8149,0.8884,0.85,0.8804
+ASB-A-321707289,13,services/core/java/com/android/server/notification/ManagedServices.java,108.21,0.0,107,0.5412,0.8947,144,56,88,0.825,0.9029,0.8622,0.8945
+ASB-A-321707289,12,services/core/java/com/android/server/notification/ManagedServices.java,68.19,0.75,74,0.5,0.8509,110,56,54,0.8291,0.8469,0.8379,0.8451
+ASB-A-321707289,12L,services/core/java/com/android/server/notification/ManagedServices.java,97.93,0.0,128,0.4764,0.8985,145,56,89,0.7916,0.8481,0.8189,0.8421
+ASB-A-309938635,14,ojluni/src/main/java/java/util/zip/ZipFile.java,168.25,0.9091,195,0.3434,0.8417,313,133,180,0.8034,0.8149,0.8091,0.8138
+ASB-A-309938635,12L,ojluni/src/main/java/java/util/zip/ZipFile.java,129.31,0.9091,189,0.371,0.8481,263,133,130,0.7985,0.8099,0.8041,0.8087
+ASB-A-309938635,12,ojluni/src/main/java/java/util/zip/ZipFile.java,167.99,0.9545,155,0.3216,0.8394,269,133,136,0.8112,0.8236,0.8173,0.8223
+ASB-A-309938635,13,ojluni/src/main/java/java/util/zip/ZipFile.java,162.35,0.8636,285,0.2523,0.8408,336,133,203,0.7762,0.8085,0.792,0.8051
+ASB-A-313428840,14,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,119.83,0.8182,47,0.7735,0.9737,196,92,104,0.9289,0.9616,0.9449,0.9582
+ASB-A-313428840,12L,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,128.13,0.75,232,0.5655,0.913,260,116,144,0.8647,0.8763,0.8705,0.8751
+ASB-A-313428840,12,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,96.0,0.9062,110,0.7554,0.9457,212,116,96,0.9294,0.8745,0.9011,0.8797
+ASB-A-313428840,13,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,106.91,0.2727,111,0.5921,0.941,218,92,126,0.8587,0.9045,0.881,0.8997
+ASB-A-353712853,14,services/usb/java/com/android/server/usb/UsbDeviceManager.java,37.74,0.9167,50,0.7734,0.9526,52,28,24,0.9377,0.9371,0.9374,0.9371
+ASB-A-353712853,13,services/usb/java/com/android/server/usb/UsbDeviceManager.java,130.2,0.6667,197,0.6319,0.9451,337,140,197,0.8549,0.8754,0.865,0.8733
+ASB-A-353712853,12L,services/usb/java/com/android/server/usb/UsbDeviceManager.java,177.62,1.0,112,0.7226,0.9736,263,140,123,0.9217,0.9108,0.9162,0.9119
+ASB-A-353712853,12,services/usb/java/com/android/server/usb/UsbDeviceManager.java,154.53,0.8056,263,0.5948,0.9467,335,140,195,0.8841,0.9136,0.8986,0.9106
+ASB-A-311374917,14,services/core/java/com/android/server/pm/InstallPackageHelper.java,42.99,1.0,9,0.928,0.9877,92,48,44,0.9663,0.9627,0.9645,0.9631
+ASB-A-311374917,13,services/core/java/com/android/server/pm/InstallPackageHelper.java,9.17,1.0,23,0.8231,0.9841,92,48,44,0.9414,0.9292,0.9352,0.9304
+ASB-A-319081336,14,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,149.69,1.0,65,0.7057,0.9603,305,146,159,0.932,0.9532,0.9425,0.9511
+ASB-A-319081336,13,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,121.25,1.0,81,0.6971,0.9626,303,146,157,0.9312,0.953,0.942,0.9508
+ASB-A-319081336,12L,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,106.22,0.5625,214,0.4927,0.9362,385,146,239,0.8697,0.9282,0.898,0.922
+ASB-A-319081336,12,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,170.28,0.9688,81,0.7301,0.9846,310,146,164,0.9381,0.9742,0.9558,0.9705
+ASB-A-318374503,13,system/stack/btm/btm_sec.cc,4.97,1.0,8,0.8873,0.9884,60,30,30,0.9763,0.9788,0.9776,0.9786
+ASB-A-318374503,14,system/stack/btm/btm_sec.cc,3.85,1.0,8,0.8873,0.9884,60,30,30,0.9763,0.9788,0.9776,0.9786
+ASB-A-336323279,13,services/core/java/com/android/server/appop/AppOpsService.java,88.45,0.8824,67,0.736,0.9221,238,138,100,0.9103,0.898,0.9041,0.8992
+ASB-A-336323279,14,services/core/java/com/android/server/appop/AppOpsService.java,83.2,0.9412,26,0.913,0.9662,270,138,132,0.952,0.9358,0.9438,0.9374
+ASB-A-293602317,12L,services/core/java/com/android/server/pm/UserManagerService.java,41.56,0.9091,33,0.748,0.9577,110,48,62,0.8872,0.9083,0.8976,0.9061
+ASB-A-293602317,13,services/core/java/com/android/server/pm/UserManagerService.java,81.53,0.0,159,0.3399,0.9115,176,48,128,0.7911,0.9165,0.8492,0.9022
+ASB-A-293602317,12,services/core/java/com/android/server/pm/UserManagerService.java,30.56,0.9091,36,0.7222,0.9422,96,48,48,0.9184,0.9128,0.9156,0.9133
+ASB-A-230492947,11,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,88.09,0.9667,39,0.8729,0.9902,432,218,214,0.974,0.9709,0.9724,0.9712
+ASB-A-230492947,12L,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,78.43,0.9333,54,0.8979,0.9832,453,218,235,0.9389,0.9405,0.9397,0.9403
+ASB-A-230492947,12,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,11.1,1.0,15,0.9688,0.9952,430,218,212,0.9808,0.9771,0.979,0.9775
+ASB-A-293602970,14,services/core/java/com/android/server/pm/UserManagerService.java,71.51,0.9091,27,0.775,0.9248,92,53,39,0.9385,0.9022,0.92,0.9057
+ASB-A-293602970,12L,services/core/java/com/android/server/pm/UserManagerService.java,20.3,0.9091,35,0.7083,0.9274,102,53,49,0.9154,0.8969,0.9061,0.8987
+ASB-A-293602970,13,services/core/java/com/android/server/pm/UserManagerService.java,34.28,0.9091,37,0.6917,0.9265,102,53,49,0.9134,0.8951,0.9042,0.8969
+ASB-A-304983146,13,services/core/java/com/android/server/appop/AppOpsService.java,52.97,1.0,41,0.8721,0.9449,394,198,196,0.9281,0.9293,0.9287,0.9292
+ASB-A-304983146,12L,services/core/java/com/android/server/appop/AppOpsService.java,48.76,0.9737,25,0.8682,0.9139,383,198,185,0.9675,0.9355,0.9512,0.9386
+ASB-A-304983146,12,services/core/java/com/android/server/appop/AppOpsService.java,45.7,0.9737,32,0.8682,0.9441,387,198,189,0.9544,0.937,0.9456,0.9387
+ASB-A-304983146,14,services/core/java/com/android/server/appop/AppOpsService.java,90.71,1.0,44,0.8586,0.9415,391,198,193,0.9011,0.9081,0.9046,0.9074
+ASB-A-355411348,13,PermissionController/role-controller/java/com/android/role/controller/model/Permissions.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283101289,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283101289,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281666022,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281666022,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283264674,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283264674,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281665050,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281665050,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281534749,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281534749,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281848557,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281848557,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281533566,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281533566,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-296915500,13,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,123.98,0.7273,144,0.4561,0.9256,149,80,69,0.8755,0.8745,0.875,0.8746
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,158.72,0.8636,48,0.6935,0.9752,142,80,62,0.9518,0.9318,0.9417,0.9337
+ASB-A-366401629,12L,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,52.15,0.9,22,0.7732,0.9834,44,24,20,0.9524,0.945,0.9487,0.9458
+ASB-A-366401629,12,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,47.67,0.9,32,0.8125,0.9731,50,24,26,0.9496,0.9572,0.9534,0.9564
+ASB-A-366401629,13,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,16.84,0.9,20,0.7938,0.9837,44,24,20,0.9551,0.9476,0.9514,0.9484
+ASB-A-363248394,12L,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,74.56,0.9474,9,0.9375,0.9787,84,42,42,0.9671,0.968,0.9676,0.9679
+ASB-A-363248394,12,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,97.08,0.9474,15,0.8613,0.981,80,42,38,0.9602,0.9548,0.9575,0.9553
+ASB-A-317203980,13,services/core/java/com/android/server/media/MediaSessionRecord.java,101.49,0.8889,43,0.7573,0.9543,220,101,119,0.9128,0.9203,0.9165,0.9196
+ASB-A-364027949,13,system/stack/gatt/gatt_sr.cc,86.88,0.9565,108,0.5509,0.8493,208,117,91,0.9209,0.877,0.8984,0.8812
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,13.22,1.0,49,0.7824,0.9693,216,117,99,0.9621,0.938,0.9499,0.9404
+ASB-A-364025411,13,system/stack/gatt/gatt_sr.cc,107.75,0.7391,64,0.7176,0.882,228,117,111,0.9522,0.9267,0.9393,0.9292
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,11.63,1.0,48,0.7824,0.9702,216,117,99,0.9603,0.9375,0.9488,0.9397
+ASB-A-277207798,13,core/java/com/android/internal/app/ChooserActivity.java,71.89,0.8,89,0.5855,0.9313,99,56,43,0.8676,0.7942,0.8293,0.801
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,103.5,0.9333,25,0.8641,0.9732,136,64,72,0.9511,0.9453,0.9482,0.9458
+ASB-A-340480881,13,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,83.18,0.0,262,0.385,0.9197,247,64,183,0.8811,0.9137,0.8971,0.9103
+ASB-A-340480881,12,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,69.06,0.8667,56,0.7371,0.9384,150,64,86,0.9113,0.9159,0.9136,0.9155
+ASB-A-340480881,12L,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,52.61,0.9333,42,0.79,0.9579,136,64,72,0.9298,0.9325,0.9311,0.9322
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,66.59,0.8571,43,0.7353,0.9638,122,58,64,0.9104,0.923,0.9167,0.9217
+ASB-A-369103643,13,services/core/java/com/android/server/wm/WindowOrganizerController.java,95.06,1.0,48,0.6894,0.9201,114,58,56,0.9212,0.9071,0.9141,0.9085
+ASB-A-364026473,13,system/stack/gatt/gatt_sr.cc,107.61,1.0,71,0.7083,0.9589,213,117,96,0.951,0.9093,0.9297,0.9133
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,113.24,0.8696,55,0.713,0.8602,211,117,94,0.9372,0.8914,0.9137,0.8958
+ASB-A-364027038,13,system/stack/gatt/gatt_sr.cc,58.24,0.913,242,0.6852,0.9639,214,117,97,0.9336,0.9391,0.9363,0.9385
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,11.07,1.0,51,0.6713,0.8552,205,117,88,0.9312,0.8857,0.9079,0.89
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,32.3,0.9091,31,0.8116,0.9723,101,52,49,0.9369,0.911,0.9238,0.9135
+ASB-A-352542820,13,src/com/android/settings/users/UserSettings.java,71.41,0.8182,65,0.6178,0.9148,116,52,64,0.8565,0.8666,0.8615,0.8655
+ASB-A-352542820,12L,src/com/android/settings/users/UserSettings.java,76.15,1.0,38,0.6739,0.9171,106,52,54,0.8683,0.8744,0.8713,0.8738
+ASB-A-352542820,12,src/com/android/settings/users/UserSettings.java,53.53,1.0,40,0.6594,0.9164,106,52,54,0.8674,0.8735,0.8704,0.8729
+ASB-A-370840874,12L,libs/binder/Parcel.cpp,86.74,1.0,29,0.7364,0.898,88,44,44,0.9315,0.9466,0.939,0.9451
+ASB-A-370840874,12,libs/binder/Parcel.cpp,99.03,0.6667,61,0.5745,0.9309,101,44,57,0.872,0.9242,0.8974,0.9187
+ASB-A-289375038,13,android/app/src/com/android/bluetooth/btservice/AdapterService.java,57.91,0.9565,67,0.6622,0.9205,148,81,67,0.9098,0.8823,0.8958,0.885
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,111.35,0.5217,230,0.476,0.9143,210,81,129,0.8394,0.8686,0.8537,0.8656
+ASB-A-369351375,12L,services/core/java/com/android/server/accounts/AccountManagerService.java,106.05,0.7619,60,0.5698,0.9537,143,73,70,0.9367,0.9153,0.9259,0.9174
+ASB-A-369351375,12,services/core/java/com/android/server/accounts/AccountManagerService.java,122.61,0.9048,17,0.8883,0.9913,140,73,67,0.9625,0.9587,0.9606,0.9591
+ASB-A-360846772,12L,services/core/java/com/android/server/accounts/AccountManagerService.java,154.57,0.9048,62,0.7301,0.9661,157,73,84,0.9188,0.94,0.9293,0.9378
+ASB-A-360846772,12,services/core/java/com/android/server/accounts/AccountManagerService.java,96.35,0.7143,94,0.6381,0.9479,192,73,119,0.8906,0.9371,0.9132,0.9323
+ASB-A-289811388,13,android/app/src/com/android/bluetooth/btservice/AdapterService.java,180.54,0.7391,199,0.5476,0.8524,201,81,120,0.8532,0.8714,0.8622,0.8696
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,61.64,0.913,94,0.7162,0.9753,149,81,68,0.9049,0.8743,0.8894,0.8773
+ASB-A-375623125,13,services/core/java/com/android/server/appop/AppOpsService.java,167.54,0.8889,805,0.3883,0.9291,1992,950,1042,0.9066,0.904,0.9053,0.9043
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,128.89,0.3333,29,0.3138,0.7951,198,156,42,0.9028,0.7725,0.8326,0.7838
+ASB-A-353240784,12,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,129.43,0.9792,118,0.7793,0.9468,586,286,300,0.9321,0.9201,0.9261,0.9213
+ASB-A-353240784,12L,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,116.25,0.8958,88,0.7834,0.9109,542,286,256,0.9168,0.8835,0.8999,0.8867
+ASB-A-353240784,13,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,,0.0,434,0.0,0.0407,286,286,0,Candidate code and ground truth code must not be empty.
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,259.7,1.0,85,0.8249,0.9602,576,286,290,0.9212,0.9031,0.912,0.9049
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,160.62,0.8649,233,0.5175,0.8605,298,158,140,0.8895,0.8765,0.883,0.8778
+ASB-A-382064697,13,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,167.13,0.7027,254,0.3486,0.9221,374,158,216,0.8608,0.8464,0.8536,0.8478
