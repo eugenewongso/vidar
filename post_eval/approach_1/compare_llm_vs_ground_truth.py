@@ -4,8 +4,14 @@ import os
 import csv
 from datetime import datetime
 import sys
+from tqdm import tqdm # type: ignore
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Ensure the post_eval directory is in sys.path for metrics import
+# The script is in post_eval/approach_1/, so ../ is post_eval/
+current_script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_script_dir) # This should be 'post_eval'
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
 
 
 # Constants
@@ -126,6 +132,14 @@ def main():
     parser.add_argument("input_json_path", help="Path to the input JSON file containing ground truth and LLM output.")
     args = parser.parse_args()
 
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    report_dir = os.path.join(current_script_dir, "comparison_reports_diff") # Ensure it's relative to script
+    os.makedirs(report_dir, exist_ok=True)
+    
+    base_input_filename = os.path.splitext(os.path.basename(args.input_json_path))[0]
+    json_report_filename = os.path.join(report_dir, f"gt_comparison_metrics_{base_input_filename}_{timestamp}.json")
+    csv_report_filename = os.path.join(report_dir, f"gt_comparison_metrics_{base_input_filename}_{timestamp}.csv")
+
     try:
         with open(args.input_json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -137,130 +151,112 @@ def main():
         return
 
     all_evaluation_entries = []
-    
     conflicts_processed_count = 0
     conflicts_evaluated_count = 0
     conflicts_skipped_evaluation_count = 0
-
-    for vuln_item in data:
-        vuln_id = vuln_item.get("id", "UnknownVulnerability")
-        
-        for failure_item in vuln_item.get("failures", []):
-            downstream_version = failure_item.get("downstream_version", "UnknownVersion")
-
-            for file_conflict_item in failure_item.get("file_conflicts", []):
-                conflicts_processed_count += 1
-                file_name = file_conflict_item.get("file_name", "UnknownFile")
-                
-                ground_truth_content = file_conflict_item.get("downstream_file_content_ground_truth")
-                llm_patched_content = file_conflict_item.get("downstream_patched_file_llm_output")
-                
-                # llm_output_status is the string like "skipped, <reason>" or the actual code
-                # is_llm_output_code helps distinguish between actual code and a skip message
-                is_llm_output_code = not (isinstance(llm_patched_content, str) and llm_patched_content.startswith("skipped,"))
-
-                current_eval_entry = {
-                    "cve_id": vuln_id,
-                    "downstream_version": downstream_version,
-                    "file_name": file_name,
-                    "ground_truth_codebase": clean_code(ground_truth_content),
-                    "llm_patched_codebase": clean_code(llm_patched_content) if is_llm_output_code else llm_patched_content, # Store skip message as is
-                    "metrics": {} 
-                }
-
-                can_compute_metrics = True
-                skip_reason_for_metrics = "Metrics "
-
-                if ground_truth_content is None:
-                    can_compute_metrics = False
-                    skip_reason_for_metrics += "not computed: 'downstream_file_content_ground_truth' is missing. "
-                elif not is_llm_output_code:
-                    can_compute_metrics = False
-                    skip_reason_for_metrics += f"not computed: LLM output was '{llm_patched_content}'. "
-                elif llm_patched_content is None : # Should be caught by is_llm_output_code if it's a skip message
-                    can_compute_metrics = False
-                    skip_reason_for_metrics += "not computed: 'downstream_patched_file_llm_output' is missing. "
-                
-                if can_compute_metrics:
-                    conflicts_evaluated_count += 1
-                    # Pass raw content to clean_code inside compute_code_comparison_metrics
-                    metrics_result = compute_code_comparison_metrics(ground_truth_content, llm_patched_content, file_name)
-                    current_eval_entry["metrics"] = metrics_result
-                    current_eval_entry["metrics_status"] = "computed"
-                else:
-                    conflicts_skipped_evaluation_count += 1
-                    current_eval_entry["metrics_status"] = skip_reason_for_metrics.strip()
-                    current_eval_entry["metrics"] = {} # Ensure metrics is empty
-                
-                all_evaluation_entries.append(current_eval_entry)
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_dir = os.path.join("comparison_reports_diff") # New directory
-    os.makedirs(report_dir, exist_ok=True)
     
-    base_input_filename = os.path.splitext(os.path.basename(args.input_json_path))[0]
-    json_report_filename = os.path.join(report_dir, f"gt_comparison_metrics_{base_input_filename}_{timestamp}.json")
-    csv_report_filename = os.path.join(report_dir, f"gt_comparison_metrics_{base_input_filename}_{timestamp}.csv")
+    # Define CSV fieldnames (more robust for incremental writing)
+    base_csv_fieldnames = ["cve_id", "downstream_version", "file_name", "metrics_status"]
+    potential_metric_keys = [
+        "relative_line_count_similarity", "normalized_edit_similarity",
+        "token_level_edit_distance", "codebert_precision", "codebert_recall",
+        "codebert_f1", "codebert_f3", "token_count_ground_truth",
+        "token_count_llm_output", "token_count_total", "cosine_similarity_openai"
+    ]
+    all_csv_fieldnames = base_csv_fieldnames + sorted(list(set(potential_metric_keys)))
+    header_written_csv = False
 
-    try:
-        with open(json_report_filename, 'w', encoding='utf-8') as f_out:
-            json.dump(all_evaluation_entries, f_out, indent=4)
-        print(f"✅ Ground truth comparison JSON report saved to: {json_report_filename}")
-    except IOError as e:
-        print(f"Error writing JSON report: {e}")
+    total_items_to_process = sum(len(f.get("file_conflicts", [])) for v_item in data for f in v_item.get("failures", []))
+
+    with tqdm(total=total_items_to_process, desc="Evaluating file conflicts") as pbar:
+        for vuln_item in data:
+            vuln_id = vuln_item.get("id", "UnknownVulnerability")
+            
+            for failure_item in vuln_item.get("failures", []):
+                downstream_version = failure_item.get("downstream_version", "UnknownVersion")
+
+                for file_conflict_item in failure_item.get("file_conflicts", []):
+                    conflicts_processed_count += 1
+                    file_name = file_conflict_item.get("file_name", "UnknownFile")
+                    
+                    ground_truth_content = file_conflict_item.get("downstream_file_content_ground_truth")
+                    llm_patched_content = file_conflict_item.get("downstream_patched_file_llm_output")
+                    
+                    is_llm_output_code = not (isinstance(llm_patched_content, str) and llm_patched_content.startswith("skipped,"))
+
+                    current_eval_entry = {
+                        "cve_id": vuln_id,
+                        "downstream_version": downstream_version,
+                        "file_name": file_name,
+                        "ground_truth_codebase": clean_code(ground_truth_content),
+                        "llm_patched_codebase": clean_code(llm_patched_content) if is_llm_output_code else llm_patched_content,
+                        "metrics": {} 
+                    }
+
+                    can_compute_metrics = True
+                    skip_reason_for_metrics = "Metrics "
+
+                    if ground_truth_content is None:
+                        can_compute_metrics = False
+                        skip_reason_for_metrics += "not computed: 'downstream_file_content_ground_truth' is missing. "
+                    elif not is_llm_output_code:
+                        can_compute_metrics = False
+                        skip_reason_for_metrics += f"not computed: LLM output was '{llm_patched_content}'. "
+                    elif llm_patched_content is None :
+                        can_compute_metrics = False
+                        skip_reason_for_metrics += "not computed: 'downstream_patched_file_llm_output' is missing. "
+                    
+                    if can_compute_metrics:
+                        conflicts_evaluated_count += 1
+                        metrics_result = compute_code_comparison_metrics(ground_truth_content, llm_patched_content, file_name)
+                        current_eval_entry["metrics"] = metrics_result
+                        current_eval_entry["metrics_status"] = "computed"
+                    else:
+                        conflicts_skipped_evaluation_count += 1
+                        current_eval_entry["metrics_status"] = skip_reason_for_metrics.strip()
+                        current_eval_entry["metrics"] = {}
+                    
+                    all_evaluation_entries.append(current_eval_entry)
+                    pbar.update(1)
+
+                    # Incremental JSON save
+                    try:
+                        with open(json_report_filename, 'w', encoding='utf-8') as f_json:
+                            json.dump(all_evaluation_entries, f_json, indent=4)
+                    except IOError as e:
+                        tqdm.write(f"Error writing incremental JSON report: {e}") # Use tqdm.write
+
+                    # Incremental CSV save
+                    csv_flat_row = {bf: current_eval_entry.get(bf) for bf in base_csv_fieldnames}
+                    metrics_dict = current_eval_entry.get("metrics", {})
+                    if isinstance(metrics_dict, dict):
+                        for key, value in metrics_dict.items():
+                            if key == "codebert_score" and isinstance(value, dict):
+                                for cb_key, cb_value in value.items():
+                                    csv_flat_row[f"codebert_{cb_key}"] = cb_value
+                            else:
+                                csv_flat_row[key] = value
+                    
+                    try:
+                        with open(csv_report_filename, 'a', newline='', encoding='utf-8') as f_csv:
+                            writer = csv.DictWriter(f_csv, fieldnames=all_csv_fieldnames, extrasaction='ignore')
+                            if not header_written_csv:
+                                # Check if file is empty to prevent multiple headers if script is re-run with same output file
+                                # (though timestamped filenames make this less likely for new runs)
+                                f_csv.seek(0, os.SEEK_END)
+                                if f_csv.tell() == 0:
+                                    writer.writeheader()
+                                header_written_csv = True # Mark header as "handled" for this run
+                            writer.writerow(csv_flat_row)
+                    except IOError as e:
+                        tqdm.write(f"Error writing incremental CSV report: {e}") # Use tqdm.write
     
+    print(f"\n✅ Incremental results saved to:\n  JSON: {json_report_filename}\n  CSV: {csv_report_filename}")
+
     print(f"\nSummary of processing:")
     print(f"  Total file conflicts processed: {conflicts_processed_count}")
     print(f"  File conflicts evaluated for metrics: {conflicts_evaluated_count}")
     print(f"  File conflicts skipped for metrics evaluation: {conflicts_skipped_evaluation_count}")
-
-    if all_evaluation_entries:
-        csv_data = []
-        base_fieldnames = ["cve_id", "downstream_version", "file_name", "metrics_status"]
-        metric_fieldnames_set = set()
-
-        for entry in all_evaluation_entries:
-            if entry.get("metrics_status") == "computed" and isinstance(entry.get("metrics"), dict):
-                for k in entry["metrics"].keys():
-                    if k == "codebert_score" and isinstance(entry["metrics"][k], dict):
-                        for cb_k in entry["metrics"][k].keys():
-                            metric_fieldnames_set.add(f"codebert_{cb_k}")
-                    else:
-                        metric_fieldnames_set.add(k)
-        
-        # Fallback default metric names if none were computed
-        if not metric_fieldnames_set:
-             metric_fieldnames_set.update([
-                "relative_line_count_similarity", "normalized_edit_similarity", 
-                "token_level_edit_distance", "codebert_precision", "codebert_recall", 
-                "codebert_f1", "codebert_f3", "token_count_ground_truth", 
-                "token_count_llm_output", "token_count_total", "cosine_similarity_openai"
-            ])
-
-        all_fieldnames = base_fieldnames + sorted(list(metric_fieldnames_set))
-
-        for entry in all_evaluation_entries:
-            flat_row = {bf: entry.get(bf) for bf in base_fieldnames}
-            metrics_dict = entry.get("metrics", {})
-            if isinstance(metrics_dict, dict):
-                for key, value in metrics_dict.items():
-                    if key == "codebert_score" and isinstance(value, dict):
-                        for cb_key, cb_value in value.items():
-                            flat_row[f"codebert_{cb_key}"] = cb_value
-                    else:
-                        flat_row[key] = value
-            csv_data.append(flat_row)
-
-        try:
-            with open(csv_report_filename, 'w', newline='', encoding='utf-8') as cf:
-                writer = csv.DictWriter(cf, fieldnames=all_fieldnames, extrasaction='ignore')
-                writer.writeheader()
-                writer.writerows(csv_data)
-            print(f"✅ Ground truth comparison CSV report saved to: {csv_report_filename}")
-        except IOError as e:
-            print(f"Error writing CSV report: {e}")
-    else:
-        print("No evaluation entries to write to CSV.")
 
 if __name__ == "__main__":
     main()
