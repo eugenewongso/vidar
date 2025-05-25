@@ -1,0 +1,298 @@
+[
+  {
+    "cve_id": "ASB-A-296915500",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+    "runtime_seconds": 91.56,
+    "rej_file_diff": "--- android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java\n+++ android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java\n@@ -32,6 +32,8 @@\n \n package com.android.bluetooth.opp;\n \n+import static android.os.UserHandle.myUserId;\n+\n import android.bluetooth.BluetoothProfile;\n import android.bluetooth.BluetoothProtoEnums;\n import android.content.ContentResolver;\n@@ -54,12 +57,13 @@ import java.io.File;\n import java.io.FileInputStream;\n import java.io.FileNotFoundException;\n import java.io.IOException;\n+import java.util.Objects;\n \n /**\n  * This class stores information about a single sending file It will only be used for outbound\n  * share.\n  */\n-// Next tag value for ContentProfileErrorReportUtils.report(): 15\n+// Next tag value for ContentProfileErrorReportUtils.report(): 16\n public class BluetoothOppSendFileInfo {\n     private static final String TAG = \"BluetoothOppSendFileInfo\";",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -33,6 +33,10 @@\n \n package com.android.bluetooth.opp;\n \n+import static android.os.UserHandle.myUserId;\n+\n+import android.bluetooth.BluetoothProfile;\n+import android.bluetooth.BluetoothProtoEnums;\n import android.content.ContentResolver;\n import android.content.Context;\n import android.content.res.AssetFileDescriptor;\n@@ -51,11 +55,13 @@\n import java.io.FileInputStream;\n import java.io.FileNotFoundException;\n import java.io.IOException;\n+import java.util.Objects;\n \n /**\n  * This class stores information about a single sending file It will only be\n  * used for outbound share.\n  */\n+// Next tag value for ContentProfileErrorReportUtils.report(): 16\n public class BluetoothOppSendFileInfo {\n     private static final String TAG = \"BluetoothOppSendFileInfo\";",
+    "metrics": {
+      "relative_line_count_similarity": 0.9545,
+      "normalized_edit_similarity": 0.6075,
+      "token_level_edit_distance": 46,
+      "codebert_score": {
+        "precision": 0.9108,
+        "recall": 0.8765,
+        "f1": 0.8933,
+        "f3": 0.8798
+      },
+      "token_count_upstream": 80,
+      "token_count_downstream": 75,
+      "token_count_total": 155,
+      "cosine_similarity_openai": 0.9099
+    }
+  },
+  {
+    "cve_id": "ASB-A-364027949",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 258.47,
+    "rej_file_diff": "--- system/stack/gatt/gatt_sr.cc\n+++ system/stack/gatt/gatt_sr.cc\n@@ -772,6 +772,11 @@ void gatts_process_primary_service_req(tGATT_TCB& tcb, uint16_t cid, uint8_t op_\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n   reason = gatt_build_primary_service_rsp(p_msg, tcb, cid, op_code, s_hdl, e_hdl, p_data, value);\n@@ -804,6 +809,12 @@ static void gatts_process_find_info(tGATT_TCB& tcb, uint16_t cid, uint8_t op_cod\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -735,6 +735,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +775,12 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 0.6157,
+      "token_level_edit_distance": 58,
+      "codebert_score": {
+        "precision": 0.9139,
+        "recall": 0.8508,
+        "f1": 0.8812,
+        "f3": 0.8567
+      },
+      "token_count_upstream": 117,
+      "token_count_downstream": 88,
+      "token_count_total": 205,
+      "cosine_similarity_openai": 0.7558
+    }
+  },
+  {
+    "cve_id": "ASB-A-364025411",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 146.21,
+    "rej_file_diff": "--- system/stack/gatt/gatt_sr.cc\n+++ system/stack/gatt/gatt_sr.cc\n@@ -772,6 +772,11 @@ void gatts_process_primary_service_req(tGATT_TCB& tcb, uint16_t cid, uint8_t op_\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n   reason = gatt_build_primary_service_rsp(p_msg, tcb, cid, op_code, s_hdl, e_hdl, p_data, value);\n@@ -804,6 +809,12 @@ static void gatts_process_find_info(tGATT_TCB& tcb, uint16_t cid, uint8_t op_cod\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -735,6 +735,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +775,12 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 0.6157,
+      "token_level_edit_distance": 58,
+      "codebert_score": {
+        "precision": 0.9139,
+        "recall": 0.8508,
+        "f1": 0.8812,
+        "f3": 0.8567
+      },
+      "token_count_upstream": 117,
+      "token_count_downstream": 88,
+      "token_count_total": 205,
+      "cosine_similarity_openai": 0.7565
+    }
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "14",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "runtime_seconds": 37.44,
+    "rej_file_diff": "--- PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java\n+++ PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java\n@@ -267,11 +267,11 @@ public final class ReviewPermissionsFragment extends PreferenceFragmentCompat\n             PermissionControllerStatsLog.write(REVIEW_PERMISSIONS_FRAGMENT_RESULT_REPORTED,\n                     changeId, mViewModel.getPackageInfo().applicationInfo.uid,\n                     group.getPackageName(),\n-                    permission.getName(), permission.isGrantedIncludingAppOp());\n+                    permission.getName(), permission.isGranted());\n             Log.i(LOG_TAG, \"Permission grant via permission review changeId=\" + changeId + \" uid=\"\n                     + mViewModel.getPackageInfo().applicationInfo.uid + \" packageName=\"\n                     + group.getPackageName() + \" permission=\"\n-                    + permission.getName() + \" granted=\" + permission.isGrantedIncludingAppOp());\n+                    + permission.getName() + \" granted=\" + permission.isGranted());\n         }\n     }",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -258,11 +258,11 @@\n             PermissionControllerStatsLog.write(REVIEW_PERMISSIONS_FRAGMENT_RESULT_REPORTED,\n                     changeId, mViewModel.getPackageInfo().applicationInfo.uid,\n                     group.getPackageName(),\n-                    permission.getName(), permission.isGrantedIncludingAppOp());\n+                    permission.getName(), permission.isGranted());\n             Log.v(LOG_TAG, \"Permission grant via permission review changeId=\" + changeId + \" uid=\"\n                     + mViewModel.getPackageInfo().applicationInfo.uid + \" packageName=\"\n                     + group.getPackageName() + \" permission=\"\n-                    + permission.getName() + \" granted=\" + permission.isGrantedIncludingAppOp());\n+                    + permission.getName() + \" granted=\" + permission.isGranted());\n         }\n     }",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 0.7283,
+      "token_level_edit_distance": 11,
+      "codebert_score": {
+        "precision": 0.9116,
+        "recall": 0.8319,
+        "f1": 0.87,
+        "f3": 0.8393
+      },
+      "token_count_upstream": 64,
+      "token_count_downstream": 58,
+      "token_count_total": 122,
+      "cosine_similarity_openai": 0.9103
+    }
+  },
+  {
+    "cve_id": "ASB-A-369103643",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+    "runtime_seconds": 365.69,
+    "rej_file_diff": "--- services/core/java/com/android/server/wm/WindowOrganizerController.java\n+++ services/core/java/com/android/server/wm/WindowOrganizerController.java\n@@ -1517,8 +1517,10 @@ class WindowOrganizerController extends IWindowOrganizerController.Stub\n                 final IBinder callerActivityToken = operation.getActivityToken();\n                 final Intent activityIntent = operation.getActivityIntent();\n                 final Bundle activityOptions = operation.getBundle();\n+                final SafeActivityOptions safeOptions =\n+                        SafeActivityOptions.fromBundle(activityOptions, caller.mPid, caller.mUid);\n                 final int result = waitAsyncStart(() -> mService.getActivityStartController()\n-                        .startActivityInTaskFragment(taskFragment, activityIntent, activityOptions,\n+                        .startActivityInTaskFragment(taskFragment, activityIntent, safeOptions,\n                                 callerActivityToken, caller.mUid, caller.mPid,\n                                 errorCallbackToken));\n                 if (!isStartResultSuccessful(result)) {",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -1190,10 +1190,12 @@\n                 final IBinder callerActivityToken = operation.getActivityToken();\n                 final Intent activityIntent = operation.getActivityIntent();\n                 final Bundle activityOptions = operation.getBundle();\n-                final int result = mService.getActivityStartController()\n-                        .startActivityInTaskFragment(taskFragment, activityIntent, activityOptions,\n+                final SafeActivityOptions safeOptions =\n+                        SafeActivityOptions.fromBundle(activityOptions, caller.mPid, caller.mUid);\n+                final int result = waitAsyncStart(() -> mService.getActivityStartController()\n+                        .startActivityInTaskFragment(taskFragment, activityIntent, safeOptions,\n                                 callerActivityToken, caller.mUid, caller.mPid,\n-                                errorCallbackToken);\n+                                errorCallbackToken));\n                 if (!isStartResultSuccessful(result)) {\n                     sendTaskFragmentOperationFailure(organizer, errorCallbackToken, taskFragment,\n                             opType, convertStartFailureToThrowable(result, activityIntent));",
+    "metrics": {
+      "relative_line_count_similarity": 0.7143,
+      "normalized_edit_similarity": 0.3797,
+      "token_level_edit_distance": 61,
+      "codebert_score": {
+        "precision": 0.8898,
+        "recall": 0.8487,
+        "f1": 0.8688,
+        "f3": 0.8526
+      },
+      "token_count_upstream": 58,
+      "token_count_downstream": 70,
+      "token_count_total": 128,
+      "cosine_similarity_openai": 0.8779
+    }
+  },
+  {
+    "cve_id": "ASB-A-364026473",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 133.86,
+    "rej_file_diff": "--- system/stack/gatt/gatt_sr.cc\n+++ system/stack/gatt/gatt_sr.cc\n@@ -772,6 +772,11 @@ void gatts_process_primary_service_req(tGATT_TCB& tcb, uint16_t cid, uint8_t op_\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n   reason = gatt_build_primary_service_rsp(p_msg, tcb, cid, op_code, s_hdl, e_hdl, p_data, value);\n@@ -804,6 +809,12 @@ static void gatts_process_find_info(tGATT_TCB& tcb, uint16_t cid, uint8_t op_cod\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -735,6 +735,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +775,12 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 0.6157,
+      "token_level_edit_distance": 58,
+      "codebert_score": {
+        "precision": 0.9139,
+        "recall": 0.8508,
+        "f1": 0.8812,
+        "f3": 0.8567
+      },
+      "token_count_upstream": 117,
+      "token_count_downstream": 88,
+      "token_count_total": 205,
+      "cosine_similarity_openai": 0.7561
+    }
+  },
+  {
+    "cve_id": "ASB-A-364027038",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 152.59,
+    "rej_file_diff": "--- system/stack/gatt/gatt_sr.cc\n+++ system/stack/gatt/gatt_sr.cc\n@@ -772,6 +772,11 @@ void gatts_process_primary_service_req(tGATT_TCB& tcb, uint16_t cid, uint8_t op_\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n   reason = gatt_build_primary_service_rsp(p_msg, tcb, cid, op_code, s_hdl, e_hdl, p_data, value);\n@@ -804,6 +809,12 @@ static void gatts_process_find_info(tGATT_TCB& tcb, uint16_t cid, uint8_t op_cod\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len = (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -735,6 +735,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +775,12 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);",
+    "metrics": {
+      "relative_line_count_similarity": 1.0,
+      "normalized_edit_similarity": 0.6157,
+      "token_level_edit_distance": 58,
+      "codebert_score": {
+        "precision": 0.9139,
+        "recall": 0.8508,
+        "f1": 0.8812,
+        "f3": 0.8567
+      },
+      "token_count_upstream": 117,
+      "token_count_downstream": 88,
+      "token_count_total": 205,
+      "cosine_similarity_openai": 0.7569
+    }
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "14",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "runtime_seconds": 188.48,
+    "rej_file_diff": "--- src/com/android/settings/users/UserSettings.java\n+++ src/com/android/settings/users/UserSettings.java\n@@ -465,7 +465,7 @@ public class UserSettings extends SettingsPreferenceFragment\n     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {\n         int pos = 0;\n         if (!isCurrentUserAdmin() && (canSwitchUserNow() || Flags.newMultiuserSettingsUx())\n-                && !isCurrentUserGuest()) {\n+                && !isCurrentUserGuest() && !mUserManager.isProfile()) {\n             String nickname = mUserManager.getUserName();\n             MenuItem removeThisUser = menu.add(0, MENU_REMOVE_USER, pos++,\n                     getResources().getString(R.string.user_remove_user_menu, nickname));",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -465,7 +465,8 @@\n     @Override\n     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {\n         int pos = 0;\n-        if (!isCurrentUserAdmin() && canSwitchUserNow() && !isCurrentUserGuest()) {\n+        if (!isCurrentUserAdmin() && (canSwitchUserNow() || Flags.newMultiuserSettingsUx())\n+                && !isCurrentUserGuest() && !mUserManager.isProfile()) {\n             String nickname = mUserManager.getUserName();\n             MenuItem removeThisUser = menu.add(0, MENU_REMOVE_USER, pos++,\n                     getResources().getString(R.string.user_remove_user_menu, nickname));",
+    "metrics": {
+      "relative_line_count_similarity": 0.9091,
+      "normalized_edit_similarity": 0.6058,
+      "token_level_edit_distance": 31,
+      "codebert_score": {
+        "precision": 0.9417,
+        "recall": 0.879,
+        "f1": 0.9093,
+        "f3": 0.8849
+      },
+      "token_count_upstream": 52,
+      "token_count_downstream": 53,
+      "token_count_total": 105,
+      "cosine_similarity_openai": 0.8635
+    }
+  },
+  {
+    "cve_id": "ASB-A-289375038",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "runtime_seconds": 420.74,
+    "rej_file_diff": "--- android/app/src/com/android/bluetooth/btservice/AdapterService.java\n+++ android/app/src/com/android/bluetooth/btservice/AdapterService.java\n@@ -27,6 +27,7 @@ import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE;\n import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE;\n import static android.bluetooth.BluetoothAdapter.SCAN_MODE_NONE;\n import static android.bluetooth.BluetoothDevice.BATTERY_LEVEL_UNKNOWN;\n+import static android.bluetooth.BluetoothDevice.BOND_NONE;\n import static android.bluetooth.BluetoothDevice.TRANSPORT_AUTO;\n import static android.bluetooth.IBluetoothLeAudio.LE_AUDIO_GROUP_ID_INVALID;\n import static android.text.format.DateUtils.MINUTE_IN_MILLIS;\n@@ -6121,6 +6122,13 @@ public class AdapterService extends Service {\n             mCsipSetCoordinatorService.handleBondStateChanged(device, fromState, toState);\n         }\n         mDatabaseManager.handleBondStateChanged(device, fromState, toState);\n+\n+        if (toState == BOND_NONE) {\n+            // Remove the permissions for unbonded devices\n+            setMessageAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setPhonebookAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setSimAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+        }\n     }\n \n     static int convertScanModeToHal(int mode) {",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -162,6 +162,16 @@\n import java.util.function.Predicate;\n import java.util.regex.Pattern;\n \n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE;\n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE;\n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_NONE;\n+import static android.bluetooth.BluetoothDevice.BATTERY_LEVEL_UNKNOWN;\n+import static android.bluetooth.BluetoothDevice.BOND_NONE;\n+import static android.bluetooth.BluetoothDevice.TRANSPORT_AUTO;\n+import static android.bluetooth.IBluetoothLeAudio.LE_AUDIO_GROUP_ID_INVALID;\n+import static android.text.format.DateUtils.MINUTE_IN_MILLIS;\n+import static android.text.format.DateUtils.SECOND_IN_MILLIS;\n+\n public class AdapterService extends Service {\n     private static final String TAG = \"BluetoothAdapterService\";\n     private static final boolean DBG = true;\n@@ -5457,6 +5467,20 @@\n         mRemoteDevices.updateBatteryLevel(device, batteryLevel);\n     }\n \n+    public void handleBondStateChanged(BluetoothDevice device, int fromState, int toState) {\n+        if (mCsipSetCoordinatorService != null) {\n+            mCsipSetCoordinatorService.handleBondStateChanged(device, fromState, toState);\n+        }\n+        mDatabaseManager.handleBondStateChanged(device, fromState, toState);\n+\n+        if (toState == BOND_NONE) {\n+            // Remove the permissions for unbonded devices\n+            setMessageAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setPhonebookAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setSimAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+        }\n+    }\n+\n     static native void classInitNative();\n \n     native boolean initNative(boolean startRestricted, boolean isCommonCriteriaMode,",
+    "metrics": {
+      "relative_line_count_similarity": 0.3913,
+      "normalized_edit_similarity": 0.5342,
+      "token_level_edit_distance": 133,
+      "codebert_score": {
+        "precision": 0.879,
+        "recall": 0.8934,
+        "f1": 0.8862,
+        "f3": 0.8919
+      },
+      "token_count_upstream": 81,
+      "token_count_downstream": 132,
+      "token_count_total": 213,
+      "cosine_similarity_openai": 0.8911
+    }
+  },
+  {
+    "cve_id": "ASB-A-289811388",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "runtime_seconds": 420.2,
+    "rej_file_diff": "--- android/app/src/com/android/bluetooth/btservice/AdapterService.java\n+++ android/app/src/com/android/bluetooth/btservice/AdapterService.java\n@@ -27,6 +27,7 @@ import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE;\n import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE;\n import static android.bluetooth.BluetoothAdapter.SCAN_MODE_NONE;\n import static android.bluetooth.BluetoothDevice.BATTERY_LEVEL_UNKNOWN;\n+import static android.bluetooth.BluetoothDevice.BOND_NONE;\n import static android.bluetooth.BluetoothDevice.TRANSPORT_AUTO;\n import static android.bluetooth.IBluetoothLeAudio.LE_AUDIO_GROUP_ID_INVALID;\n import static android.text.format.DateUtils.MINUTE_IN_MILLIS;\n@@ -6121,6 +6122,13 @@ public class AdapterService extends Service {\n             mCsipSetCoordinatorService.handleBondStateChanged(device, fromState, toState);\n         }\n         mDatabaseManager.handleBondStateChanged(device, fromState, toState);\n+\n+        if (toState == BOND_NONE) {\n+            // Remove the permissions for unbonded devices\n+            setMessageAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setPhonebookAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setSimAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+        }\n     }\n \n     static int convertScanModeToHal(int mode) {",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -44,9 +44,16 @@\n import android.bluetooth.BluetoothAdapter;\n import android.bluetooth.BluetoothAdapter.ActiveDeviceProfile;\n import android.bluetooth.BluetoothAdapter.ActiveDeviceUse;\n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE;\n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE;\n+import static android.bluetooth.BluetoothAdapter.SCAN_MODE_NONE;\n import android.bluetooth.BluetoothClass;\n import android.bluetooth.BluetoothDevice;\n+import static android.bluetooth.BluetoothDevice.BATTERY_LEVEL_UNKNOWN;\n+import static android.bluetooth.BluetoothDevice.BOND_NONE;\n+import static android.bluetooth.BluetoothDevice.TRANSPORT_AUTO;\n import android.bluetooth.BluetoothFrameworkInitializer;\n+import static android.bluetooth.IBluetoothLeAudio.LE_AUDIO_GROUP_ID_INVALID;\n import android.bluetooth.BluetoothMap;\n import android.bluetooth.BluetoothProfile;\n import android.bluetooth.BluetoothProtoEnums;",
+    "metrics": {
+      "relative_line_count_similarity": 0.8261,
+      "normalized_edit_similarity": 0.3468,
+      "token_level_edit_distance": 92,
+      "codebert_score": {
+        "precision": 0.8883,
+        "recall": 0.7714,
+        "f1": 0.8257,
+        "f3": 0.7817
+      },
+      "token_count_upstream": 81,
+      "token_count_downstream": 47,
+      "token_count_total": 128,
+      "cosine_similarity_openai": 0.7024
+    }
+  },
+  {
+    "cve_id": "ASB-A-375623125",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+    "runtime_seconds": 531.63,
+    "rej_file_diff": "--- services/core/java/com/android/server/appop/AppOpsService.java\n+++ services/core/java/com/android/server/appop/AppOpsService.java\n@@ -3896,7 +3896,7 @@ public class AppOpsService extends IAppOpsService.Stub {\n             // Test if the proxied operation will succeed before starting the proxy operation\n             final SyncNotedAppOp testProxiedOp = startOperationDryRun(code,\n                     proxiedUid, resolvedProxiedPackageName, proxiedAttributionTag,\n-                    proxiedVirtualDeviceId, resolvedProxyPackageName, proxiedFlags,\n+                    proxiedVirtualDeviceId, proxyUid, resolvedProxyPackageName, proxiedFlags,\n                     startIfModeDefault);\n \n             if (!shouldStartForMode(testProxiedOp.getOpMode(), startIfModeDefault)) {\n@@ -3936,7 +3936,7 @@ public class AppOpsService extends IAppOpsService.Stub {\n             int attributionChainId) {\n         PackageVerificationResult pvr;\n         try {\n-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);\n+            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);\n             if (!pvr.isAttributionTagValid) {\n                 attributionTag = null;\n             }\n@@ -4063,11 +4063,11 @@ public class AppOpsService extends IAppOpsService.Stub {\n      */\n     private SyncNotedAppOp startOperationDryRun(int code, int uid,\n             @NonNull String packageName, @Nullable String attributionTag, int virtualDeviceId,\n-            String proxyPackageName, @OpFlags int flags,\n+            int proxyUid, String proxyPackageName, @OpFlags int flags,\n             boolean startIfModeDefault) {\n         PackageVerificationResult pvr;\n         try {\n-            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyPackageName);\n+            pvr = verifyAndGetBypass(uid, packageName, attributionTag, proxyUid, proxyPackageName);\n             if (!pvr.isAttributionTagValid) {\n                 attributionTag = null;\n             }",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -6534,165 +6534,4 @@\n                 boolean shouldCollectMessage) {\n             return mCheckOpsDelegate.noteOperation(code, uid, packageName, featureId,\n                     shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                    AppOpsService.this::noteOperationImpl);\n-        }\n-\n-        public SyncNotedAppOp noteProxyOperation(int code, AttributionSource attributionSource,\n-                boolean shouldCollectAsyncNotedOp, @Nullable String message,\n-                boolean shouldCollectMessage, boolean skipProxyOperation) {\n-            if (mPolicy != null) {\n-                if (mCheckOpsDelegate != null) {\n-                    return mPolicy.noteProxyOperation(code, attributionSource,\n-                            shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                            skipProxyOperation, this::noteDelegateProxyOperationImpl);\n-                } else {\n-                    return mPolicy.noteProxyOperation(code, attributionSource,\n-                            shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                            skipProxyOperation, AppOpsService.this::noteProxyOperationImpl);\n-                }\n-            } else if (mCheckOpsDelegate != null) {\n-                return noteDelegateProxyOperationImpl(code,\n-                        attributionSource, shouldCollectAsyncNotedOp, message,\n-                        shouldCollectMessage, skipProxyOperation);\n-            }\n-            return noteProxyOperationImpl(code, attributionSource, shouldCollectAsyncNotedOp,\n-                    message, shouldCollectMessage,skipProxyOperation);\n-        }\n-\n-        private SyncNotedAppOp noteDelegateProxyOperationImpl(int code,\n-                @NonNull AttributionSource attributionSource, boolean shouldCollectAsyncNotedOp,\n-                @Nullable String message, boolean shouldCollectMessage,\n-                boolean skipProxyOperation) {\n-            return mCheckOpsDelegate.noteProxyOperation(code, attributionSource,\n-                    shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation,\n-                    AppOpsService.this::noteProxyOperationImpl);\n-        }\n-\n-        public SyncNotedAppOp startOperation(IBinder token, int code, int uid,\n-                @Nullable String packageName, @NonNull String attributionTag,\n-                boolean startIfModeDefault, boolean shouldCollectAsyncNotedOp,\n-                @Nullable String message, boolean shouldCollectMessage,\n-                @AttributionFlags int attributionFlags, int attributionChainId) {\n-            if (mPolicy != null) {\n-                if (mCheckOpsDelegate != null) {\n-                    return mPolicy.startOperation(token, code, uid, packageName,\n-                            attributionTag, startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                            shouldCollectMessage, attributionFlags, attributionChainId,\n-                            this::startDelegateOperationImpl);\n-                } else {\n-                    return mPolicy.startOperation(token, code, uid, packageName, attributionTag,\n-                            startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                            shouldCollectMessage, attributionFlags, attributionChainId,\n-                            AppOpsService.this::startOperationImpl);\n-                }\n-            } else if (mCheckOpsDelegate != null) {\n-                return startDelegateOperationImpl(token, code, uid, packageName, attributionTag,\n-                        startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                        shouldCollectMessage, attributionFlags, attributionChainId);\n-            }\n-            return startOperationImpl(token, code, uid, packageName, attributionTag,\n-                    startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                    attributionFlags, attributionChainId);\n-        }\n-\n-        private SyncNotedAppOp startDelegateOperationImpl(IBinder token, int code, int uid,\n-                @Nullable String packageName, @Nullable String attributionTag,\n-                boolean startIfModeDefault, boolean shouldCollectAsyncNotedOp, String message,\n-                boolean shouldCollectMessage, @AttributionFlags int attributionFlags,\n-                int attributionChainId) {\n-            return mCheckOpsDelegate.startOperation(token, code, uid, packageName, attributionTag,\n-                    startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                    attributionFlags, attributionChainId, AppOpsService.this::startOperationImpl);\n-        }\n-\n-        public SyncNotedAppOp startProxyOperation(@NonNull IBinder clientId, int code,\n-                @NonNull AttributionSource attributionSource, boolean startIfModeDefault,\n-                boolean shouldCollectAsyncNotedOp, String message, boolean shouldCollectMessage,\n-                boolean skipProxyOperation, @AttributionFlags int proxyAttributionFlags,\n-                @AttributionFlags int proxiedAttributionFlags, int attributionChainId) {\n-            if (mPolicy != null) {\n-                if (mCheckOpsDelegate != null) {\n-                    return mPolicy.startProxyOperation(clientId, code, attributionSource,\n-                            startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                            shouldCollectMessage, skipProxyOperation, proxyAttributionFlags,\n-                            proxiedAttributionFlags, attributionChainId,\n-                            this::startDelegateProxyOperationImpl);\n-                } else {\n-                    return mPolicy.startProxyOperation(clientId, code, attributionSource,\n-                            startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                            shouldCollectMessage, skipProxyOperation, proxyAttributionFlags,\n-                            proxiedAttributionFlags, attributionChainId,\n-                            AppOpsService.this::startProxyOperationImpl);\n-                }\n-            } else if (mCheckOpsDelegate != null) {\n-                return startDelegateProxyOperationImpl(clientId, code, attributionSource,\n-                        startIfModeDefault, shouldCollectAsyncNotedOp, message,\n-                        shouldCollectMessage, skipProxyOperation, proxyAttributionFlags,\n-                        proxiedAttributionFlags, attributionChainId);\n-            }\n-            return startProxyOperationImpl(clientId, code, attributionSource, startIfModeDefault,\n-                    shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation,\n-                    proxyAttributionFlags, proxiedAttributionFlags, attributionChainId);\n-        }\n-\n-        private SyncNotedAppOp startDelegateProxyOperationImpl(@NonNull IBinder clientId, int code,\n-                @NonNull AttributionSource attributionSource, boolean startIfModeDefault,\n-                boolean shouldCollectAsyncNotedOp, String message, boolean shouldCollectMessage,\n-                boolean skipProxyOperation, @AttributionFlags int proxyAttributionFlags,\n-                @AttributionFlags int proxiedAttributionFlsgs, int attributionChainId) {\n-            return mCheckOpsDelegate.startProxyOperation(clientId, code, attributionSource,\n-                    startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage,\n-                    skipProxyOperation, proxyAttributionFlags, proxiedAttributionFlsgs,\n-                    attributionChainId, AppOpsService.this::startProxyOperationImpl);\n-        }\n-\n-        public void finishOperation(IBinder clientId, int code, int uid, String packageName,\n-                String attributionTag) {\n-            if (mPolicy != null) {\n-                if (mCheckOpsDelegate != null) {\n-                    mPolicy.finishOperation(clientId, code, uid, packageName, attributionTag,\n-                            this::finishDelegateOperationImpl);\n-                } else {\n-                    mPolicy.finishOperation(clientId, code, uid, packageName, attributionTag,\n-                            AppOpsService.this::finishOperationImpl);\n-                }\n-            } else if (mCheckOpsDelegate != null) {\n-                finishDelegateOperationImpl(clientId, code, uid, packageName, attributionTag);\n-            } else {\n-                finishOperationImpl(clientId, code, uid, packageName, attributionTag);\n-            }\n-        }\n-\n-        private void finishDelegateOperationImpl(IBinder clientId, int code, int uid,\n-                String packageName, String attributionTag) {\n-            mCheckOpsDelegate.finishOperation(clientId, code, uid, packageName, attributionTag,\n-                    AppOpsService.this::finishOperationImpl);\n-        }\n-\n-        public void finishProxyOperation(@NonNull IBinder clientId, int code,\n-                @NonNull AttributionSource attributionSource, boolean skipProxyOperation) {\n-            if (mPolicy != null) {\n-                if (mCheckOpsDelegate != null) {\n-                    mPolicy.finishProxyOperation(clientId, code, attributionSource,\n-                            skipProxyOperation, this::finishDelegateProxyOperationImpl);\n-                } else {\n-                    mPolicy.finishProxyOperation(clientId, code, attributionSource,\n-                            skipProxyOperation, AppOpsService.this::finishProxyOperationImpl);\n-                }\n-            } else if (mCheckOpsDelegate != null) {\n-                finishDelegateProxyOperationImpl(clientId, code, attributionSource,\n-                        skipProxyOperation);\n-            } else {\n-                finishProxyOperationImpl(clientId, code, attributionSource, skipProxyOperation);\n-            }\n-        }\n-\n-        private Void finishDelegateProxyOperationImpl(@NonNull IBinder clientId, int code,\n-                @NonNull AttributionSource attributionSource, boolean skipProxyOperation) {\n-            mCheckOpsDelegate.finishProxyOperation(clientId, code, attributionSource,\n-                    skipProxyOperation, AppOpsService.this::finishProxyOperationImpl);\n-            return null;\n-        }\n-    }\n-}\n-```+                    AppOpsService.this",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.1084,
+      "token_level_edit_distance": 1197,
+      "codebert_score": {
+        "precision": 0.7693,
+        "recall": 0.7698,
+        "f1": 0.7696,
+        "f3": 0.7697
+      },
+      "token_count_upstream": 156,
+      "token_count_downstream": 727,
+      "token_count_total": 883,
+      "cosine_similarity_openai": 0.7265
+    }
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "14",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "runtime_seconds": 426.72,
+    "rej_file_diff": "--- services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n@@ -217,6 +217,15 @@ class AppWidgetServiceImpl extends IAppWidgetService.Stub implements WidgetBacku\n     // See {@link Provider#pendingDeletedWidgetIds}.\n     private static final String PENDING_DELETED_IDS_ATTR = \"pending_deleted_ids\";\n \n+    // Hard limit of number of hosts an app can create, note that the app that hosts the widgets\n+    // can have multiple instances of {@link AppWidgetHost}, typically in respect to different\n+    // surfaces in the host app.\n+    // @see AppWidgetHost\n+    // @see AppWidgetHost#mHostId\n+    private static final int MAX_NUMBER_OF_HOSTS_PER_PACKAGE = 20;\n+    // Hard limit of number of widgets can be pinned by a host.\n+    private static final int MAX_NUMBER_OF_WIDGETS_PER_HOST = 200;\n+\n     // Handles user and package related broadcasts.\n     // See {@link #registerBroadcastReceiver}\n     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {\n@@ -3591,11 +3618,32 @@ class AppWidgetServiceImpl extends IAppWidgetService.Stub implements WidgetBacku\n         if (DEBUG) {\n             Slog.i(TAG, \"addWidgetLocked() \" + widget);\n         }\n+        ensureWidgetCountBeforeAddLocked(widget);\n         mWidgets.add(widget);\n \n         onWidgetProviderAddedOrChangedLocked(widget);\n     }\n \n+    /**\n+     * Ensures that the widget count for the widget's host is not greater than the maximum\n+     * number of widgets per host. If the count is greater than the maximum, removes oldest widgets\n+     * from the host until the count is less than or equal to the maximum.\n+     */\n+    private void ensureWidgetCountBeforeAddLocked(@NonNull final Widget widget) {\n+        if (widget.host == null || widget.host.id == null) {\n+            return;\n+        }\n+        final List<Widget> widgetsInSameHost = new ArrayList<>();\n+        for (Widget w : mWidgets) {\n+            if (w.host != null && widget.host.id.equals(w.host.id)) {\n+                widgetsInSameHost.add(w);\n+            }\n+        }\n+        while (widgetsInSameHost.size() >= MAX_NUMBER_OF_WIDGETS_PER_HOST) {\n+            removeWidgetLocked(widgetsInSameHost.remove(0));\n+        }\n+    }\n+\n     /**\n      * Checks if the provider is assigned and updates the mWidgetPackages to track packages\n      * that have bound widgets.",
+    "llm_generated_patch": "--- original\n+++ patched\n@@ -24,6 +24,7 @@\n \n import static com.android.server.pm.PackageManagerService.PLATFORM_PACKAGE_NAME;\n \n+import android.annotation.NonNull;\n import android.annotation.UserIdInt;\n import android.app.ActivityManager;\n import android.app.ActivityManagerInternal;\n@@ -171,6 +172,21 @@\n     // used to verify which request has successfully been received by the host.\n     private static final AtomicLong UPDATE_COUNTER = new AtomicLong();\n \n+    // widget IDs being deleted by the system. (This is a work-around for b/20038985).\n+    // See {@link Provider#pendingDeletedWidgetIds}.\n+    private static final String PENDING_DELETED_IDS_ATTR = \"pending_deleted_ids\";\n+\n+    // Hard limit of number of hosts an app can create, note that the app that hosts the widgets\n+    // can have multiple instances of {@link AppWidgetHost}, typically in respect to different\n+    // surfaces in the host app.\n+    // @see AppWidgetHost\n+    // @see AppWidgetHost#mHostId\n+    private static final int MAX_NUMBER_OF_HOSTS_PER_PACKAGE = 20;\n+    // Hard limit of number of widgets can be pinned by a host.\n+    private static final int MAX_NUMBER_OF_WIDGETS_PER_HOST = 200;\n+\n+    // Handles user and package related broadcasts.\n+    // See {@link #registerBroadcastReceiver}\n     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {\n         @Override\n         public void onReceive(Context context, Intent intent) {\n@@ -2852,9 +2868,30 @@\n      * Adds the widget to mWidgets and tracks the package name in mWidgetPackages.\n      */\n     void addWidgetLocked(Widget widget) {\n+        ensureWidgetCountBeforeAddLocked(widget);\n         mWidgets.add(widget);\n \n         onWidgetProviderAddedOrChangedLocked(widget);\n+    }\n+\n+    /**\n+     * Ensures that the widget count for the widget's host is not greater than the maximum\n+     * number of widgets per host. If the count is greater than the maximum, removes oldest widgets\n+     * from the host until the count is less than or equal to the maximum.\n+     */\n+    private void ensureWidgetCountBeforeAddLocked(@NonNull final Widget widget) {\n+        if (widget.host == null || widget.host.id == null) {\n+            return;\n+        }\n+        final List<Widget> widgetsInSameHost = new ArrayList<>();\n+        for (Widget w : mWidgets) {\n+            if (w.host != null && widget.host.id.equals(w.host.id)) {\n+                widgetsInSameHost.add(w);\n+            }\n+        }\n+        while (widgetsInSameHost.size() >= MAX_NUMBER_OF_WIDGETS_PER_HOST) {\n+            removeWidgetLocked(widgetsInSameHost.remove(0));\n+        }\n     }\n \n     /**",
+    "metrics": {
+      "relative_line_count_similarity": 0.7917,
+      "normalized_edit_similarity": 0.6612,
+      "token_level_edit_distance": 181,
+      "codebert_score": {
+        "precision": 0.8652,
+        "recall": 0.8647,
+        "f1": 0.865,
+        "f3": 0.8648
+      },
+      "token_count_upstream": 286,
+      "token_count_downstream": 328,
+      "token_count_total": 614,
+      "cosine_similarity_openai": 0.9043
+    }
+  },
+  {
+    "cve_id": "ASB-A-382064697",
+    "downstream_version": "14",
+    "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+    "runtime_seconds": 600.01,
+    "rej_file_diff": "--- services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n+++ services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n@@ -2723,16 +2723,16 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {\n         }\n     }\n \n-    /**\n-     * Apply default restrictions that haven't been applied to a given admin yet.\n-     */\n+    /** Apply default restrictions that haven't been applied to a given admin yet. */\n     private void maybeSetDefaultRestrictionsForAdminLocked(int userId, ActiveAdmin admin) {\n-        Set<String> defaultRestrictions =\n-                UserRestrictionsUtils.getDefaultEnabledForManagedProfiles();\n-        if (defaultRestrictions.equals(admin.defaultEnabledRestrictionsAlreadySet)) {\n+        Set<String> newDefaultRestrictions = new HashSet(\n+            UserRestrictionsUtils.getDefaultEnabledForManagedProfiles());\n+        newDefaultRestrictions.removeAll(admin.defaultEnabledRestrictionsAlreadySet);\n+        if (newDefaultRestrictions.isEmpty()) {\n             return; // The same set of default restrictions has been already applied.\n         }\n-        for (String restriction : defaultRestrictions) {\n+\n+        for (String restriction : newDefaultRestrictions) {\n             mDevicePolicyEngine.setLocalPolicy(\n                     PolicyDefinition.getPolicyDefinitionForUserRestriction(restriction),\n                     EnforcingAdmin.createEnterpriseEnforcingAdmin(\n@@ -2740,10 +2740,9 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {\n                             admin.getUserHandle().getIdentifier()),\n                     new BooleanPolicyValue(true),\n                     userId);\n+            admin.defaultEnabledRestrictionsAlreadySet.add(restriction);\n+            Slogf.i(LOG_TAG, \"Enabled the following restriction by default: \" + restriction);\n         }\n-        admin.defaultEnabledRestrictionsAlreadySet.addAll(defaultRestrictions);\n-        Slogf.i(LOG_TAG, \"Enabled the following restrictions by default: \"\n-                + defaultRestrictions);\n     }\n \n     private void maybeStartSecurityLogMonitorOnActivityManagerReady() {",
+    "llm_generated_patch": "",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 286,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 158,
+      "token_count_downstream": 0,
+      "token_count_total": 158,
+      "cosine_similarity_openai": 0.0736
+    }
+  }
+]

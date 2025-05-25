@@ -22,15 +22,25 @@ load_dotenv()
 # Configure Logfire for logging (if token is available)
 logfire.configure(send_to_logfire='if-token-present')
 
-# Fetch API key from environment variable
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY1")
+class APIKeyRotator:
+    def __init__(self, api_keys: List[str]):
+        self.api_keys = api_keys
+        self.index = 0
 
-# Ensure API key is set
-if not GOOGLE_API_KEY:
-    raise ValueError("Missing API key. Please add GOOGLE_API_KEY to your .env file.")
+    def get_current_key(self):
+        return self.api_keys[self.index]
 
-# Configure Google Generative AI with API key
-genai.configure(api_key=GOOGLE_API_KEY)
+    def rotate_key(self):
+        self.index = (self.index + 1) % len(self.api_keys)
+        print(f"🔄 Rotating to new API key index {self.index}")
+        return self.get_current_key()
+
+api_keys = os.getenv("GOOGLE_API_KEYS", "").split(",")
+if not api_keys or api_keys == [""]:
+    raise ValueError("Missing API keys in GOOGLE_API_KEYS")
+
+key_rotator = APIKeyRotator(api_keys)
+
 
 def count_tokens_general(text: str):
     """
@@ -86,18 +96,43 @@ class LLMResult:
     token_count: Optional[int]
 
 class GeminiAgent:
-    def __init__(self, model_name: str, system_prompt: str):
-        self.model = genai.GenerativeModel(
-            model_name=model_name,
-            system_instruction=system_prompt
-        )
-        
-    async def run(self, prompt: str, deps: Optional[SupportDependencies] = None):
-        response = self.model.generate_content(prompt)
+    def __init__(self, model_name: str, system_prompt: str, key_rotator: APIKeyRotator):
+        self.model_name = model_name
+        self.system_prompt = system_prompt
+        self.key_rotator = key_rotator
+        self._configure_genai()
 
-        token_count = (response.generation_metadata.total_token_count if hasattr(response, "generation_metadata") and response.generation_metadata else None)
-        return LLMResult(data=response.text, token_count=token_count)
-        
+    def _configure_genai(self):
+        current_key = self.key_rotator.get_current_key()
+        genai.configure(api_key=current_key)
+        self.model = genai.GenerativeModel(
+            model_name=self.model_name,
+            system_instruction=self.system_prompt
+        )
+
+    async def run(self, prompt: str, deps: Optional[SupportDependencies] = None):
+
+        for attempt in range(len(self.key_rotator.api_keys)):
+            try:
+                response = self.model.generate_content(prompt)
+                return type("Result", (), {"data": response.text})
+            except Exception as e:
+                if "quota" in str(e).lower() or "rate limit" in str(e).lower():
+                    print(f"⚠️ API quota/rate limit hit: {e}")
+                    self.key_rotator.rotate_key()
+                    self._configure_genai()
+                else:
+                    raise e
+        raise RuntimeError("All API keys exhausted or failed.")
+
+
+def save_partial_output(path: str, data: Any):
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        print(f"💾 Partial output saved to: {path}")
+    except Exception as e:
+        print(f"⚠️ Failed to save partial output to {path}: {e}")
 
 # Define the agent using Gemini
 # LatestGeminiModelNames = Literal[
@@ -123,7 +158,8 @@ patch_porter_agent = GeminiAgent(
     DO NOT change indentation, whitespace, or formatting of the original file unless necessary for the patch.
     Preserve all tabs, spaces, and line endings exactly as they appear in the original file.
     Just output the final patched code file with the security fixes applied and nothing else.
-    """
+    """,
+    key_rotator=key_rotator
 )
 
 async def process_single_entry(
@@ -143,7 +179,7 @@ async def process_single_entry(
         print(f"{reason} for {output_filename_base} in {vulnerability_id}")
         return None, reason, None
     if not isinstance(vuln_code_content, str):
-        reason = f"Skipping entry because vuln_code_content (from downstream_file_content) is not a string."
+        reason = f"Skipping entry because vuln_code_content (from downstream_file_content_patched_upstream_only) is not a string."
         print(f"{reason} for {output_filename_base} in {vulnerability_id}")
         return None, reason, None
 
@@ -215,8 +251,18 @@ async def process_single_entry(
 async def main():
     parser = argparse.ArgumentParser(description="Process vulnerability JSON, apply patches using an LLM, and output an updated JSON.")
     parser.add_argument("input_json_file_path", help="Path to the input JSON file.")
-    parser.add_argument("target_downstream_version", help="The downstream_version to filter by (e.g., '14').")
+    parser.add_argument(
+        "--target_downstream_version", "-v",
+        help="(Optional) Filter by specific downstream_version (e.g., '14'). If not provided, all versions will be processed.",
+        default=None
+    )
     parser.add_argument("--output_json_path", "-o", help="Path to save the output JSON file. Defaults to outputs/output_android_{version}_{timestamp}.json", default=None)
+    parser.add_argument(
+        "--resume_from_id",
+        help="(Optional) Vulnerability ID to resume from. All earlier entries will be skipped.",
+        default=None
+    )
+
     
     args = parser.parse_args()
 
@@ -228,7 +274,19 @@ async def main():
         outputs_dir = "outputs"
         os.makedirs(outputs_dir, exist_ok=True)
         # Use the generated timestamp_str
-        output_json_path_to_use = os.path.join(outputs_dir, f"output_android_{args.target_downstream_version}_{timestamp_str}.json")
+        version_label = args.target_downstream_version or "all_versions"
+        output_json_path_to_use = os.path.join(
+            outputs_dir,
+            f"output_android_{version_label}_{timestamp_str}.json"
+        )
+
+    # Define report filename early so it's available throughout
+    report_dir = os.path.join("outputs", "report")
+    os.makedirs(report_dir, exist_ok=True)
+    version_label = args.target_downstream_version or "all_versions"
+    report_filename = os.path.join(report_dir, f"{version_label}_{timestamp_str}.json")
+
+
 
     # Initialize report data structure
     report_data = {
@@ -261,10 +319,31 @@ async def main():
         print("Error: Expected a list of vulnerabilities in the input JSON file.")
         return
 
+
     # Create a deep copy of the input data to modify
     output_data = copy.deepcopy(input_data)
 
-    for vulnerability_item in output_data: # Iterate over the copy
+    resume_from_id = args.resume_from_id
+    resume_mode = resume_from_id is not None
+    resuming = False  # Flag to track when to start
+
+    # Prepare the subset of data to process based on resume_from_id
+    if resume_mode:
+        resume_index = next((i for i, item in enumerate(output_data) if item.get("id") == resume_from_id), None)
+        if resume_index is None:
+            print(f"❌ Error: resume_from_id '{resume_from_id}' not found.")
+            return
+        data_to_process = output_data[resume_index:]
+    else:
+        data_to_process = output_data
+
+    total_to_process = len(data_to_process)
+
+
+    for idx, vulnerability_item in enumerate(data_to_process, start=1):
+        vulnerability_id = vulnerability_item.get("id", "unknown_vuln_id")
+        print(f"\n📍 Processing {idx} of {total_to_process}: {vulnerability_id}")
+
         if not isinstance(vulnerability_item, dict):
             # This check might be redundant if input_data was already validated,
             # but good for safety if structure isn't guaranteed.
@@ -286,7 +365,7 @@ async def main():
                 print(f"Skipping non-dictionary failure in {vulnerability_id}: {failure}")
                 continue
 
-            if failure.get("downstream_version") == args.target_downstream_version:
+            if args.target_downstream_version is None or failure.get("downstream_version") == args.target_downstream_version:
                 # This failure matches the target version, so we process it.
                 file_conflicts = failure.get("file_conflicts", []) 
                 if not isinstance(file_conflicts, list):
@@ -302,7 +381,8 @@ async def main():
                         continue
                     
                     patch_content = file_conflict.get("rej_file_content")
-                    vuln_code_content = file_conflict.get("downstream_file_content")
+                    vuln_code_content = file_conflict.get("downstream_file_content_patched_upstream_only")
+                    original_vuln_code_content = file_conflict.get("downstream_file_content")
                     original_file_name = file_conflict.get("file_name")
 
                     report_data["summary"]["total_file_conflicts_matching_version"] += 1
@@ -313,7 +393,7 @@ async def main():
                     elif not patch_content:
                         skip_reason = "Missing 'rej_file_content'"
                     elif not vuln_code_content:
-                        skip_reason = "Missing 'downstream_file_content'"
+                        skip_reason = "Missing 'downstream_file_content_patched_upstream_only'"
 
                     if skip_reason:
                         print(f"Skipping file_conflict in {vulnerability_id} (file: {original_file_name or 'N/A'}) due to: {skip_reason}.")
@@ -348,7 +428,7 @@ async def main():
                         # Calculate and add LLM_diff_content
                         if vuln_code_content and modified_code:
                             diff = difflib.unified_diff(
-                                vuln_code_content.splitlines(keepends=True),
+                                original_vuln_code_content.splitlines(keepends=True),
                                 modified_code.splitlines(keepends=True),
                                 fromfile='original',
                                 tofile='patched'
@@ -366,6 +446,9 @@ async def main():
                         if time_taken_for_llm is not None:
                             log_entry["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
                         report_data["successfully_processed_files_log"].append(log_entry)
+                        save_partial_output(output_json_path_to_use, output_data)
+                        save_partial_output(report_filename, report_data)
+
                         
                     else:
                         # If modified_code is None, it means process_single_entry determined a skip/error.
@@ -385,6 +468,9 @@ async def main():
                         if time_taken_for_llm is not None:
                             log_entry["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)
                         report_data["skipped_or_errored_files_log"].append(log_entry)
+                        save_partial_output(output_json_path_to_use, output_data)
+                        save_partial_output(report_filename, report_data)
+
                 
                 # After processing all file_conflicts for this failure, add the (modified) failure to our filtered list
                 filtered_failures_for_item.append(failure)
@@ -407,7 +493,9 @@ async def main():
     # Write the summary report to its JSON file
     report_dir = os.path.join("outputs", "report")
     os.makedirs(report_dir, exist_ok=True)
-    report_filename = os.path.join(report_dir, f"{args.target_downstream_version}_{timestamp_str}.json")
+    version_label = args.target_downstream_version or "all_versions"
+    report_filename = os.path.join(report_dir, f"{version_label}_{timestamp_str}.json")
+
     try:
         with open(report_filename, "w", encoding="utf-8") as f_report:
             json.dump(report_data, f_report, indent=4)

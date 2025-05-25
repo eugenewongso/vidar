@@ -180,6 +180,8 @@ def main():
                 
                 llm_output_status = file_conflict_item.get("downstream_patched_file_llm_output", "")
                 is_llm_skipped = isinstance(llm_output_status, str) and llm_output_status.startswith("skipped,")
+                llm_time_taken = file_conflict_item.get("llm_time_taken_seconds", None)
+
 
                 # Clean the diff texts
                 cleaned_rej_content = clean_diff_text(rej_content_raw)
@@ -190,6 +192,7 @@ def main():
                     "cve_id": vuln_id,
                     "downstream_version": downstream_version,
                     "file_name": file_name,
+                    "runtime_seconds": llm_time_taken,
                     "ref_diff_file": cleaned_rej_content, # Store cleaned content
                     "LLM_diff_file": cleaned_llm_diff_content, # Store cleaned content
                     "metrics": {} 
@@ -260,7 +263,7 @@ def main():
         # Fallback if metrics is empty or not a dict.
         
         # Define base field names
-        base_fieldnames = ["cve_id", "downstream_version", "file_name", "metrics_status"]
+        base_fieldnames = ["cve_id", "downstream_version", "file_name", "runtime_seconds", "metrics_status"]
         
         # Attempt to get metric field names from the first entry with computed metrics
         metric_fieldnames = []

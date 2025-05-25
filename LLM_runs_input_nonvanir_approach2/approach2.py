@@ -17,6 +17,20 @@ from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, P
 
 client = aiplatform_v1beta1.PredictionServiceClient()
 
+class APIKeyRotator:
+    def __init__(self, api_keys: List[str]):
+        self.api_keys = api_keys
+        self.index = 0
+
+    def get_current_key(self):
+        return self.api_keys[self.index]
+
+    def rotate_key(self):
+        self.index = (self.index + 1) % len(self.api_keys)
+        print(f"🔄 Rotating to new API key index {self.index}")
+        return self.get_current_key()
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,15 +38,21 @@ load_dotenv()
 # Configure Logfire for logging (if token is available)
 logfire.configure(send_to_logfire='if-token-present')
 
-# Fetch API key from environment variable
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+api_keys = os.getenv("GOOGLE_API_KEYS", "").split(",")
+if not api_keys:
+    raise ValueError("Missing API keys in GOOGLE_API_KEYS")
 
-# Ensure API key is set
-if not GOOGLE_API_KEY:
-    raise ValueError("Missing API key. Please add GOOGLE_API_KEY to your .env file.")
+key_rotator = APIKeyRotator(api_keys)
 
-# Configure Google Generative AI with API key
-genai.configure(api_key=GOOGLE_API_KEY)
+def save_partial_output(path: str, data: Any):
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        print(f"💾 Partial output saved to: {path}")
+    except Exception as e:
+        print(f"⚠️ Failed to save partial output to {path}: {e}")
+
+
 
 def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
     """
@@ -117,48 +137,43 @@ class SupportDependencies:
     original_source_file_content: str # Renamed from vulnerable_code_content
 
 class GeminiAgent:
-    def __init__(self, model_name: str, system_prompt: str):
+    def __init__(self, model_name: str, system_prompt: str, key_rotator: APIKeyRotator):
+        self.model_name = model_name
+        self.system_prompt = system_prompt
+        self.key_rotator = key_rotator
+        self._configure_genai()
+
+    def _configure_genai(self):
+        key = self.key_rotator.get_current_key()
+        genai.configure(api_key=key)
         self.model = genai.GenerativeModel(
-            model_name=model_name,
-            system_instruction=system_prompt
+            model_name=self.model_name,
+            system_instruction=self.system_prompt
         )
-        
+
     async def run(self, prompt: str, deps: Optional[SupportDependencies] = None):
-        response = self.model.generate_content(prompt)
-        
-        class Result:
-            def __init__(self, text):
-                self.data = text
-                
-        return Result(response.text)
+        for attempt in range(len(self.key_rotator.api_keys)):
+            try:
+                response = self.model.generate_content(prompt)
+                return type("Result", (), {"data": response.text})
+            except Exception as e:
+                if "quota" in str(e).lower() or "rate limit" in str(e).lower():
+                    print(f"⚠️ API quota/rate limit hit: {e}")
+                    self.key_rotator.rotate_key()
+                    self._configure_genai()
+                else:
+                    raise e
+        raise RuntimeError("All API keys exhausted or failed.")
 
-patch_porter_agent = GeminiAgent(
-    model_name='gemini-2.5-pro-preview-05-06', # Or your preferred model
-    system_prompt="""You are an advanced security patching assistant. Your primary task is to generate a correctly formatted unified diff (.diff) file that successfully applies security patches.
 
-You will be given:
-1. An 'Original Source File' (the vulnerable code).
-2. A '.rej File Content' (containing rejected hunks from a previously failed patch application).
-
-Your goal is to:
-- Analyze the rejected hunk(s) in the '.rej File Content' to understand why the original patch application failed.
-- Modify the hunk(s) so that they apply cleanly and correctly to the provided 'Original Source File'.
-- Ensure your output is a valid unified diff that can be applied using a standard utility like `patch -p1`.
-
-Constraints:
-- Your output MUST be ONLY the unified diff. Do not include any explanations, comments, or any other text.
-- The diff must be in the correct unified diff format (starting with `--- a/...` and `+++ b/...`).
-- Do not alter unrelated code in the 'Original Source File'.
-- Only modify what is absolutely necessary within the hunk(s) to make the patch apply correctly and achieve the intended security remediation.
-"""
-)
 
 async def process_single_entry(
     rej_content: str,          # Content from rej_file_content
     original_source_content: str, # Content from downstream_file_content
     target_filename_for_diff: str, # Original filename for context in diff headers
     vulnerability_id: str,
-    failure_details: Dict[str, Any]
+    failure_details: Dict[str, Any],
+    patch_porter_agent: GeminiAgent
 ):
     """
     Processes a single vulnerability entry using the Gemini agent to generate a corrected diff.
@@ -245,22 +260,56 @@ async def process_single_entry(
 async def main():
     parser = argparse.ArgumentParser(description="Process vulnerability JSON, generate corrected diffs using an LLM, and output an updated JSON.")
     parser.add_argument("input_json_file_path", help="Path to the input JSON file.")
-    parser.add_argument("target_downstream_version", help="The downstream_version to filter by (e.g., '14').")
+    parser.add_argument(
+        "--target_downstream_version", "-v",
+        help="(Optional) Filter by specific downstream_version (e.g., '14'). If not provided, all versions will be processed.",
+        default=None
+    )
     parser.add_argument("--output_json_path", "-o", help="Path to save the output JSON file (with generated diffs). Defaults to outputs/approach2_output_diff_android_{version}_{timestamp}.json", default=None)
     
     args = parser.parse_args()
 
+    system_prompt="""You are an advanced security patching assistant. Your primary task is to generate a correctly formatted unified diff (.diff) file that successfully applies security patches.
+    You will be given:
+    1. An 'Original Source File' (the vulnerable code).
+    2. A '.rej File Content' (containing rejected hunks from a previously failed patch application).
+
+    Your goal is to:
+    - Analyze the rejected hunk(s) in the '.rej File Content' to understand why the original patch application failed.
+    - Modify the hunk(s) so that they apply cleanly and correctly to the provided 'Original Source File'.
+    - Ensure your output is a valid unified diff that can be applied using a standard utility like `patch -p1`.
+
+    Constraints:
+    - Your output MUST be ONLY the unified diff. Do not include any explanations, comments, or any other text.
+    - The diff must be in the correct unified diff format (starting with `--- a/...` and `+++ b/...`).
+    - Do not alter unrelated code in the 'Original Source File'.
+    - Only modify what is absolutely necessary within the hunk(s) to make the patch apply correctly and achieve the intended security remediation.
+    """
+
+    patch_porter_agent = GeminiAgent(
+        model_name="gemini-2.5-pro-preview-05-06",
+        system_prompt=system_prompt,
+        key_rotator=key_rotator
+    )
+
+
     timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    version_label = args.target_downstream_version or "all_versions"
+
 
     output_json_path_to_use = args.output_json_path
     if output_json_path_to_use is None:
         outputs_dir = "outputs/approach2_results" 
         os.makedirs(outputs_dir, exist_ok=True)
-        output_json_path_to_use = os.path.join(outputs_dir, f"approach2_output_diff_android_{args.target_downstream_version}_{timestamp_str}.json")
+        output_json_path_to_use = os.path.join(
+            outputs_dir,
+            f"approach2_output_diff_android_{version_label}_{timestamp_str}.json"
+        )
+
 
     report_data = {
         "run_timestamp": timestamp_str,
-        "target_downstream_version": args.target_downstream_version,
+        "target_downstream_version": args.target_downstream_version or "all_versions",
         "input_json_file": args.input_json_file_path,
         "main_output_json_file_with_diffs": output_json_path_to_use,
         "summary": {
@@ -290,12 +339,19 @@ async def main():
 
     output_data = copy.deepcopy(input_data)
 
+    report_dir = os.path.join("outputs", "report")
+    os.makedirs(report_dir, exist_ok=True)
+    report_filename = os.path.join(
+        report_dir,
+        f"report_diff_{version_label}_{timestamp_str}.json"
+    )
+
     for vulnerability_item in output_data:
         vulnerability_id = vulnerability_item.get("id", "unknown_vuln_id")
         failures = vulnerability_item.get("failures", [])
 
         for failure in failures:
-            if failure.get("downstream_version") == args.target_downstream_version:
+            if args.target_downstream_version is None or failure.get("downstream_version") == args.target_downstream_version:
                 file_conflicts = failure.get("file_conflicts", [])
                 for file_conflict in file_conflicts:
                     report_data["summary"]["total_file_conflicts_matching_version"] += 1
@@ -324,17 +380,25 @@ async def main():
                         original_source_content=original_source_for_llm,
                         target_filename_for_diff=target_filename,
                         vulnerability_id=vulnerability_id,
-                        failure_details=failure 
+                        failure_details=failure,
+                        patch_porter_agent=patch_porter_agent
                     )
 
                     if generated_diff is not None: # Even if it's a warning, we store what LLM gave
                         file_conflict.update(generated_diff)
                         report_data["summary"]["files_with_llm_diff_successfully_generated"] += 1
                         report_data["successfully_generated_diffs_log"].append({
-                            "vulnerability_id": vulnerability_id, "file_name": target_filename,
+                            "vulnerability_id": vulnerability_id,
+                            "file_name": target_filename,
                             "patch_sha": failure.get('downstream_patch', 'N/A'),
+                            "downstream_version": failure.get("downstream_version", "N/A"),  # ✅
                             "diff_preview": generated_diff["downstream_llm_diff_output"][:100] + "..." if generated_diff else "None"
                         })
+
+                        save_partial_output(output_json_path_to_use, output_data)
+                        save_partial_output(report_filename, report_data)
+
+
                     else: # This means process_single_entry returned None (e.g. type error, empty content before LLM, or exception during LLM call)
                         report_data["summary"]["files_with_llm_diff_generation_errors_or_skipped_in_func"] += 1
                         report_data["skipped_or_errored_diff_generation_log"].append({
@@ -350,9 +414,6 @@ async def main():
     except IOError as e:
         print(f"Error writing main output JSON to '{output_json_path_to_use}': {e}")
 
-    report_dir = os.path.join("outputs", "report")
-    os.makedirs(report_dir, exist_ok=True)
-    report_filename = os.path.join(report_dir, f"report_diff_{args.target_downstream_version}_{timestamp_str}.json")
     try:
         with open(report_filename, "w", encoding="utf-8") as f_report:
             json.dump(report_data, f_report, indent=4)
