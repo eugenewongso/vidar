@@ -11,6 +11,9 @@ from metrics.distance.edit_distance import (
     normalized_edit_similarity,
 )
 from datetime import datetime
+import io
+from unidiff import PatchSet
+import re
 
 MAX_TOKENS = 8192
 
@@ -24,6 +27,52 @@ def clean_code(code):
     if code.endswith("```"):
         code = code.rsplit('```', 1)[0]
     return code.strip()
+
+def clean_patch_content(patch_content: str, target_file: str) -> str:
+    def normalize(p):
+        return p.strip().lstrip("ab/")
+
+    try:
+        patch_set = PatchSet(io.StringIO(patch_content))
+        for patched_file in patch_set:
+            if (
+                normalize(patched_file.path) == normalize(target_file)
+                or normalize(patched_file.source_file) == normalize(target_file)
+                or normalize(patched_file.target_file) == normalize(target_file)
+            ):
+                return str(patched_file).strip()
+        return None
+    except Exception as e:
+        print(f"⚠️ Error parsing patch with unidiff: {e}")
+        return None
+
+def clean_diff_text(diff_text_str: str) -> str:
+    """
+    Removes standard diff headers (--- a/..., +++ b/..., --- original, +++ patched)
+    and returns only the hunk content starting from the first '@@ '.
+    If no '@@ ' is found, returns an empty string, as it implies no comparable hunk data.
+    """
+
+    print(diff_text_str)
+    if not isinstance(diff_text_str, str):
+        return ""
+    
+    lines = diff_text_str.splitlines() # Work with lines without keepends for easier joining
+    # print("lines", lines)
+    
+    hunk_start_index = -1
+    for i, line in enumerate(lines):
+        if line.startswith("@@ "):
+            hunk_start_index = i
+            break
+            
+    if hunk_start_index != -1:
+        # If a hunk header is found, take all lines from there and rejoin
+        return "\n".join(lines[hunk_start_index:])
+    else:
+        # No hunk data found (e.g., empty diff, or diff only showed file mode changes)
+        return ""
+
 
 def get_language_from_filename(filename):
     ext = filename.lower().rsplit('.', 1)[-1]
@@ -87,6 +136,9 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     results_json = f"results/summary_{timestamp}.json"
     results_csv = f"results/summary_{timestamp}.csv"
+    cleaned_inputs_json = f"results/cleaned_inputs_{timestamp}.json"
+    cleaned_inputs = []
+
 
     os.makedirs(os.path.dirname(results_json), exist_ok=True)
     os.makedirs(os.path.dirname(results_csv), exist_ok=True)
@@ -121,20 +173,36 @@ def main():
                 for conflict in file_conflicts:
                     file_name = conflict.get("file_name", "unknown")
                     runtime_seconds = conflict.get("runtime_seconds", None)
-                    upstream_content = clean_code(conflict.get("downstream_patch_content", ""))
-                    downstream_content = clean_code(conflict.get("downstream_llm_diff_output", ""))
+                    raw_patch = failure.get("downstream_patch_content", "")
+                    file_specific_patch = clean_patch_content(raw_patch, file_name)
 
 
-                    print(f"\n🔍 Comparing LLM patch vs .rej for {file_name} in {cve_id} ({downstream_version})")
+                    upstream_content = clean_diff_text(file_specific_patch)
+                    downstream_content = clean_diff_text(conflict.get("diff_patched_downstream_file_content", ""))
+
+
+                    print(f"\n🔍 Comparing LLM patch vs ground truth patch for {file_name} in {cve_id} ({downstream_version})")
                     metrics = compute_metrics(upstream_content, downstream_content, file_name)
+
+                    cleaned_inputs.append({
+                        "cve_id": cve_id,
+                        "downstream_version": downstream_version,
+                        "file_name": file_name,
+                        "runtime_seconds": runtime_seconds,
+                        "ground_truth_diff": file_specific_patch,
+                        "upstream_plus_llm_generated_patch": conflict.get("diff_patched_downstream_file_content", ""),
+                        "cleaned_ground_truth": upstream_content,
+                        "cleaned_upstream_plus_llm": downstream_content,
+                    })
+
 
                     result_entry = {
                         "cve_id": cve_id,
                         "downstream_version": downstream_version,
                         "file_name": file_name,
                         "runtime_seconds": runtime_seconds,
-                        "rej_file_diff": upstream_content,
-                        "llm_generated_patch": downstream_content,
+                        "cleaned_ground_truth": upstream_content,
+                        "cleaned_upstream_plus_llm": downstream_content,
                         "metrics": metrics,
                     }
 
@@ -175,6 +243,12 @@ def main():
                             header_written = True
                         writer.writerow(flat)
 
+    with open(cleaned_inputs_json, "w") as cf:
+        json.dump(cleaned_inputs, cf, indent=2)
+
+    print(f"\n📄 Cleaned comparison inputs saved to: {cleaned_inputs_json}")
+
+        
     print(f"\n✅ Incremental results saved to:\n  JSON: {results_json}\n  CSV: {results_csv}")
 
 if __name__ == "__main__":

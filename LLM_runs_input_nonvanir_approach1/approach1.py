@@ -127,7 +127,7 @@ async def process_single_entry(
         print(f"{reason} for {output_filename_base} in {vulnerability_id}")
         return None, reason, None
     if not isinstance(vuln_code_content, str):
-        reason = f"Skipping entry because vuln_code_content (from downstream_file_content) is not a string."
+        reason = f"Skipping entry because vuln_code_content (from downstream_file_content_patched_upstream_only) is not a string."
         print(f"{reason} for {output_filename_base} in {vulnerability_id}")
         return None, reason, None
 
@@ -327,7 +327,8 @@ async def main():
                         continue
                     
                     patch_content = file_conflict.get("rej_file_content")
-                    vuln_code_content = file_conflict.get("downstream_file_content")
+                    vuln_code_content = file_conflict.get("downstream_file_content_patched_upstream_only")
+                    original_vuln_code_content = file_conflict.get("downstream_file_content")
                     original_file_name = file_conflict.get("file_name")
 
                     report_data["summary"]["total_file_conflicts_matching_version"] += 1
@@ -338,7 +339,7 @@ async def main():
                     elif not patch_content:
                         skip_reason = "Missing 'rej_file_content'"
                     elif not vuln_code_content:
-                        skip_reason = "Missing 'downstream_file_content'"
+                        skip_reason = "Missing 'downstream_file_content_patched_upstream_only'"
 
                     if skip_reason:
                         print(f"Skipping file_conflict in {vulnerability_id} (file: {original_file_name or 'N/A'}) due to: {skip_reason}.")
@@ -369,7 +370,7 @@ async def main():
                         # Calculate and add LLM_diff_content
                         if vuln_code_content and modified_code:
                             diff = difflib.unified_diff(
-                                vuln_code_content.splitlines(keepends=True),
+                                original_vuln_code_content.splitlines(keepends=True),
                                 modified_code.splitlines(keepends=True),
                                 fromfile='original',
                                 tofile='patched'

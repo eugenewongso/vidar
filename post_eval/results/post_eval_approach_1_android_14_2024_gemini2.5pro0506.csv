@@ -1,0 +1,12 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_precision,codebert_recall,codebert_f1,codebert_f3
+ASB-A-316891059,14,src/com/android/settings/search/SearchResultTrampoline.java,115.49,0.6829,193,0.4497,0.8573,271,166,105,0.8978,0.8036,0.8481,0.8121
+ASB-A-333364513,14,src/com/android/settings/search/SearchResultTrampoline.java,85.92,0.6829,193,0.4497,0.8574,271,166,105,0.8978,0.8036,0.8481,0.8121
+ASB-A-328068777,14,service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java,184.67,0.0,804,0.2025,0.7868,470,124,346,0.8265,0.8934,0.8586,0.8862
+ASB-A-313428840,14,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,1.5,0.0,242,0.0,0.0622,112,112,0,Candidate code and ground truth code must not be empty.
+ASB-A-353712853,14,services/usb/java/com/android/server/usb/UsbDeviceManager.java,7.17,0.0,164,0.0,0.0623,112,112,0,Candidate code and ground truth code must not be empty.
+ASB-A-311374917,14,services/core/java/com/android/server/pm/InstallPackageHelper.java,64.67,0.0,164,0.0,0.0705,84,84,0,Candidate code and ground truth code must not be empty.
+ASB-A-319081336,14,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,1.0,0.0,801,0.0,0.0864,725,725,0,Candidate code and ground truth code must not be empty.
+ASB-A-318374503,14,system/stack/btm/btm_sec.cc,62.05,0.0,56,0.0,0.0895,30,30,0,Candidate code and ground truth code must not be empty.
+ASB-A-336323279,14,services/core/java/com/android/server/appop/AppOpsService.java,600.01,0.0,476,0.0,0.0913,241,241,0,Candidate code and ground truth code must not be empty.
+ASB-A-293602970,14,services/core/java/com/android/server/pm/UserManagerService.java,526.9,0.0,6966,0.0444,skipped,4824,290,4534,0.7626,0.8504,0.8041,0.8407
+ASB-A-304983146,14,services/core/java/com/android/server/appop/AppOpsService.java,534.61,0.0,1343,0.0948,0.7646,1258,274,984,0.7727,0.8595,0.8138,0.8499

@@ -1,0 +1,262 @@
+[
+  {
+    "cve_id": "ASB-A-296915500",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java",
+    "runtime_seconds": 93.64,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (c) 2008-2009, Motorola, Inc.\n  *\n@@ -33,6 +32,10 @@\n \n package com.android.bluetooth.opp;\n \n+import static android.os.UserHandle.myUserId;\n+\n+import android.bluetooth.BluetoothProfile;\n+import android.bluetooth.BluetoothProtoEnums;\n import android.content.ContentResolver;\n import android.content.Context;\n import android.content.res.AssetFileDescriptor;\n@@ -51,6 +54,7 @@\n import java.io.FileInputStream;\n import java.io.FileNotFoundException;\n import java.io.IOException;\n+import java.util.Objects;\n \n /**\n  * This class stores information about a single sending file It will only be\n@@ -281,5 +285,4 @@\n         }\n         return length;\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 163,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 70,
+      "token_count_total": 70,
+      "cosine_similarity_openai": 0.1247
+    }
+  },
+  {
+    "cve_id": "ASB-A-364027949",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 79.2,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```cc\n /******************************************************************************\n  *\n  *  Copyright 2008-2012 Broadcom Corporation\n@@ -735,6 +734,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+ \n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -769,9 +773,14 @@\n     return;\n   }\n \n-  uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n+  uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);\n   reason = GATT_NOT_FOUND;\n@@ -1435,5 +1444,4 @@\n         break;\n     }\n   }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 203,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 119,
+      "token_count_total": 119,
+      "cosine_similarity_openai": 0.1495
+    }
+  },
+  {
+    "cve_id": "ASB-A-364025411",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 73.21,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```cc\n /******************************************************************************\n  *\n  *  Copyright 2008-2012 Broadcom Corporation\n@@ -735,6 +734,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +774,11 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n@@ -1435,5 +1444,4 @@\n         break;\n     }\n   }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 172,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 104,
+      "token_count_total": 104,
+      "cosine_similarity_openai": 0.1515
+    }
+  },
+  {
+    "cve_id": "ASB-A-340480881",
+    "downstream_version": "14",
+    "file_name": "PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java",
+    "runtime_seconds": 75.22,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2017 The Android Open Source Project\n  *\n@@ -258,11 +257,11 @@\n             PermissionControllerStatsLog.write(REVIEW_PERMISSIONS_FRAGMENT_RESULT_REPORTED,\n                     changeId, mViewModel.getPackageInfo().applicationInfo.uid,\n                     group.getPackageName(),\n-                    permission.getName(), permission.isGrantedIncludingAppOp());\n+                    permission.getName(), permission.isGranted());\n             Log.v(LOG_TAG, \"Permission grant via permission review changeId=\" + changeId + \" uid=\"\n                     + mViewModel.getPackageInfo().applicationInfo.uid + \" packageName=\"\n                     + group.getPackageName() + \" permission=\"\n-                    + permission.getName() + \" granted=\" + permission.isGrantedIncludingAppOp());\n+                    + permission.getName() + \" granted=\" + permission.isGranted());\n         }\n     }\n \n@@ -495,5 +494,4 @@\n             }\n         }\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 166,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 79,
+      "token_count_total": 79,
+      "cosine_similarity_openai": 0.1077
+    }
+  },
+  {
+    "cve_id": "ASB-A-369103643",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/wm/WindowOrganizerController.java",
+    "runtime_seconds": 128.7,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2020 The Android Open Source Project\n  *\n@@ -1190,10 +1189,12 @@\n                 final IBinder callerActivityToken = operation.getActivityToken();\n                 final Intent activityIntent = operation.getActivityIntent();\n                 final Bundle activityOptions = operation.getBundle();\n-                final int result = mService.getActivityStartController()\n-                        .startActivityInTaskFragment(taskFragment, activityIntent, activityOptions,\n+                final SafeActivityOptions safeOptions =\n+                        SafeActivityOptions.fromBundle(activityOptions, caller.mPid, caller.mUid);\n+                final int result = waitAsyncStart(() -> mService.getActivityStartController()\n+                        .startActivityInTaskFragment(taskFragment, activityIntent, safeOptions,\n                                 callerActivityToken, caller.mUid, caller.mPid,\n-                                errorCallbackToken);\n+                                errorCallbackToken));\n                 if (!isStartResultSuccessful(result)) {\n                     sendTaskFragmentOperationFailure(organizer, errorCallbackToken, taskFragment,\n                             opType, convertStartFailureToThrowable(result, activityIntent));\n@@ -2024,5 +2025,4 @@\n                         + result + \" when starting \" + intent);\n         }\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 196,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 99,
+      "token_count_total": 99,
+      "cosine_similarity_openai": 0.097
+    }
+  },
+  {
+    "cve_id": "ASB-A-364026473",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 266.33,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```cc\n /******************************************************************************\n  *\n  *  Copyright 2008-2012 Broadcom Corporation\n@@ -735,6 +734,11 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n+\n   uint16_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n@@ -770,6 +774,11 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    return;\n+  }\n   uint16_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n@@ -1435,5 +1444,4 @@\n         break;\n     }\n   }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 172,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 104,
+      "token_count_total": 104,
+      "cosine_similarity_openai": 0.1515
+    }
+  },
+  {
+    "cve_id": "ASB-A-364027038",
+    "downstream_version": "14",
+    "file_name": "system/stack/gatt/gatt_sr.cc",
+    "runtime_seconds": 7.86,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```cc\n /******************************************************************************\n  *\n  *  Copyright 2008-2012 Broadcom Corporation\n@@ -735,7 +734,13 @@\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n \n-  uint16_t msg_len =\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    LOG(ERROR) << __func__ << \": Channel closed, cid=\" << cid;\n+    return;\n+  }\n+\n+  size_t msg_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(msg_len);\n   reason = gatt_build_primary_service_rsp(p_msg, tcb, cid, op_code, s_hdl,\n@@ -770,7 +775,13 @@\n   }\n \n   uint16_t payload_size = gatt_tcb_get_payload_size_tx(tcb, cid);\n-  uint16_t buf_len =\n+\n+  // This can happen if the channel is already closed.\n+  if (payload_size == 0) {\n+    LOG(ERROR) << __func__ << \": Channel closed, cid=\" << cid;\n+    return;\n+  }\n+  size_t buf_len =\n       (uint16_t)(sizeof(BT_HDR) + payload_size + L2CAP_MIN_OFFSET);\n \n   BT_HDR* p_msg = (BT_HDR*)osi_calloc(buf_len);\n@@ -1435,5 +1446,4 @@\n         break;\n     }\n   }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 233,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 147,
+      "token_count_total": 147,
+      "cosine_similarity_openai": 0.1592
+    }
+  },
+  {
+    "cve_id": "ASB-A-352542820",
+    "downstream_version": "14",
+    "file_name": "src/com/android/settings/users/UserSettings.java",
+    "runtime_seconds": 20.9,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2012 The Android Open Source Project\n  *\n@@ -465,7 +464,7 @@\n     @Override\n     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {\n         int pos = 0;\n-        if (!isCurrentUserAdmin() && canSwitchUserNow() && !isCurrentUserGuest()) {\n+        if (!isCurrentUserAdmin() && canSwitchUserNow() && !isCurrentUserGuest() && !mUserManager.isProfile()) {\n             String nickname = mUserManager.getUserName();\n             MenuItem removeThisUser = menu.add(0, MENU_REMOVE_USER, pos++,\n                     getResources().getString(R.string.user_remove_user_menu, nickname));\n@@ -1755,5 +1754,4 @@\n                     return niks;\n                 }\n             };\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 149,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 72,
+      "token_count_total": 72,
+      "cosine_similarity_openai": 0.1248
+    }
+  },
+  {
+    "cve_id": "ASB-A-289375038",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "runtime_seconds": null,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2012 The Android Open Source Project\n  *\n@@ -5561,5 +5560,4 @@\n     public boolean isMock() {\n         return false;\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 46,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 29,
+      "token_count_total": 29,
+      "cosine_similarity_openai": 0.1416
+    }
+  },
+  {
+    "cve_id": "ASB-A-289811388",
+    "downstream_version": "14",
+    "file_name": "android/app/src/com/android/bluetooth/btservice/AdapterService.java",
+    "runtime_seconds": 204.46,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2012 The Android Open Source Project\n  *\n@@ -18,6 +17,7 @@\n package com.android.bluetooth.btservice;\n \n import static android.bluetooth.BluetoothDevice.TRANSPORT_AUTO;\n+import static android.bluetooth.BluetoothDevice.BOND_NONE;\n import static android.text.format.DateUtils.MINUTE_IN_MILLIS;\n import static android.text.format.DateUtils.SECOND_IN_MILLIS;\n \n@@ -2978,6 +2978,13 @@\n             } catch (RuntimeException e) {\n                 receiver.propagateException(e);\n             }\n+\n+        // If the device is unbonded, clear all related permissions\n+        if (bondState == BluetoothDevice.BOND_NONE) {\n+            setMessageAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setPhonebookAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+            setSimAccessPermission(device, BluetoothDevice.ACCESS_UNKNOWN);\n+        }\n         }\n         private int getSimAccessPermission(\n                 BluetoothDevice device, AttributionSource attributionSource) {\n@@ -5561,5 +5568,4 @@\n     public boolean isMock() {\n         return false;\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 198,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 96,
+      "token_count_total": 96,
+      "cosine_similarity_openai": 0.1354
+    }
+  },
+  {
+    "cve_id": "ASB-A-375623125",
+    "downstream_version": "14",
+    "file_name": "services/core/java/com/android/server/appop/AppOpsService.java",
+    "runtime_seconds": null,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2012 The Android Open Source Project\n  *\n@@ -6694,5 +6693,4 @@\n             return null;\n         }\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 41,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 26,
+      "token_count_total": 26,
+      "cosine_similarity_openai": 0.1592
+    }
+  },
+  {
+    "cve_id": "ASB-A-353240784",
+    "downstream_version": "14",
+    "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+    "runtime_seconds": null,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2011 The Android Open Source Project\n  *\n@@ -4957,5 +4956,4 @@\n             }\n         }\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 39,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 25,
+      "token_count_total": 25,
+      "cosine_similarity_openai": 0.1662
+    }
+  },
+  {
+    "cve_id": "ASB-A-382064697",
+    "downstream_version": "14",
+    "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+    "runtime_seconds": null,
+    "cleaned_ground_truth": "",
+    "cleaned_upstream_plus_llm": "@@ -1,4 +1,3 @@\n-```java\n /*\n  * Copyright (C) 2010 The Android Open Source Project\n  *\n@@ -24778,5 +24777,4 @@\n         return getRoleHolderPackageNameOnUser(\n                 RoleManager.ROLE_FINANCED_DEVICE_KIOSK, UserHandle.USER_ALL);\n     }\n-}\n-```+}",
+    "metrics": {
+      "relative_line_count_similarity": 0.0,
+      "normalized_edit_similarity": 0.0,
+      "token_level_edit_distance": 49,
+      "codebert_score": {
+        "error": "Candidate code and ground truth code must not be empty."
+      },
+      "token_count_upstream": 0,
+      "token_count_downstream": 27,
+      "token_count_total": 27,
+      "cosine_similarity_openai": 0.133
+    }
+  }
+]

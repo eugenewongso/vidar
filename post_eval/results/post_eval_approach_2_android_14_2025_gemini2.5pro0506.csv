@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_precision,codebert_recall,codebert_f1,codebert_f3
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,93.64,0.6136,201,0.2991,0.768,231,161,70,0.8592,0.7485,0.8,0.7583
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,79.2,0.8537,198,0.435,0.7749,323,204,119,0.8898,0.8832,0.8865,0.8839
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,73.21,0.7561,48,0.3988,0.7676,308,204,104,0.8969,0.8826,0.8897,0.884
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,75.22,0.1538,46,0.741,0.885,139,60,79,0.9054,0.9364,0.9207,0.9332
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,128.7,0.0,109,0.4541,0.8475,151,52,99,0.8435,0.9004,0.871,0.8944
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,266.33,0.7561,48,0.3988,0.7662,308,204,104,0.8969,0.8826,0.8897,0.884
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,7.86,0.9024,114,0.3323,0.7671,351,204,147,0.872,0.8806,0.8762,0.8797
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,20.9,0.0,45,0.6846,0.8034,124,52,72,0.8827,0.9318,0.9066,0.9267
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,,0.0,46,0.0,0.1417,29,0,29,Candidate code and ground truth code must not be empty.
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,204.46,0.0,198,0.0,0.135,96,0,96,Candidate code and ground truth code must not be empty.
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,,0.0591,1422,0.0149,0.3849,1085,1059,26,0.7285,0.5281,0.6123,0.543
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,,0.1392,439,0.0269,0.31,482,457,25,0.7008,0.5283,0.6025,0.5417
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,,0.0982,46,0.0321,0.5376,476,449,27,0.7096,0.5728,0.6339,0.5841

@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,93.64,0.0,163,0.0,0.1247,70,0,70,Candidate code and ground truth code must not be empty.
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,79.2,0.0,203,0.0,0.1495,119,0,119,Candidate code and ground truth code must not be empty.
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,73.21,0.0,172,0.0,0.1515,104,0,104,Candidate code and ground truth code must not be empty.
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,75.22,0.0,166,0.0,0.1077,79,0,79,Candidate code and ground truth code must not be empty.
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,128.7,0.0,196,0.0,0.097,99,0,99,Candidate code and ground truth code must not be empty.
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,266.33,0.0,172,0.0,0.1515,104,0,104,Candidate code and ground truth code must not be empty.
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,7.86,0.0,233,0.0,0.1592,147,0,147,Candidate code and ground truth code must not be empty.
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,20.9,0.0,149,0.0,0.1248,72,0,72,Candidate code and ground truth code must not be empty.
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,,0.0,46,0.0,0.1416,29,0,29,Candidate code and ground truth code must not be empty.
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,204.46,0.0,198,0.0,0.1354,96,0,96,Candidate code and ground truth code must not be empty.
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,,0.0,41,0.0,0.1592,26,0,26,Candidate code and ground truth code must not be empty.
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,,0.0,39,0.0,0.1662,25,0,25,Candidate code and ground truth code must not be empty.
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,,0.0,49,0.0,0.133,27,0,27,Candidate code and ground truth code must not be empty.
