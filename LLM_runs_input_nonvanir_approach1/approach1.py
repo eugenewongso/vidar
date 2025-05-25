@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 import google.generativeai as genai
 from typing import Optional, List, Dict, Any
+import tiktoken
+import re
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -39,10 +42,58 @@ if not api_keys or api_keys == [""]:
 key_rotator = APIKeyRotator(api_keys)
 
 
+def count_tokens_general(text: str):
+    """
+    Estimate token count based on word and character counts.
+
+    Args:
+        text (str): Input text.
+
+    Returns:
+        dict: Estimated token counts based on words and characters.
+    """
+    # Rough estimate: ~1 token = 0.75 words or ~4 chars/token
+    word_count = len(re.findall(r'\w+', text))
+    char_estimate = len(text) // 4
+    return {
+        "word_based": word_count,
+        "char_based": char_estimate
+    }
+
+
+def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
+    """
+    Count tokens using the Tiktoken library.
+
+    Args:
+        text (str): Input text.
+        model (str): Model name.
+
+    Returns:
+        int: Total token count.
+    """
+    try:
+        enc = tiktoken.encoding_for_model(model)
+    except KeyError:
+        enc = tiktoken.get_encoding("cl100k_base")
+    return len(enc.encode(text))
+
+def get_all_token_counts(text: str, project: str = "", skip_gemini: bool = False):
+    result = {
+        "openai": count_tokens_tiktoken(text),
+        "general": count_tokens_general(text),
+    }
+    return result
+
 @dataclass
 class SupportDependencies: 
     diff_content: str
     vulnerable_code_content: str
+
+@dataclass
+class LLMResult:
+    data: str
+    token_count: Optional[int]
 
 class GeminiAgent:
     def __init__(self, model_name: str, system_prompt: str, key_rotator: APIKeyRotator):
@@ -60,6 +111,7 @@ class GeminiAgent:
         )
 
     async def run(self, prompt: str, deps: Optional[SupportDependencies] = None):
+
         for attempt in range(len(self.key_rotator.api_keys)):
             try:
                 response = self.model.generate_content(prompt)
@@ -180,10 +232,12 @@ async def process_single_entry(
     try:
         result = await patch_porter_agent.run(task_prompt)
         modified_code = result.data.strip()
+        gemini_token_count = result.token_count
         end_time = time.time()
         time_taken = end_time - start_time
         print(f"✅ LLM processing successful for: {vulnerability_id} - {output_filename_base} (took {time_taken:.2f}s)")
-        return modified_code, None, time_taken
+        return modified_code, None, time_taken, result.token_count
+
     except Exception as e:
         end_time = time.time()
         time_taken = end_time - start_time
@@ -354,7 +408,7 @@ async def main():
                         continue
                     
                     report_data["summary"]["files_attempted_for_llm"] += 1
-                    modified_code, error_reason_from_processing, time_taken_for_llm = await process_single_entry(
+                    modified_code, error_reason_from_processing, time_taken_for_llm, gemini_token_count = await process_single_entry(
                         patch_content=patch_content,
                         vuln_code_content=vuln_code_content,
                         output_filename_base=original_file_name,
@@ -363,6 +417,10 @@ async def main():
                     )
 
                     if modified_code is not None:
+                        token_counts = get_all_token_counts(modified_code, project="", skip_gemini=True)
+                        if gemini_token_count is not None:
+                            token_counts["gemini"] = gemini_token_count
+                        file_conflict["llm_output_token_counts"] = token_counts
                         file_conflict["downstream_patched_file_llm_output"] = modified_code
                         if time_taken_for_llm is not None:
                             file_conflict["llm_time_taken_seconds"] = round(time_taken_for_llm, 2)

@@ -83,8 +83,8 @@
         "file_conflicts": [
           {
             "file_name": "src/com/another/Sample.java",
-            "rej_file_content": "--- a/src/com/another/Sample.java\n+++ b/src/com/another/Sample.java\n@@ -1 +1 @@\n-    private String oldField;\n+    private String newFieldFromRej;",
-            "downstream_file_content": "package com.another;\npublic class Sample {\n    private String oldField;\n}"
+            "rej_file_content": "--- a/src/",
+            "downstream_file_content": "--- a/src/"
           }
         ]
       }

@@ -1,0 +1,14 @@
+cve_id,downstream_version,file_name,metrics_status,codebert_f1,codebert_f3,codebert_precision,codebert_recall,cosine_similarity_openai,normalized_edit_similarity,relative_line_count_similarity,token_count_ground_truth,token_count_llm_output,token_count_total,token_level_edit_distance
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,computed,0.9515,0.9552,0.947,0.9561,0.9876,0.9678,0.9683,1149,1165,2314,44
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,computed,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1385,1385,2770,0
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,computed,0.9935,0.9936,0.9935,0.9936,skipped_max_tokens,0.9986,1.0,7916,7924,15840,10
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,computed,1.0,1.0,1.0,1.0,skipped_max_tokens,1.0,1.0,4704,4704,9408,0
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,computed,0.9904,0.9905,0.9902,0.9905,skipped_max_tokens,0.9996,1.0,4699,4701,9400,1
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.945,0.9454,0.9446,0.9455,skipped_max_tokens,0.9894,0.9857,15700,15903,31603,62
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,computed,0.9513,0.9516,0.9509,0.9517,skipped_max_tokens,0.9886,0.9948,15700,15796,31496,67
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,computed,0.9966,0.9956,0.998,0.9953,skipped_max_tokens,skipped,0.9705,21712,21064,42776,7
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,computed,0.9404,0.9405,0.9402,0.9405,skipped_max_tokens,0.9979,0.9988,16871,16909,33780,33
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,computed,0.9189,0.8955,0.9498,0.8899,skipped_max_tokens,skipped,0.2323,76096,17764,93860,44187
