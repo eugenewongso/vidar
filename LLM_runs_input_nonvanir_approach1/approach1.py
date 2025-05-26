@@ -115,7 +115,11 @@ class GeminiAgent:
         for attempt in range(len(self.key_rotator.api_keys)):
             try:
                 response = self.model.generate_content(prompt)
-                return type("Result", (), {"data": response.text})
+                token_count = None
+                if hasattr(response, "usage_metadata") and response.usage_metadata:
+                    token_count = getattr(response.usage_metadata, "total_token_count", None)
+                return LLMResult(data=response.text, token_count=token_count)
+
             except Exception as e:
                 if "quota" in str(e).lower() or "rate limit" in str(e).lower():
                     print(f"⚠️ API quota/rate limit hit: {e}")
@@ -233,10 +237,11 @@ async def process_single_entry(
         result = await patch_porter_agent.run(task_prompt)
         modified_code = result.data.strip()
         gemini_token_count = result.token_count
+        print(f"Gemini token count: {gemini_token_count}")
         end_time = time.time()
         time_taken = end_time - start_time
         print(f"✅ LLM processing successful for: {vulnerability_id} - {output_filename_base} (took {time_taken:.2f}s)")
-        return modified_code, None, time_taken, result.token_count
+        return modified_code, None, time_taken, gemini_token_count
 
     except Exception as e:
         end_time = time.time()
@@ -245,7 +250,7 @@ async def process_single_entry(
         print(f"Error processing entry for {output_filename_base} in {vulnerability_id}: {e} (took {time_taken:.2f}s)")
         # Log more details from failure_details if needed
         print(f"  Failure details: Patch SHA: {failure_details.get('downstream_patch', 'N/A')}, Repo: {failure_details.get('repo_path', 'N/A')}")
-        return None, reason, time_taken
+        return None, reason, time_taken, 0
 
 
 async def main():

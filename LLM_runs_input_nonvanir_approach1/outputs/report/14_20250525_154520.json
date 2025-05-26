@@ -1,0 +1,22 @@
+{
+    "run_timestamp": "20250525_154520",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/test_1_CVE.json",
+    "main_output_json_file": "outputs/output_android_14_20250525_154520.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 1,
+        "files_attempted_for_llm": 1,
+        "files_successfully_processed_by_llm": 1,
+        "files_skipped_pre_llm_call": 0,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [
+        {
+            "vulnerability_id": "ASB-A-316891059",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "ddc11bc03ab48e885f652b89df5f92ff283bcd4a",
+            "llm_time_taken_seconds": 79.48
+        }
+    ],
+    "skipped_or_errored_files_log": []
+}

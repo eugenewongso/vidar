@@ -240,7 +240,7 @@ def validate_patch_applicability_in_repo(patch_content: str, repo_path: str) -> 
         return False, f"Error during patch validation: {str(e)}"
 
 
-async def process_single_entry_with_retry(
+async def process_single_entry_with_blind_retry(
     rej_content: str,
     original_source_content: str,
     target_filename_for_diff: str,
@@ -345,37 +345,7 @@ async def process_single_entry_with_retry(
     
     for attempt in range(max_retries):
         print(f"🔄 Attempt {attempt + 1} of {max_retries} for {target_filename_for_diff}")
-        
-        # Add retry-specific guidance to prompt
-        retry_guidance = ""
-        if attempt > 0:
-            prev_errors = []
-            for r in validation_results:
-                if not r["valid"]:
-                    if not r["format_valid"]:
-                        prev_errors.append(f"[Format Error] {r['format_error']}")
-                    elif not r["apply_valid"]:
-                        prev_errors.append(f"[Apply Error] {r['apply_error']}")
-
-            retry_guidance = f"""
-
-        IMPORTANT - Previous attempts failed validation:
-        {chr(10).join(f"- Attempt {i+1}: {err}" for i, err in enumerate(prev_errors))}
-
-        Please fix these issues and regenerate your diff.
-
-        Guidelines:
-        1. Start the diff with `--- a/{target_filename_for_diff}` and `+++ b/{target_filename_for_diff}`
-        2. Use valid hunk headers like `@@ -line,count +line,count @@`
-        3. The diff must apply cleanly using `patch -p1` to the provided original file
-        4. Do NOT include explanations or extra text — only the unified diff
-        5. Every line in each hunk must begin with a `+`, `-`, or space character.
-        """
-            if 'generated_diff' in locals():
-                retry_guidance += f"\nHere is a snippet of your last invalid diff:\n{generated_diff[:500]}"
-
-            print("Previous errors:", prev_errors)
-        task_prompt = base_task_prompt + retry_guidance
+        task_prompt = base_task_prompt
         
         try:
             start_time = time.monotonic()
@@ -654,7 +624,7 @@ async def main():
 
                     
                     # Use the new retry function
-                    generated_diff = await process_single_entry_with_retry(
+                    generated_diff = await process_single_entry_with_blind_retry(
                         rej_content=rej_content_for_llm,
                         original_source_content=original_source_for_llm,
                         target_filename_for_diff=target_filename,
