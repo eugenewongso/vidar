@@ -1,0 +1,5 @@
+logfire
+python-dotenv
+google-generativeai
+tiktoken
+unidiff

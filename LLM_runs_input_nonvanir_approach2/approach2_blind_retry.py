@@ -16,13 +16,8 @@ import tiktoken
 import subprocess
 import tempfile
 from unidiff import PatchSet
-# from google.cloud import aiplatform_v1beta1
-# from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
 from android_patch_manager import AndroidPatchManager
 from pathlib import Path
-
-
-# client = aiplatform_v1beta1.PredictionServiceClient()
 
 class APIKeyRotator:
     def __init__(self, api_keys: List[str]):
@@ -372,6 +367,7 @@ async def process_single_entry_with_retry(
         4. Do NOT include explanations or extra text — only the unified diff
         5. Every line in each hunk must begin with a `+`, `-`, or space character.
         """
+            # TODO ^^: remove guideline #5 and see how that affects the output
             # The 'snippet of your last invalid diff' is also omitted from the prompt for a blind retry.
             
         task_prompt = base_task_prompt + retry_guidance
@@ -675,7 +671,16 @@ async def main():
                         )
 
                     if generated_diff is not None:
-                        file_conflict.update(generated_diff)
+                        file_conflict.update(generated_diff) # Update the current file_conflict in output_data
+                        
+                        # Incrementally save the entire output_data after this file_conflict has been processed
+                        # and output_data has been updated.
+                        # Ensure vulnerability_item is accessible for the print message.
+                        # It should be, as file_conflict is nested within vulnerability_item's loops.
+                        current_fc_name_for_save = file_conflict.get("file_name", "unknown_file")
+                        vuln_id_for_save = vulnerability_item.get("id", "unknown_vuln_id")
+                        print(f"💾 Incrementally saving output after processing file: {current_fc_name_for_save} for vuln: {vuln_id_for_save}")
+                        save_partial_output(output_json_path_to_use, output_data)
                         
                         if generated_diff.get("llm_output_valid"):
                             report_data["summary"]["files_with_llm_diff_successfully_generated"] += 1

@@ -3,11 +3,10 @@ import subprocess
 import tempfile
 import re
 from pathlib import Path
-from google.cloud import aiplatform_v1beta1
-from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
 import tiktoken
+from typing import Optional # Added
 
-client = aiplatform_v1beta1.PredictionServiceClient()
+# Removed client = aiplatform_v1beta1.PredictionServiceClient()
 
 def parse_version(v):
     """Convert version strings like '12L' or '14' into tuples for comparison."""
@@ -48,28 +47,7 @@ class AndroidPatchManager:
 
         return repo_path
     
-    @staticmethod
-    def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
-        """
-        Count tokens using the Gemini model from Google Cloud AI Platform.
-
-        Args:
-            text (str): Input text to count tokens for.
-            project (str): Google Cloud project ID.
-            location (str): Location of the model.
-            model (str): Model name.
-
-        Returns:
-            int: Total token count.
-        """
-        publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
-        request = CountTokensRequest(
-            endpoint=publisher_model,
-            contents=[Content(role="user", parts=[Part(text=text)])]
-        )
-        response = client.count_tokens(request=request)
-        return response.total_tokens
-    
+    # Removed count_tokens_gemini staticmethod
     @staticmethod
     def count_tokens_general(text: str):
         """
@@ -109,14 +87,14 @@ class AndroidPatchManager:
         return len(enc.encode(text))
 
     @staticmethod
-    def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
+    def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None):
         """
-        Get token counts from multiple methods (OpenAI, general, Gemini).
+        Get token counts from multiple methods (OpenAI, general).
+        The Gemini token count is expected to be provided if available (e.g., from LLM response metadata).
 
         Args:
             text (str): Input text.
-            project (str): Google Cloud project ID.
-            skip_gemini (bool): Whether to skip Gemini token counting.
+            gemini_token_count (Optional[int]): Pre-calculated Gemini token count.
 
         Returns:
             dict: Token counts from different methods.
@@ -125,8 +103,8 @@ class AndroidPatchManager:
             "openai": AndroidPatchManager.count_tokens_tiktoken(text),
             "general": AndroidPatchManager.count_tokens_general(text),
         }
-        if not skip_gemini:
-            result["gemini"] = AndroidPatchManager.count_tokens_gemini(text, project)
+        if gemini_token_count is not None:
+            result["gemini"] = gemini_token_count
         return result
 
 
@@ -341,13 +319,13 @@ class AndroidPatchManager:
                 "inline_merge_conflicts": inline_conflicts,
                 "inline_merge_token_summary": total_inline_tokens,
                 "rej_file_content": f"```diff\n{content.strip()}\n```",
-                "rej_file_tokens": AndroidPatchManager.get_all_token_counts(content, project="neat-resolver-406722", skip_gemini=False),
+                "rej_file_tokens": AndroidPatchManager.get_all_token_counts(content),
                 "patch_apply_output": patch_error_output,
                 "inline_merge_output": merge_output,
                 "upstream_file_content": f"```{file_name.split('.')[-1]}\n{upstream_content.strip()}\n```" if upstream_content else "",
-                "upstream_file_tokens": AndroidPatchManager.get_all_token_counts(upstream_content, project="neat-resolver-406722", skip_gemini=False),
+                "upstream_file_tokens": AndroidPatchManager.get_all_token_counts(upstream_content),
                 "downstream_file_content": f"```{file_name.split('.')[-1]}\n{downstream_content.strip()}\n```" if downstream_content else "",
-                "downstream_file_tokens": AndroidPatchManager.get_all_token_counts(downstream_content, project="neat-resolver-406722", skip_gemini=False),
+                "downstream_file_tokens": AndroidPatchManager.get_all_token_counts(downstream_content),
                 "downstream_file_content_with_markers": f"```{file_name.split('.')[-1]}\n{downstream_with_conflict_markers.strip()}\n```" if downstream_with_conflict_markers else "",
 
             })
@@ -427,7 +405,7 @@ class AndroidPatchManager:
 
             # Count tokens for the formatted block
             token_counts = AndroidPatchManager.get_all_token_counts(
-                formatted_block, project="neat-resolver-406722", skip_gemini=True
+                formatted_block
             )
 
             conflicts.append({
@@ -461,7 +439,7 @@ class AndroidPatchManager:
             "upstream_commits": upstream_commits,
             "upstream_branch_used": "main",
             "upstream_patch_content": upstream_patch_content,
-            "upstream_patch_tokens": AndroidPatchManager.get_all_token_counts(upstream_patch_content, project="neat-resolver-406722"),
+            "upstream_patch_tokens": AndroidPatchManager.get_all_token_counts(upstream_patch_content),
             "total_downstream_versions_tested": 0,
             "successful_patches": 0,
             "failed_patches": 0,
@@ -538,7 +516,7 @@ class AndroidPatchManager:
                 "result": "success" if success else "failure",
                 "downstream_patch_content": downstream_patch_content,
                 "downstream_patch_tokens": AndroidPatchManager.get_all_token_counts(
-                    downstream_patch_content, project="neat-resolver-406722", skip_gemini=True
+                    downstream_patch_content
                 ),
             }
 
@@ -796,4 +774,3 @@ class AndroidPatchManager:
                 commit = url.split("+")[-1].lstrip("/")
                 commits.append(commit)
         return commits
-
