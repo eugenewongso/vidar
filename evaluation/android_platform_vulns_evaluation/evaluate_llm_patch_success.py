@@ -1,252 +1,161 @@
-import os
+"""
+This script processes a JSON dataset of Android CVE patching attempts,
+navigates to each local Git repository, checks out the relevant downstream branch,
+applies the upstream patch followed by the LLM-generated downstream patch,
+and records whether the patches succeeded or failed along with any output messages.
+
+It uses the AndroidPatchManager class to handle repo operations.
+
+Input:
+- JSON file with fields: id, upstream_patch_content, and failures (containing repo_path, branch_used, downstream_llm_diff_output)
+
+Output:
+- A new JSON file "patch_application_results.json" containing:
+  - Patch application results (success/failure)
+  - Patch outputs for debugging
+  - Any errors encountered
+
+Requirements:
+- Repositories must exist in the "android_repos/" folder
+- gpatch or patch must be installed and accessible from the command line
+- android_patch_manager.py must be importable
+"""
+
 import json
-import subprocess
-from pathlib import Path
-import re
+import os
 import tempfile
 import difflib
+from pathlib import Path
+from android_patch_manager import AndroidPatchManager
 
-# Context sizes to evaluate — determines how many surrounding lines were given to the LLM
-CONTEXT_SIZES = [3, 5, 10, 20]
+# Configurable input and base repo location
+INPUT_FILE = "approach_2_android_14_2024_with_llm_output_smart_retry.json"
+REPO_BASE = Path("android_repos")
 
-# Input and output file paths
-INPUT_FILE = "filtered_failures_android_14_2025_with_context_3_5_10_20_with_llm.json"
-OUTPUT_FILE = "llm_patch_apply_results.json"
+# Load input JSON data
+with open(INPUT_FILE, "r") as f:
+    data = json.load(f)
 
-def parse_patch_hunks(output):
-    """
-    Parse patch command output to extract how many hunks failed out of how many total.
-    Returns (failed, total) or (0, 0) if not found.
-    """
-    match = re.search(r"(\d+) out of (\d+) hunks failed", output)
-    if match:
-        return int(match.group(1)), int(match.group(2))
-    return 0, 0
+results = []
 
-def run(cmd, cwd):
-    """
-    Run a shell command in the specified directory, with timeout and output logging.
-    
-    Args:
-        cmd (str): The shell command to run.
-        cwd (str): The directory to execute the command in.
-    
-    Returns:
-        tuple: (success: bool, output: str)
-    """
-    try:
-        print(f"\n💻 Running command: {cmd} (in {cwd})")
-        result = subprocess.run(
-            cmd,
-            cwd=cwd,
-            shell=True,
-            text=True,
-            capture_output=True,
-            executable="/bin/bash",  # ensure consistent shell
-            timeout=60               # timeout in seconds to prevent hanging
-        )
-        output = result.stdout + result.stderr
-        print(f"📤 Command output:\n{output}")
-        return result.returncode == 0, output
-    except subprocess.TimeoutExpired:
-        print(f"⏰ Timeout expired for command: {cmd}")
-        return False, f"Timeout expired for: {cmd}"
-    except Exception as e:
-        print(f"❌ Exception while running command: {cmd}\n{e}")
-        return False, str(e)
+# Iterate over each CVE entry
+for entry in data:
+    entry_id = entry.get("id")
+    upstream_patch = entry.get("upstream_patch_content", "")
+    failures = entry.get("failures", [])
 
+    # For each failed downstream application attempt
+    for failure in failures:
+        file_conflicts = failure.get("file_conflicts", [])
+        repo_path = Path(failure["repo_path"])
+        downstream_version = failure["downstream_version"]
 
-def apply_patch(patch_str, repo_path):
-    """
-    Apply a patch string to a repo using GNU patch.
-    
-    Args:
-        patch_str (str): The unified diff patch content.
-        repo_path (str): Path to the target Git repo.
-    
-    Returns:
-        tuple: (success: bool, patch_output: str)
-    """
-    # Write patch to a temporary file
-    with tempfile.NamedTemporaryFile(mode='w', suffix=".patch", delete=False) as tmp:
-        tmp.write(patch_str)
-        patch_path = tmp.name
+        for conflict in file_conflicts:
+            downstream_patch = conflict.get("downstream_llm_diff_output", "")
 
-    # Apply the patch
-    cmd = f"patch -p1 --ignore-whitespace -i {patch_path}"
-    success, output = run(cmd, cwd=repo_path)
-
-    # Clean up temporary patch file
-    os.remove(patch_path)
-    return success, output
-
-
-def evaluate_llm_patches(data):
-    """
-    Evaluate the application success of LLM-generated patches across all context sizes.
-    
-    Args:
-        data (list): Loaded JSON data from input file.
-    
-    Returns:
-        list: A list of result dictionaries per vulnerability.
-    """
-    results = []
-
-    os.makedirs("test_patches", exist_ok=True)
-
-    for entry in data:
-        first_failure = entry.get("failures", [])[0] if entry.get("failures") else {}
-        repo_path = first_failure.get("repo_path")
-        downstream_patch = first_failure.get("downstream_patch")
-        vuln_id = entry.get("id", "unknown")
-
-        # Skip if required information is missing
-        if not repo_path or not downstream_patch:
-            print(f"⚠️ Skipping {vuln_id}: Missing repo_path or downstream_patch")
-            continue
-
-        repo_path = os.path.abspath(repo_path)
-        if not Path(repo_path).exists():
-            print(f"⚠️ Skipping {vuln_id}: repo_path does not exist")
-            continue
-
-        result_entry = {
-            "id": vuln_id,
-            "repo_path": repo_path,
-            "downstream_patch": downstream_patch,
-            "patch_attempts": {}
-        }
-
-        # Try each context window one by one
-        for ctx in CONTEXT_SIZES:
-            key = f"llm_patch_context_{ctx}"
-            patches = []
-
-            print(f"\n🚀 Checking out android14-release and resetting repo for {vuln_id} (context {ctx})")
-
-            # Clean up before checking out
-            run("git reset --hard", cwd=repo_path)
-            run("git clean -fd", cwd=repo_path)
-
-            # Checkout branch
-            checkout_success, checkout_msg = run("git checkout android14-release", cwd=repo_path)
-            if not checkout_success:
-                result_entry["patch_attempts"][key] = {
-                    "applied": False,
-                    "message": f"Failed to checkout android14-release: {checkout_msg}"
-                }
-                continue
-
-            # Reset to one commit before downstream
-            reset_success, reset_msg = run(f"git reset --hard {downstream_patch}^", cwd=repo_path)
-            clean_success, clean_msg = run("git clean -fd", cwd=repo_path)
-
-            if not reset_success:
-                result_entry["patch_attempts"][key] = {
-                    "applied": False,
-                    "message": f"Failed to reset: {reset_msg}"
-                }
-                continue
-
-
-            if not reset_success:
-                result_entry["patch_attempts"][key] = {
-                    "applied": False,
-                    "message": f"Failed to reset: {reset_msg}"
-                }
-                continue
-
-            # Apply the upstream patch first
-            # Collect upstream_patch_content from each failure in case it's split
-            upstream_patch_content = first_failure.get("upstream_patch_content", "")
-            for failure in entry.get("failures", []):
-                if not upstream_patch_content and failure.get("upstream_patch_content"):
-                    upstream_patch_content = failure["upstream_patch_content"]
-
-            upstream_applied = False
-            upstream_msg = ""
-
-            if upstream_patch_content:
-                upstream_applied, upstream_msg = apply_patch(upstream_patch_content.strip(), repo_path)
-                upstream_failed, upstream_total = parse_patch_hunks(upstream_msg)
-                print(f"📌 Upstream patch applied: {upstream_applied}")
-                print(f"📝 Upstream patch output:\n{upstream_msg}")
-            else:
-                print("⚠️ No upstream_patch_content found.")
-
-            # Even if upstream fails, we continue to try the LLM patch.
-
-            # Collect and reconstruct the LLM patch for this context size
-            for failure in entry.get("failures", []):
-                for conflict in failure.get("file_conflicts", []):
-                    if key in conflict:
-                        patches.append(conflict[key])
-
-            if not patches:
-                result_entry["patch_attempts"][key] = {
-                    "applied": False,
-                    "message": "No patch found"
-                }
-                continue
-
-            reconstructed_patches = []
-            for failure in entry.get("failures", []):
-                for conflict in failure.get("file_conflicts", []):
-                    if key in conflict and "file_name" in conflict:
-                        file_path = conflict["file_name"]
-                        modified_str = conflict[key]
-
-                        # Create raw diff using LLM patch body and standard headers
-                        diff_patch = (
-                            f"diff --git a/{file_path} b/{file_path}\n"
-                            f"--- a/{file_path}\n"
-                            f"+++ b/{file_path}\n"
-                            f"{modified_str.strip()}"
-                        )
-                        reconstructed_patches.append(diff_patch)
-
-
-
-            combined_patch = "\n".join(reconstructed_patches).strip()
-
-            # Save the combined patch to a test file for inspection
-            test_patch_path = f"test_patches/test_patch_{vuln_id}_ctx{ctx}.patch"
-
-            with open(test_patch_path, "w", encoding="utf-8") as f:
-                f.write(combined_patch)
-            print(f"📄 Saved test patch to: {test_patch_path}")
-
-            # Try applying the combined LLM patch
-            success, output = apply_patch(combined_patch, repo_path)
-            llm_failed, llm_total = parse_patch_hunks(output)
-            result_entry["patch_attempts"][key] = {
-                "applied": success,
-                "message": output.strip(),
-                "llm_failed_hunks": llm_failed,
-                "llm_total_hunks": llm_total,
-                "upstream_applied": upstream_applied,
-                "upstream_message": upstream_msg.strip(),
-                "upstream_failed_hunks": upstream_failed,
-                "upstream_total_hunks": upstream_total
+            # Initialize result object
+            result = {
+                "id": entry_id,
+                "repo_path": str(repo_path),
+                "downstream_version": downstream_version,
+                "file_name": conflict.get("file_name", ""),
+                "upstream_patch": {"success": False, "output": ""},
+                "downstream_patch": {"success": False, "output": ""},
+                "error": ""
             }
 
+            try:
+                if not repo_path.exists():
+                    result["error"] = f"❌ Repo not found: {repo_path}"
+                    results.append(result)
+                    continue
 
-        results.append(result_entry)
+                AndroidPatchManager.clean_repo(str(repo_path))
+                AndroidPatchManager.checkout_downstream_branch(str(repo_path), downstream_version)
 
-    return results
+                # Reset to parent of the downstream patch commit
+                downstream_patch_commit = failure.get("downstream_patch")
+                if downstream_patch_commit:
+                    AndroidPatchManager.checkout_commit(str(repo_path), f"{downstream_patch_commit}^")
 
-def main():
-    """Main function to load data, evaluate patches, and save results."""
-    with open(INPUT_FILE) as f:
-        data = json.load(f)
+                # Apply upstream patch
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".diff", mode="w") as f:
+                    f.write(upstream_patch)
+                    upstream_patch_path = f.name
 
-    results = evaluate_llm_patches(data)
+                success_up, out_up, *_ = AndroidPatchManager.apply_patch(str(repo_path), upstream_patch_path)
+                result["upstream_patch"] = {"success": success_up, "output": out_up.strip()}
 
-    with open(OUTPUT_FILE, "w") as f:
-        json.dump(results, f, indent=2)
+                # Save file content after upstream patch but before downstream patch
+                file_rel_path = conflict.get("file_name")
+                intermediate_file_path = repo_path / file_rel_path
 
-    print(f"\n✅ Results saved to {OUTPUT_FILE}")
+                if intermediate_file_path.exists():
+                    try:
+                        with open(intermediate_file_path, "r", encoding="utf-8", errors="replace") as f:
+                            upstream_only_content = f.read()
+                        conflict["downstream_file_content_patched_upstream_only"] = f"```{file_rel_path.split('.')[-1]}\n{upstream_only_content.strip()}\n```"
+                    except Exception as e:
+                        conflict["downstream_file_content_patched_upstream_only"] = f"❌ Failed to read upstream-patched file: {e}"
+                else:
+                    conflict["downstream_file_content_patched_upstream_only"] = "❌ File not found after upstream patch"
 
-if __name__ == "__main__":
-    main()
+
+                # Apply downstream (LLM) patch
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".diff", mode="w") as f:
+                    f.write(downstream_patch)
+                    downstream_patch_path = f.name
+
+                success_down, out_down, *_ = AndroidPatchManager.apply_patch(str(repo_path), downstream_patch_path)
+                result["downstream_patch"] = {"success": success_down, "output": out_down.strip()}
+
+                # Save final file content after patching
+                file_rel_path = conflict.get("file_name")
+                final_file_path = repo_path / file_rel_path
+
+                if final_file_path.exists():
+                    try:
+                        with open(final_file_path, "r", encoding="utf-8", errors="replace") as f:
+                            patched_content = f.read()
+                        conflict["downstream_file_content_patched_llm"] = f"```{file_rel_path.split('.')[-1]}\n{patched_content.strip()}\n```"
+
+                        # ✅ Add diff here
+                        original_downstream_content = conflict.get("downstream_file_content", "")
+                        if isinstance(original_downstream_content, str):
+                            try:
+                                original_lines = original_downstream_content.strip().splitlines(keepends=True)
+                                final_lines = patched_content.strip().splitlines(keepends=True)
+                                diff_lines = difflib.unified_diff(
+                                    original_lines,
+                                    final_lines,
+                                    fromfile="downstream_file_content",
+                                    tofile="downstream_file_content_patched_llm"
+                                )
+                                conflict["diff_patched_downstream_file_content"] = "".join(diff_lines)
+                            except Exception as e:
+                                conflict["diff_patched_downstream_file_content"] = f"❌ Failed to generate diff: {e}"
+                        else:
+                            conflict["diff_patched_downstream_file_content"] = "❌ Original downstream content not available"
+
+                    except Exception as e:
+                        conflict["downstream_file_content_patched_llm"] = f"❌ Failed to read patched file: {e}"
+
+
+
+            except Exception as e:
+                result["error"] = str(e)
+
+            results.append(result)
+
+
+# Save updated original JSON structure with new field
+with open("approach_2_android_14_2024_with_llm_output_smart_retry_patched.json", "w") as f:
+    json.dump(data, f, indent=2)
+
+
+# Save patch application summary results separately
+with open("patch_summary_approach_2_android_14_2024_with_llm_output_smart_retry.json", "w") as f:
+    json.dump(results, f, indent=2)
+
+
+print("✅ Patch evaluation complete. Results saved to patch_summary_approach_2_android_14_2024_with_llm_output_smart_retry.json")
