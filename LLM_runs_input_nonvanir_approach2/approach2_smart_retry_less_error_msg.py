@@ -135,25 +135,15 @@ def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
         enc = tiktoken.get_encoding("cl100k_base")
     return len(enc.encode(text))
 
-def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
-    """
-    Get token counts from multiple methods (OpenAI, general, Gemini).
-
-    Args:
-        text (str): Input text.
-        project (str): Google Cloud project ID.
-        skip_gemini (bool): Whether to skip Gemini token counting.
-
-    Returns:
-        dict: Token counts from different methods.
-    """
+def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None):
     result = {
         "openai": count_tokens_tiktoken(text),
         "general": count_tokens_general(text),
     }
-    if not skip_gemini:
-        result["gemini"] = count_tokens_gemini(text, project)
+    if gemini_token_count is not None:
+        result["gemini"] = gemini_token_count
     return result
+
 
 @dataclass
 class SupportDependencies: 
@@ -179,7 +169,10 @@ class GeminiAgent:
         for attempt in range(len(self.key_rotator.api_keys)):
             try:
                 response = self.model.generate_content(prompt)
-                return type("Result", (), {"data": response.text})
+                token_count = None
+                if hasattr(response, "usage_metadata"):
+                    token_count = getattr(response.usage_metadata, "total_token_count", None)
+                return type("Result", (), {"data": response.text, "token_count": token_count})
             except Exception as e:
                 if "quota" in str(e).lower() or "rate limit" in str(e).lower():
                     print(f"⚠️ API quota/rate limit hit: {e}")
@@ -492,7 +485,7 @@ async def process_single_entry_with_retry(
                     "runtime_seconds": round(total_end_time - total_start_time, 2),
                     "attempts_made": attempt + 1,
                     "validation_results": validation_results,
-                    "token_counts": get_all_token_counts(generated_diff, project=os.getenv("GCP_PROJECT", "neat-resolver-406722"))
+                    "token_counts": get_all_token_counts(generated_diff, gemini_token_count=result.token_count)
                 }
             else:
                 print(f"⚠️ Validation failed for attempt {attempt + 1}, retrying...")
