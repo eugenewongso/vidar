@@ -126,17 +126,6 @@ python osv_patch_runner.py --limit 15 --start 5 --after 2024-01-01 --report ./re
 
 ---
 
-## Notes
-
-- Vulnerabilities are loaded locally and filtered for Android platform-specific packages (`platform/`).
-- Already-processed vulnerabilities are skipped automatically.
-- Merge conflicts (both inline and `.rej` files) are captured and included in the report.
-- **Multiple upstream commits** are combined into a **single patch** for testing.
-- The **combined upstream patch content** is stored **once per patch attempt**.
-- Each run creates a timestamped report unless a custom path is provided.
-
----
-
 ## High-Level Workflow
 
 1. Load CVE JSON files.
@@ -146,3 +135,16 @@ python osv_patch_runner.py --limit 15 --start 5 --after 2024-01-01 --report ./re
 5. Test patches against each downstream Android version.
 6. Capture results (success, failure, conflicts).
 7. Save and update JSON report.
+
+---
+
+## Helper Scripts
+
+- **`evaluate_llm_patch_success.py`** – Compares LLM-generated patches with upstream patches by applying both, capturing file states, and recording success/failure metrics.
+- **`clean_diff_text.py`** – Cleans diff output by removing headers and extracting hunk content using string-based or `unidiff` parsing.
+- **`combine_failures.py`** – Merges multiple failure reports (e.g., from 2024 and 2025) into one.
+- **`filter_failures_by_version.py`** – Filters failure reports by Android version and outputs filtered sets in JSON or CSV.
+- **`extract_ground_truth_file_content.py`** – Extracts actual downstream file content at specific commits and computes token usage.
+- **`extract_upstream_patch.py`** – Gathers upstream patch data and injects it into failure records for completeness.
+- **`generate_patch_success_matrix.py`** – Generates heatmaps showing patch success rates and attempt counts across Android versions.
+- **`analyze_vanir_report.py`** – Parses Vanir-format ASB reports, maps to OSV CVEs, and synchronizes relevant entries.
