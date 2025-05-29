@@ -12,10 +12,9 @@ import google.generativeai as genai
 from typing import Optional, List, Dict, Any
 import re
 import tiktoken
-from google.cloud import aiplatform_v1beta1
-from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
+# Vertex AI imports removed
 
-client = aiplatform_v1beta1.PredictionServiceClient()
+# client initialization removed
 
 class APIKeyRotator:
     def __init__(self, api_keys: List[str]):
@@ -52,28 +51,7 @@ def save_partial_output(path: str, data: Any):
     except Exception as e:
         print(f"⚠️ Failed to save partial output to {path}: {e}")
 
-
-
-def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
-    """
-    Count tokens using the Gemini model from Google Cloud AI Platform.
-
-    Args:
-        text (str): Input text to count tokens for.
-        project (str): Google Cloud project ID.
-        location (str): Location of the model.
-        model (str): Model name.
-
-    Returns:
-        int: Total token count.
-    """
-    publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
-    request = CountTokensRequest(
-        endpoint=publisher_model,
-        contents=[Content(role="user", parts=[Part(text=text)])]
-    )
-    response = client.count_tokens(request=request)
-    return response.total_tokens
+# count_tokens_gemini function removed
 
 def count_tokens_general(text: str):
     """
@@ -111,14 +89,13 @@ def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
         enc = tiktoken.get_encoding("cl100k_base")
     return len(enc.encode(text))
 
-def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
+def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None):
     """
-    Get token counts from multiple methods (OpenAI, general, Gemini).
+    Get token counts from multiple methods (OpenAI, general, and optionally Gemini).
 
     Args:
         text (str): Input text.
-        project (str): Google Cloud project ID.
-        skip_gemini (bool): Whether to skip Gemini token counting.
+        gemini_token_count (Optional[int]): Pre-counted Gemini tokens, if available.
 
     Returns:
         dict: Token counts from different methods.
@@ -127,8 +104,8 @@ def get_all_token_counts(text: str, project: str, skip_gemini: bool = False):
         "openai": count_tokens_tiktoken(text),
         "general": count_tokens_general(text),
     }
-    if not skip_gemini:
-        result["gemini"] = count_tokens_gemini(text, project)
+    if gemini_token_count is not None:
+        result["gemini"] = gemini_token_count
     return result
 
 @dataclass
@@ -155,7 +132,10 @@ class GeminiAgent:
         for attempt in range(len(self.key_rotator.api_keys)):
             try:
                 response = self.model.generate_content(prompt)
-                return type("Result", (), {"data": response.text})
+                token_count = None
+                if hasattr(response, "usage_metadata"):
+                    token_count = getattr(response.usage_metadata, "total_token_count", None)
+                return type("Result", (), {"data": response.text, "token_count": token_count})
             except Exception as e:
                 if "quota" in str(e).lower() or "rate limit" in str(e).lower():
                     print(f"⚠️ API quota/rate limit hit: {e}")
@@ -248,7 +228,7 @@ async def process_single_entry(
         return {
             "downstream_llm_diff_output": generated_diff,
             "runtime_seconds": round(end_time - start_time, 2),
-            "token_counts": get_all_token_counts(generated_diff, project=os.getenv("GCP_PROJECT", "neat-resolver-406722"))
+            "token_counts": get_all_token_counts(generated_diff, gemini_token_count=result.token_count)
         }
 
     except Exception as e:

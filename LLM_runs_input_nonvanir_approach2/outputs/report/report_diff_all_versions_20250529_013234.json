@@ -1,0 +1,61 @@
+{
+    "run_timestamp": "20250529_013234",
+    "target_downstream_version": "all_versions",
+    "input_json_file": "inputs/test_1_conflict.json",
+    "main_output_json_file_with_diffs": "outputs/approach2_results/approach2_output_diff_android_all_versions_20250529_013234.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 7,
+        "files_attempted_for_llm_diff_generation": 0,
+        "files_with_llm_diff_successfully_generated": 0,
+        "files_skipped_pre_llm_call": 7,
+        "files_with_llm_diff_generation_errors_or_skipped_in_func": 0,
+        "successful_attempts_histogram": {},
+        "total_runtime_seconds_all": 0,
+        "total_runtime_seconds_successful": 0
+    },
+    "successfully_generated_diffs_log": [],
+    "skipped_or_errored_diff_generation_log": [
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/TestFile1.java",
+            "patch_sha": "test-patch-sha-1",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/TestFile2.java",
+            "patch_sha": "test-patch-sha-1",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/OldVersionFile.java",
+            "patch_sha": "test-patch-sha-2",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/AnotherTest.java",
+            "patch_sha": "test-patch-sha-3",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/EmptyRej.java",
+            "patch_sha": "test-patch-sha-3",
+            "reason": "Missing 'rej_file_content' (rejected hunks)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-001",
+            "file_name": "src/com/example/EmptyDownstream.java",
+            "patch_sha": "test-patch-sha-3",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        },
+        {
+            "vulnerability_id": "TEST-VULN-002",
+            "file_name": "src/com/another/Sample.java",
+            "patch_sha": "test-patch-sha-4",
+            "reason": "Missing 'downstream_file_content' (original source file)"
+        }
+    ]
+}
