@@ -16,13 +16,13 @@ import tiktoken
 import subprocess
 import tempfile
 from unidiff import PatchSet
-from google.cloud import aiplatform_v1beta1
-from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
+# from google.cloud import aiplatform_v1beta1 # Removed
+# from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part # Removed
 from android_patch_manager import AndroidPatchManager
 from pathlib import Path
 
 
-client = aiplatform_v1beta1.PredictionServiceClient()
+# client = aiplatform_v1beta1.PredictionServiceClient() # Removed
 
 class APIKeyRotator:
     def __init__(self, api_keys: List[str]):
@@ -76,28 +76,7 @@ def save_partial_output(path: str, data: Any):
     except Exception as e:
         print(f"⚠️ Failed to save partial output to {path}: {e}")
 
-
-
-def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
-    """
-    Count tokens using the Gemini model from Google Cloud AI Platform.
-
-    Args:
-        text (str): Input text to count tokens for.
-        project (str): Google Cloud project ID.
-        location (str): Location of the model.
-        model (str): Model name.
-
-    Returns:
-        int: Total token count.
-    """
-    publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
-    request = CountTokensRequest(
-        endpoint=publisher_model,
-        contents=[Content(role="user", parts=[Part(text=text)])]
-    )
-    response = client.count_tokens(request=request)
-    return response.total_tokens
+# count_tokens_gemini function removed
 
 def count_tokens_general(text: str):
     """
@@ -135,12 +114,12 @@ def count_tokens_tiktoken(text: str, model: str = "gpt-3.5-turbo"):
         enc = tiktoken.get_encoding("cl100k_base")
     return len(enc.encode(text))
 
-def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None):
+def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None): # New signature
     result = {
         "openai": count_tokens_tiktoken(text),
         "general": count_tokens_general(text),
     }
-    if gemini_token_count is not None:
+    if gemini_token_count is not None: # New logic
         result["gemini"] = gemini_token_count
     return result
 
