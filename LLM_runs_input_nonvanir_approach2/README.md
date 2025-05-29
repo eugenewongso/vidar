@@ -40,6 +40,11 @@ There are three script versions you can choose from, each offering a variation o
 * Uses iterative refinement.
 * Does not include detailed error messages in validation (e.g., "hunk failed at line X").
 
+### 3.d `approach2_blind_retry.py`
+
+* Uses a **blind retry strategy** (no iterative refinement).
+* Resends the original prompt on each retry attempt, without incorporating prior validation feedback or errors.
+
 ---
 
 To clearly explain in the README that the `20242025_combined_failures_with_ground_truth_and_patched_upstream.json` file is just an **example**, you can phrase it like this:
