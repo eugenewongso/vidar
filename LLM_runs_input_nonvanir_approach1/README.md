@@ -20,6 +20,11 @@ This script processes vulnerability data from a JSON file, applies patches using
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+
+    OR
+
+    alias setup_venv='python3 -m venv venv && source venv/bin/activate'
+    setup_venv
     ```
 
 3.  **Install dependencies:**
@@ -153,7 +158,7 @@ The script uses asynchronous operations (`async`/`await`) for potentially long-r
 
 
 
-Example command:
+Example command (make sure to cd into folder):
 ```bash
-python approach1.py inputs/filtered_failures_android_14_2025_with_context_3_5_10_20.json 14
+python3 approach1.py inputs/test_1_conflict.json --target_downstream_version 14
 ```

@@ -1,0 +1,22 @@
+{
+    "run_timestamp": "20250525_154136",
+    "target_downstream_version": "14",
+    "input_json_file": "inputs/test_1_CVE.json",
+    "main_output_json_file": "outputs/output_android_14_20250525_154136.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 1,
+        "files_attempted_for_llm": 0,
+        "files_successfully_processed_by_llm": 0,
+        "files_skipped_pre_llm_call": 1,
+        "files_skipped_or_errored_in_processing_function": 0
+    },
+    "successfully_processed_files_log": [],
+    "skipped_or_errored_files_log": [
+        {
+            "vulnerability_id": "ASB-A-242996380",
+            "file_name": "service/src/com/android/server/bluetooth/BtPermissionUtils.java",
+            "patch_sha": "5fe72f931db2898eb51a44e3b1b424c6370e8ad8",
+            "reason": "Missing 'rej_file_content'"
+        }
+    ]
+}

@@ -16,13 +16,13 @@ import tiktoken
 import subprocess
 import tempfile
 from unidiff import PatchSet
-from google.cloud import aiplatform_v1beta1
-from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
+# from google.cloud import aiplatform_v1beta1
+# from google.cloud.aiplatform_v1beta1.types import CountTokensRequest, Content, Part
 from android_patch_manager import AndroidPatchManager
 from pathlib import Path
 
 
-client = aiplatform_v1beta1.PredictionServiceClient()
+# client = aiplatform_v1beta1.PredictionServiceClient()
 
 class APIKeyRotator:
     def __init__(self, api_keys: List[str]):
@@ -46,7 +46,7 @@ load_dotenv()
 logfire.configure(send_to_logfire='if-token-present')
 
 api_keys = os.getenv("GOOGLE_API_KEYS", "").split(",")
-if not api_keys:
+if not api_keys or api_keys == [""]:
     raise ValueError("Missing API keys in GOOGLE_API_KEYS")
 
 key_rotator = APIKeyRotator(api_keys)
@@ -75,29 +75,6 @@ def save_partial_output(path: str, data: Any):
         print(f"💾 Partial output saved to: {path}")
     except Exception as e:
         print(f"⚠️ Failed to save partial output to {path}: {e}")
-
-
-
-def count_tokens_gemini(text, project: str, location: str = "us-central1", model: str = "gemini-2.5-pro-preview-05-06"):
-    """
-    Count tokens using the Gemini model from Google Cloud AI Platform.
-
-    Args:
-        text (str): Input text to count tokens for.
-        project (str): Google Cloud project ID.
-        location (str): Location of the model.
-        model (str): Model name.
-
-    Returns:
-        int: Total token count.
-    """
-    publisher_model = f"projects/{project}/locations/{location}/publishers/google/models/{model}"
-    request = CountTokensRequest(
-        endpoint=publisher_model,
-        contents=[Content(role="user", parts=[Part(text=text)])]
-    )
-    response = client.count_tokens(request=request)
-    return response.total_tokens
 
 def count_tokens_general(text: str):
     """
