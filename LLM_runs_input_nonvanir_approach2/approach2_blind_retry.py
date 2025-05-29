@@ -681,6 +681,10 @@ async def main():
                         vuln_id_for_save = vulnerability_item.get("id", "unknown_vuln_id")
                         print(f"💾 Incrementally saving output after processing file: {current_fc_name_for_save} for vuln: {vuln_id_for_save}")
                         save_partial_output(output_json_path_to_use, output_data)
+
+                        # Incrementally save the report_data
+                        print(f"📊 Incrementally saving report data after processing file: {current_fc_name_for_save} for vuln: {vuln_id_for_save}")
+                        save_partial_output(report_filename, report_data)
                         
                         if generated_diff.get("llm_output_valid"):
                             report_data["summary"]["files_with_llm_diff_successfully_generated"] += 1
