@@ -1,4 +1,3 @@
-
 # Vanir Security Patch Management System
 
 ## Overview
@@ -79,25 +78,6 @@ python patch_adopter.py
 
 ---
 
-##  Complete Workflow
-
-1. Parse the Vanir security report:  
-   ```bash
-   python vanir_report_parser.py
-   ```
-
-2. Download the necessary patches:  
-   ```bash
-   python patch_fetcher.py
-   ```
-
-3. Apply patches to the kernel source:  
-   ```bash
-   python patch_adopter.py
-   ```
-
----
-
 ##  Directory Structure
 
 ```
@@ -122,3 +102,108 @@ fetch_patch_output/
 - Python 3.6+  
 - GNU patch utility  
 - Network access to Googlesource and CodeLinaro repositories  
+
+## Running the Pipeline
+
+### 1. Parse Vanir Report
+First, place your Vanir report in `reports/vanir_output.json`, then run:
+```bash
+python vanir_report_parser.py
+```
+This creates `reports/parsed_report.json`
+
+### 2. Fetch Patches
+Run the patch fetcher to download patches from Googlesource/CodeLinaro:
+```bash
+python patch_fetcher.py
+```
+This creates patch files in `fetch_patch_output/diff_output/`
+
+### 3. Apply Original Patches
+Try to apply the original patches:
+```bash
+# For Vanir patches
+python patch_adopter.py --source Vanir
+
+# This creates reports/patch_application_report.json
+```
+
+### 4. Generate LLM Patches
+For patches that failed to apply, use the LLM to generate corrected versions:
+```bash
+python llm_patch_runner.py
+```
+This creates:
+- `patch_adoption/generated_patches/*.diff`
+- `reports/1_llm_output.json`
+
+### 5. Apply LLM Patches
+Try to apply the LLM-generated patches:
+```bash
+python patch_adopter.py --source LLM
+```
+
+## Output Files
+
+- `reports/parsed_report.json`: Structured Vanir report data
+- `fetch_patch_output/diff_output/*.diff`: Original downloaded patches
+- `reports/patch_application_report.json`: Results of patch application attempts
+- `patch_adoption/generated_patches/*.diff`: LLM-generated patches
+- `reports/1_llm_output.json`: Results of LLM patch generation
+
+## Troubleshooting
+
+1. If patches fail to download:
+   - Check your internet connection
+   - Verify the patch URLs in the Vanir report
+   - Check for rate limiting (the script includes backoff)
+
+2. If patches fail to apply:
+   - Verify your `KERNEL_PATH` points to the correct Android version
+   - Check if the target files exist in your repository
+   - Look for `.rej` files in the kernel directory for details about failures
+
+3. If LLM patch generation fails:
+   - Verify your Google API keys are valid
+   - Check the error messages in the LLM output
+   - Ensure you have sufficient API quota
+
+## Notes
+
+- The pipeline is designed to be run in sequence
+- Each step depends on the output of the previous step
+- Failed patches from step 3 are automatically processed by the LLM in step 4
+- You can re-run individual steps if needed
+
+# Android Security Patch Processing Pipeline
+
+This pipeline processes security vulnerabilities from Vanir reports, fetches patches, and attempts to apply them to an Android codebase. If patches fail to apply, it uses an LLM to generate corrected patches.
+
+## Prerequisites
+
+1. Python 3.8 or higher
+2. Required Python packages:
+   ```bash
+   pip install requests python-dotenv google-generativeai logfire
+   ```
+3. Environment variables:
+   - `KERNEL_PATH`: Path to your Android kernel directory (e.g., `/data/androidOS14`)
+   - `GOOGLE_API_KEYS`: Comma-separated list of Google API keys for Gemini
+
+4. System requirements:
+   - `patch` command (or `gpatch` on macOS)
+   - `git` command-line tool
+
+## Directory Structure
+
+```
+your-project/
+├── consolidation/
+│   ├── vanir_report_parser.py
+│   ├── patch_fetcher.py
+│   ├── patch_adopter.py
+│   └── llm_patch_runner.py
+├── reports/
+│   └── vanir_output.json  # Your initial Vanir report goes here
+└── .env  # For your environment variables
+```
