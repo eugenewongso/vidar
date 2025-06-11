@@ -1,0 +1,134 @@
+[
+  {
+    "vulnerability_id": "ASB-A-299441833",
+    "file_name": "services/core/java/com/android/server/pm/InstallPackageHelper.java",
+    "patch_sha": "0d0f185c0d526c1dac0a8894b2c2f2e378328d73",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-299441833",
+    "file_name": "services/core/java/com/android/server/pm/InstallPackageHelper.java",
+    "patch_sha": "fbdeb248db7dee192392d82fe15482760b8af941",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-242996380",
+    "file_name": "service/src/com/android/server/bluetooth/BtPermissionUtils.java",
+    "patch_sha": "5fe72f931db2898eb51a44e3b1b424c6370e8ad8",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-242996380",
+    "file_name": "service/src/com/android/server/bluetooth/BtPermissionUtils.java",
+    "patch_sha": "ed63d97fd6537f539fdde1413bff86a30f80a7b5",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-283099444",
+    "file_name": "media/codec2/sfplugin/utils/Codec2BufferUtils.cpp",
+    "patch_sha": "d83225b43057dd25deb5083772e6ebc2f5e5253b",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-355411348",
+    "file_name": "PermissionController/role-controller/java/com/android/role/controller/model/Permissions.java",
+    "patch_sha": "71e09e5ad12d02b3129c7a5ce16f6de734fdd0da",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-283101289",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-283101289",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281666022",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281666022",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-283264674",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-283264674",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281665050",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281665050",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281534749",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281534749",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281848557",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281848557",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281533566",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "f7ca136c514dc975c3f46d95c53fd6b3752c577a",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-281533566",
+    "file_name": "services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java",
+    "patch_sha": "73fa082a7202100da107ae14dd7742ecd86da053",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-370840874",
+    "file_name": "libs/binder/Parcel.cpp",
+    "patch_sha": "2aec032c0826ad68cd94c100173b99167bfcb10d",
+    "reason": "Missing required fields"
+  },
+  {
+    "vulnerability_id": "ASB-A-370840874",
+    "file_name": "libs/binder/Parcel.cpp",
+    "patch_sha": "2aec032c0826ad68cd94c100173b99167bfcb10d",
+    "reason": "Missing required fields"
+  }
+]

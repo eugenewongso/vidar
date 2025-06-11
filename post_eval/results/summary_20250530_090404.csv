@@ -1,0 +1,129 @@
+cve_id,downstream_version,file_name,runtime_seconds,relative_line_count_similarity,token_level_edit_distance,normalized_edit_similarity,cosine_similarity_openai,total_tokens,token_count_upstream,token_count_downstream,codebert_error
+ASB-A-299441833,12,services/core/java/com/android/server/pm/InstallPackageHelper.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-299441833,12L,services/core/java/com/android/server/pm/InstallPackageHelper.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-242996380,14,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-242996380,13,service/src/com/android/server/bluetooth/BtPermissionUtils.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-316891059,14,src/com/android/settings/search/SearchResultTrampoline.java,385.02,0.0,358,0.0,0.0992,166,166,0,Candidate code and ground truth code must not be empty.
+ASB-A-317048495,13,packages/SystemUI/src/com/android/systemui/clipboardoverlay/ClipboardListener.java,398.28,0.0,294,0.0,0.0921,170,170,0,Candidate code and ground truth code must not be empty.
+ASB-A-299931761,13,src/com/android/settings/wifi/WifiDialogActivity.java,351.75,0.2692,284,0.2672,0.8337,231,193,38,0.9288,0.7664,0.8398,0.78
+ASB-A-283099444,11,media/codec2/sfplugin/utils/Codec2BufferUtils.cpp,,0.0,168,0.0,0.0886,82,82,0,Candidate code and ground truth code must not be empty.
+ASB-A-333364513,14,src/com/android/settings/search/SearchResultTrampoline.java,343.93,0.0,358,0.0,0.0992,166,166,0,Candidate code and ground truth code must not be empty.
+ASB-A-333364513,12L,src/com/android/settings/search/SearchResultTrampoline.java,345.76,0.0,341,0.0,0.0976,172,172,0,Candidate code and ground truth code must not be empty.
+ASB-A-333364513,13,src/com/android/settings/search/SearchResultTrampoline.java,526.89,0.0,341,0.0,0.0975,172,172,0,Candidate code and ground truth code must not be empty.
+ASB-A-333364513,12,src/com/android/settings/search/SearchResultTrampoline.java,566.62,0.0,82,0.0,0.0889,47,47,0,Candidate code and ground truth code must not be empty.
+ASB-A-327749022,12L,src/com/android/settings/homepage/SettingsHomepageActivity.java,90.38,1.0,4,0.9329,0.9091,152,79,73,0.9825,0.9615,0.9718,0.9635
+ASB-A-327749022,12,src/com/android/settings/homepage/SettingsHomepageActivity.java,104.54,1.0,4,0.9306,0.9277,150,78,72,0.9806,0.9558,0.968,0.9582
+ASB-A-314333719,14,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,150.17,0.0,255,0.0,0.1147,105,0,105,Candidate code and ground truth code must not be empty.
+ASB-A-314333719,13,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,517.87,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-314333719,12L,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,176.88,0.0,66,0.0,0.1103,15,0,15,Candidate code and ground truth code must not be empty.
+ASB-A-314333719,12,packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java,120.41,0.0,77,0.0,0.1079,17,0,17,Candidate code and ground truth code must not be empty.
+ASB-A-283103220,12L,services/core/java/com/android/server/wm/ActivityClientController.java,253.72,0.2561,34,0.1928,0.7995,459,372,87,0.9156,0.753,0.8264,0.7666
+ASB-A-283103220,12,services/core/java/com/android/server/wm/ActivityClientController.java,85.24,0.2759,340,0.2289,0.7949,465,378,87,0.9285,0.7673,0.8403,0.7809
+ASB-A-308414141,12L,services/core/java/com/android/server/notification/SnoozeHelper.java,319.73,0.0,267,0.0,0.0322,150,150,0,Candidate code and ground truth code must not be empty.
+ASB-A-308414141,12,services/core/java/com/android/server/notification/SnoozeHelper.java,366.73,0.525,158,0.4981,0.9191,232,150,82,0.9006,0.8363,0.8673,0.8423
+ASB-A-308414141,13,services/core/java/com/android/server/notification/SnoozeHelper.java,397.27,0.0,267,0.0,0.0322,150,150,0,Candidate code and ground truth code must not be empty.
+ASB-A-307948424,12L,services/core/java/com/android/server/notification/SnoozeHelper.java,340.63,0.525,184,0.4232,0.9033,225,150,75,0.9017,0.8242,0.8612,0.8314
+ASB-A-307948424,12,services/core/java/com/android/server/notification/SnoozeHelper.java,338.83,0.0,267,0.0,0.0323,150,150,0,Candidate code and ground truth code must not be empty.
+ASB-A-307948424,13,services/core/java/com/android/server/notification/SnoozeHelper.java,131.9,0.575,150,0.5019,0.9218,235,150,85,0.8978,0.8409,0.8684,0.8462
+ASB-A-328068777,14,service/java/com/android/server/healthconnect/HealthConnectServiceImpl.java,80.65,0.3784,15,0.2491,0.7893,164,124,40,0.8995,0.7825,0.8369,0.7928
+ASB-A-300090204,12L,core/java/android/service/dreams/DreamService.java,415.99,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-300090204,11,core/java/android/service/dreams/DreamService.java,523.04,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-300090204,12,core/java/android/service/dreams/DreamService.java,558.56,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-321707289,13,services/core/java/com/android/server/notification/ManagedServices.java,275.12,0.0,1116,0.0,0.0526,696,696,0,Candidate code and ground truth code must not be empty.
+ASB-A-321707289,12,services/core/java/com/android/server/notification/ManagedServices.java,150.79,0.0947,44,0.0735,0.7059,877,800,77,0.8834,0.7354,0.8026,0.748
+ASB-A-321707289,12L,services/core/java/com/android/server/notification/ManagedServices.java,144.34,0.1183,473,0.0672,0.7028,889,800,89,0.8875,0.7447,0.8099,0.7569
+ASB-A-309938635,14,ojluni/src/main/java/java/util/zip/ZipFile.java,403.61,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-309938635,12L,ojluni/src/main/java/java/util/zip/ZipFile.java,360.04,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-309938635,12,ojluni/src/main/java/java/util/zip/ZipFile.java,187.2,0.0,186,0.0,0.0694,141,0,141,Candidate code and ground truth code must not be empty.
+ASB-A-309938635,13,ojluni/src/main/java/java/util/zip/ZipFile.java,174.81,0.0,156,0.0,0.0829,111,0,111,Candidate code and ground truth code must not be empty.
+ASB-A-313428840,14,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,264.89,0.7,9,0.6322,0.9166,195,112,83,0.9257,0.8639,0.8937,0.8697
+ASB-A-313428840,12L,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,339.93,0.0,241,0.0,0.0782,105,105,0,Candidate code and ground truth code must not be empty.
+ASB-A-313428840,12,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,346.52,0.0,241,0.0,0.0788,105,105,0,Candidate code and ground truth code must not be empty.
+ASB-A-313428840,13,services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java,297.08,0.0,276,0.0,0.0783,123,123,0,Candidate code and ground truth code must not be empty.
+ASB-A-353712853,14,services/usb/java/com/android/server/usb/UsbDeviceManager.java,114.37,0.3333,52,0.1037,0.4756,131,112,19,0.6811,0.5764,0.6244,0.5854
+ASB-A-353712853,13,services/usb/java/com/android/server/usb/UsbDeviceManager.java,429.35,0.0,161,0.0,0.0765,118,118,0,Candidate code and ground truth code must not be empty.
+ASB-A-353712853,12L,services/usb/java/com/android/server/usb/UsbDeviceManager.java,489.93,0.0,161,0.0,0.0784,118,118,0,Candidate code and ground truth code must not be empty.
+ASB-A-353712853,12,services/usb/java/com/android/server/usb/UsbDeviceManager.java,417.09,0.0,161,0.0,0.0782,118,118,0,Candidate code and ground truth code must not be empty.
+ASB-A-311374917,14,services/core/java/com/android/server/pm/InstallPackageHelper.java,66.14,0.55,81,0.5061,0.8844,125,84,41,0.9562,0.8412,0.895,0.8515
+ASB-A-311374917,13,services/core/java/com/android/server/pm/InstallPackageHelper.java,95.36,0.75,93,0.4405,0.8783,138,84,54,0.9103,0.8251,0.8656,0.8329
+ASB-A-319081336,14,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,443.81,0.252,152,0.1561,0.8165,870,725,145,0.9323,0.8007,0.8615,0.8122
+ASB-A-319081336,13,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,279.88,0.2602,182,0.1598,0.8758,886,725,161,0.9547,0.8322,0.8892,0.843
+ASB-A-319081336,12L,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,394.83,0.0,801,0.0,0.0887,724,724,0,Candidate code and ground truth code must not be empty.
+ASB-A-319081336,12,core/jni/com_android_internal_os_ZygoteCommandBuffer.cpp,387.21,0.0,801,0.0,0.0887,724,724,0,Candidate code and ground truth code must not be empty.
+ASB-A-318374503,13,system/stack/btm/btm_sec.cc,5.73,0.8889,14,0.7679,0.9614,57,30,27,0.9816,0.9506,0.9659,0.9536
+ASB-A-318374503,14,system/stack/btm/btm_sec.cc,6.6,0.8889,16,0.7321,0.9603,57,30,27,0.9784,0.9448,0.9613,0.9481
+ASB-A-336323279,13,services/core/java/com/android/server/appop/AppOpsService.java,52.75,0.6415,63,0.4877,0.822,359,247,112,0.9426,0.8517,0.8948,0.86
+ASB-A-336323279,14,services/core/java/com/android/server/appop/AppOpsService.java,193.74,0.9423,257,0.2794,0.8068,437,241,196,0.8988,0.8469,0.8721,0.8518
+ASB-A-293602317,12L,services/core/java/com/android/server/pm/UserManagerService.java,130.82,0.141,270,0.0995,0.7018,421,361,60,0.9009,0.7286,0.8056,0.7428
+ASB-A-293602317,13,services/core/java/com/android/server/pm/UserManagerService.java,54.73,0.1154,251,0.1027,0.6716,406,361,45,0.8894,0.7019,0.7846,0.717
+ASB-A-293602317,12,services/core/java/com/android/server/pm/UserManagerService.java,76.28,0.1282,94,0.1074,0.6739,408,361,47,0.8878,0.7032,0.7848,0.7181
+ASB-A-230492947,11,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,300.09,0.0,445,0.0,0.0309,215,215,0,Candidate code and ground truth code must not be empty.
+ASB-A-230492947,12L,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,322.3,0.0,445,0.0,0.0303,215,215,0,Candidate code and ground truth code must not be empty.
+ASB-A-230492947,12,services/core/java/com/android/server/wm/ActivityTaskManagerService.java,292.52,0.9661,6,0.9708,0.9546,426,215,211,0.9707,0.9645,0.9676,0.9651
+ASB-A-293602970,14,services/core/java/com/android/server/pm/UserManagerService.java,127.33,0.1304,132,0.1097,0.7033,326,290,36,0.8612,0.7053,0.7755,0.7183
+ASB-A-293602970,12L,services/core/java/com/android/server/pm/UserManagerService.java,48.66,0.2029,151,0.1341,0.7345,364,297,67,0.8575,0.7522,0.8014,0.7616
+ASB-A-293602970,13,services/core/java/com/android/server/pm/UserManagerService.java,19.17,0.1304,8,0.1069,0.703,333,297,36,0.8473,0.705,0.7696,0.717
+ASB-A-304983146,13,services/core/java/com/android/server/appop/AppOpsService.java,217.55,0.0,388,0.0,0.058,274,274,0,Candidate code and ground truth code must not be empty.
+ASB-A-304983146,12L,services/core/java/com/android/server/appop/AppOpsService.java,44.34,0.6607,14,0.5773,0.694,457,274,183,0.8816,0.8148,0.8469,0.8211
+ASB-A-304983146,12,services/core/java/com/android/server/appop/AppOpsService.java,61.66,0.6607,35,0.5361,0.7204,466,274,192,0.8633,0.8194,0.8408,0.8236
+ASB-A-304983146,14,services/core/java/com/android/server/appop/AppOpsService.java,232.13,0.6607,42,0.5644,0.7205,465,274,191,0.8624,0.821,0.8412,0.825
+ASB-A-355411348,13,PermissionController/role-controller/java/com/android/role/controller/model/Permissions.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283101289,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283101289,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281666022,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281666022,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283264674,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-283264674,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281665050,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281665050,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281534749,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281534749,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281848557,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281848557,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281533566,12L,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-281533566,12,services/autofill/java/com/android/server/autofill/ui/DialogFillUi.java,,1.0,0,1.0,1.0,0,0,0,Candidate code and ground truth code must not be empty.
+ASB-A-296915500,13,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,278.5,0.0,341,0.0,0.0733,161,161,0,Candidate code and ground truth code must not be empty.
+ASB-A-296915500,14,android/app/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java,126.24,0.3182,217,0.2434,0.698,192,161,31,0.8831,0.693,0.7766,0.7083
+ASB-A-366401629,12L,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,75.72,0.1569,343,0.1269,0.6412,271,254,17,0.9381,0.5947,0.7279,0.6173
+ASB-A-366401629,12,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,4.06,0.1569,36,0.1193,0.6617,271,254,17,0.939,0.6023,0.7339,0.6247
+ASB-A-366401629,13,src/com/android/settings/accounts/AccountTypePreferenceLoader.java,42.69,0.1569,343,0.1269,0.6391,271,254,17,0.9379,0.5941,0.7274,0.6167
+ASB-A-363248394,12L,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,61.88,0.1765,514,0.1736,0.6337,341,310,31,0.9386,0.669,0.7812,0.6888
+ASB-A-363248394,12,src/com/android/settings/notification/NotificationAccessConfirmationActivity.java,59.25,0.1882,498,0.1851,0.6446,343,310,33,0.9546,0.6788,0.7934,0.699
+ASB-A-317203980,13,services/core/java/com/android/server/media/MediaSessionRecord.java,110.04,0.8667,126,0.1757,0.7272,153,51,102,0.6848,0.7668,0.7235,0.7577
+ASB-A-364027949,13,system/stack/gatt/gatt_sr.cc,11.86,0.5854,212,0.3776,0.8117,301,204,97,0.9317,0.8821,0.9062,0.8868
+ASB-A-364027949,14,system/stack/gatt/gatt_sr.cc,222.97,0.0,331,0.0,0.1034,204,204,0,Candidate code and ground truth code must not be empty.
+ASB-A-364025411,13,system/stack/gatt/gatt_sr.cc,115.27,0.5122,196,0.3505,0.7963,285,204,81,0.9285,0.8448,0.8847,0.8525
+ASB-A-364025411,14,system/stack/gatt/gatt_sr.cc,11.64,0.5854,222,0.3656,0.7856,294,204,90,0.9272,0.8501,0.887,0.8572
+ASB-A-277207798,13,core/java/com/android/internal/app/ChooserActivity.java,52.63,0.1818,476,0.2197,0.7427,315,275,40,0.9642,0.7323,0.8324,0.7503
+ASB-A-340480881,14,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,177.74,0.9231,19,0.8201,0.9268,128,60,68,0.9459,0.9276,0.9367,0.9294
+ASB-A-340480881,13,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,207.21,0.8462,22,0.8429,0.9233,129,60,69,0.9476,0.9293,0.9384,0.9311
+ASB-A-340480881,12,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,116.72,0.0,131,0.0,0.0579,55,0,55,Candidate code and ground truth code must not be empty.
+ASB-A-340480881,12L,PermissionController/src/com/android/permissioncontroller/permission/ui/handheld/ReviewPermissionsFragment.java,169.97,0.0,131,0.0,0.0514,55,0,55,Candidate code and ground truth code must not be empty.
+ASB-A-369103643,14,services/core/java/com/android/server/wm/WindowOrganizerController.java,147.87,0.5,77,0.5123,0.8857,124,52,72,0.8766,0.8973,0.8869,0.8952
+ASB-A-369103643,13,services/core/java/com/android/server/wm/WindowOrganizerController.java,99.02,0.25,104,0.4565,0.8645,135,48,87,0.835,0.8783,0.8561,0.8738
+ASB-A-364026473,13,system/stack/gatt/gatt_sr.cc,269.53,0.0,331,0.0,0.1037,204,204,0,Candidate code and ground truth code must not be empty.
+ASB-A-364026473,14,system/stack/gatt/gatt_sr.cc,64.07,0.5366,204,0.3565,0.8021,286,204,82,0.9296,0.8507,0.8884,0.858
+ASB-A-364027038,13,system/stack/gatt/gatt_sr.cc,91.53,0.5366,193,0.4169,0.9261,297,204,93,0.959,0.9016,0.9294,0.907
+ASB-A-364027038,14,system/stack/gatt/gatt_sr.cc,335.89,0.0,331,0.0,0.1031,204,204,0,Candidate code and ground truth code must not be empty.
+ASB-A-352542820,14,src/com/android/settings/users/UserSettings.java,74.74,0.8,18,0.8083,0.8974,104,52,52,0.9141,0.9379,0.9259,0.9355
+ASB-A-352542820,13,src/com/android/settings/users/UserSettings.java,70.5,0.9091,21,0.7537,0.871,118,67,51,0.9367,0.8975,0.9167,0.9012
+ASB-A-352542820,12L,src/com/android/settings/users/UserSettings.java,96.74,0.8182,41,0.7917,0.8594,137,67,70,0.9147,0.9367,0.9256,0.9345
+ASB-A-352542820,12,src/com/android/settings/users/UserSettings.java,51.62,0.9091,35,0.6567,0.8659,123,67,56,0.8919,0.8927,0.8923,0.8926
+ASB-A-370840874,12L,libs/binder/Parcel.cpp,,0.0,240,0.0,0.0996,143,143,0,Candidate code and ground truth code must not be empty.
+ASB-A-370840874,12,libs/binder/Parcel.cpp,,0.0,240,0.0,0.1001,143,143,0,Candidate code and ground truth code must not be empty.
+ASB-A-289375038,13,android/app/src/com/android/bluetooth/btservice/AdapterService.java,211.37,0.0,62,0.0,0.1248,19,0,19,Candidate code and ground truth code must not be empty.
+ASB-A-289375038,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,96.15,0.0,133,0.0,0.1102,58,0,58,Candidate code and ground truth code must not be empty.
+ASB-A-369351375,12L,services/core/java/com/android/server/accounts/AccountManagerService.java,104.02,0.8148,50,0.5121,0.8914,173,93,80,0.8822,0.8264,0.8534,0.8316
+ASB-A-369351375,12,services/core/java/com/android/server/accounts/AccountManagerService.java,329.5,0.8148,48,0.5217,0.8943,173,93,80,0.8788,0.8253,0.8512,0.8303
+ASB-A-360846772,12L,services/core/java/com/android/server/accounts/AccountManagerService.java,345.8,0.7037,49,0.4976,0.8931,169,93,76,0.8821,0.82,0.85,0.8258
+ASB-A-360846772,12,services/core/java/com/android/server/accounts/AccountManagerService.java,224.07,0.8519,49,0.5169,0.8923,174,93,81,0.8832,0.827,0.8542,0.8323
+ASB-A-289811388,13,android/app/src/com/android/bluetooth/btservice/AdapterService.java,174.93,0.0,79,0.0,0.1215,23,0,23,Candidate code and ground truth code must not be empty.
+ASB-A-289811388,14,android/app/src/com/android/bluetooth/btservice/AdapterService.java,226.68,0.0,62,0.0,0.1256,19,0,19,Candidate code and ground truth code must not be empty.
+ASB-A-375623125,13,services/core/java/com/android/server/appop/AppOpsService.java,404.72,0.0,1495,0.0,0.071,1015,1015,0,Candidate code and ground truth code must not be empty.
+ASB-A-375623125,14,services/core/java/com/android/server/appop/AppOpsService.java,141.41,0.0538,1546,0.0398,0.6596,1098,1059,39,0.8909,0.689,0.7771,0.705
+ASB-A-353240784,12,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,348.53,0.0,670,0.0,0.0457,457,457,0,Candidate code and ground truth code must not be empty.
+ASB-A-353240784,12L,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,389.34,0.0,670,0.0,0.0465,457,457,0,Candidate code and ground truth code must not be empty.
+ASB-A-353240784,13,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,168.83,0.6835,303,0.4627,0.8759,776,457,319,0.8828,0.871,0.8768,0.8722
+ASB-A-353240784,14,services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java,294.93,0.0,670,0.0,0.0459,457,457,0,Candidate code and ground truth code must not be empty.
+ASB-A-382064697,14,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,564.87,0.0,778,0.0,0.0799,449,449,0,Candidate code and ground truth code must not be empty.
+ASB-A-382064697,13,services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java,685.78,0.0,206,0.0,0.0901,132,132,0,Candidate code and ground truth code must not be empty.

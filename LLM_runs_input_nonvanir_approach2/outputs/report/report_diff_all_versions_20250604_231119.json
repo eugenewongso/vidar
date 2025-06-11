@@ -1,0 +1,75 @@
+{
+    "run_timestamp": "20250604_231119",
+    "target_downstream_version": "all_versions",
+    "input_json_file": "inputs/top_11_vulns_2425.json",
+    "main_output_json_file_with_diffs": "outputs/approach2_results/approach2_output_diff_android_all_versions_20250604_231119.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 8,
+        "files_attempted_for_llm_diff_generation": 8,
+        "files_with_llm_diff_successfully_generated": 4,
+        "files_skipped_pre_llm_call": 0,
+        "files_with_llm_diff_generation_errors_or_skipped_in_func": 3,
+        "successful_attempts_histogram": {
+            "2 runs": 2,
+            "3 runs": 2
+        },
+        "total_runtime_seconds_all": 2789.3399999999992,
+        "total_runtime_seconds_successful": 1558.6399999999999
+    },
+    "successfully_generated_diffs_log": [
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "downstream_version": "12L",
+            "diff_preview": "```diff\n--- a/core/java/android/service/dreams/DreamService.java\n+++ b/core/java/android/service/dre..."
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "downstream_version": "11",
+            "diff_preview": "```diff\n--- a/core/java/android/service/dreams/DreamService.java\n+++ b/core/java/android/service/dre..."
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/notification/SnoozeHelper.java\n+++ b/services/co..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/s..."
+        }
+    ],
+    "skipped_or_errored_diff_generation_log": [
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "reason": "Last Format Error: Invalid patch format: Hunk is longer than expected, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -474,6 +477,9 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -474,6 +477,9 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -341,9 +344,12 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -341,9 +344,12 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        }
+    ]
+}

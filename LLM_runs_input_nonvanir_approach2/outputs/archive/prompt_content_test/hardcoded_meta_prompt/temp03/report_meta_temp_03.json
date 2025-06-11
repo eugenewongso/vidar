@@ -1,0 +1,457 @@
+{
+    "run_timestamp": "20250607_033013",
+    "target_downstream_version": "all_versions",
+    "concurrency": 5,
+    "temperature_setting": 0.3,
+    "input_json_file": "inputs/top_11_vulns_2425.json",
+    "summary": {
+        "total_file_conflicts_to_process": 36,
+        "files_attempted_for_llm_diff_generation": 36,
+        "files_with_llm_diff_successfully_generated": 20,
+        "files_skipped_pre_llm_call": 0,
+        "files_with_llm_diff_generation_errors_or_skipped_in_func": 16,
+        "successful_attempts_histogram": {
+            "1 run": 12,
+            "3 runs": 2,
+            "2 runs": 6
+        },
+        "total_runtime_seconds_all": 10313.060000000001,
+        "total_runtime_seconds_successful": 3230.7200000000003,
+        "total_script_wall_clock_runtime_seconds": 2182.8912233521696,
+        "total_gemini_input_tokens": 3906420,
+        "total_gemini_output_tokens": 41860,
+        "total_gemini_tokens": 4975587
+    },
+    "successfully_generated_diffs_log": [
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/packages/SystemUI/src/com/android/systemui/media/dagger/M...",
+            "token_counts": {
+                "prompt_tokens": 26,
+                "gemini_input_tokens": 12154,
+                "gemini_output_tokens": 202,
+                "gemini_total_tokens": 20757
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/zip/ZipFile.java\n@@ -269,7 +269,20 @@\n         // s...",
+            "token_counts": {
+                "prompt_tokens": 185,
+                "gemini_input_tokens": 16735,
+                "gemini_output_tokens": 453,
+                "gemini_total_tokens": 29234
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/notification/SnoozeHelper.java\n+++ b/services/core/java/com/android/server/notification/SnoozeHelp...",
+            "token_counts": {
+                "prompt_tokens": 73,
+                "gemini_input_tokens": 14565,
+                "gemini_output_tokens": 336,
+                "gemini_total_tokens": 23595
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "diff_preview": "```diff\n--- a/src/com/android/settings/search/SearchResultTrampoline.java\n+++ b/src/com/android/settings/search/SearchResultTrampoline.java\n@@ -52,11 ...",
+            "token_counts": {
+                "prompt_tokens": 104,
+                "gemini_input_tokens": 5669,
+                "gemini_output_tokens": 324,
+                "gemini_total_tokens": 13165
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/notification/SnoozeHelper.java\n+++ b/services/core/java/com/android/server/notification/SnoozeHelp...",
+            "token_counts": {
+                "prompt_tokens": 79,
+                "gemini_input_tokens": 14565,
+                "gemini_output_tokens": 348,
+                "gemini_total_tokens": 24502
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/zip/ZipFile.java\n@@ -269,7 +269,17 @@\n         // s...",
+            "token_counts": {
+                "prompt_tokens": 133,
+                "gemini_input_tokens": 50940,
+                "gemini_output_tokens": 947,
+                "gemini_total_tokens": 86957
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "diff_preview": "```diff\n--- a/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n+++ b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n@@ -...",
+            "token_counts": {
+                "prompt_tokens": 76,
+                "gemini_input_tokens": 72720,
+                "gemini_output_tokens": 714,
+                "gemini_total_tokens": 104142
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "diff_preview": "```diff\n--- a/src/com/android/settings/search/SearchResultTrampoline.java\n+++ b/src/com/android/settings/search/SearchResultTrampoline.java\n@@ -49,11 ...",
+            "token_counts": {
+                "prompt_tokens": 150,
+                "gemini_input_tokens": 11634,
+                "gemini_output_tokens": 956,
+                "gemini_total_tokens": 38412
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/services/core/java/com/android/server/wm/ActivityTaskMana...",
+            "token_counts": {
+                "prompt_tokens": 216,
+                "gemini_input_tokens": 225478,
+                "gemini_output_tokens": 1501,
+                "gemini_total_tokens": 251206
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/services/appwidget/java/com/android/server/appwidge...",
+            "token_counts": {
+                "prompt_tokens": 295,
+                "gemini_input_tokens": 74692,
+                "gemini_output_tokens": 645,
+                "gemini_total_tokens": 90099
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/services/core/java/com/android/server/wm/ActivityTaskMana...",
+            "token_counts": {
+                "prompt_tokens": 216,
+                "gemini_input_tokens": 98566,
+                "gemini_output_tokens": 750,
+                "gemini_total_tokens": 106737
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "diff_preview": "```diff\n--- a/services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\n+++ b/services/devicepolicy/java/com/android/...",
+            "token_counts": {
+                "prompt_tokens": 235,
+                "gemini_input_tokens": 301381,
+                "gemini_output_tokens": 667,
+                "gemini_total_tokens": 317095
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/services/core/java/com/android/server/wm/ActivityTaskMana...",
+            "token_counts": {
+                "prompt_tokens": 214,
+                "gemini_input_tokens": 297318,
+                "gemini_output_tokens": 2254,
+                "gemini_total_tokens": 327664
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "diff_preview": "```diff\n--- a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java\n+++ b/services/companion/java/com/android/server...",
+            "token_counts": {
+                "prompt_tokens": 105,
+                "gemini_input_tokens": 24337,
+                "gemini_output_tokens": 352,
+                "gemini_total_tokens": 36752
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/services/appwidget/java/com/android/server/appwidge...",
+            "token_counts": {
+                "prompt_tokens": 300,
+                "gemini_input_tokens": 150092,
+                "gemini_output_tokens": 1305,
+                "gemini_total_tokens": 175886
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "diff_preview": "```diff\n--- a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java\n+++ b/services/companion/java/com/android/server...",
+            "token_counts": {
+                "prompt_tokens": 95,
+                "gemini_input_tokens": 36805,
+                "gemini_output_tokens": 679,
+                "gemini_total_tokens": 59955
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "diff_preview": "```diff\n--- a/src/com/android/settings/search/SearchResultTrampoline.java\n+++ b/src/com/android/settings/search/SearchResultTrampoline.java\n@@ -37,10 ...",
+            "token_counts": {
+                "prompt_tokens": 59,
+                "gemini_input_tokens": 4749,
+                "gemini_output_tokens": 185,
+                "gemini_total_tokens": 16488
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/packages/SystemUI/src/com/android/systemui/media/dagger/M...",
+            "token_counts": {
+                "prompt_tokens": 24,
+                "gemini_input_tokens": 11796,
+                "gemini_output_tokens": 195,
+                "gemini_total_tokens": 19025
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "diff_preview": "```diff\n--- a/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n+++ b/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n@@ -...",
+            "token_counts": {
+                "prompt_tokens": 22,
+                "gemini_input_tokens": 38763,
+                "gemini_output_tokens": 124,
+                "gemini_total_tokens": 47107
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/zip/ZipFile.java\n@@ -297,7 +297,20 @@\n         // s...",
+            "token_counts": {
+                "prompt_tokens": 187,
+                "gemini_input_tokens": 35545,
+                "gemini_output_tokens": 1059,
+                "gemini_total_tokens": 60687
+            }
+        }
+    ],
+    "skipped_or_errored_diff_generation_log": [
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -448,6 +448,9 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 76,
+                "gemini_input_tokens": 44672,
+                "gemini_output_tokens": 1192,
+                "gemini_total_tokens": 76406
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: ```",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 147,
+                "gemini_input_tokens": 17663,
+                "gemini_output_tokens": 1375,
+                "gemini_total_tokens": 60819
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 153,
+                "gemini_input_tokens": 110769,
+                "gemini_output_tokens": 1393,
+                "gemini_total_tokens": 157948
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -67,4 +70,26 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 130,
+                "gemini_input_tokens": 33783,
+                "gemini_output_tokens": 1792,
+                "gemini_total_tokens": 90758
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -720,7 +720,7 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 144,
+                "gemini_input_tokens": 109214,
+                "gemini_output_tokens": 1193,
+                "gemini_total_tokens": 154303
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -67,4 +67,26 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 120,
+                "gemini_input_tokens": 33760,
+                "gemini_output_tokens": 1755,
+                "gemini_total_tokens": 89421
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Valid patch format",
+            "last_apply_error": "Patch failed in repo: checking file ojluni/src/main/java/java/util/zip/ZipFile.java\nHunk #1 FAILED at 1436.\npatch unexpectedly ends in middle of line\n1 out of 1 hunk FAILED\npatch unexpectedly ends in middle of line",
+            "token_counts": {
+                "prompt_tokens": 135,
+                "gemini_input_tokens": 50932,
+                "gemini_output_tokens": 967,
+                "gemini_total_tokens": 89283
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 100,
+                "gemini_input_tokens": 75580,
+                "gemini_output_tokens": 978,
+                "gemini_total_tokens": 105369
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 194,
+                "gemini_input_tokens": 74276,
+                "gemini_output_tokens": 1312,
+                "gemini_total_tokens": 111293
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -2851,13 +2860,35 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 300,
+                "gemini_input_tokens": 225496,
+                "gemini_output_tokens": 1959,
+                "gemini_total_tokens": 277793
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 299,
+                "gemini_input_tokens": 225514,
+                "gemini_output_tokens": 1957,
+                "gemini_total_tokens": 273109
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Unexpected hunk found: @@ -1490,6 +1502,7 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 188,
+                "gemini_input_tokens": 64199,
+                "gemini_output_tokens": 2225,
+                "gemini_total_tokens": 104099
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 177,
+                "gemini_input_tokens": 64837,
+                "gemini_output_tokens": 2841,
+                "gemini_total_tokens": 106805
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 266,
+                "gemini_input_tokens": 1193050,
+                "gemini_output_tokens": 1616,
+                "gemini_total_tokens": 1244502
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 416,
+                "gemini_input_tokens": 64753,
+                "gemini_output_tokens": 3395,
+                "gemini_total_tokens": 112323
+            }
+        },
+        {
+            "vulnerability_id": "ASB-A-317048495",
+            "file_name": "packages/SystemUI/src/com/android/systemui/clipboardoverlay/ClipboardListener.java",
+            "reason": "All 3 attempts failed.",
+            "last_format_error": "Invalid patch format: Unexpected hunk found: @@ -98,8 +101,11 @@\n",
+            "last_apply_error": "Skipped due to format error",
+            "token_counts": {
+                "prompt_tokens": 165,
+                "gemini_input_tokens": 19418,
+                "gemini_output_tokens": 1914,
+                "gemini_total_tokens": 71891
+            }
+        }
+    ]
+}

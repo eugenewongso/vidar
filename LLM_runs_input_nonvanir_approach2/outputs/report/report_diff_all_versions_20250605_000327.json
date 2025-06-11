@@ -1,0 +1,214 @@
+{
+    "run_timestamp": "20250605_000327",
+    "target_downstream_version": "all_versions",
+    "input_json_file": "inputs/top_11_vulns_2425.json",
+    "main_output_json_file_with_diffs": "outputs/approach2_results/approach2_output_diff_android_all_versions_20250604_155938.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 26,
+        "files_attempted_for_llm_diff_generation": 26,
+        "files_with_llm_diff_successfully_generated": 18,
+        "files_skipped_pre_llm_call": 0,
+        "files_with_llm_diff_generation_errors_or_skipped_in_func": 8,
+        "successful_attempts_histogram": {
+            "2 runs": 8,
+            "3 runs": 5,
+            "1 run": 5
+        },
+        "total_runtime_seconds_all": 9084.62,
+        "total_runtime_seconds_successful": 5033.010000000001
+    },
+    "successfully_generated_diffs_log": [
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/core/java/android/service/dreams/DreamService.java\n+++ b/core/java/android/service/dre..."
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/notification/SnoozeHelper.java\n+++ b/services/co..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/s..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "downstream_version": "12L",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/s..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/s..."
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "patch_sha": "c7b495dc8c466de602cd7b78468864acd6b2f9b3",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/z..."
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "patch_sha": "288a44a1817707110cdf5a3a6ef8377c6e10cce2",
+            "downstream_version": "12L",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/z..."
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "patch_sha": "288a44a1817707110cdf5a3a6ef8377c6e10cce2",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/z..."
+        },
+        {
+            "vulnerability_id": "ASB-A-309938635",
+            "file_name": "ojluni/src/main/java/java/util/zip/ZipFile.java",
+            "patch_sha": "288a44a1817707110cdf5a3a6ef8377c6e10cce2",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/ojluni/src/main/java/java/util/zip/ZipFile.java\n+++ b/ojluni/src/main/java/java/util/z..."
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "patch_sha": "54c968aaa66e9364bc0380c9a57af5c6844759aa",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.jav..."
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "patch_sha": "1ae3b43c248cdf5ee63311f06acd0ee19d93f0cd",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.jav..."
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "patch_sha": "a441f4acd62cce1059818ce8e9b7ab93b0079e50",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/package..."
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "patch_sha": "007313b88e830ab9f0a8119406a61c89ca412fb5",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/package..."
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "patch_sha": "346a778e609ee2109bc1917d7649b7db91e25cf4",
+            "downstream_version": "12L",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/package..."
+        },
+        {
+            "vulnerability_id": "ASB-A-314333719",
+            "file_name": "packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java",
+            "patch_sha": "0d533a9c5107d47d6259028f1371c9bba276bb40",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/packages/SystemUI/src/com/android/systemui/media/dagger/MediaModule.java\n+++ b/package..."
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "patch_sha": "d8368be4f8fb7019ea24b4798f029301c704092c",
+            "downstream_version": "11",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/service..."
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "patch_sha": "d54a64bdf71d1c91542b6885149fd176622ad0b4",
+            "downstream_version": "12L",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/service..."
+        },
+        {
+            "vulnerability_id": "ASB-A-230492947",
+            "file_name": "services/core/java/com/android/server/wm/ActivityTaskManagerService.java",
+            "patch_sha": "d54a64bdf71d1c91542b6885149fd176622ad0b4",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/wm/ActivityTaskManagerService.java\n+++ b/service..."
+        }
+    ],
+    "skipped_or_errored_diff_generation_log": [
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "reason": "Last Format Error: Invalid patch format: Hunk is longer than expected, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "reason": "Last Format Error: Invalid patch format: Hunk is longer than expected, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -478,6 +481,9 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -478,6 +481,9 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -347,6 +350,9 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -347,6 +350,9 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -3591,10 +3600,30 @@ class AppWidgetServiceImpl extends IAppWidgetService.Stub implements WidgetBacku\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -3591,10 +3600,30 @@ class AppWidgetServiceImpl extends IAppWidgetService.Stub implements WidgetBacku\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-317048495",
+            "file_name": "packages/SystemUI/src/com/android/systemui/clipboardoverlay/ClipboardListener.java",
+            "patch_sha": "c7d1402707ea106b58fa9297585ae22d5c09d7f9",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -88,14 +96,17 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -88,14 +96,17 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "patch_sha": "eb68b0d423afb55159b1c02b0897f597c0905916",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -708,17 +706,18 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -708,17 +706,18 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-313428840",
+            "file_name": "services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java",
+            "patch_sha": "8d008c61451dba86aa9f14c6bcd661db2cea4856",
+            "reason": "Last Format Error: Invalid patch format: Hunk diff line expected: @@ -949,13 +947,14 @@\n, Last Apply Error: Skipped due to format error",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -949,13 +947,14 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        }
+    ]
+}

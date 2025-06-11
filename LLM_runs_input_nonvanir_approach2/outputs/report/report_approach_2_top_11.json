@@ -1,0 +1,162 @@
+{
+    "run_timestamp": "20250603_220455",
+    "target_downstream_version": "all_versions",
+    "input_json_file": "inputs/top_11_vulns_2425.json",
+    "main_output_json_file_with_diffs": "outputs/approach2_results/approach2_output_diff_android_all_versions_20250603_220455.json",
+    "summary": {
+        "total_file_conflicts_matching_version": 19,
+        "files_attempted_for_llm_diff_generation": 19,
+        "files_with_llm_diff_successfully_generated": 6,
+        "files_skipped_pre_llm_call": 0,
+        "files_with_llm_diff_generation_errors_or_skipped_in_func": 12,
+        "successful_attempts_histogram": {
+            "2 runs": 4,
+            "1 run": 1,
+            "3 runs": 1
+        },
+        "total_runtime_seconds_all": 7401.419999999999,
+        "total_runtime_seconds_successful": 1699.01
+    },
+    "successfully_generated_diffs_log": [
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "ddc11bc03ab48e885f652b89df5f92ff283bcd4a",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/src/com/android/settings/search/SearchResultTrampoline.java\n+++ b/src/com/android/sett..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "patch_sha": "37be5d18e529877fcd3c62063aec205a96660449",
+            "downstream_version": "14",
+            "diff_preview": "```diff\n--- a/services/usb/java/com/android/server/usb/UsbDeviceManager.java\n+++ b/services/usb/java..."
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "downstream_version": "11",
+            "diff_preview": "```diff\n--- a/core/java/android/service/dreams/DreamService.java\n+++ b/core/java/android/service/dre..."
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/core/java/android/service/dreams/DreamService.java\n+++ b/core/java/android/service/dre..."
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "downstream_version": "13",
+            "diff_preview": "```diff\n--- a/services/core/java/com/android/server/notification/SnoozeHelper.java\n+++ b/services/co..."
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "downstream_version": "12",
+            "diff_preview": "```diff\n--- a/services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java\n+++ b/s..."
+        }
+    ],
+    "skipped_or_errored_diff_generation_log": [
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "8bdbb580da847d82f16fb57883a01a5e65ffa696",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -77,9 +77,12 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "8bdbb580da847d82f16fb57883a01a5e65ffa696",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Unexpected hunk found: @@ -103,13 +107,11 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-333364513",
+            "file_name": "src/com/android/settings/search/SearchResultTrampoline.java",
+            "patch_sha": "b86569b274003e517bfd089cc7d6ba62d1c5f820",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Unexpected hunk found: @@ -32,28 +35,47 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "patch_sha": "aec6c731bfdbe7f0fe537948563a7aeee5cf05e2",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -682,7 +682,7 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "patch_sha": "643bea502a92329e72585050fb7fa5535456094f",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -636,7 +641,8 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-353712853",
+            "file_name": "services/usb/java/com/android/server/usb/UsbDeviceManager.java",
+            "patch_sha": "ef6f37e5292ae3491de1857751dc01a319bb61d1",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: ```",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3461e84908b46b6fe82ac391d43a43f23c0b1d3e",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Valid patch format",
+            "last_apply_error": "Patch failed in repo: checking file services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java\nHunk #1 FAILED at 2789.\n1 out of 1 hunk FAILED\npatch unexpectedly ends in middle of line"
+        },
+        {
+            "vulnerability_id": "ASB-A-382064697",
+            "file_name": "services/devicepolicy/java/com/android/server/devicepolicy/DevicePolicyManagerService.java",
+            "patch_sha": "3298a1c9eb899d02e532f5dcf88904640a626dcd",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-300090204",
+            "file_name": "core/java/android/service/dreams/DreamService.java",
+            "patch_sha": "6926fd15fb16c51468dde270bd61ee68772b8c14",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: ```",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -377,9 +377,12 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-307948424",
+            "file_name": "services/core/java/com/android/server/notification/SnoozeHelper.java",
+            "patch_sha": "ade22bfdf6698cb97b4edc303e8952d6cc1a2f73",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk is longer than expected",
+            "last_apply_error": "Skipped due to format error"
+        },
+        {
+            "vulnerability_id": "ASB-A-353240784",
+            "file_name": "services/appwidget/java/com/android/server/appwidget/AppWidgetServiceImpl.java",
+            "patch_sha": "ae39a3f6538e5a5a73aea4daf8b552539247227f",
+            "reason": "All validation attempts failed",
+            "last_format_error": "Invalid patch format: Hunk diff line expected: @@ -1745,9 +1754,25 @@\n",
+            "last_apply_error": "Skipped due to format error"
+        }
+    ]
+}
