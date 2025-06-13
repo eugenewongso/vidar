@@ -30,6 +30,41 @@ import re
 import subprocess
 import sys
 import time
+from pathlib import Path
+from typing import List, Dict
+import logging
+
+# Get a logger for this module
+logger = logging.getLogger(__name__)
+
+
+# --- Argument Parser ---
+def parse_args():
+    """Parses command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Apply patches to a target source directory."
+    )
+    parser.add_argument(
+        "--source",
+        type=str,
+        required=True,
+        choices=["Vanir", "LLM"],
+        help="The source of the patches ('Vanir' or 'LLM')."
+    )
+    parser.add_argument(
+        "--strip_level",
+        type=int,
+        required=True,
+        help="The '-p' level for the GNU patch command (e.g., 1)."
+    )
+    return parser.parse_args()
+
+
+# --- Constants ---
+BASE_DIR = Path(__file__).resolve().parent
+REPORTS_DIR = BASE_DIR / "reports"
+PARSED_VANIR_REPORT_JSON = REPORTS_DIR / "parsed_report.json"
+LLM_SUCCESS_JSON = REPORTS_DIR / "successful_llm_patches.json"
 
 
 class PatchAdopter:
@@ -38,151 +73,208 @@ class PatchAdopter:
     """
 
     def __init__(self, target_source_path: str, patch_dir: str,
-                 report_output_path: str):
+                 report_output_path: str, strip_level: int = 1):
         """Initializes the PatchAdopter.
 
         Args:
-            target_source_path: The path to the target source code directory.
-            patch_dir: The directory containing the .diff patch files.
+            target_source_path: The path to the root of the source code checkout (e.g., AOSP root).
+            patch_dir: The directory containing the .def patch files.
             report_output_path: The path to save the JSON report.
+            strip_level: The '-p' level for the patch command.
         """
+        if not os.path.isdir(target_source_path):
+             logger.error(f"Target source root not found at '{target_source_path}'")
+             sys.exit(1)
         self.target_source_path = target_source_path
         self.patch_dir = patch_dir
         self.report_output_path = report_output_path
-        self.strip_level = 1
-        # Use 'gpatch' on macOS if available, otherwise 'patch'.
-        self.patch_command = "gpatch" if sys.platform == "darwin" else "patch"
+        self.strip_level = strip_level
+        self.patch_command = "patch"
         self.patch_results = {"patches": []}
 
-    def apply_patch(self, patch_file: str, patch_url: str,
-                    source: str = "Vanir") -> dict:
+    def apply_patch(self, patch_info: dict, source: str = "Vanir") -> dict:
         """
         Attempts to apply a single patch file to the target source directory.
 
         Args:
-            patch_file: The path to the .diff file to apply.
-            patch_url: The original URL of the patch for reporting purposes.
+            patch_info: A dictionary from the parsed report containing patch details.
             source: The source of the patch ('Vanir' or 'LLM').
 
         Returns:
             A dictionary containing the detailed results of the patch attempt.
         """
+        patch_filename = os.path.basename(patch_info.get("output_path") or patch_info.get("patch_file", ""))
+        patch_file = os.path.join(self.patch_dir, patch_filename)
+        patch_url = patch_info.get("patch_url") or patch_info.get("original_patch_url")
+        project_rel_path = patch_info.get("project")
+
+        base_result = {
+            "patch_file": patch_filename, "patch_url": patch_url,
+            "source": source, "project": project_rel_path
+        }
+        
+        if not project_rel_path:
+            return {**base_result, "status": "Rejected",
+                    "detailed_status": "Rejected: Missing project path in report",
+                    "message_output": "Patch entry in JSON report is missing the 'project' key."}
+        
+        # Flexibly determine the correct project path. It can be the AOSP root
+        # or a specific project directory provided by the user.
+        target_source_path = Path(self.target_source_path)
+        if str(target_source_path).endswith(project_rel_path):
+            project_abs_path = target_source_path
+        else:
+            project_abs_path = target_source_path / project_rel_path
+
+        if not project_abs_path.is_dir():
+            return {**base_result, "status": "Rejected",
+                    "detailed_status": f"Rejected: Project directory not found",
+                    "message_output": f"Could not find project directory at: {project_abs_path}"}
+            
         if not os.path.exists(patch_file):
-            print(f"  -> ❌ Patch file not found: {patch_file}")
-            return {
-                "patch_file": os.path.basename(patch_file),
-                "patch_url": patch_url,
-                "source": source,
-                "status": "Rejected: Missing Patch File",
-                "message_output": "Patch file not found."
-            }
+            return {**base_result, "status": "Rejected",
+                    "detailed_status": "Rejected: Missing Patch File",
+                    "message_output": f"Patch file not found: {patch_file}"}
 
         try:
-            # Use --dry-run first to check for issues without changing files.
+            # Run the patch command from within the specific project's directory.
+            # This is the key to fixing the "file not found" errors.
             result = subprocess.run(
                 [self.patch_command, "-p", str(self.strip_level), "-i",
-                 patch_file, "--dry-run"],
+                 patch_file, "-f", "--ignore-whitespace"],
+                cwd=str(project_abs_path),
                 text=True,
                 capture_output=True,
-                check=False  # Do not throw exception on non-zero exit code
+                check=False
             )
             console_output = result.stdout + result.stderr
+            return_code = result.returncode
 
-            detailed_status = self._determine_detailed_status(console_output)
-            rejected_files = self._extract_failed_files(console_output)
+            detailed_status = self._determine_detailed_status(console_output, return_code)
+            failed_files_from_run = self._extract_failed_files(console_output)
             
-            # If the dry run was successful or had only offsets, apply for real.
             if "FAILED" not in detailed_status:
-                subprocess.run(
-                    [self.patch_command, "-p", str(self.strip_level), "-i", patch_file, "-f"],
-                    text=True,
-                    capture_output=True,
-                    check=False
-                )
-                print(f"  -> ✅ {detailed_status}")
+                logger.info(f"  -> ✅ {detailed_status}")
             else:
-                 print(f"  -> ❌ {detailed_status}")
-                 
-            # Find any .rej files that were created.
-            reject_file_paths = self._get_rej_files()
+                logger.error(f"  -> ❌ {detailed_status} in project '{project_rel_path}'")
+
+            reject_file_paths = self._get_rej_files(project_abs_path)
             formatted_rejected_files = self._map_rejected_files(
-                rejected_files, reject_file_paths)
+                failed_files_from_run, reject_file_paths, project_abs_path)
 
-            overall_status = "Applied Successfully" if not formatted_rejected_files else "Rejected"
+            if "Rejected" in detailed_status or "Skipped" in detailed_status:
+                overall_status = "Rejected"
+            else:
+                overall_status = "Applied Successfully"
 
-            return {
-                "patch_file": os.path.basename(patch_file),
-                "patch_url": patch_url,
-                "source": source,
-                "status": overall_status,
-                "detailed_status": detailed_status,
-                "rejected_files": formatted_rejected_files,
-                "message_output": console_output
-            }
+            return {**base_result, "status": overall_status,
+                    "detailed_status": detailed_status,
+                    "rejected_files": formatted_rejected_files,
+                    "message_output": console_output}
 
         except Exception as e:
-            print(f"  -> ❌ An unexpected error occurred: {e}")
-            return {
-                "patch_file": os.path.basename(patch_file),
-                "patch_url": patch_url,
-                "source": source,
-                "status": "Rejected",
-                "detailed_status": "Rejected: Error Running Patch Command",
-                "message_output": str(e)
-            }
+            return {**base_result, "status": "Rejected",
+                    "detailed_status": "Rejected: Error Running Patch Command",
+                    "message_output": str(e)}
 
-    def _determine_detailed_status(self, console_output: str) -> str:
-        """Analyzes patch command output to determine a detailed status."""
-        if "Reversed (or previously applied) patch detected" in console_output:
-            return "Applied Successfully: Already Applied"
-        if "can't find file to patch" in console_output:
-            return "Skipped: Files Not Found"
-        if "FAILED" in console_output and "hunk" in console_output:
+    def _determine_detailed_status(self, console_output: str, return_code: int) -> str:
+        """
+        Analyzes patch command output and exit code to determine a detailed status.
+        The exit code is the most reliable indicator.
+        - 0: Success
+        - 1: Hunks failed
+        - 2: Serious error
+        """
+        # Trust the exit code first.
+        if return_code == 0:
+            if "offset" in console_output:
+                return "Applied Successfully: With Offsets"
+            # Handle cases where patch says it's already applied.
+            if "Reversed (or previously applied) patch detected" in console_output:
+                return "Applied Successfully: Already Applied"
+            return "Applied Successfully: Clean"
+
+        if return_code == 1:
             return "Rejected: Failed Hunks"
-        if "offset" in console_output and "FAILED" not in console_output:
-            return "Applied Successfully: With Offsets"
-        return "Applied Successfully: Clean"
+
+        if return_code > 1:
+            if "can't find file to patch" in console_output:
+                return "Skipped: Files Not Found"
+            return "Rejected: Error Running Patch Command"
+
+        # Fallback for edge cases where return code might be misleading.
+        if "FAILED" in console_output:
+            return "Rejected: Failed Hunks"
+            
+        return "Unknown Status"
 
     def _extract_failed_files(self, console_output: str) -> list[str]:
-        """Parses patch command output to find the names of failed files."""
-        pattern = re.compile(r"patching file (\S+)\nHunk #\d+ FAILED")
-        return [match.strip() for match in pattern.findall(console_output)]
+        """
+        Parses patch command output to find the names of all files that had at
+        least one hunk failure.
+        """
+        failed_files = set()
+        current_file = None
+        for line in console_output.splitlines():
+            # Check for the file being patched
+            patching_match = re.match(r"(?:checking|patching) file (.+)", line)
+            if patching_match:
+                current_file = patching_match.group(1).strip()
+            
+            # If we see a failure, add the current file to our set
+            if "FAILED" in line and "hunk" in line.lower() and current_file:
+                failed_files.add(current_file)
+        
+        return list(failed_files)
 
-    def _get_rej_files(self) -> list[str]:
-        """Finds all `.rej` files within the target source directory."""
-        time.sleep(1)  # Give the filesystem a moment to create .rej files.
+    def _get_rej_files(self, search_path: str) -> list[str]:
+        """Finds all `.rej` files within the specified search path."""
+        time.sleep(0.5)  # Give the filesystem a moment to create .rej files.
         reject_files = []
-        for root, _, files in os.walk(self.target_source_path):
+        for root, _, files in os.walk(search_path):
             for file in files:
                 if file.endswith(".rej"):
                     reject_files.append(os.path.join(root, file))
         return reject_files
 
     def _map_rejected_files(self, failed_files: list[str],
-                              reject_files: list[str]) -> list[dict]:
+                              reject_files: list[str], project_abs_path: str) -> list[dict]:
         """Maps failed file paths to their corresponding `.rej` file paths."""
         rejected_mappings = []
-        for failed_file in failed_files:
-            # Construct the expected path for the .rej file.
-            expected_rej_path = os.path.join(self.target_source_path,
-                                             failed_file + ".rej")
-            if expected_rej_path in reject_files:
+        # Create a quick lookup for reject files using their relative paths to the project.
+        rej_lookup = {os.path.relpath(p, project_abs_path): p for p in reject_files}
+
+        for failed_file_rel_path in failed_files:
+            # The .rej file has the same relative path as the failed file.
+            expected_rej_rel_path = failed_file_rel_path + ".rej"
+            
+            # The full path to the source file that failed.
+            full_failed_path = os.path.join(project_abs_path, failed_file_rel_path)
+            full_rej_path = rej_lookup.get(expected_rej_rel_path)
+
+            if full_rej_path and os.path.exists(full_rej_path):
+                try:
+                    with open(full_rej_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        rej_content = f.read()
+                except Exception as e:
+                    rej_content = f"Error reading .rej file: {e}"
+
                 rejected_mappings.append({
-                    "failed_file": failed_file,
-                    "reject_file": expected_rej_path
+                    "failed_file": full_failed_path,
+                    "reject_file": full_rej_path,
+                    "rej_content": rej_content
                 })
             else:
-                rejected_mappings.append({
-                    "failed_file": failed_file,
-                    "reject_file": None
-                })
+                logger.warning(f"A hunk failure was noted for '{failed_file_rel_path}', "
+                               "but its corresponding .rej file was not found. It will be skipped.")
+        
         return rejected_mappings
 
     def save_report(self):
         """Saves the cumulative patch results to a JSON file."""
         with open(self.report_output_path, "w", encoding="utf-8") as report:
             json.dump(self.patch_results, report, indent=4)
-        print(f"\n📄 Patch report saved to: {self.report_output_path}")
+        logger.info(f"📄 Patch report saved to: {self.report_output_path}")
 
     def generate_summary(self):
         """Prints a summary of the patch application results to the console."""
@@ -197,82 +289,132 @@ class PatchAdopter:
             "status_counts": status_counts
         }
 
-        print("\n" + "="*40)
-        print("Patch Application Summary")
-        print("="*40)
-        print(f"Total patches processed: {summary['total_patches']}")
-        print("Status breakdown:")
+        summary_text = f"\n{'='*40}\n"
+        summary_text += "Patch Application Summary\n"
+        summary_text += f"{'='*40}\n"
+        summary_text += f"Total patches processed: {summary['total_patches']}\n"
+        summary_text += "Status breakdown:\n"
         for status, count in status_counts.items():
-            print(f"  - {status}: {count}")
-        print("="*40)
+            summary_text += f"  - {status}: {count}\n"
+        summary_text += "="*40
+        logger.info(summary_text)
         return summary
+
+
+def run_adoption_step(source: str, strip_level: int, target_source_path: str):
+    """
+    Runs the patch adoption process for a given source.
+    This function is a generator that yields progress updates.
+    """
+    # Determine paths based on the source
+    if source == "Vanir":
+        input_report_path = PARSED_VANIR_REPORT_JSON
+        # Patches from Vanir are in the /diff_output/ directory.
+        patch_dir = BASE_DIR.parent / "fetch_patch_output" / "diff_output"
+        # The final, cumulative report will be saved here.
+        output_report_path = REPORTS_DIR / "patch_application_report.json"
+        # Failed patches from this stage are input for the LLM.
+        failed_report_path = REPORTS_DIR / "failed_patch.json"
+    else:  # Source is LLM
+        input_report_path = LLM_SUCCESS_JSON
+        # Patches from the LLM are in the /generated_patches/ directory.
+        patch_dir = BASE_DIR.parent / "patch_adoption" / "generated_patches"
+        # This is a temporary report for just the LLM patches.
+        output_report_path = REPORTS_DIR / "llm_patch_application_report.json"
+        # We don't have a new 'failed' list from this step currently.
+        failed_report_path = None
+    
+    logger.info(f"--- Running Patch Adopter for source: {source} ---")
+
+    if not input_report_path.exists():
+        logger.error(f"Input report not found at '{input_report_path}'")
+        yield {"type": "error", "message": f"Input report not found at '{input_report_path}'"}
+        return
+
+    with open(input_report_path, "r", encoding="utf-8") as f:
+        try:
+            report_data = json.load(f)
+        except json.JSONDecodeError:
+            logger.error(f"Could not decode JSON from '{input_report_path}'. It may be empty or corrupt.")
+            yield {"type": "error", "message": f"Could not decode JSON from '{input_report_path}'"}
+            return
+
+    adopter = PatchAdopter(
+        target_source_path=target_source_path,
+        patch_dir=str(patch_dir),
+        report_output_path=str(output_report_path),
+        strip_level=strip_level
+    )
+
+    all_patches = report_data.get("patches", [])
+    total_patches = len(all_patches)
+    
+    yield {"type": "progress", "completed": 0, "total": total_patches}
+
+    if not all_patches:
+        logger.info("No patches found in the input report. Nothing to do.")
+        adopter.save_report()
+        return
+
+    logger.info(f"Found {total_patches} patches to process.")
+    for i, patch_info in enumerate(all_patches):
+        patch_file_name = os.path.basename(patch_info.get("patch_file", "Unknown"))
+        logger.info(f"Processing patch: {patch_file_name}")
+        result = adopter.apply_patch(patch_info, source=source)
+        adopter.patch_results["patches"].append(result)
+        yield {"type": "progress", "completed": i + 1, "total": total_patches}
+
+    adopter.save_report()
+    summary = adopter.generate_summary()
+
+    # If processing original patches, create a report of only the failed ones
+    # for the next step in the pipeline.
+    if failed_report_path:
+        failed_patches = [
+            p for p in adopter.patch_results["patches"]
+            if p.get("status") == "Rejected"
+        ]
+        
+        # We also need to add back the original upstream patch content for the LLM
+        # to have full context.
+        all_original_patches = {
+            os.path.basename(p.get("patch_file", "")): p.get("upstream_patch_content")
+            for p in report_data.get("patches", []) # Use original report data
+        }
+        
+        for failed_patch in failed_patches:
+            patch_filename = os.path.basename(failed_patch.get("patch_file", ""))
+            failed_patch["upstream_patch_content"] = all_original_patches.get(patch_filename)
+
+        with open(failed_report_path, "w", encoding="utf-8") as f:
+            json.dump({"patches": failed_patches}, f, indent=4)
+        logger.info(f"Saved details for {len(failed_patches)} failed patches to: {failed_report_path}")
+
+    # Clean up any empty .rej files that 'patch' might create on success.
+    for root, _, files in os.walk(target_source_path):
+        for file in files:
+            if file.endswith(".rej"):
+                rej_path = os.path.join(root, file)
+                if os.path.getsize(rej_path) == 0:
+                    os.remove(rej_path)
+                    
+    yield {"type": "summary", "data": summary}
 
 
 def main():
     """Main entry point for the patch adopter script."""
-    parser = argparse.ArgumentParser(
-        description="Apply downloaded patches to a target source directory.")
-    parser.add_argument(
-        "--source",
-        choices=["Vanir", "LLM"],
-        default="Vanir",
-        help="Specify the source of the patches to apply.")
-    args = parser.parse_args()
+    args = parse_args()
 
-    # Define project paths relative to the script location.
-    vidar_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(vidar_dir)
-    target_source_path = os.environ.get("TARGET_SOURCE_PATH")
-    
+    # When run as a script, this is needed
+    target_source_path = os.getenv("TARGET_SOURCE_PATH")
     if not target_source_path:
-        print("❌ Error: TARGET_SOURCE_PATH environment variable is not set.")
+        logger.error("The 'TARGET_SOURCE_PATH' environment variable is not set.")
+        logger.error("   Please set it to the root of the AOSP source code directory.")
         sys.exit(1)
-
-    # Determine directories based on the patch source.
-    if args.source == "Vanir":
-        patch_dir = os.path.join(project_root, "fetch_patch_output", "diff_output")
-        parsed_report_path = os.path.join(vidar_dir, "reports", "parsed_report.json")
-    else:  # LLM
-        patch_dir = os.path.join(project_root, "patch_adoption", "generated_patches")
-        parsed_report_path = os.path.join(vidar_dir, "reports", "1_llm_output.json")
-    
-    report_output_path = os.path.join(vidar_dir, "reports", "patch_application_report.json")
-
-    # Validate paths.
-    if not os.path.isdir(target_source_path):
-        print(f"❌ Error: Target source directory not found at '{target_source_path}'")
-        sys.exit(1)
-
-    # Change to the target directory to ensure `patch` works correctly.
-    os.chdir(target_source_path)
-
-    try:
-        with open(parsed_report_path, "r", encoding="utf-8") as f:
-            report_data = json.load(f)
-    except FileNotFoundError:
-        print(f"❌ Error: Input report not found at '{parsed_report_path}'")
-        sys.exit(1)
-
-    patcher = PatchAdopter(target_source_path, patch_dir, report_output_path)
-    patches_to_process = report_data.get("patches", [])
-    
-    print(f"Attempting to apply {len(patches_to_process)} patches from source: {args.source}")
-
-    for patch in patches_to_process:
-        patch_filename = (patch["patch_file"] if args.source == "Vanir"
-                          else os.path.basename(patch.get("output_path", "")))
-        if not patch_filename:
-            print(f"⚠️ Skipping a patch entry due to missing file information.")
-            continue
-            
-        patch_file_path = os.path.join(patch_dir, patch_filename)
-        print(f"\n🔍 Processing patch: {patch_filename}")
-        patch_result = patcher.apply_patch(
-            patch_file_path, patch["patch_url"], source=args.source)
-        patcher.patch_results["patches"].append(patch_result)
-
-    patcher.save_report()
-    patcher.generate_summary()
+        
+    # When run as a script, just iterate through the generator to execute it.
+    for _ in run_adoption_step(args.source, args.strip_level, target_source_path):
+        pass
 
 
 if __name__ == "__main__":

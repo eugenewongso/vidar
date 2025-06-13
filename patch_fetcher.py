@@ -22,24 +22,13 @@ import base64
 import time
 from pathlib import Path
 from urllib.parse import urlparse
+from android_patch_manager import AndroidPatchManager
+import logging
+
+# Get a logger for this module
+logger = logging.getLogger(__name__)
 
 # --- UTILITY FUNCTIONS ---
-
-def _extract_commit_hash(commit_url: str) -> str | None:
-    """Extracts the commit hash from a Googlesource or CodeLinaro URL.
-
-    Args:
-        commit_url: The URL to the commit in a Git repository.
-
-    Returns:
-        The commit hash extracted from the URL, or None if not found.
-    """
-    path = urlparse(commit_url).path
-    # The hash is the last part of the path, after '/+/'
-    try:
-        return path.split('/+/')[-1].rstrip('^!')
-    except IndexError:
-        return None
 
 def _get_with_backoff(url: str, retries: int = 5) -> requests.Response:
     """Makes an HTTP GET request with exponential backoff for rate limiting.
@@ -60,14 +49,14 @@ def _get_with_backoff(url: str, retries: int = 5) -> requests.Response:
             return response
         # Exponential backoff: 1, 2, 4, 8, 16 seconds
         backoff_time = 2**i
-        print(f"⚠️ Received status 429 (Too Many Requests). "
-              f"Waiting {backoff_time}s before retrying...")
+        logger.warning(f"Received status 429 (Too Many Requests). "
+                       f"Waiting {backoff_time}s before retrying...")
         time.sleep(backoff_time)
     return response  # Return the last response after all retries
 
 # --- CORE PATCH FETCHING FUNCTIONALITY ---
 
-def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> str | None:
+def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tuple[bool, str]:
     """Downloads, filters, and saves the diff for a given commit URL.
 
     This function performs the following steps:
@@ -82,45 +71,40 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> str 
         files_to_include: A list of file paths to include in the filtered patch.
 
     Returns:
-        The path to the saved patch file, or None if the operation failed.
+        A tuple containing a boolean status (True for success, False for failure)
+        and a message (the path to the saved file on success, or an error
+        string on failure).
     """
     project_root = Path(__file__).resolve().parent.parent
-    commit_hash = _extract_commit_hash(commit_url)
-    if not commit_hash:
-        print(f"❌ Could not extract commit hash from URL: {commit_url}")
-        return None
+    commit_hashes = AndroidPatchManager.extract_commit_hashes([commit_url])
+    if not commit_hashes:
+        return False, f"Could not extract commit hash from URL: {commit_url}"
+    commit_hash = commit_hashes[0]
 
     # Determine the repository type and construct the appropriate download URL.
     if "android.googlesource.com" in commit_url:
-        # Googlesource uses a specific format for raw, Base64-encoded text diffs.
         diff_url = commit_url + "^!/?format=TEXT"
     elif "git.codelinaro.org" in commit_url:
         diff_url = commit_url + ".diff"
     else:
-        print(f"❌ Unsupported repository host in URL: {commit_url}")
-        return None
+        return False, f"Unsupported repository host in URL: {commit_url}"
 
-    print(f"  -> Fetching diff from: {diff_url}")
+    logger.info(f"  -> Fetching diff from: {diff_url}")
 
-    # Create the output directory if it doesn't exist.
     output_dir = project_root / "fetch_patch_output" / "diff_output"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_filename = output_dir / f"{commit_hash}.diff"
 
     response = _get_with_backoff(diff_url)
     if response.status_code != 200:
-        print(f"❌ Failed to fetch diff for {commit_hash}. "
-              f"HTTP Status: {response.status_code}")
-        return None
+        return False, f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}"
 
-    # Googlesource encodes the patch in Base64, while others are plain text.
     if "android.googlesource.com" in commit_url:
         try:
             raw_diff = base64.b64decode(response.text)
             diff_text = raw_diff.decode("utf-8")
         except (ValueError, TypeError) as e:
-            print(f"❌ Failed to decode Base64 content for {commit_hash}: {e}")
-            return None
+            return False, f"Failed to decode Base64 content for {commit_hash}: {e}"
     else:
         diff_text = response.text
 
@@ -131,11 +115,9 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> str 
 
     for line in diff_text.splitlines():
         if line.startswith("diff --git"):
-            # A new file section has started; reset capture flag.
             should_capture_lines = False
             match = re.search(r" a/(.+) b/(.+)", line)
             if match:
-                # Check if this new file path is in our list of files to include.
                 current_file_being_processed = match.group(1)
                 if any(
                     file_path.endswith(current_file_being_processed)
@@ -147,14 +129,12 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> str 
             filtered_diff_lines.append(line)
 
     if not filtered_diff_lines:
-        print(f"❌ No matching diff content found for files: {files_to_include}")
-        return None
+        return False, f"No matching diff content found for files: {files_to_include}"
 
-    # Save the filtered patch to disk.
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write("\n".join(filtered_diff_lines).strip() + "\n")
 
-    return str(output_filename)
+    return True, str(output_filename)
 
 # --- BATCH PROCESSING FUNCTIONALITY ---
 
@@ -184,65 +164,125 @@ def process_patches_from_report(report_path: str = None) -> dict:
         with open(report_path, "r", encoding="utf-8") as f:
             parsed_report = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"❌ Error loading parsed report from '{report_path}': {e}")
+        logger.error(f"Error loading parsed report from '{report_path}': {e}")
         return results
 
     patches_to_process = parsed_report.get("patches", [])
-    print(f"Processing {len(patches_to_process)} patches from report: {report_path.name}")
+    logger.info(f"Processing {len(patches_to_process)} patches from report: {report_path.name}")
 
     for i, patch in enumerate(patches_to_process):
         patch_url = patch.get("patch_url")
         if not patch_url:
-            print(f"⚠️ Skipping entry {i+1} due to missing 'patch_url'.")
+            logger.warning(f"Skipping entry {i+1} due to missing 'patch_url'.")
             continue
 
         files_to_include = list(patch.get("files", {}).keys())
-        print(f"\n[{i+1}/{len(patches_to_process)}] Processing patch: {patch_url}")
-        print(f"  -> Filtering for files: {files_to_include}")
+        logger.info(f"\n[{i+1}/{len(patches_to_process)}] Processing patch: {patch_url}")
+        logger.info(f"  -> Filtering for files: {files_to_include}")
 
         try:
-            diff_file_path = fetch_and_filter_patch(patch_url, files_to_include)
+            success, message = fetch_and_filter_patch(patch_url, files_to_include)
 
-            if diff_file_path:
-                print(f"✅ Successfully saved patch to: {Path(diff_file_path).name}")
-                results["successful"].append({
-                    "url": patch_url,
-                    "file": diff_file_path,
-                })
+            if success:
+                logger.info(f"✅ Successfully saved patch to: {Path(message).name}")
+                results["successful"].append({"url": patch_url, "file": message})
             else:
-                print(f"❌ Failed to fetch or filter patch: {patch_url}")
+                logger.error(f"Failed to fetch or filter patch: {patch_url}. Reason: {message}")
                 results["failed"].append({
                     "url": patch_url,
-                    "reason": "Fetch, decode, or filter operation failed.",
+                    "reason": message,
                 })
 
         except Exception as e:
             # Catch any unexpected errors during processing.
-            print(f"❌ An unexpected error occurred while processing {patch_url}: {e}")
+            logger.error(f"An unexpected error occurred while processing {patch_url}: {e}")
             results["failed"].append({"url": patch_url, "reason": str(e)})
 
     # Print a final summary of the operations.
-    print("\n" + "="*40)
-    print("Patch Fetching Summary")
-    print("="*40)
-    print(f"Successfully fetched: {len(results['successful'])}")
-    print(f"Failed to fetch: {len(results['failed'])}")
-    print("="*40)
+    summary = (
+        f"\n{'='*40}\n"
+        "Patch Fetching Summary\n"
+        f"{'='*40}\n"
+        f"Successfully fetched: {len(results['successful'])}\n"
+        f"Failed to fetch: {len(results['failed'])}\n"
+        f"{'='*40}"
+    )
+    logger.info(summary)
 
     return results
+
+def run_fetcher_step():
+    """
+    Runs the patch fetching process.
+    This function is a generator that yields progress updates.
+    """
+    vidar_dir = Path(__file__).resolve().parent
+    report_path = vidar_dir / "reports" / "parsed_report.json"
+    results = {"successful": [], "failed": []}
+
+    try:
+        with open(report_path, "r", encoding="utf-8") as f:
+            parsed_report = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Error loading parsed report from '{report_path}': {e}")
+        yield {"type": "error", "message": f"Error loading parsed report from '{report_path}': {e}"}
+        return
+
+    patches_to_process = parsed_report.get("patches", [])
+    total_patches = len(patches_to_process)
+    processed_count = 0
+    logger.info(f"Processing {total_patches} patches from report: {report_path.name}")
+    
+    yield {"type": "progress", "completed": 0, "total": total_patches}
+
+    if not patches_to_process:
+        yield {"type": "summary", "data": results}
+        return
+
+    for patch in patches_to_process:
+        patch_url = patch.get("patch_url")
+        files_to_include = list(patch.get("files", {}).keys())
+
+        try:
+            success, message = fetch_and_filter_patch(patch_url, files_to_include)
+
+            if success:
+                logger.info(f"Successfully saved patch to: {Path(message).name}")
+                results["successful"].append({"url": patch_url, "file": message})
+            else:
+                error_reason = f"Failed to fetch or filter patch: {patch_url}. Reason: {message}"
+                logger.error(error_reason)
+                results["failed"].append({"url": patch_url, "reason": message})
+
+        except Exception as e:
+            error_reason = f"An unexpected error occurred while processing {patch_url}: {e}"
+            logger.error(error_reason, exc_info=True)
+            results["failed"].append({"url": patch_url, "reason": str(e)})
+        
+        processed_count += 1
+        yield {"type": "progress", "completed": processed_count, "total": total_patches}
+
+    # Write failed fetches to a report for downstream steps
+    reports_dir = vidar_dir / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    fetch_failures_path = reports_dir / "fetch_failures.json"
+    with open(fetch_failures_path, "w", encoding="utf-8") as f:
+        json.dump(results["failed"], f, indent=2)
+
+    if results["failed"]:
+        logger.warning(f"Some patches could not be fetched. See '{fetch_failures_path}' for details.")
+    else:
+        logger.info("All patches fetched successfully.")
+        
+    yield {"type": "summary", "data": results}
 
 # --- MAIN ENTRY POINT ---
 
 def main():
     """Main entry point for the patch fetcher script."""
-    results = process_patches_from_report()
-
-    # Exit with a non-zero status code if any patches failed to download.
-    if results["failed"]:
-        print("\nSome patches could not be fetched. Please review the errors above.")
-        sys.exit(1)
-
-    sys.exit(0)
+    # When run as a script, just iterate through the generator to execute it.
+    for _ in run_fetcher_step():
+        pass
 
 if __name__ == "__main__":
     main()

@@ -34,6 +34,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import sys
+import argparse
+import logging
 
 from dotenv import load_dotenv
 from unidiff import PatchSet
@@ -42,8 +44,44 @@ import google.generativeai as genai
 from google.generativeai.types import GenerationConfig
 from google.generativeai.types.safety_types import HarmBlockThreshold, HarmCategory
 from android_patch_manager import AndroidPatchManager
-from validation_utils import validate_patch_format, validate_patch_applicability_in_repo
-from support_utils import get_repo_url_from_osv, get_all_token_counts, SupportDependencies
+
+# Get a logger for this module
+logger = logging.getLogger(__name__)
+
+# --- Argument Parser ---
+def parse_args():
+    """Parses command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Uses an LLM to correct patches that failed to apply."
+    )
+    parser.add_argument(
+        "--model_name", type=str, required=True,
+        help="The name of the Gemini model to use."
+    )
+    parser.add_argument(
+        "--temperature", type=float, required=True,
+        help="The temperature for LLM generation."
+    )
+    parser.add_argument(
+        "--max_retries", type=int, required=True,
+        help="The maximum number of self-correction retries for the LLM."
+    )
+    parser.add_argument(
+        "--concurrency", type=int, required=True,
+        help="The number of concurrent LLM API calls to make."
+    )
+    return parser.parse_args()
+
+# --- Constants ---
+BASE_DIR = Path(__file__).resolve().parent
+REPORTS_DIR = BASE_DIR / "reports"
+GENERATED_PATCHES_DIR = BASE_DIR.parent / "patch_adoption" / "generated_patches"
+FAILED_PATCH_JSON = REPORTS_DIR / "failed_patch.json"
+SUCCESSFUL_PATCHES_FILE = REPORTS_DIR / "successful_llm_patches.json"
+
+# Create necessary directories
+REPORTS_DIR.mkdir(exist_ok=True)
+GENERATED_PATCHES_DIR.mkdir(exist_ok=True)
 
 # Load environment variables
 load_dotenv()
@@ -70,7 +108,7 @@ class APIKeyRotator:
     def rotate_key(self):
         """Rotates to the next API key."""
         self._index = (self._index + 1) % len(self._api_keys)
-        print(f"🔄 Rotating to new API key index {self._index}")
+        logger.info(f"Rotating to new API key index {self._index}")
         return self.get_current_key()
 
 key_rotator = APIKeyRotator(api_keys)
@@ -194,7 +232,7 @@ class GeminiAgent:
                 error_message = str(e).lower()
                 if ("quota" in error_message or "rate limit" in error_message or
                     "internal error" in error_message):
-                    print(f"⚠️ API error encountered: {e}")
+                    logger.warning(f"API error encountered: {e}")
                     self.key_rotator.rotate_key()
                     self._configure_genai()  # Reconfigure with the new key.
                 else:
@@ -304,8 +342,8 @@ Generate the corrected unified diff now:
         """Creates a refined prompt for subsequent attempts after a failure."""
         last_attempt = self.attempts[-1]
         analysis = self._analyze_failure(
-            last_attempt["validation_result"]["format_error"],
-            last_attempt["validation_result"]["apply_error"]
+            last_attempt["validation_result"].get("format_error"),
+            last_attempt["validation_result"].get("apply_error")
         )
         return f"""You are an expert developer in a self-correction cycle. Your previous attempt to generate a patch was incorrect. I am acting as your mentor and have analyzed the failure.
 
@@ -341,43 +379,26 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
 """
 
     async def _validate_applicability_in_repo(self, patch_content: str) -> tuple[bool, str]:
-        """Validates patch applicability by setting up a precise repo state."""
+        """
+        Validates patch applicability in the current state of the repo using a
+        non-destructive dry run.
+        """
         if not self.repo_lock:
             return False, "Repo lock not provided"
 
         async with self.repo_lock:
-            # This logic is critical: it prepares a temporary, clean
-            # repository state to test the patch against.
             repo_path_str = self.original_inputs["repo_path"]
-            commit_hash = self.original_inputs["commit_hash"]
-            upstream_patch_content = self.original_inputs["upstream_patch_content"]
-            repo_path = Path(repo_path_str)
-
-            # 1. Reset the repo to a clean state.
-            AndroidPatchManager.clean_repo(repo_path)
-            # 2. Check out the commit *before* the original patch.
-            AndroidPatchManager.checkout_commit(repo_path, f"{commit_hash}^")
-
-            # 3. Apply the original (broken) patch to replicate the failed state.
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".patch",
-                                             mode="w", encoding="utf-8") as temp_patch_file:
-                temp_patch_file.write(upstream_patch_content)
-                temp_patch_path = temp_patch_file.name
-            
-            AndroidPatchManager.apply_patch(repo_path, temp_patch_path)
-            os.unlink(temp_patch_path)
-            
-            # 4. Now, test the LLM's new patch against this prepared state.
-            return validate_patch_applicability_in_repo(patch_content,
-                                                        str(repo_path))
+            return validate_patch_applicability_in_repo(
+                patch_content, str(repo_path_str)
+            )
 
     async def run(self) -> dict:
         """Runs the full self-correction loop for a single patch task."""
         total_gemini_token_counts = {"input": 0, "output": 0, "total": 0}
 
         for attempt_num in range(self.max_retries):
-            print(f"  -> Attempt {attempt_num + 1}/{self.max_retries} for "
-                  f"{self.original_inputs['target_filename']}")
+            logger.info(f"  -> Attempt {attempt_num + 1}/{self.max_retries} for "
+                        f"{self.original_inputs['target_filename']}")
             prompt = (self._create_initial_prompt() if attempt_num == 0
                       else self._create_retry_prompt())
             
@@ -403,46 +424,42 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
                     "valid": format_valid and apply_valid
                 }
             except Exception as e:
-                print(f"  -> ❌ Error on attempt {attempt_num + 1}: {e}")
-                validation_result = {"attempt": attempt_num + 1, "error": str(e),
-                                     "valid": False}
+                logger.error(f"  -> ❌ Error on attempt {attempt_num + 1}: {e}")
+                validation_result = {
+                    "attempt": attempt_num + 1, "error": str(e),
+                    "valid": False, "format_error": "N/A", "apply_error": str(e)
+                }
 
             self.attempts.append({"generated_diff": generated_diff,
                                   "validation_result": validation_result})
 
             if validation_result.get("valid"):
-                print(f"  -> ✅ Validation successful on attempt {attempt_num + 1}.")
+                logger.info(f"  -> ✅ Validation successful on attempt {attempt_num + 1}.")
                 return {
                     "success": True,
                     "patch_hash": self.original_inputs["commit_hash"],
                     "file": self.original_inputs["target_filename"],
                     "output_path": self.original_inputs["output_path"],
                     "validation_results": [a["validation_result"] for a in self.attempts],
-                    "downstream_llm_diff_output": generated_diff
+                    "downstream_llm_diff_output": generated_diff,
+                    "token_counts": total_gemini_token_counts
                 }
             else:
-                 print(f"  -> ❌ Validation failed on attempt {attempt_num + 1}.")
+                 logger.warning(f"  -> ❌ Validation failed on attempt {attempt_num + 1}.")
 
         # If the loop finishes, all retries have failed.
-        print(f"  -> ❌ All {self.max_retries} attempts failed.")
+        logger.error(f"  -> ❌ All {self.max_retries} attempts failed.")
         return {
             "success": False,
             "patch_hash": self.original_inputs["commit_hash"],
             "file": self.original_inputs["target_filename"],
-            "validation_results": [a["validation_result"] for a in self.attempts]
+            "validation_results": [a["validation_result"] for a in self.attempts],
+            "token_counts": total_gemini_token_counts
         }
 
 
-# Directories
-BASE_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = BASE_DIR.parent
-FAILED_PATCH_JSON = PROJECT_ROOT / "failed_patch.json"
-PATCH_OUTPUT_DIR = PROJECT_ROOT / "patch_adoption" / "generated_patches"
-REPORT_OUTPUT_PATH = BASE_DIR / "reports" / "1_llm_output.json"
-PATCH_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-REPORT_OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock) -> list[dict]:
+async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock,
+                              model_name: str, temperature: float, max_retries: int) -> list[dict]:
     """Processes a single entry from the `failed_patch.json` file.
 
     This function sets up the repository and then iterates through each file
@@ -455,60 +472,90 @@ async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock) -> list[dict
     Returns:
         A list of result dictionaries, one for each file conflict processed.
     """
-    project_root = Path(__file__).resolve().parent.parent
     patch_hash = Path(patch["patch_file"]).stem
-    patch_url = patch["patch_url"]
     
-    # Clone the repository needed for this patch.
-    downstream_repo_url = patch_url.split("+/", 1)[0]
-    repo_path = AndroidPatchManager.clone_repo(
-        downstream_repo_url, project_root / "android_repos")
+    target_source_path = os.getenv("TARGET_SOURCE_PATH")
+    if not target_source_path:
+        logger.error("TARGET_SOURCE_PATH environment variable is not set in process_patch_entry.")
+        # Return an error for all files in this patch entry.
+        return [{
+            "file": f.get("failed_file", "Unknown"),
+            "error": "TARGET_SOURCE_PATH not set.",
+            "success": False
+        } for f in patch.get("rejected_files", [{"failed_file": "Unknown"}])]
+
+    user_provided_repo_path = Path(target_source_path)
+    project_rel_path = patch.get("project")
+
+    if not project_rel_path:
+        logger.error(f"Patch entry for {patch_hash} is missing the 'project' field.")
+        return [{"file": "Unknown", "error": "Missing 'project' in input JSON.", "success": False}]
+
+    # Determine the correct project path.
+    if str(user_provided_repo_path).endswith(project_rel_path):
+        project_abs_path = user_provided_repo_path
+    else:
+        project_abs_path = user_provided_repo_path / project_rel_path
+    
+    logger.info(f"ℹ️  Starting patch processing for {patch_hash}. Using project path: {project_abs_path}")
+    
+    if not project_abs_path.is_dir():
+        logger.error(f"Project path is not a valid directory: {project_abs_path}")
+        return [{
+            "file": f.get("failed_file", "Unknown"),
+            "error": f"Invalid project path: {project_abs_path}",
+            "success": False
+        } for f in patch.get("rejected_files", [{"failed_file": "Unknown"}])]
 
     all_file_results = []
-    for file_conflict in patch["rejected_files"]:
-        failed_file_path = Path(file_conflict["failed_file"])
-        print(f"\n▶️  Processing file: {failed_file_path.name} from patch {patch_hash}")
-
+    for file_conflict in patch.get("rejected_files", []):
         try:
-            # The .rej file contains the failed hunks.
-            rej_file_path = Path(file_conflict["reject_file"])
-            rej_content = rej_file_path.read_text(encoding="utf-8")
-            # This is the state of the source file *after* the failed patch attempt.
-            original_source = failed_file_path.read_text(encoding="utf-8")
-        except (IOError, TypeError) as e:
-            print(f"  -> ❌ Error reading file content: {e}")
-            all_file_results.append({
-                "file": str(failed_file_path), "error": str(e), "success": False})
-            continue
+            failed_file_path_str = file_conflict.get("failed_file")
+            if not failed_file_path_str:
+                logger.warning(f"  -> ⚠️  file_conflict entry is missing 'failed_file' key for patch {patch_hash}.")
+                continue
+            failed_file_path = Path(failed_file_path_str)
+            logger.info(f"\n▶️  Processing file: {failed_file_path.name} from patch {patch_hash}")
 
-        if 'upstream_patch_content' not in patch:
-            print("  -> ❌ Error: Missing 'upstream_patch_content' in input JSON.")
-            all_file_results.append({
-                "file": str(failed_file_path),
-                "error": "Missing 'upstream_patch_content' in input JSON.",
-                "success": False
-            })
-            continue
-        
-        # Prepare the inputs for the correction agent.
-        output_dir = project_root / "patch_adoption" / "generated_patches"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = (output_dir / 
-                       f"{patch_hash}_{failed_file_path.name}_"
-                       f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.diff")
+            rej_content = file_conflict.get("rej_content")
+            if not rej_content:
+                logger.warning(f"  -> 'rej_content' is missing or empty for {failed_file_path.name}. This file cannot be fixed.")
+                all_file_results.append({
+                    "file": str(failed_file_path),
+                    "error": "Missing or empty rej_content.",
+                    "success": False
+                })
+                continue
+            
+            # This is the state of the source file after the failed patch attempt.
+            original_source = Path(failed_file_path).read_text(encoding="utf-8")
 
-        original_inputs = {
-            "rej_content": rej_content,
-            "original_source_content": original_source,
-            "upstream_patch_content": patch["upstream_patch_content"],
-            "target_filename": str(failed_file_path.relative_to(repo_path)),
-            "repo_path": str(repo_path),
-            "commit_hash": patch_hash,
-            "output_path": str(output_path)
-        }
-        
-        # Initialize the system prompt for the Gemini agent.
-        system_prompt = """You are an expert Android build system and Linux kernel patch developer. Your task is to resolve conflicts in `.rej` files by generating a corrected unified diff. You must be meticulous and precise.
+            if 'upstream_patch_content' not in patch:
+                logger.error(f"  -> Missing 'upstream_patch_content' in input JSON for {failed_file_path.name}.")
+                all_file_results.append({
+                    "file": str(failed_file_path),
+                    "error": "Missing 'upstream_patch_content' in input JSON.",
+                    "success": False
+                })
+                continue
+            
+            # Prepare the inputs for the correction agent.
+            output_dir = BASE_DIR.parent / "patch_adoption" / "generated_patches"
+            output_path = (output_dir / 
+                           f"{patch_hash}_{failed_file_path.name}_"
+                           f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.diff")
+
+            original_inputs = {
+                "rej_content": rej_content,
+                "original_source_content": original_source,
+                "upstream_patch_content": patch["upstream_patch_content"],
+                "target_filename": str(failed_file_path.relative_to(project_abs_path)),
+                "repo_path": str(project_abs_path),
+                "commit_hash": patch_hash,
+                "output_path": str(output_path)
+            }
+            
+            system_prompt = """You are an expert Android build system and Linux kernel patch developer. Your task is to resolve conflicts in `.rej` files by generating a corrected unified diff. You must be meticulous and precise.
 
 **STRICT FORMATTING AND OUTPUT REQUIREMENTS:**
 1.  **Unified Diff Format ONLY**: Your *entire* response must be a single markdown code block starting with ```diff. Do NOT include any other text, explanations, or apologies before or after the code block.
@@ -534,68 +581,160 @@ async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock) -> list[dict
 
 Now, await the task."""
 
-        gemini_agent = GeminiAgent(
-            model_name="gemini-2.5-pro-preview-05-06",
-            system_prompt=system_prompt,
-            key_rotator=key_rotator
-        )
-        
-        agent = PatchCorrectionAgent(
-            gemini_agent=gemini_agent,
-            original_inputs=original_inputs,
-            max_retries=3,
-            repo_lock=repo_lock
-        )
+            gemini_agent = GeminiAgent(
+                model_name=model_name,
+                temperature=temperature,
+                system_prompt=system_prompt,
+                key_rotator=key_rotator
+            )
+            
+            agent = PatchCorrectionAgent(
+                gemini_agent=gemini_agent,
+                original_inputs=original_inputs,
+                max_retries=max_retries,
+                repo_lock=repo_lock
+            )
 
-        # Run the agent and get the result.
-        result = await agent.run()
-        all_file_results.append(result)
+            # Run the agent and get the result.
+            logger.info(f"  -> Calling LLM Agent for {failed_file_path.name}...")
+            result = await agent.run()
 
-        if result.get("success"):
-            output_path.write_text(result["downstream_llm_diff_output"],
-                                   encoding="utf-8")
-            print(f"  -> ✅ Successfully generated and saved patch to "
-                  f"{output_path.name}")
+            if result.get("success"):
+                # Add context to the result for downstream processing
+                result['project'] = project_rel_path
+                result['original_file'] = str(failed_file_path)
+                
+                output_path.write_text(result["downstream_llm_diff_output"],
+                                       encoding="utf-8")
+                result['saved_patch_file'] = output_path.name
+                logger.info(f"  -> ✅ Successfully generated and saved patch to "
+                            f"{output_path.name}")
+            else:
+                result['project'] = project_rel_path
+                result['original_file'] = str(failed_file_path)
+                logger.error(f"  -> ❌ Failed to generate patch for {failed_file_path.name}")
+
+            all_file_results.append(result)
+
+        except (IOError, TypeError, KeyError, ValueError) as e:
+            logger.critical(f"  -> ❌ CRITICAL ERROR while preparing to process {file_conflict.get('failed_file', 'Unknown')}: {e}")
+            all_file_results.append({
+                "file": file_conflict.get('failed_file', 'Unknown'),
+                "error": f"Critical setup error: {e}",
+                "success": False
+            })
+            continue
 
     return all_file_results
 
-async def main():
-    """Main asynchronous entry point for the LLM patch runner."""
-    vidar_dir = Path(__file__).resolve().parent
-    project_root = vidar_dir.parent
+async def run_llm_correction_step(model_name: str, temperature: float,
+                                  max_retries: int, concurrency: int):
+    """
+    Runs the LLM patch correction process.
+    This function is a generator that yields progress updates.
+    """
+    logger.info("--- Starting LLM Patch Runner ---")
     
-    # Define paths for input and output files.
-    failed_patch_json = project_root / "failed_patch.json"
-    report_output_path = vidar_dir / "reports" / "1_llm_output.json"
-
     try:
-        with open(failed_patch_json, "r", encoding="utf-8") as f:
+        with open(FAILED_PATCH_JSON, "r", encoding="utf-8") as f:
             failed_patches_data = json.load(f)
     except FileNotFoundError:
-        print(f"❌ Error: Input file not found at '{failed_patch_json}'.")
-        print("   This file should be generated by the pipeline runner after "
-              "the first 'patch_adopter' step.")
-        sys.exit(1)
-
-    all_results = []
-    # A lock is crucial to prevent multiple asyncio tasks from running
-    # `git` commands in the same repository simultaneously.
-    repo_lock = asyncio.Lock()
+        message = f"Input file not found at '{FAILED_PATCH_JSON}'."
+        logger.error(message)
+        yield {"type": "error", "message": message}
+        return
+    except json.JSONDecodeError:
+        message = f"Could not decode JSON from '{FAILED_PATCH_JSON}'. The file might be empty or corrupt."
+        logger.error(message)
+        yield {"type": "error", "message": message}
+        return
 
     patches_to_process = failed_patches_data.get("patches", [])
-    print(f"Found {len(patches_to_process)} failed patches to correct.")
+    total_patches = len(patches_to_process)
+    logger.info(f"Found {total_patches} failed patches to correct.")
 
-    for patch in patches_to_process:
-        results_for_patch = await process_patch_entry(patch, repo_lock)
+    yield {"type": "progress", "completed": 0, "total": total_patches}
+    if not patches_to_process:
+        return
+
+    repo_lock = asyncio.Lock()
+    sem = asyncio.Semaphore(concurrency)
+    all_results = []
+    processed_count = 0
+
+    async def process_one_patch(patch: dict):
+        """Helper to process one patch entry under the semaphore."""
+        async with sem:
+            return await process_patch_entry(
+                patch, repo_lock, model_name, temperature, max_retries)
+
+    tasks = [process_one_patch(patch) for patch in patches_to_process]
+
+    for future in asyncio.as_completed(tasks):
+        results_for_patch = await future
         all_results.extend(results_for_patch)
+        processed_count += 1
+        yield {"type": "progress", "completed": processed_count, "total": total_patches}
 
-    # Save the final, comprehensive report.
-    report_output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(report_output_path, "w", encoding="utf-8") as f:
-        json.dump(all_results, f, indent=2)
-    print(f"\n📄 LLM patch generation complete. "
-          f"Report saved to {report_output_path}")
 
+    # Aggregate token counts and create reports
+    total_input_tokens = sum(r.get("token_counts", {}).get("input", 0) for r in all_results)
+    total_output_tokens = sum(r.get("token_counts", {}).get("output", 0) for r in all_results)
+    total_tokens = sum(r.get("token_counts", {}).get("total", 0) for r in all_results)
+
+    successful_patches = [
+        {"patch_file": r.get("saved_patch_file"), "patch_url": None, "source": "LLM", "project": r.get("project")}
+        for r in all_results if r.get("success") and r.get("saved_patch_file")
+    ]
+    
+    SUCCESSFUL_PATCHES_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(SUCCESSFUL_PATCHES_FILE, "w", encoding="utf-8") as f:
+        json.dump({"patches": successful_patches}, f, indent=4)
+    logger.info(f"Saved {len(successful_patches)} successfully generated patches to {SUCCESSFUL_PATCHES_FILE}")
+
+    debug_report_path = REPORTS_DIR / "llm_output_detailed.json"
+    failed_patches_list = [
+        {"patch_file": r.get("file"), "project": r.get("project"), "error": r.get("validation_results", [{}])[-1].get("apply_error", "Unknown LLM failure")}
+        for r in all_results if not r.get("success")
+    ]
+    debug_report_data = {
+        "summary": {
+            "total_patches_processed": len(all_results),
+            "successful_patches": len(successful_patches),
+            "failed_patches": len(failed_patches_list),
+            "failed_patches_list": failed_patches_list,
+            "total_input_tokens": total_input_tokens,
+            "total_output_tokens": total_output_tokens,
+            "total_tokens": total_tokens,
+        },
+        "results": [r for r in all_results if 'downstream_llm_diff_output' in r and r.pop('downstream_llm_diff_output', None)],
+    }
+
+    with open(debug_report_path, "w", encoding="utf-8") as f:
+        json.dump(debug_report_data, f, indent=2)
+    logger.info(f"Full LLM agent execution report saved to {debug_report_path}")
+
+    logger.info("--- LLM Patch Runner Finished ---")
+    yield {"type": "summary", "data": debug_report_data['summary']}
+
+
+async def main():
+    """Main asynchronous entry point for the LLM patch runner."""
+    args = parse_args()
+    # When run as a script, just iterate through the async generator to execute it.
+    async for _ in run_llm_correction_step(
+        args.model_name, args.temperature, args.max_retries, args.concurrency
+    ):
+        pass
 
 if __name__ == "__main__":
+    # Setup for running standalone
+    BASE_DIR = Path(__file__).resolve().parent
+    REPORTS_DIR = BASE_DIR / "reports"
+    FAILED_PATCH_JSON = REPORTS_DIR / "failed_patch.json"
+    GENERATED_PATCHES_DIR = (
+        BASE_DIR.parent / "patch_adoption" / "generated_patches"
+    )
+    REPORTS_DIR.mkdir(exist_ok=True)
+    GENERATED_PATCHES_DIR.mkdir(exist_ok=True)
     asyncio.run(main())

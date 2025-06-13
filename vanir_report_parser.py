@@ -4,10 +4,11 @@ This module is the first step in the patch management pipeline. It reads the
 raw JSON output from a Vanir scan, extracts key information about security
 patches, and reorganizes it into a clean, structured format. The primary goal
 is to create a canonical list of unique patches and map them to the specific
-files and functions they affect.
+files, functions, and **projects** they affect.
 
 This structured output is essential for the subsequent steps in the pipeline,
-such as fetching and applying the patches.
+such as fetching and applying the patches in their correct respective source
+directories.
 
 Usage:
   python vanir_report_parser.py
@@ -16,6 +17,12 @@ Usage:
 import json
 import os
 import re
+import sys
+from urllib.parse import urlparse
+import logging
+
+# Get a logger for this module
+logger = logging.getLogger(__name__)
 
 
 class VanirParser:
@@ -23,9 +30,9 @@ class VanirParser:
     Processes a raw Vanir security vulnerability report into a structured format.
 
     This class handles the loading, parsing, and saving of vulnerability data.
-    It extracts essential details like patch URLs and affected code locations,
-    producing a clean JSON file that serves as the input for the next stage of
-    the pipeline.
+    It extracts essential details like patch URLs, the project path, and
+    affected code locations, producing a clean JSON file that serves as the
+    input for the next stage of the pipeline.
     """
 
     def __init__(self, file_path, output_path=None):
@@ -55,17 +62,41 @@ class VanirParser:
         with open(self.file_path, "r", encoding="utf-8") as file:
             return json.load(file)
 
-    def _extract_patch_hash(self, patch_url):
-        """Extracts a Git commit hash from a patch URL using a regex.
+    def _get_patch_info(self, patch_url: str) -> tuple[str, str] | tuple[None, None]:
+        """
+        Extracts the commit hash and project path from a patch URL.
 
         Args:
-            patch_url: The URL of the patch, from Googlesource or CodeLinaro.
+            patch_url: The URL of the patch from Googlesource or CodeLinaro.
 
         Returns:
-            The 40-character commit hash if found, otherwise "N/A".
+            A tuple of (commit_hash, project_path), or (None, None) on failure.
         """
-        match = re.search(r"([a-f0-9]{40})$", patch_url)
-        return match.group(1) if match else "N/A"
+        try:
+            parsed_url = urlparse(patch_url)
+            commit_hash = re.search(r'([a-fA-F0-9]{40})', patch_url).group(1)
+
+            path_without_commit = ""
+            if "android.googlesource.com" in parsed_url.netloc:
+                match = re.search(r'(.+?)/\+/', parsed_url.path)
+                if match:
+                    # Strip leading /platform/ as it's not part of the local checkout path
+                    path_without_commit = match.group(1).replace('/platform/', '', 1)
+            elif "git.codelinaro.org" in parsed_url.netloc:
+                match = re.search(r'(.+?)/-/commit/', parsed_url.path)
+                if match:
+                    # Strip leading /clo/la/ for CodeLinaro
+                    path_without_commit = re.sub(r'^/clo/la/', '', match.group(1))
+
+            if commit_hash and path_without_commit:
+                return commit_hash, path_without_commit.strip('/')
+                
+        except (AttributeError, IndexError):
+            pass # Fall through to return None on parsing failure
+        
+        logger.warning(f"Could not parse commit hash or project from URL: {patch_url}")
+        return None, None
+
 
     def _parse_vanir_report(self):
         """Parses the loaded Vanir report into a structured format.
@@ -92,10 +123,14 @@ class VanirParser:
 
                 # If we haven't seen this patch URL yet, create a new entry.
                 if patch_url not in patches_by_url:
-                    patch_hash = self._extract_patch_hash(patch_url)
+                    patch_hash, project_path = self._get_patch_info(patch_url)
+                    if not patch_hash or not project_path:
+                        continue
+
                     patch_entry = {
                         "patch_url": patch_url,
                         "patch_file": f"{patch_hash}.diff",
+                        "project": project_path,
                         "files": {}
                     }
                     patches_by_url[patch_url] = patch_entry
@@ -117,7 +152,7 @@ class VanirParser:
         """Writes the structured data to the output JSON file."""
         with open(self.output_path, "w", encoding="utf-8") as file:
             json.dump(self.reorganized_report, file, indent=4)
-        print(f"✅ Parsed report saved to {self.output_path}")
+        logger.info(f"Parsed report saved to {self.output_path}")
 
 
 def main():
@@ -129,8 +164,8 @@ def main():
         project_root, "reports", "vanir_output.json")
     
     if not os.path.exists(vanir_report_path):
-        print(f"❌ Error: Input file not found at '{vanir_report_path}'.")
-        print("   Please place the raw Vanir report at that location.")
+        logger.error(f"Input file not found at '{vanir_report_path}'.")
+        logger.error("   Please place the raw Vanir report at that location.")
         sys.exit(1)
         
     VanirParser(vanir_report_path)
