@@ -1,0 +1,550 @@
+{
+    "patches": [
+        {
+            "patch_file": "9dc64621d896d05fcb0e6f45792a307fde130823.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/9dc64621d896d05fcb0e6f45792a307fde130823",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/libs/androidfw/CursorWindow.cpp",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/libs/androidfw/CursorWindow.cpp.rej",
+                    "rej_content": "--- libs/androidfw/CursorWindow.cpp\n+++ libs/androidfw/CursorWindow.cpp\n@@ -55,7 +55,7 @@\n     window->mName = name;\n     window->mSize = std::min(kInlineSize, inflatedSize);\n     window->mInflatedSize = inflatedSize;\n-    window->mData = malloc(window->mSize);\n+    window->mData = calloc(window->mSize, 1);\n     if (!window->mData) goto fail;\n     window->mReadOnly = false;\n \n"
+                }
+            ],
+            "message_output": "patching file libs/androidfw/CursorWindow.cpp\nHunk #1 FAILED at 55.\n1 out of 1 hunk FAILED -- saving rejects to file libs/androidfw/CursorWindow.cpp.rej\n"
+        },
+        {
+            "patch_file": "ae4b644a7cfb66f1e51ade508f115aec63bc16ef.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ae4b644a7cfb66f1e51ade508f115aec63bc16ef",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/ae4b644a7cfb66f1e51ade508f115aec63bc16ef.diff"
+        },
+        {
+            "patch_file": "5b26a62b4d813b8ccc1de81641e87c9e95c8d958.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5b26a62b4d813b8ccc1de81641e87c9e95c8d958",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/5b26a62b4d813b8ccc1de81641e87c9e95c8d958.diff"
+        },
+        {
+            "patch_file": "c07e0eba29ee1f92b4d540f07a05b8e306601613.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c07e0eba29ee1f92b4d540f07a05b8e306601613",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/c07e0eba29ee1f92b4d540f07a05b8e306601613.diff"
+        },
+        {
+            "patch_file": "aaa1cb20b89f3389f9fbc362a397770c8052e7fb.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java.rej",
+                    "rej_content": "--- apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java\n+++ apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java\n@@ -16,6 +16,8 @@\n package com.android.server.blob;\n \n import static android.app.blob.BlobStoreManager.COMMIT_RESULT_ERROR;\n+import static android.app.blob.BlobStoreManager.MAX_CERTIFICATE_LENGTH;\n+import static android.app.blob.BlobStoreManager.MAX_PACKAGE_NAME_LENGTH;\n import static android.app.blob.XmlTags.ATTR_CREATION_TIME_MS;\n import static android.app.blob.XmlTags.ATTR_ID;\n import static android.app.blob.XmlTags.ATTR_PACKAGE;\n@@ -328,6 +330,11 @@\n             @NonNull byte[] certificate) {\n         assertCallerIsOwner();\n         Objects.requireNonNull(packageName, \"packageName must not be null\");\n+        Preconditions.checkArgument(packageName.length() <= MAX_PACKAGE_NAME_LENGTH,\n+                \"packageName is longer than \" + MAX_PACKAGE_NAME_LENGTH + \" chars\");\n+        Objects.requireNonNull(certificate, \"certificate must not be null\");\n+        Preconditions.checkArgument(certificate.length <= MAX_CERTIFICATE_LENGTH,\n+                \"certificate is longer than \" + MAX_CERTIFICATE_LENGTH + \" chars\");\n         synchronized (mSessionLock) {\n             if (mState != STATE_OPENED) {\n                 throw new IllegalStateException(\"Not allowed to change access type in state: \"\n"
+                },
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java.rej",
+                    "rej_content": "--- apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java\n+++ apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java\n@@ -32,11 +32,13 @@\n import android.os.RemoteException;\n import android.os.UserHandle;\n \n+import com.android.internal.util.Preconditions;\n import com.android.internal.util.function.pooled.PooledLambda;\n \n import java.io.Closeable;\n import java.io.IOException;\n import java.util.List;\n+import java.util.Objects;\n import java.util.concurrent.CountDownLatch;\n import java.util.concurrent.Executor;\n import java.util.concurrent.TimeUnit;\n@@ -806,6 +828,12 @@\n          */\n         public void allowPackageAccess(@NonNull String packageName, @NonNull byte[] certificate)\n                 throws IOException {\n+            Objects.requireNonNull(packageName);\n+            Preconditions.checkArgument(packageName.length() <= MAX_PACKAGE_NAME_LENGTH,\n+                    \"packageName is longer than \" + MAX_PACKAGE_NAME_LENGTH + \" chars\");\n+            Objects.requireNonNull(certificate);\n+            Preconditions.checkArgument(certificate.length <= MAX_CERTIFICATE_LENGTH,\n+                    \"certificate is longer than \" + MAX_CERTIFICATE_LENGTH + \" chars\");\n             try {\n                 mSession.allowPackageAccess(packageName, certificate);\n             } catch (ParcelableException e) {\n"
+                }
+            ],
+            "message_output": "patching file apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java\nHunk #1 FAILED at 32.\nHunk #2 succeeded at 369 with fuzz 2 (offset 216 lines).\nHunk #3 FAILED at 806.\n2 out of 3 hunks FAILED -- saving rejects to file apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java.rej\npatching file apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java\nHunk #1 FAILED at 16.\nHunk #2 FAILED at 328.\n2 out of 2 hunks FAILED -- saving rejects to file apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java.rej\n"
+        },
+        {
+            "patch_file": "509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea.diff"
+        },
+        {
+            "patch_file": "fe01a389c8c74ea408935f9bc2b16edea5d55975.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/fe01a389c8c74ea408935f9bc2b16edea5d55975.diff"
+        },
+        {
+            "patch_file": "a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/VpnManagerService.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/VpnManagerService.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/VpnManagerService.java\n+++ services/core/java/com/android/server/VpnManagerService.java\n@@ -19,6 +19,7 @@\n import static android.Manifest.permission.NETWORK_STACK;\n \n import static com.android.net.module.util.PermissionUtils.enforceAnyPermissionOf;\n+import static com.android.net.module.util.PermissionUtils.enforceNetworkStackPermission;\n \n import android.annotation.NonNull;\n import android.annotation.Nullable;\n@@ -1020,6 +1021,8 @@\n     @Override\n     @Nullable\n     public byte[] getFromVpnProfileStore(@NonNull String name) {\n+        // TODO(b/307903113): Replace NETWORK_STACK permission and adopt proper permission\n+        enforceNetworkStackPermission(mContext);\n         return mVpnProfileStore.get(name);\n     }\n \n@@ -1037,6 +1040,8 @@\n      */\n     @Override\n     public boolean putIntoVpnProfileStore(@NonNull String name, @NonNull byte[] blob) {\n+        // TODO(b/307903113): Replace NETWORK_STACK permission and adopt proper permission\n+        enforceNetworkStackPermission(mContext);\n         return mVpnProfileStore.put(name, blob);\n     }\n \n@@ -1052,6 +1057,8 @@\n      */\n     @Override\n     public boolean removeFromVpnProfileStore(@NonNull String name) {\n+        // TODO(b/307903113): Replace NETWORK_STACK permission and adopt proper permission\n+        enforceNetworkStackPermission(mContext);\n         return mVpnProfileStore.remove(name);\n     }\n \n@@ -1069,6 +1076,8 @@\n     @Override\n     @NonNull\n     public String[] listFromVpnProfileStore(@NonNull String prefix) {\n+        // TODO(b/307903113): Replace NETWORK_STACK permission and adopt proper permission\n+        enforceNetworkStackPermission(mContext);\n         return mVpnProfileStore.list(prefix);\n     }\n \n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/VpnManagerService.java\nHunk #1 FAILED at 19.\nHunk #2 FAILED at 1020.\nHunk #3 FAILED at 1037.\nHunk #4 FAILED at 1052.\nHunk #5 FAILED at 1069.\n5 out of 5 hunks FAILED -- saving rejects to file services/core/java/com/android/server/VpnManagerService.java.rej\n"
+        },
+        {
+            "patch_file": "f1122ac36a2c9ffcb3ace49fc383870f87456c26.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f1122ac36a2c9ffcb3ace49fc383870f87456c26",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/f1122ac36a2c9ffcb3ace49fc383870f87456c26.diff"
+        },
+        {
+            "patch_file": "b4945cf98c97121821c178713a613a6a6e830c3a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/wm/LockTaskController.java\n+++ services/core/java/com/android/server/wm/LockTaskController.java\n@@ -653,6 +653,10 @@\n         if (!isSystemCaller) {\n             task.mLockTaskUid = callingUid;\n             if (task.mLockTaskAuth == LOCK_TASK_AUTH_PINNABLE) {\n+                if (mLockTaskModeTasks.contains(task)) {\n+                    ProtoLog.w(WM_DEBUG_LOCKTASK, \"Already locked.\");\n+                    return;\n+                }\n                 // startLockTask() called by app, but app is not part of lock task allowlist. Show\n                 // app pinning request. We will come back here with isSystemCaller true.\n                 ProtoLog.w(WM_DEBUG_LOCKTASK, \"Mode default, asking user\");\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/wm/LockTaskController.java\nHunk #1 FAILED at 653.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/wm/LockTaskController.java.rej\n"
+        },
+        {
+            "patch_file": "d5268b9953765352dac09179e10836c6e481e266.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/d5268b9953765352dac09179e10836c6e481e266",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/d5268b9953765352dac09179e10836c6e481e266.diff"
+        },
+        {
+            "patch_file": "c617d697cdbef000cb416aefc08fc4a3cda4afa1.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c617d697cdbef000cb416aefc08fc4a3cda4afa1",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/c617d697cdbef000cb416aefc08fc4a3cda4afa1.diff"
+        },
+        {
+            "patch_file": "949e7bb75e395039af5bdf0aa4b48860fef69541.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/949e7bb75e395039af5bdf0aa4b48860fef69541",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/PendingIntentRecord.java\n+++ services/core/java/com/android/server/am/PendingIntentRecord.java\n@@ -24,11 +24,14 @@\n import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_DENIED;\n import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_SYSTEM_DEFINED;\n import static android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_IF_VISIBLE;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n import static android.os.Process.ROOT_UID;\n import static android.os.Process.SYSTEM_UID;\n \n import static com.android.server.am.ActivityManagerDebugConfig.TAG_AM;\n import static com.android.server.am.ActivityManagerDebugConfig.TAG_WITH_CLASS_NAME;\n+import static com.android.window.flags.Flags.balClearAllowlistDuration;\n \n import android.annotation.IntDef;\n import android.annotation.Nullable;\n@@ -327,6 +334,13 @@\n         mAllowBgActivityStartsForActivitySender.remove(token);\n         mAllowBgActivityStartsForBroadcastSender.remove(token);\n         mAllowBgActivityStartsForServiceSender.remove(token);\n+        if (mAllowlistDuration != null && balClearAllowlistDuration()) {\n+            TempAllowListDuration duration = mAllowlistDuration.get(token);\n+            if (duration != null\n+                    && duration.type == TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED) {\n+                duration.type = TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n+            }\n+        }\n     }\n \n     public void registerCancelListenerLocked(IResultReceiver receiver) {\n@@ -707,7 +721,7 @@\n         return res;\n     }\n \n-    private BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n+    @VisibleForTesting BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n             IBinder allowlistToken) {\n         return mAllowBgActivityStartsForActivitySender.contains(allowlistToken)\n                 ? BackgroundStartPrivileges.allowBackgroundActivityStarts(allowlistToken)\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/PendingIntentRecord.java\nHunk #1 FAILED at 24.\nHunk #2 succeeded at 500 with fuzz 1 (offset 195 lines).\nHunk #3 FAILED at 327.\nHunk #4 FAILED at 707.\n3 out of 4 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/PendingIntentRecord.java.rej\n"
+        },
+        {
+            "patch_file": "155a686755e5012d591223c451304f3326dc2e78.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/PendingIntentRecord.java\n+++ services/core/java/com/android/server/am/PendingIntentRecord.java\n@@ -327,6 +331,12 @@\n         mAllowBgActivityStartsForActivitySender.remove(token);\n         mAllowBgActivityStartsForBroadcastSender.remove(token);\n         mAllowBgActivityStartsForServiceSender.remove(token);\n+        if (mAllowlistDuration != null) {\n+            mAllowlistDuration.remove(token);\n+            if (mAllowlistDuration.isEmpty()) {\n+                mAllowlistDuration = null;\n+            }\n+        }\n     }\n \n     public void registerCancelListenerLocked(IResultReceiver receiver) {\n@@ -707,7 +717,7 @@\n         return res;\n     }\n \n-    private BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n+    @VisibleForTesting BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n             IBinder allowlistToken) {\n         return mAllowBgActivityStartsForActivitySender.contains(allowlistToken)\n                 ? BackgroundStartPrivileges.allowBackgroundActivityStarts(allowlistToken)\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/PendingIntentRecord.java\nHunk #1 succeeded at 504 with fuzz 1 (offset 199 lines).\nHunk #2 FAILED at 327.\nHunk #3 FAILED at 707.\n2 out of 3 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/PendingIntentRecord.java.rej\n"
+        },
+        {
+            "patch_file": "a71599c035472fe280132df64c5f5ee361ba0e92.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a71599c035472fe280132df64c5f5ee361ba0e92",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/a71599c035472fe280132df64c5f5ee361ba0e92.diff"
+        },
+        {
+            "patch_file": "f251732b0b46b6592300c6e33d48a5536ecb424d.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f251732b0b46b6592300c6e33d48a5536ecb424d",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/PendingIntentRecord.java\n+++ services/core/java/com/android/server/am/PendingIntentRecord.java\n@@ -17,6 +17,8 @@\n package com.android.server.am;\n \n import static android.app.ActivityManager.START_SUCCESS;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n \n import static com.android.server.am.ActivityManagerDebugConfig.TAG_AM;\n import static com.android.server.am.ActivityManagerDebugConfig.TAG_WITH_CLASS_NAME;\n@@ -43,6 +45,7 @@\n import android.util.Slog;\n import android.util.TimeUtils;\n \n+import com.android.internal.annotations.VisibleForTesting;\n import com.android.internal.os.IResultReceiver;\n import com.android.internal.util.function.pooled.PooledLambda;\n import com.android.server.wm.SafeActivityOptions;\n@@ -277,6 +284,13 @@\n         mAllowBgActivityStartsForActivitySender.remove(token);\n         mAllowBgActivityStartsForBroadcastSender.remove(token);\n         mAllowBgActivityStartsForServiceSender.remove(token);\n+        if (mAllowlistDuration != null) {\n+            TempAllowListDuration duration = mAllowlistDuration.get(token);\n+            if (duration != null\n+                    && duration.type == TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED) {\n+                duration.type = TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n+            }\n+        }\n     }\n \n     public void registerCancelListenerLocked(IResultReceiver receiver) {\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/PendingIntentRecord.java\nHunk #1 FAILED at 17.\nHunk #2 FAILED at 43.\nHunk #3 succeeded at 508 with fuzz 1 (offset 253 lines).\nHunk #4 FAILED at 277.\nHunk #5 succeeded at 997 with fuzz 1 (offset 442 lines).\n3 out of 5 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/PendingIntentRecord.java.rej\n"
+        },
+        {
+            "patch_file": "5782703d0f7c913477f1dd59b11e6e6e879199d9.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5782703d0f7c913477f1dd59b11e6e6e879199d9",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/PendingIntentRecord.java\n+++ services/core/java/com/android/server/am/PendingIntentRecord.java\n@@ -17,6 +17,8 @@\n package com.android.server.am;\n \n import static android.app.ActivityManager.START_SUCCESS;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED;\n+import static android.os.PowerWhitelistManager.TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n \n import static com.android.server.am.ActivityManagerDebugConfig.TAG_AM;\n import static com.android.server.am.ActivityManagerDebugConfig.TAG_WITH_CLASS_NAME;\n@@ -52,6 +54,7 @@\n import android.util.Slog;\n import android.util.TimeUtils;\n \n+import com.android.internal.annotations.VisibleForTesting;\n import com.android.internal.os.IResultReceiver;\n import com.android.internal.util.function.pooled.PooledLambda;\n import com.android.server.wm.SafeActivityOptions;\n@@ -292,6 +299,13 @@\n         mAllowBgActivityStartsForActivitySender.remove(token);\n         mAllowBgActivityStartsForBroadcastSender.remove(token);\n         mAllowBgActivityStartsForServiceSender.remove(token);\n+        if (mAllowlistDuration != null) {\n+            TempAllowListDuration duration = mAllowlistDuration.get(token);\n+            if (duration != null\n+                    && duration.type == TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_ALLOWED) {\n+                duration.type = TEMPORARY_ALLOWLIST_TYPE_FOREGROUND_SERVICE_NOT_ALLOWED;\n+            }\n+        }\n     }\n \n     public void registerCancelListenerLocked(IResultReceiver receiver) {\n@@ -638,7 +652,7 @@\n         return res;\n     }\n \n-    private BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n+    @VisibleForTesting BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(\n             IBinder allowlistToken) {\n         return mAllowBgActivityStartsForActivitySender.contains(allowlistToken)\n                 ? BackgroundStartPrivileges.allowBackgroundActivityStarts(allowlistToken)\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/PendingIntentRecord.java\nHunk #1 FAILED at 17.\nHunk #2 FAILED at 52.\nHunk #3 succeeded at 512 with fuzz 1 (offset 242 lines).\nHunk #4 FAILED at 292.\nHunk #5 FAILED at 638.\n4 out of 5 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/PendingIntentRecord.java.rej\n"
+        },
+        {
+            "patch_file": "8aef21b72dca756458d25a42599779997d199f09.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8aef21b72dca756458d25a42599779997d199f09",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/BackgroundStartPrivileges.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/BackgroundStartPrivileges.java.rej",
+                    "rej_content": "--- core/java/android/app/BackgroundStartPrivileges.java\n+++ core/java/android/app/BackgroundStartPrivileges.java\n@@ -23,12 +23,13 @@\n import com.android.internal.util.Preconditions;\n \n import java.util.List;\n+import java.util.Objects;\n \n /**\n  * Privileges granted to a Process that allows it to execute starts from the background.\n  * @hide\n  */\n-public class BackgroundStartPrivileges {\n+public final class BackgroundStartPrivileges {\n     /** No privileges. */\n     public static final BackgroundStartPrivileges NONE = new BackgroundStartPrivileges(\n             false, false, null);\n"
+                }
+            ],
+            "message_output": "patching file core/java/android/app/BackgroundStartPrivileges.java\nHunk #1 FAILED at 23.\nHunk #2 succeeded at 353 with fuzz 2 (offset 163 lines).\n1 out of 2 hunks FAILED -- saving rejects to file core/java/android/app/BackgroundStartPrivileges.java.rej\n"
+        },
+        {
+            "patch_file": "4000e8055f66b33ffa1fef9bee23d998b9438114.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/4000e8055f66b33ffa1fef9bee23d998b9438114",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/4000e8055f66b33ffa1fef9bee23d998b9438114.diff"
+        },
+        {
+            "patch_file": "5ea37ed9f0b1526c690a4edf02c36577635e43a6.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5ea37ed9f0b1526c690a4edf02c36577635e43a6",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/BackgroundStartPrivileges.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/BackgroundStartPrivileges.java.rej",
+                    "rej_content": "--- core/java/android/app/BackgroundStartPrivileges.java\n+++ core/java/android/app/BackgroundStartPrivileges.java\n@@ -23,12 +23,13 @@\n import com.android.internal.util.Preconditions;\n \n import java.util.List;\n+import java.util.Objects;\n \n /**\n  * Privileges granted to a Process that allows it to execute starts from the background.\n  * @hide\n  */\n-public class BackgroundStartPrivileges {\n+public final class BackgroundStartPrivileges {\n     /** No privileges. */\n     public static final BackgroundStartPrivileges NONE = new BackgroundStartPrivileges(\n             false, false, null);\n"
+                }
+            ],
+            "message_output": "patching file core/java/android/app/BackgroundStartPrivileges.java\nHunk #1 FAILED at 23.\nHunk #2 succeeded at 371 with fuzz 2 (offset 190 lines).\n1 out of 2 hunks FAILED -- saving rejects to file core/java/android/app/BackgroundStartPrivileges.java.rej\n"
+        },
+        {
+            "patch_file": "65ee48d1eb9fe60039c2c461ca49f31ad180faef.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/UserController.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/UserController.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/UserController.java\n+++ services/core/java/com/android/server/am/UserController.java\n@@ -160,6 +160,7 @@\n import java.util.concurrent.TimeUnit;\n import java.util.concurrent.atomic.AtomicBoolean;\n import java.util.concurrent.atomic.AtomicInteger;\n+import java.util.function.BiConsumer;\n import java.util.function.Consumer;\n \n /**\n@@ -1923,8 +1927,14 @@\n                 return false;\n             }\n \n-            mHandler.post(() -> startUserInternalOnHandler(userId, oldUserId, userStartMode,\n-                    unlockListener, callingUid, callingPid));\n+            final Runnable continueStartUserInternal = () -> continueStartUserInternal(userInfo,\n+                    oldUserId, userStartMode, unlockListener, callingUid, callingPid);\n+            if (foreground) {\n+                mHandler.post(() -> dispatchOnBeforeUserSwitching(userId, () ->\n+                        mHandler.post(continueStartUserInternal)));\n+            } else {\n+                continueStartUserInternal.run();\n+            }\n         } finally {\n             Binder.restoreCallingIdentity(ident);\n         }\n@@ -1932,11 +1942,11 @@\n         return true;\n     }\n \n-    private void startUserInternalOnHandler(int userId, int oldUserId, int userStartMode,\n+    private void continueStartUserInternal(UserInfo userInfo, int oldUserId, int userStartMode,\n             IProgressListener unlockListener, int callingUid, int callingPid) {\n         final TimingsTraceAndSlog t = new TimingsTraceAndSlog();\n         final boolean foreground = userStartMode == USER_START_MODE_FOREGROUND;\n-        final UserInfo userInfo = getUserInfo(userId);\n+        final int userId = userInfo.id;\n \n         boolean needStart = false;\n         boolean updateUmState = false;\n@@ -1998,7 +2008,6 @@\n             // it should be moved outside, but for now it's not as there are many calls to\n             // external components here afterwards\n             updateProfileRelatedCaches();\n-            dispatchOnBeforeUserSwitching(userId);\n             mInjector.getWindowManager().setCurrentUser(userId);\n             mInjector.reportCurWakefulnessUsageEvent();\n             // Once the internal notion of the active user has switched, we lock the device\n@@ -2299,25 +2308,40 @@\n         mUserSwitchObservers.finishBroadcast();\n     }\n \n-    private void dispatchOnBeforeUserSwitching(@UserIdInt int newUserId) {\n+    private void dispatchOnBeforeUserSwitching(@UserIdInt int newUserId, Runnable onComplete) {\n         final TimingsTraceAndSlog t = new TimingsTraceAndSlog();\n         t.traceBegin(\"dispatchOnBeforeUserSwitching-\" + newUserId);\n-        final int observerCount = mUserSwitchObservers.beginBroadcast();\n-        for (int i = 0; i < observerCount; i++) {\n-            final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n-            t.traceBegin(\"onBeforeUserSwitching-\" + name);\n+        final AtomicBoolean isSuccessful = new AtomicBoolean(false);\n+        startTimeoutForOnBeforeUserSwitching(isSuccessful);\n+        informUserSwitchObservers((observer, callback) -> {\n             try {\n-                mUserSwitchObservers.getBroadcastItem(i).onBeforeUserSwitching(newUserId);\n+                observer.onBeforeUserSwitching(newUserId, callback);\n             } catch (RemoteException e) {\n-                // Ignore\n-            } finally {\n-                t.traceEnd();\n+                // ignore\n             }\n-        }\n-        mUserSwitchObservers.finishBroadcast();\n+        }, () -> {\n+            isSuccessful.set(true);\n+            onComplete.run();\n+        }, \"onBeforeUserSwitching\");\n         t.traceEnd();\n     }\n \n+    private void startTimeoutForOnBeforeUserSwitching(AtomicBoolean isSuccessful) {\n+        mHandler.postDelayed(() -> {\n+            if (isSuccessful.get()) {\n+                return;\n+            }\n+            String unresponsiveObservers;\n+            synchronized (mLock) {\n+                unresponsiveObservers = String.join(\", \", mCurWaitingUserSwitchCallbacks);\n+            }\n+            throw new RuntimeException(\"Timeout on dispatchOnBeforeUserSwitching. \"\n+                    + \"These UserSwitchObservers did not respond in \"\n+                    + DEFAULT_BEFORE_USER_SWITCH_TIMEOUT_MS + \"ms: \" + unresponsiveObservers + \".\");\n+        }, DEFAULT_BEFORE_USER_SWITCH_TIMEOUT_MS);\n+    }\n+\n+\n     /** Called on handler thread */\n     @VisibleForTesting\n     void dispatchUserSwitchComplete(@UserIdInt int oldUserId, @UserIdInt int newUserId) {\n@@ -2530,70 +2554,76 @@\n         t.traceBegin(\"dispatchUserSwitch-\" + oldUserId + \"-to-\" + newUserId);\n \n         EventLog.writeEvent(EventLogTags.UC_DISPATCH_USER_SWITCH, oldUserId, newUserId);\n-\n-        final int observerCount = mUserSwitchObservers.beginBroadcast();\n-        if (observerCount > 0) {\n-            final ArraySet<String> curWaitingUserSwitchCallbacks = new ArraySet<>();\n-            synchronized (mLock) {\n-                uss.switching = true;\n-                mCurWaitingUserSwitchCallbacks = curWaitingUserSwitchCallbacks;\n+        uss.switching = true;\n+        informUserSwitchObservers((observer, callback) -> {\n+            try {\n+                observer.onUserSwitching(newUserId, callback);\n+            } catch (RemoteException e) {\n+                // ignore\n             }\n-            final AtomicInteger waitingCallbacksCount = new AtomicInteger(observerCount);\n-            final long userSwitchTimeoutMs = getUserSwitchTimeoutMs();\n-            final long dispatchStartedTime = SystemClock.elapsedRealtime();\n-            for (int i = 0; i < observerCount; i++) {\n-                final long dispatchStartedTimeForObserver = SystemClock.elapsedRealtime();\n-                try {\n-                    // Prepend with unique prefix to guarantee that keys are unique\n-                    final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n-                    synchronized (mLock) {\n-                        curWaitingUserSwitchCallbacks.add(name);\n-                    }\n-                    final IRemoteCallback callback = new IRemoteCallback.Stub() {\n-                        @Override\n-                        public void sendResult(Bundle data) throws RemoteException {\n-                            asyncTraceEnd(\"onUserSwitching-\" + name, newUserId);\n-                            synchronized (mLock) {\n-                                long delayForObserver = SystemClock.elapsedRealtime()\n-                                        - dispatchStartedTimeForObserver;\n-                                if (delayForObserver > LONG_USER_SWITCH_OBSERVER_WARNING_TIME_MS) {\n-                                    Slogf.w(TAG, \"User switch slowed down by observer \" + name\n-                                            + \": result took \" + delayForObserver\n-                                            + \" ms to process.\");\n-                                }\n-\n-                                long totalDelay = SystemClock.elapsedRealtime()\n-                                        - dispatchStartedTime;\n-                                if (totalDelay > userSwitchTimeoutMs) {\n-                                    Slogf.e(TAG, \"User switch timeout: observer \" + name\n-                                            + \"'s result was received \" + totalDelay\n-                                            + \" ms after dispatchUserSwitch.\");\n-                                }\n-\n-                                curWaitingUserSwitchCallbacks.remove(name);\n-                                // Continue switching if all callbacks have been notified and\n-                                // user switching session is still valid\n-                                if (waitingCallbacksCount.decrementAndGet() == 0\n-                                        && (curWaitingUserSwitchCallbacks\n-                                        == mCurWaitingUserSwitchCallbacks)) {\n-                                    sendContinueUserSwitchLU(uss, oldUserId, newUserId);\n-                                }\n-                            }\n-                        }\n-                    };\n-                    asyncTraceBegin(\"onUserSwitching-\" + name, newUserId);\n-                    mUserSwitchObservers.getBroadcastItem(i).onUserSwitching(newUserId, callback);\n-                } catch (RemoteException e) {\n-                    // Ignore\n-                }\n-            }\n-        } else {\n+        }, () -> {\n             synchronized (mLock) {\n                 sendContinueUserSwitchLU(uss, oldUserId, newUserId);\n             }\n+        }, \"onUserSwitching\");\n+        t.traceEnd();\n+    }\n+\n+    void informUserSwitchObservers(BiConsumer<IUserSwitchObserver, IRemoteCallback> consumer,\n+            final Runnable onComplete, String trace) {\n+        final int observerCount = mUserSwitchObservers.beginBroadcast();\n+        if (observerCount == 0) {\n+            onComplete.run();\n+            mUserSwitchObservers.finishBroadcast();\n+            return;\n+        }\n+        final ArraySet<String> curWaitingUserSwitchCallbacks = new ArraySet<>();\n+        synchronized (mLock) {\n+            mCurWaitingUserSwitchCallbacks = curWaitingUserSwitchCallbacks;\n+        }\n+        final AtomicInteger waitingCallbacksCount = new AtomicInteger(observerCount);\n+        final long userSwitchTimeoutMs = getUserSwitchTimeoutMs();\n+        final long dispatchStartedTime = SystemClock.elapsedRealtime();\n+        for (int i = 0; i < observerCount; i++) {\n+            final long dispatchStartedTimeForObserver = SystemClock.elapsedRealtime();\n+            // Prepend with unique prefix to guarantee that keys are unique\n+            final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n+            synchronized (mLock) {\n+                curWaitingUserSwitchCallbacks.add(name);\n+            }\n+            final IRemoteCallback callback = new IRemoteCallback.Stub() {\n+                @Override\n+                public void sendResult(Bundle data) throws RemoteException {\n+                    asyncTraceEnd(trace + \"-\" + name, 0);\n+                    synchronized (mLock) {\n+                        long delayForObserver = SystemClock.elapsedRealtime()\n+                                - dispatchStartedTimeForObserver;\n+                        if (delayForObserver > LONG_USER_SWITCH_OBSERVER_WARNING_TIME_MS) {\n+                            Slogf.w(TAG, \"User switch slowed down by observer \" + name\n+                                    + \": result took \" + delayForObserver\n+                                    + \" ms to process. \" + trace);\n+                        }\n+                        long totalDelay = SystemClock.elapsedRealtime() - dispatchStartedTime;\n+                        if (totalDelay > userSwitchTimeoutMs) {\n+                            Slogf.e(TAG, \"User switch timeout: observer \" + name\n+                                    + \"'s result was received \" + totalDelay\n+                                    + \" ms after dispatchUserSwitch. \" + trace);\n+                        }\n+                        curWaitingUserSwitchCallbacks.remove(name);\n+                        // Continue switching if all callbacks have been notified and\n+                        // user switching session is still valid\n+                        if (waitingCallbacksCount.decrementAndGet() == 0\n+                                && (curWaitingUserSwitchCallbacks\n+                                == mCurWaitingUserSwitchCallbacks)) {\n+                            onComplete.run();\n+                        }\n+                    }\n+                }\n+            };\n+            asyncTraceBegin(trace + \"-\" + name, 0);\n+            consumer.accept(mUserSwitchObservers.getBroadcastItem(i), callback);\n         }\n         mUserSwitchObservers.finishBroadcast();\n-        t.traceEnd(); // end dispatchUserSwitch-\n     }\n \n     @GuardedBy(\"mLock\")\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\nHunk #1 FAILED at 160.\nHunk #2 succeeded at 213 with fuzz 2 (offset 37 lines).\nHunk #3 FAILED at 1923.\nHunk #4 FAILED at 1932.\nHunk #5 FAILED at 1998.\nHunk #6 FAILED at 2299.\nHunk #7 FAILED at 2530.\n6 out of 7 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/UserController.java.rej\n"
+        },
+        {
+            "patch_file": "a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/UserController.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/UserController.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/UserController.java\n+++ services/core/java/com/android/server/am/UserController.java\n@@ -160,6 +160,7 @@\n import java.util.concurrent.TimeUnit;\n import java.util.concurrent.atomic.AtomicBoolean;\n import java.util.concurrent.atomic.AtomicInteger;\n+import java.util.function.BiConsumer;\n import java.util.function.Consumer;\n \n /**\n@@ -1920,8 +1921,14 @@\n                 return false;\n             }\n \n-            mHandler.post(() -> startUserInternalOnHandler(userId, oldUserId, userStartMode,\n-                    unlockListener, callingUid, callingPid));\n+            final Runnable continueStartUserInternal = () -> continueStartUserInternal(userInfo,\n+                    oldUserId, userStartMode, unlockListener, callingUid, callingPid);\n+            if (foreground) {\n+                mHandler.post(() -> dispatchOnBeforeUserSwitching(userId, () ->\n+                        mHandler.post(continueStartUserInternal)));\n+            } else {\n+                continueStartUserInternal.run();\n+            }\n         } finally {\n             Binder.restoreCallingIdentity(ident);\n         }\n@@ -1929,11 +1936,11 @@\n         return true;\n     }\n \n-    private void startUserInternalOnHandler(int userId, int oldUserId, int userStartMode,\n+    private void continueStartUserInternal(UserInfo userInfo, int oldUserId, int userStartMode,\n             IProgressListener unlockListener, int callingUid, int callingPid) {\n         final TimingsTraceAndSlog t = new TimingsTraceAndSlog();\n         final boolean foreground = userStartMode == USER_START_MODE_FOREGROUND;\n-        final UserInfo userInfo = getUserInfo(userId);\n+        final int userId = userInfo.id;\n \n         boolean needStart = false;\n         boolean updateUmState = false;\n@@ -1995,7 +2002,6 @@\n             // it should be moved outside, but for now it's not as there are many calls to\n             // external components here afterwards\n             updateProfileRelatedCaches();\n-            dispatchOnBeforeUserSwitching(userId);\n             mInjector.getWindowManager().setCurrentUser(userId);\n             mInjector.reportCurWakefulnessUsageEvent();\n             // Once the internal notion of the active user has switched, we lock the device\n@@ -2296,25 +2302,42 @@\n         mUserSwitchObservers.finishBroadcast();\n     }\n \n-    private void dispatchOnBeforeUserSwitching(@UserIdInt int newUserId) {\n+    private void dispatchOnBeforeUserSwitching(@UserIdInt int newUserId, Runnable onComplete) {\n         final TimingsTraceAndSlog t = new TimingsTraceAndSlog();\n         t.traceBegin(\"dispatchOnBeforeUserSwitching-\" + newUserId);\n-        final int observerCount = mUserSwitchObservers.beginBroadcast();\n-        for (int i = 0; i < observerCount; i++) {\n-            final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n-            t.traceBegin(\"onBeforeUserSwitching-\" + name);\n+        final AtomicBoolean isFirst = new AtomicBoolean(true);\n+        startTimeoutForOnBeforeUserSwitching(isFirst, onComplete);\n+        informUserSwitchObservers((observer, callback) -> {\n             try {\n-                mUserSwitchObservers.getBroadcastItem(i).onBeforeUserSwitching(newUserId);\n+                observer.onBeforeUserSwitching(newUserId, callback);\n             } catch (RemoteException e) {\n-                // Ignore\n-            } finally {\n-                t.traceEnd();\n+                // ignore\n             }\n-        }\n-        mUserSwitchObservers.finishBroadcast();\n+        }, () -> {\n+            if (isFirst.getAndSet(false)) {\n+                onComplete.run();\n+            }\n+        }, \"onBeforeUserSwitching\");\n         t.traceEnd();\n     }\n \n+    private void startTimeoutForOnBeforeUserSwitching(AtomicBoolean isFirst,\n+            Runnable onComplete) {\n+        final long timeout = getUserSwitchTimeoutMs();\n+        mHandler.postDelayed(() -> {\n+            if (isFirst.getAndSet(false)) {\n+                String unresponsiveObservers;\n+                synchronized (mLock) {\n+                    unresponsiveObservers = String.join(\", \", mCurWaitingUserSwitchCallbacks);\n+                }\n+                Slogf.e(TAG, \"Timeout on dispatchOnBeforeUserSwitching. These UserSwitchObservers \"\n+                        + \"did not respond in \" + timeout + \"ms: \" + unresponsiveObservers + \".\");\n+                onComplete.run();\n+            }\n+        }, timeout);\n+    }\n+\n+\n     /** Called on handler thread */\n     @VisibleForTesting\n     void dispatchUserSwitchComplete(@UserIdInt int oldUserId, @UserIdInt int newUserId) {\n@@ -2527,70 +2550,76 @@\n         t.traceBegin(\"dispatchUserSwitch-\" + oldUserId + \"-to-\" + newUserId);\n \n         EventLog.writeEvent(EventLogTags.UC_DISPATCH_USER_SWITCH, oldUserId, newUserId);\n-\n-        final int observerCount = mUserSwitchObservers.beginBroadcast();\n-        if (observerCount > 0) {\n-            final ArraySet<String> curWaitingUserSwitchCallbacks = new ArraySet<>();\n-            synchronized (mLock) {\n-                uss.switching = true;\n-                mCurWaitingUserSwitchCallbacks = curWaitingUserSwitchCallbacks;\n+        uss.switching = true;\n+        informUserSwitchObservers((observer, callback) -> {\n+            try {\n+                observer.onUserSwitching(newUserId, callback);\n+            } catch (RemoteException e) {\n+                // ignore\n             }\n-            final AtomicInteger waitingCallbacksCount = new AtomicInteger(observerCount);\n-            final long userSwitchTimeoutMs = getUserSwitchTimeoutMs();\n-            final long dispatchStartedTime = SystemClock.elapsedRealtime();\n-            for (int i = 0; i < observerCount; i++) {\n-                final long dispatchStartedTimeForObserver = SystemClock.elapsedRealtime();\n-                try {\n-                    // Prepend with unique prefix to guarantee that keys are unique\n-                    final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n-                    synchronized (mLock) {\n-                        curWaitingUserSwitchCallbacks.add(name);\n-                    }\n-                    final IRemoteCallback callback = new IRemoteCallback.Stub() {\n-                        @Override\n-                        public void sendResult(Bundle data) throws RemoteException {\n-                            asyncTraceEnd(\"onUserSwitching-\" + name, newUserId);\n-                            synchronized (mLock) {\n-                                long delayForObserver = SystemClock.elapsedRealtime()\n-                                        - dispatchStartedTimeForObserver;\n-                                if (delayForObserver > LONG_USER_SWITCH_OBSERVER_WARNING_TIME_MS) {\n-                                    Slogf.w(TAG, \"User switch slowed down by observer \" + name\n-                                            + \": result took \" + delayForObserver\n-                                            + \" ms to process.\");\n-                                }\n-\n-                                long totalDelay = SystemClock.elapsedRealtime()\n-                                        - dispatchStartedTime;\n-                                if (totalDelay > userSwitchTimeoutMs) {\n-                                    Slogf.e(TAG, \"User switch timeout: observer \" + name\n-                                            + \"'s result was received \" + totalDelay\n-                                            + \" ms after dispatchUserSwitch.\");\n-                                }\n-\n-                                curWaitingUserSwitchCallbacks.remove(name);\n-                                // Continue switching if all callbacks have been notified and\n-                                // user switching session is still valid\n-                                if (waitingCallbacksCount.decrementAndGet() == 0\n-                                        && (curWaitingUserSwitchCallbacks\n-                                        == mCurWaitingUserSwitchCallbacks)) {\n-                                    sendContinueUserSwitchLU(uss, oldUserId, newUserId);\n-                                }\n-                            }\n-                        }\n-                    };\n-                    asyncTraceBegin(\"onUserSwitching-\" + name, newUserId);\n-                    mUserSwitchObservers.getBroadcastItem(i).onUserSwitching(newUserId, callback);\n-                } catch (RemoteException e) {\n-                    // Ignore\n-                }\n-            }\n-        } else {\n+        }, () -> {\n             synchronized (mLock) {\n                 sendContinueUserSwitchLU(uss, oldUserId, newUserId);\n             }\n+        }, \"onUserSwitching\");\n+        t.traceEnd();\n+    }\n+\n+    void informUserSwitchObservers(BiConsumer<IUserSwitchObserver, IRemoteCallback> consumer,\n+            final Runnable onComplete, String trace) {\n+        final int observerCount = mUserSwitchObservers.beginBroadcast();\n+        if (observerCount == 0) {\n+            onComplete.run();\n+            mUserSwitchObservers.finishBroadcast();\n+            return;\n+        }\n+        final ArraySet<String> curWaitingUserSwitchCallbacks = new ArraySet<>();\n+        synchronized (mLock) {\n+            mCurWaitingUserSwitchCallbacks = curWaitingUserSwitchCallbacks;\n+        }\n+        final AtomicInteger waitingCallbacksCount = new AtomicInteger(observerCount);\n+        final long userSwitchTimeoutMs = getUserSwitchTimeoutMs();\n+        final long dispatchStartedTime = SystemClock.elapsedRealtime();\n+        for (int i = 0; i < observerCount; i++) {\n+            final long dispatchStartedTimeForObserver = SystemClock.elapsedRealtime();\n+            // Prepend with unique prefix to guarantee that keys are unique\n+            final String name = \"#\" + i + \" \" + mUserSwitchObservers.getBroadcastCookie(i);\n+            synchronized (mLock) {\n+                curWaitingUserSwitchCallbacks.add(name);\n+            }\n+            final IRemoteCallback callback = new IRemoteCallback.Stub() {\n+                @Override\n+                public void sendResult(Bundle data) throws RemoteException {\n+                    asyncTraceEnd(trace + \"-\" + name, 0);\n+                    synchronized (mLock) {\n+                        long delayForObserver = SystemClock.elapsedRealtime()\n+                                - dispatchStartedTimeForObserver;\n+                        if (delayForObserver > LONG_USER_SWITCH_OBSERVER_WARNING_TIME_MS) {\n+                            Slogf.w(TAG, \"User switch slowed down by observer \" + name\n+                                    + \": result took \" + delayForObserver\n+                                    + \" ms to process. \" + trace);\n+                        }\n+                        long totalDelay = SystemClock.elapsedRealtime() - dispatchStartedTime;\n+                        if (totalDelay > userSwitchTimeoutMs) {\n+                            Slogf.e(TAG, \"User switch timeout: observer \" + name\n+                                    + \"'s result was received \" + totalDelay\n+                                    + \" ms after dispatchUserSwitch. \" + trace);\n+                        }\n+                        curWaitingUserSwitchCallbacks.remove(name);\n+                        // Continue switching if all callbacks have been notified and\n+                        // user switching session is still valid\n+                        if (waitingCallbacksCount.decrementAndGet() == 0\n+                                && (curWaitingUserSwitchCallbacks\n+                                == mCurWaitingUserSwitchCallbacks)) {\n+                            onComplete.run();\n+                        }\n+                    }\n+                }\n+            };\n+            asyncTraceBegin(trace + \"-\" + name, 0);\n+            consumer.accept(mUserSwitchObservers.getBroadcastItem(i), callback);\n         }\n         mUserSwitchObservers.finishBroadcast();\n-        t.traceEnd(); // end dispatchUserSwitch-\n     }\n \n     @GuardedBy(\"mLock\")\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/UserController.java\nHunk #1 FAILED at 160.\nHunk #2 FAILED at 1920.\nHunk #3 FAILED at 1929.\nHunk #4 FAILED at 1995.\nHunk #5 FAILED at 2296.\nHunk #6 FAILED at 2527.\n6 out of 6 hunks FAILED -- saving rejects to file services/core/java/com/android/server/am/UserController.java.rej\n"
+        },
+        {
+            "patch_file": "f7efa779da5c59085b38cb73da61ef0d83b672b6.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/f7efa779da5c59085b38cb73da61ef0d83b672b6.diff"
+        },
+        {
+            "patch_file": "0e91977c4ebfdfe4e2124373d22f99dfe211a06b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/0e91977c4ebfdfe4e2124373d22f99dfe211a06b",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/BroadcastController.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/BroadcastController.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/BroadcastController.java\n+++ services/core/java/com/android/server/am/BroadcastController.java\n@@ -303,8 +303,7 @@\n                 return null;\n             }\n             if (callerApp.info.uid != SYSTEM_UID\n-                    && !callerApp.getPkgList().containsKey(callerPackage)\n-                    && !\"android\".equals(callerPackage)) {\n+                    && !callerApp.getPkgList().containsKey(callerPackage)) {\n                 throw new SecurityException(\"Given caller package \" + callerPackage\n                         + \" is not running in process \" + callerApp);\n             }\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/BroadcastController.java\nHunk #1 FAILED at 303.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/am/BroadcastController.java.rej\n"
+        },
+        {
+            "patch_file": "da489e4fb5c9f8f322538fb6877f971856e7787e.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/da489e4fb5c9f8f322538fb6877f971856e7787e",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/da489e4fb5c9f8f322538fb6877f971856e7787e.diff"
+        },
+        {
+            "patch_file": "3ae94b0da53aed63380263131795746b12296391.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3ae94b0da53aed63380263131795746b12296391",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/am/ActivityManagerService.java\n+++ services/core/java/com/android/server/am/ActivityManagerService.java\n@@ -13804,8 +13804,7 @@\n                 return null;\n             }\n             if (callerApp.info.uid != SYSTEM_UID\n-                    && !callerApp.getPkgList().containsKey(callerPackage)\n-                    && !\"android\".equals(callerPackage)) {\n+                    && !callerApp.getPkgList().containsKey(callerPackage)) {\n                 throw new SecurityException(\"Given caller package \" + callerPackage\n                         + \" is not running in process \" + callerApp);\n             }\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/am/ActivityManagerService.java\nHunk #1 FAILED at 13804.\n1 out of 1 hunk FAILED -- saving rejects to file services/core/java/com/android/server/am/ActivityManagerService.java.rej\n"
+        },
+        {
+            "patch_file": "eec34e2716bfa613be30b0a0b9a173e2005a6c00.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/eec34e2716bfa613be30b0a0b9a173e2005a6c00",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/appop/AppOpsService.java\n+++ services/core/java/com/android/server/appop/AppOpsService.java\n@@ -1708,6 +1715,8 @@\n                 Manifest.permission.GET_APP_OPS_STATS,\n                 Binder.getCallingPid(), Binder.getCallingUid())\n                 == PackageManager.PERMISSION_GRANTED;\n+        int totalAttributedOpEntryCount = 0;\n+\n         if (ops == null) {\n             resOps = new ArrayList<>();\n             for (int j = 0; j < pkgOps.size(); j++) {\n@@ -1715,7 +1724,12 @@\n                 if (opRestrictsRead(curOp.op) && !shouldReturnRestrictedAppOps) {\n                     continue;\n                 }\n-                resOps.add(getOpEntryForResult(curOp, persistentDeviceId));\n+                if (totalAttributedOpEntryCount > NUM_ATTRIBUTED_OP_ENTRY_THRESHOLD) {\n+                    break;\n+                }\n+                OpEntry opEntry = getOpEntryForResult(curOp, persistentDeviceId);\n+                resOps.add(opEntry);\n+                totalAttributedOpEntryCount += opEntry.getAttributedOpEntries().size();\n             }\n         } else {\n             for (int j = 0; j < ops.length; j++) {\n@@ -1727,10 +1741,21 @@\n                     if (opRestrictsRead(curOp.op) && !shouldReturnRestrictedAppOps) {\n                         continue;\n                     }\n-                    resOps.add(getOpEntryForResult(curOp, persistentDeviceId));\n+                    if (totalAttributedOpEntryCount > NUM_ATTRIBUTED_OP_ENTRY_THRESHOLD) {\n+                        break;\n+                    }\n+                    OpEntry opEntry = getOpEntryForResult(curOp, persistentDeviceId);\n+                    resOps.add(opEntry);\n+                    totalAttributedOpEntryCount += opEntry.getAttributedOpEntries().size();\n                 }\n             }\n         }\n+\n+        if (totalAttributedOpEntryCount > NUM_ATTRIBUTED_OP_ENTRY_THRESHOLD) {\n+            Slog.w(TAG, \"The number of attributed op entries has exceeded the threshold. This \"\n+                    + \"could be due to DoS attack from malicious apps. The result is throttled.\");\n+        }\n+\n         return resOps;\n     }\n \n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/appop/AppOpsService.java\nHunk #1 succeeded at 320 with fuzz 2 (offset 84 lines).\nHunk #2 FAILED at 1708.\nHunk #3 FAILED at 1715.\nHunk #4 FAILED at 1727.\n3 out of 4 hunks FAILED -- saving rejects to file services/core/java/com/android/server/appop/AppOpsService.java.rej\n"
+        },
+        {
+            "patch_file": "767b4f7c3657fa29548a4464da6790dbca8aebda.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/767b4f7c3657fa29548a4464da6790dbca8aebda",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/767b4f7c3657fa29548a4464da6790dbca8aebda.diff"
+        },
+        {
+            "patch_file": "225602a7d0fecefb42c2456067d91f895c72f190.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/225602a7d0fecefb42c2456067d91f895c72f190",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java.rej",
+                    "rej_content": "--- services/core/java/com/android/server/location/provider/LocationProviderManager.java\n+++ services/core/java/com/android/server/location/provider/LocationProviderManager.java\n@@ -285,6 +285,7 @@\n                 throws PendingIntent.CanceledException {\n             BroadcastOptions options = BroadcastOptions.makeBasic();\n             options.setDontSendToRestrictedApps(true);\n+            options.setPendingIntentBackgroundActivityLaunchAllowed(false);\n             // allows apps to start a fg service in response to a location PI\n             options.setTemporaryAppAllowlist(TEMPORARY_APP_ALLOWLIST_DURATION_MS,\n                     TEMPORARY_ALLOW_LIST_TYPE_FOREGROUND_SERVICE_ALLOWED,\n@@ -327,6 +328,7 @@\n                 throws PendingIntent.CanceledException {\n             BroadcastOptions options = BroadcastOptions.makeBasic();\n             options.setDontSendToRestrictedApps(true);\n+            options.setPendingIntentBackgroundActivityLaunchAllowed(false);\n \n             mPendingIntent.send(mContext, 0, new Intent().putExtra(KEY_PROVIDER_ENABLED, enabled),\n                     null, null, null, options.toBundle());\n"
+                }
+            ],
+            "message_output": "patching file services/core/java/com/android/server/location/provider/LocationProviderManager.java\nHunk #1 FAILED at 285.\nHunk #2 FAILED at 327.\n2 out of 2 hunks FAILED -- saving rejects to file services/core/java/com/android/server/location/provider/LocationProviderManager.java.rej\n"
+        },
+        {
+            "patch_file": "53cf3399f5691aab020d44efff5dd01eaf16257b.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/53cf3399f5691aab020d44efff5dd01eaf16257b",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/53cf3399f5691aab020d44efff5dd01eaf16257b.diff"
+        },
+        {
+            "patch_file": "c5345cbf9c80e05d0511167353a162b2920fd07f.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c5345cbf9c80e05d0511167353a162b2920fd07f",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/c5345cbf9c80e05d0511167353a162b2920fd07f.diff"
+        },
+        {
+            "patch_file": "df4cbfbaecafd0bc0e3bf41708501e197ae57628.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/df4cbfbaecafd0bc0e3bf41708501e197ae57628",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/df4cbfbaecafd0bc0e3bf41708501e197ae57628.diff"
+        },
+        {
+            "patch_file": "571a97ade14d3e008172a1c084bf7331f6fc8875.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/571a97ade14d3e008172a1c084bf7331f6fc8875",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java.rej",
+                    "rej_content": "--- services/credentials/java/com/android/server/credentials/CredentialManagerService.java\n+++ services/credentials/java/com/android/server/credentials/CredentialManagerService.java\n@@ -31,6 +31,7 @@\n import android.content.Context;\n import android.content.pm.PackageInfo;\n import android.content.pm.PackageManager;\n+import android.content.res.Resources;\n import android.credentials.ClearCredentialStateRequest;\n import android.credentials.CreateCredentialException;\n import android.credentials.CreateCredentialRequest;\n@@ -50,6 +51,7 @@\n import android.credentials.PrepareGetCredentialResponseInternal;\n import android.credentials.RegisterCredentialDescriptionRequest;\n import android.credentials.UnregisterCredentialDescriptionRequest;\n+import android.credentials.flags.Flags;\n import android.os.Binder;\n import android.os.CancellationSignal;\n import android.os.IBinder;\n@@ -79,6 +81,7 @@\n import java.util.LinkedHashSet;\n import java.util.List;\n import java.util.Map;\n+import java.util.Objects;\n import java.util.Set;\n import java.util.function.Consumer;\n import java.util.stream.Collectors;\n@@ -535,6 +538,33 @@\n \n             final int userId = UserHandle.getCallingUserId();\n             final int callingUid = Binder.getCallingUid();\n+            if (Flags.safeguardCandidateCredentialsApiCaller()) {\n+                try {\n+                    String credentialManagerAutofillCompName = mContext.getResources().getString(\n+                            R.string.config_defaultCredentialManagerAutofillService);\n+                    ComponentName componentName = ComponentName.unflattenFromString(\n+                            credentialManagerAutofillCompName);\n+                    if (componentName == null) {\n+                        throw new SecurityException(\n+                                \"Credential Autofill service does not exist on this device.\");\n+                    }\n+                    PackageManager pm = mContext.createContextAsUser(\n+                            UserHandle.getUserHandleForUid(callingUid), 0).getPackageManager();\n+                    String callingProcessPackage = pm.getNameForUid(callingUid);\n+                    if (callingProcessPackage == null) {\n+                        throw new SecurityException(\n+                                \"Couldn't determine the identity of the caller.\");\n+                    }\n+                    if (!Objects.equals(componentName.getPackageName(), callingProcessPackage)) {\n+                        throw new SecurityException(callingProcessPackage\n+                                + \" is not the device's credential autofill package.\");\n+                    }\n+                } catch (Resources.NotFoundException e) {\n+                    throw new SecurityException(\n+                            \"Credential Autofill service does not exist on this device.\");\n+                }\n+            }\n+\n \n             // New request session, scoped for this request only.\n             final GetCandidateRequestSession session =\n"
+                }
+            ],
+            "message_output": "patching file services/credentials/java/com/android/server/credentials/CredentialManagerService.java\nHunk #1 FAILED at 31.\nHunk #2 FAILED at 50.\nHunk #3 FAILED at 79.\nHunk #4 FAILED at 535.\n4 out of 4 hunks FAILED -- saving rejects to file services/credentials/java/com/android/server/credentials/CredentialManagerService.java.rej\n"
+        },
+        {
+            "patch_file": "e61320b6fcca1b6f0fe60078cc27fcc844a63f12.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e61320b6fcca1b6f0fe60078cc27fcc844a63f12",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/e61320b6fcca1b6f0fe60078cc27fcc844a63f12.diff"
+        },
+        {
+            "patch_file": "2de1592713696d56d160b14959ddf1fadfa256bf.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2de1592713696d56d160b14959ddf1fadfa256bf",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/2de1592713696d56d160b14959ddf1fadfa256bf.diff"
+        },
+        {
+            "patch_file": "12e49e7a4e56df4dce97f80051063f45e8366329.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/12e49e7a4e56df4dce97f80051063f45e8366329",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/ResourcesManager.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/app/ResourcesManager.java.rej",
+                    "rej_content": "--- core/java/android/app/ResourcesManager.java\n+++ core/java/android/app/ResourcesManager.java\n@@ -77,6 +77,7 @@\n public class ResourcesManager {\n     static final String TAG = \"ResourcesManager\";\n     private static final boolean DEBUG = false;\n+    public static final String RESOURCE_CACHE_DIR = \"/data/resource-cache/\";\n \n     private static volatile ResourcesManager sResourcesManager;\n \n@@ -581,7 +582,7 @@\n     }\n \n     private static String overlayPathToIdmapPath(String path) {\n-        return \"/data/resource-cache/\" + path.substring(1).replace('/', '@') + \"@idmap\";\n+        return RESOURCE_CACHE_DIR + path.substring(1).replace('/', '@') + \"@idmap\";\n     }\n \n     /**\n"
+                },
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/content/res/ResourcesImpl.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/content/res/ResourcesImpl.java.rej",
+                    "rej_content": "--- core/java/android/content/res/ResourcesImpl.java\n+++ core/java/android/content/res/ResourcesImpl.java\n@@ -992,15 +992,24 @@\n                     } else {\n                         dr = loadXmlDrawable(wrapper, value, id, density, file);\n                     }\n-                } else if (file.startsWith(\"frro://\")) {\n+                } else if (file.startsWith(\"frro:/\")) {\n                     Uri uri = Uri.parse(file);\n+                    long offset = Long.parseLong(uri.getQueryParameter(\"offset\"));\n+                    long size = Long.parseLong(uri.getQueryParameter(\"size\"));\n+                    if (offset < 0 || size <= 0) {\n+                        throw new NotFoundException(\"invalid frro parameters\");\n+                    }\n                     File f = new File('/' + uri.getHost() + uri.getPath());\n+                    if (!f.getCanonicalPath().startsWith(ResourcesManager.RESOURCE_CACHE_DIR)\n+                            || !f.getCanonicalPath().endsWith(\".frro\") || !f.canRead()) {\n+                        throw new NotFoundException(\"invalid frro path\");\n+                    }\n                     ParcelFileDescriptor pfd = ParcelFileDescriptor.open(f,\n                             ParcelFileDescriptor.MODE_READ_ONLY);\n                     AssetFileDescriptor afd = new AssetFileDescriptor(\n                             pfd,\n-                            Long.parseLong(uri.getQueryParameter(\"offset\")),\n-                            Long.parseLong(uri.getQueryParameter(\"size\")));\n+                            offset,\n+                            size);\n                     FileInputStream is = afd.createInputStream();\n                     dr = decodeImageDrawable(is, wrapper);\n                 } else {\n"
+                }
+            ],
+            "message_output": "patching file core/java/android/app/ResourcesManager.java\nHunk #1 FAILED at 77.\nHunk #2 FAILED at 581.\n2 out of 2 hunks FAILED -- saving rejects to file core/java/android/app/ResourcesManager.java.rej\npatching file core/java/android/content/res/ResourcesImpl.java\nHunk #1 FAILED at 992.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/res/ResourcesImpl.java.rej\n"
+        },
+        {
+            "patch_file": "2ff8b4aef08bbc1e84af35404846026eca3cbd5c.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2ff8b4aef08bbc1e84af35404846026eca3cbd5c",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/2ff8b4aef08bbc1e84af35404846026eca3cbd5c.diff"
+        },
+        {
+            "patch_file": "067a8e500c707ab94d2268f9f4c84f9443143e98.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/067a8e500c707ab94d2268f9f4c84f9443143e98.diff"
+        },
+        {
+            "patch_file": "3965123f440345017facfe9f767b22d79e55aeab.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3965123f440345017facfe9f767b22d79e55aeab",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/service/notification/ZenModeConfig.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/service/notification/ZenModeConfig.java.rej",
+                    "rej_content": "--- core/java/android/service/notification/ZenModeConfig.java\n+++ core/java/android/service/notification/ZenModeConfig.java\n@@ -62,6 +62,7 @@\n import android.content.Context;\n import android.content.pm.ApplicationInfo;\n import android.content.pm.PackageManager;\n+import android.content.pm.ParceledListSlice;\n import android.content.res.Resources;\n import android.net.Uri;\n import android.os.Build;\n@@ -460,14 +461,21 @@\n     }\n \n     private static void readRulesFromParcel(ArrayMap<String, ZenRule> ruleMap, Parcel source) {\n-        final int len = source.readInt();\n+        int len = source.readInt();\n         if (len > 0) {\n             final String[] ids = new String[len];\n-            final ZenRule[] rules = new ZenRule[len];\n-            source.readStringArray(ids);\n-            source.readTypedArray(rules, ZenRule.CREATOR);\n+            source.readString8Array(ids);\n+            ParceledListSlice<?> parceledRules = source.readParcelable(\n+                    ZenRule.class.getClassLoader(), ParceledListSlice.class);\n+            List<?> rules = parceledRules != null ? parceledRules.getList() : new ArrayList<>();\n+            if (rules.size() != len) {\n+                Slog.wtf(TAG, String.format(\n+                        \"Unexpected parceled rules count (%s != %s), throwing them out\",\n+                        rules.size(), len));\n+                len = 0;\n+            }\n             for (int i = 0; i < len; i++) {\n-                ruleMap.put(ids[i], rules[i]);\n+                ruleMap.put(ids[i], (ZenRule) rules.get(i));\n             }\n         }\n     }\n@@ -485,8 +493,8 @@\n         }\n         dest.writeInt(user);\n         dest.writeParcelable(manualRule, 0);\n-        writeRulesToParcel(automaticRules, dest);\n-        writeRulesToParcel(deletedRules, dest);\n+        writeRulesToParcel(automaticRules, dest, flags);\n+        writeRulesToParcel(deletedRules, dest, flags);\n         if (!Flags.modesUi()) {\n             dest.writeInt(allowAlarms ? 1 : 0);\n             dest.writeInt(allowMedia ? 1 : 0);\n@@ -501,18 +509,19 @@\n         }\n     }\n \n-    private static void writeRulesToParcel(ArrayMap<String, ZenRule> ruleMap, Parcel dest) {\n+    private static void writeRulesToParcel(ArrayMap<String, ZenRule> ruleMap, Parcel dest,\n+            int flags) {\n         if (!ruleMap.isEmpty()) {\n             final int len = ruleMap.size();\n             final String[] ids = new String[len];\n-            final ZenRule[] rules = new ZenRule[len];\n+            final ArrayList<ZenRule> rules = new ArrayList<>();\n             for (int i = 0; i < len; i++) {\n                 ids[i] = ruleMap.keyAt(i);\n-                rules[i] = ruleMap.valueAt(i);\n+                rules.add(ruleMap.valueAt(i));\n             }\n             dest.writeInt(len);\n-            dest.writeStringArray(ids);\n-            dest.writeTypedArray(rules, 0);\n+            dest.writeString8Array(ids);\n+            dest.writeParcelable(new ParceledListSlice<>(rules), flags);\n         } else {\n             dest.writeInt(0);\n         }\n@@ -2636,7 +2645,7 @@\n             enabled = source.readInt() == 1;\n             snoozing = source.readInt() == 1;\n             if (source.readInt() == 1) {\n-                name = source.readString();\n+                name = source.readString8();\n             }\n             zenMode = source.readInt();\n             conditionId = source.readParcelable(null, android.net.Uri.class);\n@@ -2644,18 +2653,18 @@\n             component = source.readParcelable(null, android.content.ComponentName.class);\n             configurationActivity = source.readParcelable(null, android.content.ComponentName.class);\n             if (source.readInt() == 1) {\n-                id = source.readString();\n+                id = source.readString8();\n             }\n             creationTime = source.readLong();\n             if (source.readInt() == 1) {\n-                enabler = source.readString();\n+                enabler = source.readString8();\n             }\n             zenPolicy = source.readParcelable(null, android.service.notification.ZenPolicy.class);\n             zenDeviceEffects = source.readParcelable(null, ZenDeviceEffects.class);\n-            pkg = source.readString();\n+            pkg = source.readString8();\n             allowManualInvocation = source.readBoolean();\n-            iconResName = source.readString();\n-            triggerDescription = source.readString();\n+            iconResName = source.readString8();\n+            triggerDescription = source.readString8();\n             type = source.readInt();\n             userModifiedFields = source.readInt();\n             zenPolicyUserModifiedFields = source.readInt();\n@@ -2703,7 +2712,7 @@\n             dest.writeInt(snoozing ? 1 : 0);\n             if (name != null) {\n                 dest.writeInt(1);\n-                dest.writeString(name);\n+                dest.writeString8(name);\n             } else {\n                 dest.writeInt(0);\n             }\n@@ -2714,23 +2723,23 @@\n             dest.writeParcelable(configurationActivity, 0);\n             if (id != null) {\n                 dest.writeInt(1);\n-                dest.writeString(id);\n+                dest.writeString8(id);\n             } else {\n                 dest.writeInt(0);\n             }\n             dest.writeLong(creationTime);\n             if (enabler != null) {\n                 dest.writeInt(1);\n-                dest.writeString(enabler);\n+                dest.writeString8(enabler);\n             } else {\n                 dest.writeInt(0);\n             }\n             dest.writeParcelable(zenPolicy, 0);\n             dest.writeParcelable(zenDeviceEffects, 0);\n-            dest.writeString(pkg);\n+            dest.writeString8(pkg);\n             dest.writeBoolean(allowManualInvocation);\n-            dest.writeString(iconResName);\n-            dest.writeString(triggerDescription);\n+            dest.writeString8(iconResName);\n+            dest.writeString8(triggerDescription);\n             dest.writeInt(type);\n             dest.writeInt(userModifiedFields);\n             dest.writeInt(zenPolicyUserModifiedFields);\n"
+                }
+            ],
+            "message_output": "patching file core/java/android/service/notification/ZenModeConfig.java\nHunk #1 FAILED at 62.\nHunk #2 FAILED at 460.\nHunk #3 FAILED at 485.\nHunk #4 FAILED at 501.\nHunk #5 FAILED at 2636.\nHunk #6 FAILED at 2644.\nHunk #7 FAILED at 2703.\nHunk #8 FAILED at 2714.\n8 out of 8 hunks FAILED -- saving rejects to file core/java/android/service/notification/ZenModeConfig.java.rej\n"
+        },
+        {
+            "patch_file": "65c1a90bf4af54f555ded29ec2384072b1c962b8.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65c1a90bf4af54f555ded29ec2384072b1c962b8",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Failed Hunks",
+            "rejected_files": [
+                {
+                    "failed_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/content/pm/PackageParser.java",
+                    "reject_file": "/data/androidOS/WORKING_DIRECTORY/frameworks/base/core/java/android/content/pm/PackageParser.java.rej",
+                    "rej_content": "--- core/java/android/content/pm/PackageParser.java\n+++ core/java/android/content/pm/PackageParser.java\n@@ -7782,6 +7782,10 @@\n             final ArrayList<T> intentsList;\n             try {\n                 final Class<T> cls = (Class<T>) Class.forName(componentName);\n+                if (!IntentInfo.class.isAssignableFrom(cls)) {\n+                    throw new AssertionError(\"Intent list requires subclass of IntentInfo, not: \"\n+                            + componentName);\n+                }\n                 final Constructor<T> cons = cls.getConstructor(Parcel.class);\n \n                 intentsList = new ArrayList<>(N);\n"
+                }
+            ],
+            "message_output": "patching file core/java/android/content/pm/PackageParser.java\nHunk #1 FAILED at 7782.\n1 out of 1 hunk FAILED -- saving rejects to file core/java/android/content/pm/PackageParser.java.rej\n"
+        },
+        {
+            "patch_file": "cfd0ded301a5848b9b2caedb44878ae6ff0a7456.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cfd0ded301a5848b9b2caedb44878ae6ff0a7456",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/cfd0ded301a5848b9b2caedb44878ae6ff0a7456.diff"
+        },
+        {
+            "patch_file": "249d11226b24f660af50cac7e41b5fed1d0ee19a.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/249d11226b24f660af50cac7e41b5fed1d0ee19a",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/249d11226b24f660af50cac7e41b5fed1d0ee19a.diff"
+        },
+        {
+            "patch_file": "9937e7194ae9a2051c90d38a5bd7e7505b19cb87.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/9937e7194ae9a2051c90d38a5bd7e7505b19cb87",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/9937e7194ae9a2051c90d38a5bd7e7505b19cb87.diff"
+        },
+        {
+            "patch_file": "2ab1084a748a2303289624e6063d2c60d10ec922.diff",
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2ab1084a748a2303289624e6063d2c60d10ec922",
+            "source": "Vanir",
+            "project": "frameworks/base",
+            "status": "Rejected",
+            "detailed_status": "Rejected: Missing Patch File",
+            "message_output": "Patch file not found: /data/eugene-only/playground1/fetch_patch_output/diff_output/2ab1084a748a2303289624e6063d2c60d10ec922.diff"
+        }
+    ]
+}

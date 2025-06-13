@@ -1,0 +1,570 @@
+{
+    "patches": [
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/9dc64621d896d05fcb0e6f45792a307fde130823",
+            "patch_file": "9dc64621d896d05fcb0e6f45792a307fde130823.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/libs/androidfw/CursorWindow.cpp": {
+                    "functions": [
+                        "CursorWindow::create"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/ae4b644a7cfb66f1e51ade508f115aec63bc16ef",
+            "patch_file": "ae4b644a7cfb66f1e51ade508f115aec63bc16ef.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/libs/androidfw/CursorWindow.cpp": {
+                    "functions": [
+                        "CursorWindow::create"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5b26a62b4d813b8ccc1de81641e87c9e95c8d958",
+            "patch_file": "5b26a62b4d813b8ccc1de81641e87c9e95c8d958.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/libs/androidfw/CursorWindow.cpp": {
+                    "functions": [
+                        "CursorWindow::create"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c07e0eba29ee1f92b4d540f07a05b8e306601613",
+            "patch_file": "c07e0eba29ee1f92b4d540f07a05b8e306601613.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/libs/androidfw/CursorWindow.cpp": {
+                    "functions": [
+                        "CursorWindow::create"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+            "patch_file": "aaa1cb20b89f3389f9fbc362a397770c8052e7fb.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                },
+                "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+            "patch_file": "509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                },
+                "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+            "patch_file": "fe01a389c8c74ea408935f9bc2b16edea5d55975.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                },
+                "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java": {
+                    "functions": [
+                        "allowPackageAccess"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271",
+            "patch_file": "a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/VpnManagerService.java": {
+                    "functions": [
+                        "putIntoVpnProfileStore"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f1122ac36a2c9ffcb3ace49fc383870f87456c26",
+            "patch_file": "f1122ac36a2c9ffcb3ace49fc383870f87456c26.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/VpnManagerService.java": {
+                    "functions": [
+                        "putIntoVpnProfileStore"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
+            "patch_file": "b4945cf98c97121821c178713a613a6a6e830c3a.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java": {
+                    "functions": [
+                        "startLockTaskMode"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/d5268b9953765352dac09179e10836c6e481e266",
+            "patch_file": "d5268b9953765352dac09179e10836c6e481e266.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c617d697cdbef000cb416aefc08fc4a3cda4afa1",
+            "patch_file": "c617d697cdbef000cb416aefc08fc4a3cda4afa1.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java": {
+                    "functions": [
+                        "dump"
+                    ]
+                },
+                "frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java": {
+                    "functions": [
+                        "dump"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/949e7bb75e395039af5bdf0aa4b48860fef69541",
+            "patch_file": "949e7bb75e395039af5bdf0aa4b48860fef69541.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java": {
+                    "functions": [
+                        "clearAllowBgActivityStarts"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
+            "patch_file": "155a686755e5012d591223c451304f3326dc2e78.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java": {
+                    "functions": [
+                        "clearAllowBgActivityStarts"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a71599c035472fe280132df64c5f5ee361ba0e92",
+            "patch_file": "a71599c035472fe280132df64c5f5ee361ba0e92.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java": {
+                    "functions": [
+                        "clearAllowBgActivityStarts"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f251732b0b46b6592300c6e33d48a5536ecb424d",
+            "patch_file": "f251732b0b46b6592300c6e33d48a5536ecb424d.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java": {
+                    "functions": [
+                        "clearAllowBgActivityStarts"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5782703d0f7c913477f1dd59b11e6e6e879199d9",
+            "patch_file": "5782703d0f7c913477f1dd59b11e6e6e879199d9.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java": {
+                    "functions": [
+                        "clearAllowBgActivityStarts"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/8aef21b72dca756458d25a42599779997d199f09",
+            "patch_file": "8aef21b72dca756458d25a42599779997d199f09.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/4000e8055f66b33ffa1fef9bee23d998b9438114",
+            "patch_file": "4000e8055f66b33ffa1fef9bee23d998b9438114.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/5ea37ed9f0b1526c690a4edf02c36577635e43a6",
+            "patch_file": "5ea37ed9f0b1526c690a4edf02c36577635e43a6.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+            "patch_file": "65ee48d1eb9fe60039c2c461ca49f31ad180faef.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/UserController.java": {
+                    "functions": [
+                        "startUserInternal",
+                        "startUserInternalOnHandler",
+                        "dispatchOnBeforeUserSwitching",
+                        "sendResult",
+                        "dispatchUserSwitch"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+            "patch_file": "a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/UserController.java": {
+                    "functions": [
+                        "startUserInternal",
+                        "startUserInternalOnHandler",
+                        "dispatchOnBeforeUserSwitching",
+                        "sendResult",
+                        "dispatchUserSwitch"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+            "patch_file": "f7efa779da5c59085b38cb73da61ef0d83b672b6.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/UserController.java": {
+                    "functions": [
+                        "startUserInternal",
+                        "dispatchOnBeforeUserSwitching",
+                        "sendResult",
+                        "dispatchUserSwitch"
+                    ]
+                },
+                "frameworks/base/core/java/android/app/UserSwitchObserver.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/0e91977c4ebfdfe4e2124373d22f99dfe211a06b",
+            "patch_file": "0e91977c4ebfdfe4e2124373d22f99dfe211a06b.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/da489e4fb5c9f8f322538fb6877f971856e7787e",
+            "patch_file": "da489e4fb5c9f8f322538fb6877f971856e7787e.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3ae94b0da53aed63380263131795746b12296391",
+            "patch_file": "3ae94b0da53aed63380263131795746b12296391.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java": {
+                    "functions": []
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/eec34e2716bfa613be30b0a0b9a173e2005a6c00",
+            "patch_file": "eec34e2716bfa613be30b0a0b9a173e2005a6c00.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java": {
+                    "functions": [
+                        "collectOps"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/767b4f7c3657fa29548a4464da6790dbca8aebda",
+            "patch_file": "767b4f7c3657fa29548a4464da6790dbca8aebda.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java": {
+                    "functions": [
+                        "collectOps"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/225602a7d0fecefb42c2456067d91f895c72f190",
+            "patch_file": "225602a7d0fecefb42c2456067d91f895c72f190.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java": {
+                    "functions": [
+                        "deliverOnLocationChanged",
+                        "deliverOnProviderEnabledChanged"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/53cf3399f5691aab020d44efff5dd01eaf16257b",
+            "patch_file": "53cf3399f5691aab020d44efff5dd01eaf16257b.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java": {
+                    "functions": [
+                        "deliverOnLocationChanged",
+                        "deliverOnProviderEnabledChanged"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/c5345cbf9c80e05d0511167353a162b2920fd07f",
+            "patch_file": "c5345cbf9c80e05d0511167353a162b2920fd07f.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java": {
+                    "functions": [
+                        "deliverOnLocationChanged",
+                        "deliverOnProviderEnabledChanged"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/df4cbfbaecafd0bc0e3bf41708501e197ae57628",
+            "patch_file": "df4cbfbaecafd0bc0e3bf41708501e197ae57628.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java": {
+                    "functions": [
+                        "deliverOnLocationChanged",
+                        "deliverOnProviderEnabledChanged"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/571a97ade14d3e008172a1c084bf7331f6fc8875",
+            "patch_file": "571a97ade14d3e008172a1c084bf7331f6fc8875.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java": {
+                    "functions": [
+                        "getCandidateCredentials"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/e61320b6fcca1b6f0fe60078cc27fcc844a63f12",
+            "patch_file": "e61320b6fcca1b6f0fe60078cc27fcc844a63f12.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java": {
+                    "functions": [
+                        "getCandidateCredentials"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2de1592713696d56d160b14959ddf1fadfa256bf",
+            "patch_file": "2de1592713696d56d160b14959ddf1fadfa256bf.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/ResourcesManager.java": {
+                    "functions": [
+                        "overlayPathToIdmapPath"
+                    ]
+                },
+                "frameworks/base/core/java/android/content/res/ResourcesImpl.java": {
+                    "functions": [
+                        "loadDrawableForCookie"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/12e49e7a4e56df4dce97f80051063f45e8366329",
+            "patch_file": "12e49e7a4e56df4dce97f80051063f45e8366329.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/ResourcesManager.java": {
+                    "functions": []
+                },
+                "frameworks/base/core/java/android/content/res/ResourcesImpl.java": {
+                    "functions": [
+                        "loadDrawableForCookie"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2ff8b4aef08bbc1e84af35404846026eca3cbd5c",
+            "patch_file": "2ff8b4aef08bbc1e84af35404846026eca3cbd5c.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/content/res/ResourcesImpl.java": {
+                    "functions": [
+                        "loadDrawableForCookie"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+            "patch_file": "067a8e500c707ab94d2268f9f4c84f9443143e98.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/app/AutomaticZenRule.java": {
+                    "functions": []
+                },
+                "frameworks/base/core/java/android/service/notification/ZenModeConfig.java": {
+                    "functions": [
+                        "readRulesFromParcel",
+                        "writeToParcel",
+                        "writeRulesToParcel"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/3965123f440345017facfe9f767b22d79e55aeab",
+            "patch_file": "3965123f440345017facfe9f767b22d79e55aeab.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/service/notification/ZenModeConfig.java": {
+                    "functions": [
+                        "readRulesFromParcel",
+                        "writeRulesToParcel"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/65c1a90bf4af54f555ded29ec2384072b1c962b8",
+            "patch_file": "65c1a90bf4af54f555ded29ec2384072b1c962b8.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/content/pm/PackageParser.java": {
+                    "functions": [
+                        "createIntentsList"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/cfd0ded301a5848b9b2caedb44878ae6ff0a7456",
+            "patch_file": "cfd0ded301a5848b9b2caedb44878ae6ff0a7456.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/content/pm/PackageParser.java": {
+                    "functions": [
+                        "createIntentsList"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/249d11226b24f660af50cac7e41b5fed1d0ee19a",
+            "patch_file": "249d11226b24f660af50cac7e41b5fed1d0ee19a.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/content/pm/PackageParser.java": {
+                    "functions": [
+                        "createIntentsList"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/9937e7194ae9a2051c90d38a5bd7e7505b19cb87",
+            "patch_file": "9937e7194ae9a2051c90d38a5bd7e7505b19cb87.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/core/java/android/content/pm/PackageParser.java": {
+                    "functions": [
+                        "createIntentsList"
+                    ]
+                }
+            }
+        },
+        {
+            "patch_url": "https://android.googlesource.com/platform/frameworks/base/+/2ab1084a748a2303289624e6063d2c60d10ec922",
+            "patch_file": "2ab1084a748a2303289624e6063d2c60d10ec922.diff",
+            "project": "frameworks/base",
+            "files": {
+                "frameworks/base/packages/SettingsLib/src/com/android/settingslib/users/EditUserPhotoController.java": {
+                    "functions": [
+                        "showAvatarPicker"
+                    ]
+                }
+            }
+        }
+    ]
+}

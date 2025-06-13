@@ -1,0 +1,1265 @@
+{
+    "options": "package_scanner Android platform/frameworks/base /data/androidOS/WORKING_DIRECTORY --package_version=15",
+    "covered_cves": [
+        "CVE-2019-9376",
+        "CVE-2020-0074",
+        "CVE-2020-0099",
+        "CVE-2020-0108",
+        "CVE-2020-0227",
+        "CVE-2020-0247",
+        "CVE-2020-0248",
+        "CVE-2020-0249",
+        "CVE-2020-0257",
+        "CVE-2020-0258",
+        "CVE-2020-0294",
+        "CVE-2020-0338",
+        "CVE-2020-0368",
+        "CVE-2020-0388",
+        "CVE-2020-0389",
+        "CVE-2020-0391",
+        "CVE-2020-0401",
+        "CVE-2020-0412",
+        "CVE-2020-0415",
+        "CVE-2020-0417",
+        "CVE-2020-0419",
+        "CVE-2020-0439",
+        "CVE-2020-0440",
+        "CVE-2020-0441",
+        "CVE-2020-0442",
+        "CVE-2020-0443",
+        "CVE-2020-0448",
+        "CVE-2020-0454",
+        "CVE-2020-0467",
+        "CVE-2020-0468",
+        "CVE-2020-0469",
+        "CVE-2020-0500",
+        "CVE-2021-0304",
+        "CVE-2021-0306",
+        "CVE-2021-0307",
+        "CVE-2021-0309",
+        "CVE-2021-0314",
+        "CVE-2021-0315",
+        "CVE-2021-0317",
+        "CVE-2021-0319",
+        "CVE-2021-0321",
+        "CVE-2021-0322",
+        "CVE-2021-0327",
+        "CVE-2021-0334",
+        "CVE-2021-0337",
+        "CVE-2021-0338",
+        "CVE-2021-0339",
+        "CVE-2021-0391",
+        "CVE-2021-0398",
+        "CVE-2021-0400",
+        "CVE-2021-0426",
+        "CVE-2021-0427",
+        "CVE-2021-0428",
+        "CVE-2021-0432",
+        "CVE-2021-0433",
+        "CVE-2021-0438",
+        "CVE-2021-0439",
+        "CVE-2021-0442",
+        "CVE-2021-0443",
+        "CVE-2021-0472",
+        "CVE-2021-0477",
+        "CVE-2021-0478",
+        "CVE-2021-0480",
+        "CVE-2021-0485",
+        "CVE-2021-0486",
+        "CVE-2021-0513",
+        "CVE-2021-0517",
+        "CVE-2021-0521",
+        "CVE-2021-0547",
+        "CVE-2021-0551",
+        "CVE-2021-0554",
+        "CVE-2021-0567",
+        "CVE-2021-0570",
+        "CVE-2021-0571",
+        "CVE-2021-0572",
+        "CVE-2021-0590",
+        "CVE-2021-0595",
+        "CVE-2021-0599",
+        "CVE-2021-0640",
+        "CVE-2021-0644",
+        "CVE-2021-0645",
+        "CVE-2021-0649",
+        "CVE-2021-0651",
+        "CVE-2021-0652",
+        "CVE-2021-0653",
+        "CVE-2021-0682",
+        "CVE-2021-0683",
+        "CVE-2021-0685",
+        "CVE-2021-0686",
+        "CVE-2021-0687",
+        "CVE-2021-0688",
+        "CVE-2021-0694",
+        "CVE-2021-0704",
+        "CVE-2021-0705",
+        "CVE-2021-0706",
+        "CVE-2021-0708",
+        "CVE-2021-0799",
+        "CVE-2021-0921",
+        "CVE-2021-0922",
+        "CVE-2021-0923",
+        "CVE-2021-0928",
+        "CVE-2021-0931",
+        "CVE-2021-0932",
+        "CVE-2021-0933",
+        "CVE-2021-0934",
+        "CVE-2021-0954",
+        "CVE-2021-0957",
+        "CVE-2021-0958",
+        "CVE-2021-0969",
+        "CVE-2021-0970",
+        "CVE-2021-0978",
+        "CVE-2021-0979",
+        "CVE-2021-0981",
+        "CVE-2021-0982",
+        "CVE-2021-0983",
+        "CVE-2021-0984",
+        "CVE-2021-0986",
+        "CVE-2021-0988",
+        "CVE-2021-0993",
+        "CVE-2021-0997",
+        "CVE-2021-1003",
+        "CVE-2021-1009",
+        "CVE-2021-1010",
+        "CVE-2021-1011",
+        "CVE-2021-1013",
+        "CVE-2021-1016",
+        "CVE-2021-1018",
+        "CVE-2021-1020",
+        "CVE-2021-1021",
+        "CVE-2021-1025",
+        "CVE-2021-1030",
+        "CVE-2021-1031",
+        "CVE-2021-1032",
+        "CVE-2021-1034",
+        "CVE-2021-39617",
+        "CVE-2021-39619",
+        "CVE-2021-39624",
+        "CVE-2021-39628",
+        "CVE-2021-39630",
+        "CVE-2021-39664",
+        "CVE-2021-39670",
+        "CVE-2021-39676",
+        "CVE-2021-39691",
+        "CVE-2021-39693",
+        "CVE-2021-39695",
+        "CVE-2021-39696",
+        "CVE-2021-39704",
+        "CVE-2021-39758",
+        "CVE-2021-39794",
+        "CVE-2021-39796",
+        "CVE-2021-39797",
+        "CVE-2021-39798",
+        "CVE-2021-39799",
+        "CVE-2021-39808",
+        "CVE-2022-20004",
+        "CVE-2022-20005",
+        "CVE-2022-20007",
+        "CVE-2022-20011",
+        "CVE-2022-20115",
+        "CVE-2022-20124",
+        "CVE-2022-20135",
+        "CVE-2022-20138",
+        "CVE-2022-20142",
+        "CVE-2022-20143",
+        "CVE-2022-20144",
+        "CVE-2022-20145",
+        "CVE-2022-20192",
+        "CVE-2022-20193",
+        "CVE-2022-20197",
+        "CVE-2022-20199",
+        "CVE-2022-20204",
+        "CVE-2022-20206",
+        "CVE-2022-20219",
+        "CVE-2022-20226",
+        "CVE-2022-20240",
+        "CVE-2022-20338",
+        "CVE-2022-20350",
+        "CVE-2022-20352",
+        "CVE-2022-20354",
+        "CVE-2022-20355",
+        "CVE-2022-20356",
+        "CVE-2022-20358",
+        "CVE-2022-20392",
+        "CVE-2022-20394",
+        "CVE-2022-20414",
+        "CVE-2022-20415",
+        "CVE-2022-20419",
+        "CVE-2022-20420",
+        "CVE-2022-20425",
+        "CVE-2022-20426",
+        "CVE-2022-20441",
+        "CVE-2022-20444",
+        "CVE-2022-20448",
+        "CVE-2022-20449",
+        "CVE-2022-20450",
+        "CVE-2022-20452",
+        "CVE-2022-20455",
+        "CVE-2022-20456",
+        "CVE-2022-20457",
+        "CVE-2022-20465",
+        "CVE-2022-20466",
+        "CVE-2022-20470",
+        "CVE-2022-20474",
+        "CVE-2022-20475",
+        "CVE-2022-20476",
+        "CVE-2022-20478",
+        "CVE-2022-20479",
+        "CVE-2022-20480",
+        "CVE-2022-20482",
+        "CVE-2022-20484",
+        "CVE-2022-20485",
+        "CVE-2022-20486",
+        "CVE-2022-20487",
+        "CVE-2022-20488",
+        "CVE-2022-20489",
+        "CVE-2022-20490",
+        "CVE-2022-20491",
+        "CVE-2022-20492",
+        "CVE-2022-20493",
+        "CVE-2022-20494",
+        "CVE-2022-20495",
+        "CVE-2022-20497",
+        "CVE-2022-20500",
+        "CVE-2022-20504",
+        "CVE-2022-20510",
+        "CVE-2022-20511",
+        "CVE-2022-20512",
+        "CVE-2022-20514",
+        "CVE-2022-20526",
+        "CVE-2022-20543",
+        "CVE-2022-20545",
+        "CVE-2022-20550",
+        "CVE-2022-20553",
+        "CVE-2022-20559",
+        "CVE-2022-20611",
+        "CVE-2023-20906",
+        "CVE-2023-20909",
+        "CVE-2023-20910",
+        "CVE-2023-20911",
+        "CVE-2023-20916",
+        "CVE-2023-20917",
+        "CVE-2023-20918",
+        "CVE-2023-20919",
+        "CVE-2023-20920",
+        "CVE-2023-20921",
+        "CVE-2023-20922",
+        "CVE-2023-20926",
+        "CVE-2023-20930",
+        "CVE-2023-20934",
+        "CVE-2023-20943",
+        "CVE-2023-20944",
+        "CVE-2023-20950",
+        "CVE-2023-20953",
+        "CVE-2023-20963",
+        "CVE-2023-20964",
+        "CVE-2023-20971",
+        "CVE-2023-20993",
+        "CVE-2023-20996",
+        "CVE-2023-20997",
+        "CVE-2023-20998",
+        "CVE-2023-20999",
+        "CVE-2023-21017",
+        "CVE-2023-21026",
+        "CVE-2023-21029",
+        "CVE-2023-21081",
+        "CVE-2023-21087",
+        "CVE-2023-21088",
+        "CVE-2023-21089",
+        "CVE-2023-21092",
+        "CVE-2023-21097",
+        "CVE-2023-21098",
+        "CVE-2023-21099",
+        "CVE-2023-21104",
+        "CVE-2023-21105",
+        "CVE-2023-21109",
+        "CVE-2023-21110",
+        "CVE-2023-21113",
+        "CVE-2023-21116",
+        "CVE-2023-21117",
+        "CVE-2023-21126",
+        "CVE-2023-21128",
+        "CVE-2023-21129",
+        "CVE-2023-21131",
+        "CVE-2023-21135",
+        "CVE-2023-21136",
+        "CVE-2023-21137",
+        "CVE-2023-21139",
+        "CVE-2023-21143",
+        "CVE-2023-21144",
+        "CVE-2023-21145",
+        "CVE-2023-21167",
+        "CVE-2023-21177",
+        "CVE-2023-21187",
+        "CVE-2023-21189",
+        "CVE-2023-21191",
+        "CVE-2023-21192",
+        "CVE-2023-21237",
+        "CVE-2023-21238",
+        "CVE-2023-21239",
+        "CVE-2023-21240",
+        "CVE-2023-21243",
+        "CVE-2023-21244",
+        "CVE-2023-21245",
+        "CVE-2023-21246",
+        "CVE-2023-21249",
+        "CVE-2023-21251",
+        "CVE-2023-21253",
+        "CVE-2023-21254",
+        "CVE-2023-21257",
+        "CVE-2023-21266",
+        "CVE-2023-21267",
+        "CVE-2023-21269",
+        "CVE-2023-21270",
+        "CVE-2023-21272",
+        "CVE-2023-21276",
+        "CVE-2023-21277",
+        "CVE-2023-21279",
+        "CVE-2023-21280",
+        "CVE-2023-21281",
+        "CVE-2023-21283",
+        "CVE-2023-21284",
+        "CVE-2023-21285",
+        "CVE-2023-21286",
+        "CVE-2023-21288",
+        "CVE-2023-21289",
+        "CVE-2023-21291",
+        "CVE-2023-21292",
+        "CVE-2023-21342",
+        "CVE-2023-21351",
+        "CVE-2023-35668",
+        "CVE-2023-35674",
+        "CVE-2023-35675",
+        "CVE-2023-35676",
+        "CVE-2023-40073",
+        "CVE-2023-40074",
+        "CVE-2023-40075",
+        "CVE-2023-40076",
+        "CVE-2023-40079",
+        "CVE-2023-40081",
+        "CVE-2023-40089",
+        "CVE-2023-40091",
+        "CVE-2023-40092",
+        "CVE-2023-40094",
+        "CVE-2023-40095",
+        "CVE-2023-40098",
+        "CVE-2023-40103",
+        "CVE-2023-40105",
+        "CVE-2023-40106",
+        "CVE-2023-40109",
+        "CVE-2023-40111",
+        "CVE-2023-40115",
+        "CVE-2023-40116",
+        "CVE-2023-40117",
+        "CVE-2023-40120",
+        "CVE-2023-40121",
+        "CVE-2023-40122",
+        "CVE-2023-40123",
+        "CVE-2023-40133",
+        "CVE-2023-40134",
+        "CVE-2023-40135",
+        "CVE-2023-40136",
+        "CVE-2023-40137",
+        "CVE-2023-40138",
+        "CVE-2023-40139",
+        "CVE-2023-40140",
+        "CVE-2023-45774",
+        "CVE-2023-45777",
+        "CVE-2024-0015",
+        "CVE-2024-0019",
+        "CVE-2024-0022",
+        "CVE-2024-0024",
+        "CVE-2024-0025",
+        "CVE-2024-0026",
+        "CVE-2024-0027",
+        "CVE-2024-0029",
+        "CVE-2024-0032",
+        "CVE-2024-0034",
+        "CVE-2024-0035",
+        "CVE-2024-0036",
+        "CVE-2024-0037",
+        "CVE-2024-0038",
+        "CVE-2024-0044",
+        "CVE-2024-0046",
+        "CVE-2024-0047",
+        "CVE-2024-0048",
+        "CVE-2024-0053",
+        "CVE-2024-23705",
+        "CVE-2024-23708",
+        "CVE-2024-23710",
+        "CVE-2024-23712",
+        "CVE-2024-23713",
+        "CVE-2024-31310",
+        "CVE-2024-31312",
+        "CVE-2024-31314",
+        "CVE-2024-31315",
+        "CVE-2024-31316",
+        "CVE-2024-31317",
+        "CVE-2024-31318",
+        "CVE-2024-31319",
+        "CVE-2024-31320",
+        "CVE-2024-31322",
+        "CVE-2024-31324",
+        "CVE-2024-31325",
+        "CVE-2024-31326",
+        "CVE-2024-31331",
+        "CVE-2024-32896",
+        "CVE-2024-34720",
+        "CVE-2024-34723",
+        "CVE-2024-34734",
+        "CVE-2024-34735",
+        "CVE-2024-34737",
+        "CVE-2024-34738",
+        "CVE-2024-34739",
+        "CVE-2024-34740",
+        "CVE-2024-34741",
+        "CVE-2024-34742",
+        "CVE-2024-40662",
+        "CVE-2024-40672",
+        "CVE-2024-40675",
+        "CVE-2024-40676",
+        "CVE-2024-43081",
+        "CVE-2024-43082",
+        "CVE-2024-43084",
+        "CVE-2024-43085",
+        "CVE-2024-43086",
+        "CVE-2024-43090",
+        "CVE-2024-43093",
+        "CVE-2024-43762",
+        "CVE-2024-43764",
+        "CVE-2024-43769",
+        "CVE-2024-49721",
+        "CVE-2024-49722",
+        "CVE-2024-49724",
+        "CVE-2024-49732",
+        "CVE-2024-49733",
+        "CVE-2024-49735",
+        "CVE-2024-49737",
+        "CVE-2024-49740",
+        "CVE-2024-49741",
+        "CVE-2024-49743",
+        "CVE-2024-49744",
+        "CVE-2025-0077",
+        "CVE-2025-0080",
+        "CVE-2025-0082",
+        "CVE-2025-0083",
+        "CVE-2025-0086",
+        "CVE-2025-0087",
+        "CVE-2025-0097",
+        "CVE-2025-0098",
+        "CVE-2025-0099",
+        "CVE-2025-0100",
+        "CVE-2025-22416",
+        "CVE-2025-22417",
+        "CVE-2025-22421",
+        "CVE-2025-22422",
+        "CVE-2025-22425",
+        "CVE-2025-22429",
+        "CVE-2025-22430",
+        "CVE-2025-22431",
+        "CVE-2025-22433",
+        "CVE-2025-22434",
+        "CVE-2025-22437",
+        "CVE-2025-22442",
+        "CVE-2025-26422",
+        "CVE-2025-26424",
+        "CVE-2025-26426",
+        "CVE-2025-26427",
+        "CVE-2025-26428",
+        "CVE-2025-26429",
+        "CVE-2025-26432",
+        "CVE-2025-26436",
+        "CVE-2025-26437",
+        "CVE-2025-26440",
+        "CVE-2025-26444",
+        "CVE-2025-26448",
+        "CVE-2025-26449",
+        "CVE-2025-26450",
+        "CVE-2025-26452",
+        "CVE-2025-26458",
+        "CVE-2025-26463",
+        "CVE-2025-32312"
+    ],
+    "missing_patches": [
+        {
+            "ID": "ASB-A-309407957",
+            "CVE": [
+                "CVE-2025-26448"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-309407957",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp::CursorWindow::create",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/9dc64621d896d05fcb0e6f45792a307fde130823",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-21a5757e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp::CursorWindow::create",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/ae4b644a7cfb66f1e51ade508f115aec63bc16ef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-1cac09cf"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp::CursorWindow::create",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/5b26a62b4d813b8ccc1de81641e87c9e95c8d958",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-4361cfde"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp::CursorWindow::create",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c07e0eba29ee1f92b4d540f07a05b8e306601613",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-e80897c8"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/9dc64621d896d05fcb0e6f45792a307fde130823",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-e5a135d2"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/ae4b644a7cfb66f1e51ade508f115aec63bc16ef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-10158c9d"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/5b26a62b4d813b8ccc1de81641e87c9e95c8d958",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-ed2703fc"
+                },
+                {
+                    "unpatched_code": "frameworks/base/libs/androidfw/CursorWindow.cpp",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c07e0eba29ee1f92b4d540f07a05b8e306601613",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-309407957-df957ada"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-303227969",
+            "CVE": [
+                "CVE-2025-26463"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-303227969",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-e5210dfe"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-11fbf514"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-dc977f4e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-ebb90bf3"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-4c9da041"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-10e74499"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-92cdf74e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/service/java/com/android/server/blob/BlobStoreSession.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-51f738e8"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-969d3a95"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-1a7144b9"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-7b347f9f"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java::allowPackageAccess",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-4abd83a6"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/aaa1cb20b89f3389f9fbc362a397770c8052e7fb",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-82315d13"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/509d619b2f9a52c5f3a88dbaa85b9bc7f66deaea",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-f4641c03"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-932a1d81"
+                },
+                {
+                    "unpatched_code": "frameworks/base/apex/blobstore/framework/java/android/app/blob/BlobStoreManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/fe01a389c8c74ea408935f9bc2b16edea5d55975",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-303227969-77d5d2f6"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-341253275",
+            "CVE": [
+                "CVE-2025-26424"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-341253275",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/VpnManagerService.java::putIntoVpnProfileStore",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341253275-61bb2164"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/VpnManagerService.java::putIntoVpnProfileStore",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f1122ac36a2c9ffcb3ace49fc383870f87456c26",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341253275-78c1416e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/VpnManagerService.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a4919a563a38b2f28cf77b5cc3a8b1fb89b3d271",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341253275-c2a69a5b"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/VpnManagerService.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f1122ac36a2c9ffcb3ace49fc383870f87456c26",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341253275-38fdaf52"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-378514614",
+            "CVE": [
+                "CVE-2025-26428"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-378514614",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java::startLockTaskMode",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-378514614-3bd6b408"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/b4945cf98c97121821c178713a613a6a6e830c3a",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-378514614-f5b62ae3"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/wm/LockTaskController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/d5268b9953765352dac09179e10836c6e481e266",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-378514614-956674a0"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-383328827",
+            "CVE": [
+                "CVE-2025-26422"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-383328827",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java::dump",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c617d697cdbef000cb416aefc08fc4a3cda4afa1",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383328827-5aa2292d"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java::dump",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c617d697cdbef000cb416aefc08fc4a3cda4afa1",
+                    "is_non_target_match": true,
+                    "matched_signature": "ASB-A-383328827-5aa2292d"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c617d697cdbef000cb416aefc08fc4a3cda4afa1",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383328827-19a066d0"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-322159724",
+            "CVE": [
+                "CVE-2025-26436"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-322159724",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java::clearAllowBgActivityStarts",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/949e7bb75e395039af5bdf0aa4b48860fef69541",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-239b4587"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java::clearAllowBgActivityStarts",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-a10c58e3"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java::clearAllowBgActivityStarts",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a71599c035472fe280132df64c5f5ee361ba0e92",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-34585641"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java::clearAllowBgActivityStarts",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f251732b0b46b6592300c6e33d48a5536ecb424d",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-5c307deb"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java::clearAllowBgActivityStarts",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/5782703d0f7c913477f1dd59b11e6e6e879199d9",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-553d6bf1"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/949e7bb75e395039af5bdf0aa4b48860fef69541",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-7141a522"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/PendingIntentRecord.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/155a686755e5012d591223c451304f3326dc2e78",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-72b6aeb6"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/8aef21b72dca756458d25a42599779997d199f09",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-416ea0db"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/4000e8055f66b33ffa1fef9bee23d998b9438114",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-95ff982e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/BackgroundStartPrivileges.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/5ea37ed9f0b1526c690a4edf02c36577635e43a6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-322159724-542afb0a"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-360838273",
+            "CVE": [
+                "CVE-2025-0077"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-360838273",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::startUserInternal",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-5c7dc1fa"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::startUserInternal",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-7110c7bf"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::startUserInternal",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-24da6e25"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::startUserInternalOnHandler",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-2394188a"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::startUserInternalOnHandler",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-cc45c1ad"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchOnBeforeUserSwitching",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-10845714"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchOnBeforeUserSwitching",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-8846e4cc"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchOnBeforeUserSwitching",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-142b5e05"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::sendResult",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-2ba77ca2"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::sendResult",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-a7142a1e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::sendResult",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-c6731616"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchUserSwitch",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-0715f081"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchUserSwitch",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-f66cc86f"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java::dispatchUserSwitch",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-07581374"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65ee48d1eb9fe60039c2c461ca49f31ad180faef",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-65d14848"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/a3bd1e2befed1ccc7d3bb07fc43421dfa809d2b3",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-f8453bc5"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/UserController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-6aa73fc4"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/UserSwitchObserver.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/f7efa779da5c59085b38cb73da61ef0d83b672b6",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-360838273-062a4830"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-310632322",
+            "CVE": [
+                "CVE-2025-26426"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-310632322",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/0e91977c4ebfdfe4e2124373d22f99dfe211a06b",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-310632322-5343e828"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/da489e4fb5c9f8f322538fb6877f971856e7787e",
+                    "is_non_target_match": true,
+                    "matched_signature": "ASB-A-310632322-712f3828"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/am/BroadcastController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/3ae94b0da53aed63380263131795746b12296391",
+                    "is_non_target_match": true,
+                    "matched_signature": "ASB-A-310632322-1128f93c"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-372678095",
+            "CVE": [
+                "CVE-2025-26429"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-372678095",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java::collectOps",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/eec34e2716bfa613be30b0a0b9a173e2005a6c00",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-372678095-3de71318"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/appop/AppOpsService.java::collectOps",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/767b4f7c3657fa29548a4464da6790dbca8aebda",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-372678095-c2f03341"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-388828203",
+            "CVE": [
+                "CVE-2025-26458"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-388828203",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnLocationChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/225602a7d0fecefb42c2456067d91f895c72f190",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-e98e6618"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnLocationChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/53cf3399f5691aab020d44efff5dd01eaf16257b",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-867fb1ec"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnLocationChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c5345cbf9c80e05d0511167353a162b2920fd07f",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-f30d9762"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnLocationChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/df4cbfbaecafd0bc0e3bf41708501e197ae57628",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-2ec260f0"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnProviderEnabledChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/225602a7d0fecefb42c2456067d91f895c72f190",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-103ca9da"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnProviderEnabledChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/53cf3399f5691aab020d44efff5dd01eaf16257b",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-8cf89c98"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnProviderEnabledChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c5345cbf9c80e05d0511167353a162b2920fd07f",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-56e63bd7"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java::deliverOnProviderEnabledChanged",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/df4cbfbaecafd0bc0e3bf41708501e197ae57628",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-f2a91e71"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/225602a7d0fecefb42c2456067d91f895c72f190",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-e6381b8b"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/53cf3399f5691aab020d44efff5dd01eaf16257b",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-c4c9a0cb"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/c5345cbf9c80e05d0511167353a162b2920fd07f",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-b068970b"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/core/java/com/android/server/location/provider/LocationProviderManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/df4cbfbaecafd0bc0e3bf41708501e197ae57628",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-388828203-9ba2fa3a"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-370477460",
+            "CVE": [
+                "CVE-2025-26437"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-370477460",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java::getCandidateCredentials",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/571a97ade14d3e008172a1c084bf7331f6fc8875",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-370477460-a5393f29"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java::getCandidateCredentials",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/e61320b6fcca1b6f0fe60078cc27fcc844a63f12",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-370477460-083aea63"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/571a97ade14d3e008172a1c084bf7331f6fc8875",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-370477460-7728e348"
+                },
+                {
+                    "unpatched_code": "frameworks/base/services/credentials/java/com/android/server/credentials/CredentialManagerService.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/e61320b6fcca1b6f0fe60078cc27fcc844a63f12",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-370477460-be52466b"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-383080440",
+            "CVE": [
+                "CVE-2025-26452"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-383080440",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/ResourcesManager.java::overlayPathToIdmapPath",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2de1592713696d56d160b14959ddf1fadfa256bf",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-b3258812"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/ResourcesManager.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/12e49e7a4e56df4dce97f80051063f45e8366329",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-f8902f93"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/res/ResourcesImpl.java::loadDrawableForCookie",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/12e49e7a4e56df4dce97f80051063f45e8366329",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-ec5fc01d"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/res/ResourcesImpl.java::loadDrawableForCookie",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2de1592713696d56d160b14959ddf1fadfa256bf",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-5f1d76d5"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/res/ResourcesImpl.java::loadDrawableForCookie",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2ff8b4aef08bbc1e84af35404846026eca3cbd5c",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-5805259c"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/res/ResourcesImpl.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/12e49e7a4e56df4dce97f80051063f45e8366329",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-fc69b56e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/res/ResourcesImpl.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2de1592713696d56d160b14959ddf1fadfa256bf",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-383080440-d4192103"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-387498139",
+            "CVE": [
+                "CVE-2025-26449"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-387498139",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/app/AutomaticZenRule.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-65939fee"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java::readRulesFromParcel",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/3965123f440345017facfe9f767b22d79e55aeab",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-d0fcba04"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java::readRulesFromParcel",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-5c81380e"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java::writeToParcel",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-b29a5ed6"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java::writeRulesToParcel",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/3965123f440345017facfe9f767b22d79e55aeab",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-608fadb1"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java::writeRulesToParcel",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-1171e822"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/service/notification/ZenModeConfig.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/067a8e500c707ab94d2268f9f4c84f9443143e98",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-387498139-7ab03727"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-373467684",
+            "CVE": [
+                "CVE-2025-32312"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-373467684",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java::createIntentsList",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65c1a90bf4af54f555ded29ec2384072b1c962b8",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-0f294854"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java::createIntentsList",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/cfd0ded301a5848b9b2caedb44878ae6ff0a7456",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-5b32fdd8"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java::createIntentsList",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/249d11226b24f660af50cac7e41b5fed1d0ee19a",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-f4b0b2df"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java::createIntentsList",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/9937e7194ae9a2051c90d38a5bd7e7505b19cb87",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-3712c895"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/65c1a90bf4af54f555ded29ec2384072b1c962b8",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-24383d32"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/cfd0ded301a5848b9b2caedb44878ae6ff0a7456",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-d87b3246"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/249d11226b24f660af50cac7e41b5fed1d0ee19a",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-26754784"
+                },
+                {
+                    "unpatched_code": "frameworks/base/core/java/android/content/pm/PackageParser.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/9937e7194ae9a2051c90d38a5bd7e7505b19cb87",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-373467684-dd64bd42"
+                }
+            ]
+        },
+        {
+            "ID": "ASB-A-341688848",
+            "CVE": [
+                "CVE-2024-49722"
+            ],
+            "OSV": "https://osv.dev/vulnerability/ASB-A-341688848",
+            "details": [
+                {
+                    "unpatched_code": "frameworks/base/packages/SettingsLib/src/com/android/settingslib/users/EditUserPhotoController.java::showAvatarPicker",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2ab1084a748a2303289624e6063d2c60d10ec922",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341688848-b8093c0f"
+                },
+                {
+                    "unpatched_code": "frameworks/base/packages/SettingsLib/src/com/android/settingslib/users/EditUserPhotoController.java",
+                    "patch": "https://android.googlesource.com/platform/frameworks/base/+/2ab1084a748a2303289624e6063d2c60d10ec922",
+                    "is_non_target_match": false,
+                    "matched_signature": "ASB-A-341688848-0865610e"
+                }
+            ]
+        }
+    ]
+}

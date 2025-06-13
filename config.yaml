@@ -1,0 +1,20 @@
+# Configuration for the Vidar Patch Management Pipeline
+
+# -- LLM Patch Correction Settings --
+llm_runner:
+  # The specific Gemini model to use for generating patch corrections.
+  model_name: "gemini-2.5-pro-preview-05-06"
+
+  # The temperature for LLM generation.
+  temperature: 0.0
+
+  # The maximum number of times the LLM will try to self-correct a failed patch.
+  max_retries: 3
+
+  # The number of concurrent LLM API calls to make.
+  concurrency: 5
+
+# -- Patch Adopter Settings --
+patch_adopter:
+  # The 'strip' level for the GNU patch command (-p option).
+  strip_level: 1 

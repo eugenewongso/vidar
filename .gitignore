@@ -1,0 +1,22 @@
+# macOS system files
+.DS_Store
+
+# IDE and Editor Folders
+.vscode/
+.idea/
+
+# Environment
+.env
+.venv
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Generated Reports
+reports/
+# Logs
+logs/
