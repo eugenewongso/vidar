@@ -51,6 +51,15 @@ Vidar operates as a multi-stage pipeline, orchestrated by `pipeline_runner.py`. 
 ### Configuration
 -   **Input Reports**: Place one or more `vanir_output*.json` files into the `vidar/reports/` directory. The parser will automatically find and process all of them. The `reports` directory will be created by the pipeline if it does not exist, but it must be created manually to hold the initial input files.
 -   **Environment Variables**: The `GOOGLE_API_KEYS` variable must be set in a `.env` file in the `vidar/` directory. This file is ignored by Git.
+-   **Pipeline Settings (`config.yaml`)**: Key pipeline behaviors can be modified in this file.
+
+| Section | Key | Description |
+| :--- | :--- | :--- |
+| `llm_runner` | `model_name` | The specific Gemini model to use for patch correction. |
+| | `temperature` | The creativity of the LLM's responses (0.0 is deterministic). |
+| | `max_retries` | The number of self-correction attempts the LLM will make per failed patch. |
+| | `concurrency` | The number of parallel API calls made to the LLM. |
+| `patch_adopter` | `strip_level` | The `-p` level used by the `patch` command to strip leading path components from file paths in the patch. |
 
 ### Understanding the Output
 The most important output is `reports/final_summary_report.json`.
