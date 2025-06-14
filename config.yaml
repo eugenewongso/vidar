@@ -48,4 +48,7 @@ paths:
   llm_detailed_output_report: "reports/llm_output_detailed.json"
   
   # Output of the second patch_adopter.py run
-  llm_patch_application_report: "reports/llm_patch_application_report.json" 
+  llm_patch_application_report: "reports/llm_patch_application_report.json"
+
+  # Output of the final pipeline summary step
+  final_summary_report: "reports/final_summary_report.json" 

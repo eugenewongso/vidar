@@ -263,12 +263,12 @@ def run_fetcher_step():
                 results["successful"].append({"url": patch_url, "file": message})
             else:
                 error_reason = f"Failed to fetch or filter patch: {patch_url}. Reason: {message}"
-                logger.error(error_reason)
+                logger.info(error_reason)
                 results["failed"].append({"url": patch_url, "reason": message})
 
         except Exception as e:
             error_reason = f"An unexpected error occurred while processing {patch_url}: {e}"
-            logger.error(error_reason, exc_info=True)
+            logger.info(error_reason, exc_info=True)
             results["failed"].append({"url": patch_url, "reason": str(e)})
         
         processed_count += 1
@@ -287,14 +287,3 @@ def run_fetcher_step():
         logger.info("All patches fetched successfully.")
         
     yield {"type": "summary", "data": results}
-
-# --- MAIN ENTRY POINT ---
-
-def main():
-    """Main entry point for the patch fetcher script."""
-    # When run as a script, just iterate through the generator to execute it.
-    for _ in run_fetcher_step():
-        pass
-
-if __name__ == "__main__":
-    main()

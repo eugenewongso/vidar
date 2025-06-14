@@ -287,13 +287,17 @@ class PatchAdopter:
     def generate_summary(self):
         """Prints a summary of the patch application results to the console."""
         status_counts = {}
+        failed_patches_count = 0
         for patch in self.patch_results["patches"]:
             detailed_status = patch.get("detailed_status", "Unknown")
             status_counts[detailed_status] = status_counts.get(
                 detailed_status, 0) + 1
+            if patch.get("status") == "Rejected":
+                failed_patches_count += 1
         
         summary = {
             "total_patches": len(self.patch_results["patches"]),
+            "failed_patches": failed_patches_count,
             "status_counts": status_counts
         }
 
@@ -351,10 +355,14 @@ def run_adoption_step(source: str, target_source_path: str):
     )
 
     patches_to_apply = data if isinstance(data, list) else data.get("patches", [])
+    total_patches = len(patches_to_apply)
+    yield {"type": "progress", "completed": 0, "total": total_patches}
+
     if not patches_to_apply:
         logger.warning(f"No patches found in {input_json} to apply.")
         # Create an empty report and exit
         patch_adopter.save_report()
+        yield {"type": "summary", "data": patch_adopter.generate_summary()}
         return
 
     for i, patch_info in enumerate(patches_to_apply):
@@ -367,20 +375,17 @@ def run_adoption_step(source: str, target_source_path: str):
         )
         result = patch_adopter.apply_patch(patch_info, source=source)
         patch_adopter.patch_results["patches"].append(result)
+        yield {"type": "progress", "completed": i + 1, "total": total_patches}
 
     patch_adopter.save_report()
-    patch_adopter.generate_summary()
+    summary = patch_adopter.generate_summary()
     end_time = time.time()
     logger.info(f"Adoption for '{source}' finished in {end_time - start_time:.2f}s")
+    yield {"type": "summary", "data": summary}
 
 
 def main():
     """Main function to run the patch adoption process."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
-
     args = parse_args()
     source = args.source
     

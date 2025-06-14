@@ -196,16 +196,16 @@ class GeminiAgent:
                         "total": response.usage_metadata.total_token_count,
                     }
                 }
-        except Exception as e:
-                error_message = str(e).lower()
-                if ("quota" in error_message or "rate limit" in error_message or
-                    "internal error" in error_message):
-                    logger.warning(f"API error encountered: {e}")
-                    self.key_rotator.rotate_key()
-                    self._configure_genai()  # Reconfigure with the new key.
-                else:
-                    # For other errors, raise the exception without retrying.
-                    raise e
+            except Exception as e:
+                    error_message = str(e).lower()
+                    if ("quota" in error_message or "rate limit" in error_message or
+                        "internal error" in error_message):
+                        logging.info(f"API error encountered: {e}")
+                        self.key_rotator.rotate_key()
+                        self._configure_genai()  # Reconfigure with the new key.
+                    else:
+                        # For other errors, raise the exception without retrying.
+                        raise e
         raise RuntimeError("All API keys failed. No more keys to try.")
 
 class PatchCorrectionAgent:
@@ -392,7 +392,7 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
                     "valid": format_valid and apply_valid
                     }
             except Exception as e:
-                logger.error(f"  -> ❌ Error on attempt {attempt_num + 1}: {e}")
+                logging.info(f"  -> ❌ Error on attempt {attempt_num + 1}: {e}")
                 validation_result = {
                     "attempt": attempt_num + 1, "error": str(e),
                     "valid": False, "format_error": "N/A", "apply_error": str(e)
@@ -412,11 +412,9 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
                     "downstream_llm_diff_output": generated_diff,
                     "token_counts": total_gemini_token_counts
                 }
-            else:
-                 logger.warning(f"  -> ❌ Validation failed on attempt {attempt_num + 1}.")
 
         # If the loop finishes, all retries have failed.
-        logger.error(f"  -> ❌ All {self.max_retries} attempts failed.")
+        logging.info(f"  -> ❌ All {self.max_retries} attempts failed for {self.original_inputs['target_filename']}.")
         return {
             "success": False,
             "patch_hash": self.original_inputs["commit_hash"],
@@ -479,14 +477,14 @@ async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock) -> list[dict
         try:
             failed_file_path_str = file_conflict.get("failed_file")
             if not failed_file_path_str:
-                logger.warning(f"  -> ⚠️  file_conflict entry is missing 'failed_file' key for patch {patch_hash}.")
+                logging.info(f"  -> ⚠️  file_conflict entry is missing 'failed_file' key for patch {patch_hash}.")
                 continue
             failed_file_path = Path(failed_file_path_str)
             logger.info(f"\n▶️  Processing file: {failed_file_path.name} from patch {patch_hash}")
 
             rej_content = file_conflict.get("rej_content")
             if not rej_content:
-                logger.warning(f"  -> 'rej_content' is missing or empty for {failed_file_path.name}. This file cannot be fixed.")
+                logging.info(f"  -> 'rej_content' is missing or empty for {failed_file_path.name}. This file cannot be fixed.")
                 all_file_results.append({
                     "file": str(failed_file_path),
                     "error": "Missing or empty rej_content.",
@@ -580,7 +578,7 @@ Now, await the task."""
             else:
                 result['project'] = project_rel_path
                 result['original_file'] = str(failed_file_path)
-                logger.error(f"  -> ❌ Failed to generate patch for {failed_file_path.name}")
+                logging.info(f"  -> ❌ Failed to generate patch for {failed_file_path.name}")
 
             all_file_results.append(result)
 
