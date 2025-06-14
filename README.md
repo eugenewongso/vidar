@@ -114,9 +114,16 @@ The pipeline generates several intermediate files. While the default locations a
 | `vanir_output.json` | **Input:** The raw security report from a tool like Vanir. You place this here before running the pipeline. |
 | `parsed_report.json` | **Output of Stage 1.** A structured, de-duplicated list of unique patches to be processed. |
 | `fetch_failures.json` | **Output of Stage 2.** A list of patches that could not be downloaded. |
-| `patch_application_report.json` | **Output of Stage 3.** A detailed report on the attempt to apply the original, unaltered patches. |
-| `failed_patch.json` | **Output of Stage 4.** A filtered list containing only the patches that were 'Rejected'. This file is the primary input for the LLM. |
+| `vanir_patch_application_report.json` | **Output of Stage 3.** A detailed report on the attempt to apply the original, unaltered patches. |
+| `failed_patch.json` | **Output of Stage 4.** A filtered list containing only the patches that were 'Rejected'. This is the primary input for the LLM. |
 | `llm_output_detailed.json` | **Output of Stage 5.** A comprehensive debug log from the LLM showing every self-correction attempt. |
 | `successful_llm_patches.json` | **Output of Stage 5.** A clean list of only the patches that the LLM successfully generated. This is the input for the final patch application step. |
 | `llm_patch_application_report.json` | **Output of Stage 6.** The report on the attempt to apply the newly generated LLM patches. |
 | `final_summary_report.json` | **Output of Stage 7.** The final, consolidated report summarizing the results of the entire pipeline. This is the main file to check for results. |
+
+---
+## Evaluation Framework
+
+A dedicated framework for analyzing the pipeline's performance is located in the `evaluation/` directory. It contains tools for running detailed tests, preparing data, and generating reports, and maintains its own separate set of dependencies in `evaluation/requirements.txt`.
+
+For detailed instructions, please see the `evaluation/README.md`.

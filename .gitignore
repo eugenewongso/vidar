@@ -16,9 +16,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Generated Reports
+# Generated reports from the main pipeline
 reports/
 # Logs
 logs/
 # Patches
 patches/
+
+# Evaluation framework outputs
+evaluation/reports/
+android_repos/
+osv_data_android/
