@@ -22,7 +22,15 @@ import click
 import asyncio
 from rich.console import Console
 from rich.spinner import Spinner
-from rich.progress import Progress
+from rich.progress import (
+    Progress,
+    BarColumn,
+    MofNCompleteColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
+from pathlib import Path
 
 # --- Vidar Scripts ---
 from patch_adopter import run_adoption_step
@@ -41,16 +49,20 @@ def setup_logging(verbose=False):
     # Determine the console log level
     console_log_level = logging.INFO if verbose else logging.WARNING
 
-    # Configure root logger
+    # Use basicConfig with force=True. This is the key to the solution.
+    # It removes any existing handlers (which cause the cluttered console)
+    # and sets up our desired file handler with the correct format for ALL modules.
     logging.basicConfig(
-        level=logging.DEBUG, # Capture all levels, including DEBUG from subprocesses
+        force=True,  # This is essential.
+        level=logging.DEBUG,
         format='%(asctime)s - %(name)-25s - %(levelname)-8s - %(message)s',
         handlers=[
             logging.FileHandler(log_file_path, mode='w')
         ]
     )
 
-    # Handler for the console
+    # Now, add a second handler ONLY for the console with a simple format.
+    # The progress bar silencing logic will target this specific handler.
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(console_log_level)
     console_handler.setFormatter(logging.Formatter('%(message)s'))
@@ -73,8 +85,9 @@ def run_command(command, cwd=None):
         )
         
         # Log command output line by line at DEBUG level
-        for line in process.stdout:
-            logging.debug(line.strip())
+        if process.stdout:
+            for line in process.stdout:
+                logging.debug(line.strip())
 
         process.wait()
 
@@ -102,12 +115,8 @@ class PipelineRunner:
 
     def __init__(self, config_path: str):
         """Initializes the PipelineRunner, setting up necessary paths."""
-        self.vidar_dir = os.path.dirname(os.path.abspath(__file__))
-        self.project_root = os.path.dirname(self.vidar_dir)
+        self.vidar_dir = Path(__file__).resolve().parent
         self.python_executable = sys.executable
-        self.reports_dir = os.path.join(self.vidar_dir, 'reports')
-        self.fetched_patches_dir = os.path.join(
-            self.project_root, 'fetch_patch_output', 'diff_output')
         
         # Load configuration
         try:
@@ -119,6 +128,8 @@ class PipelineRunner:
         except yaml.YAMLError as e:
             console.print(f"[bold red]Error:[/bold red] Error parsing YAML configuration file: {e}")
             sys.exit(1)
+            
+        self.paths_config = self.config.get("paths", {})
 
     def run_spinner_step(self, title, command):
         """Prints a descriptive header and runs a pipeline step with a spinner."""
@@ -133,26 +144,39 @@ class PipelineRunner:
     def run_progress_step(self, title: str, step_generator, *args, **kwargs):
         """Runs a pipeline step that yields progress and displays a progress bar."""
         console_handler = next((h for h in logging.getLogger().handlers if isinstance(h, logging.StreamHandler)), None)
-        original_level = None
+        original_formatter = None
         if console_handler:
-            original_level = console_handler.level
-            console_handler.setLevel(logging.CRITICAL + 1)
+            original_formatter = console_handler.formatter
+            console_handler.setFormatter(logging.Formatter(''))
 
         step_iterator = step_generator(*args, **kwargs)
         summary_data = None
+        total_items = 0
+        
+        progress_columns = [
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            MofNCompleteColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn("•"),
+            TimeElapsedColumn(),
+            TextColumn("•"),
+            TimeRemainingColumn(),
+        ]
         
         try:
-            with Progress(console=console) as progress:
+            with Progress(*progress_columns, console=console) as progress:
                 task_id = None
                 for update in step_iterator:
                     if update.get('type') == 'error':
-                        if console_handler and original_level is not None:
-                            console_handler.setLevel(original_level)
+                        if console_handler and original_formatter is not None:
+                            console_handler.setFormatter(original_formatter)
                         console.print(f"[bold red]Error in '{title}':[/bold red] {update['message']}")
                         sys.exit(1)
                     
                     if update.get('type') == 'progress':
                         total = update.get('total', 0)
+                        total_items = total
                         completed = update.get('completed', 0)
                         
                         if total == 0: # Handle case with no items to process
@@ -168,14 +192,20 @@ class PipelineRunner:
                     
                     elif update.get('type') == 'summary':
                         summary_data = update.get('data')
+                        total_items += 1
         finally:
-            if console_handler and original_level is not None:
-                console_handler.setLevel(original_level)
+            if console_handler and original_formatter is not None:
+                console_handler.setFormatter(original_formatter)
         
-        if summary_data and (summary_data.get('failed') or summary_data.get('failed_patches')):
-            failures = len(summary_data.get('failed', [])) or summary_data.get('failed_patches', 0)
+        if summary_data:
+            failures = 0
+            if 'failed' in summary_data and isinstance(summary_data['failed'], list):
+                failures = len(summary_data['failed'])
+            elif 'failed_patches' in summary_data:
+                failures = summary_data['failed_patches']
+
             if failures > 0:
-                console.print(f"⚠️  {title} completed with {failures} failures. See log for details.")
+                console.print(f"⚠️  {title} completed with {failures} failures out of {total_items}. See log for details.")
             else:
                 console.print(f"✅ {title}")
         else:
@@ -184,27 +214,40 @@ class PipelineRunner:
     async def run_async_progress_step(self, title: str, step_generator, *args, **kwargs):
         """Runs an async pipeline step that yields progress and displays a progress bar."""
         console_handler = next((h for h in logging.getLogger().handlers if isinstance(h, logging.StreamHandler)), None)
-        original_level = None
+        original_formatter = None
         if console_handler:
-            original_level = console_handler.level
-            console_handler.setLevel(logging.CRITICAL + 1)
+            original_formatter = console_handler.formatter
+            console_handler.setFormatter(logging.Formatter(''))
             
         step_iterator = step_generator(*args, **kwargs)
         summary_data = None
+        total_items = 0
+
+        progress_columns = [
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            MofNCompleteColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn("•"),
+            TimeElapsedColumn(),
+            TextColumn("•"),
+            TimeRemainingColumn(),
+        ]
 
         try:
-            with Progress(console=console) as progress:
+            with Progress(*progress_columns, console=console) as progress:
                 task_id = None
                 async for update in step_iterator:
                     if update.get('type') == 'error':
                         # Restore logging to show the critical error
-                        if console_handler and original_level is not None:
-                            console_handler.setLevel(original_level)
+                        if console_handler and original_formatter is not None:
+                            console_handler.setFormatter(original_formatter)
                         console.print(f"[bold red]Error in '{title}':[/bold red] {update['message']}")
                         sys.exit(1)
                     
                     if update.get('type') == 'progress':
                         total = update.get('total', 0)
+                        total_items = total
                         completed = update.get('completed', 0)
                         
                         if total == 0:
@@ -220,14 +263,20 @@ class PipelineRunner:
 
                     elif update.get('type') == 'summary':
                         summary_data = update.get('data')
+                        total_items += 1
         finally:
-            if console_handler and original_level is not None:
-                console_handler.setLevel(original_level)
+            if console_handler and original_formatter is not None:
+                console_handler.setFormatter(original_formatter)
 
-        if summary_data and (summary_data.get('failed') or summary_data.get('failed_patches')):
-            failures = len(summary_data.get('failed', [])) or summary_data.get('failed_patches', 0)
+        if summary_data:
+            failures = 0
+            if 'failed' in summary_data and isinstance(summary_data['failed'], list):
+                failures = len(summary_data['failed'])
+            elif 'failed_patches' in summary_data:
+                failures = summary_data['failed_patches']
+            
             if failures > 0:
-                console.print(f"⚠️  {title} completed with {failures} failures. See log for details.")
+                console.print(f"⚠️  {title} completed with {failures} failures out of {total_items}. See log for details.")
             else:
                 console.print(f"✅ {title}")
         else:
@@ -240,11 +289,12 @@ class PipelineRunner:
         """
         title = "Preparing input for LLM"
         
+        # Silence console logging for this internal step
         console_handler = next((h for h in logging.getLogger().handlers if isinstance(h, logging.StreamHandler)), None)
-        original_level = None
+        original_formatter = None
         if console_handler:
-            original_level = console_handler.level
-            console_handler.setLevel(logging.CRITICAL + 1)
+            original_formatter = console_handler.formatter
+            console_handler.setFormatter(logging.Formatter(''))
 
         skipped_count = 0
         failed_patches = []
@@ -252,9 +302,12 @@ class PipelineRunner:
         try:
             with console.status(f"[bold green]{title}", spinner="dots"):
                 logging.info(f"STARTING STEP: {title}")
-                report_path = os.path.join(self.reports_dir, 'patch_application_report.json')
-                llm_input_path = os.path.join(self.reports_dir, 'failed_patch.json')
-                os.makedirs(self.reports_dir, exist_ok=True)
+                
+                report_path = self.vidar_dir / self.paths_config.get("vanir_patch_application_report")
+                llm_input_path = self.vidar_dir / self.paths_config.get("llm_input_report")
+                fetched_patches_dir = self.vidar_dir / self.paths_config.get("fetched_patches_dir")
+                
+                os.makedirs(os.path.dirname(llm_input_path), exist_ok=True)
 
                 try:
                     with open(report_path, 'r', encoding='utf-8') as f:
@@ -262,8 +315,8 @@ class PipelineRunner:
                 except FileNotFoundError:
                     logging.error(f"Cannot find patch application report at '{report_path}'.")
                     # This is a critical error, so we will show it on the console.
-                    if console_handler and original_level is not None:
-                        console_handler.setLevel(original_level)
+                    if console_handler and original_formatter is not None:
+                        console_handler.setFormatter(original_formatter)
                     console.print(f"[bold red]Error:[/bold red] Cannot find patch application report at '{report_path}'.")
                     sys.exit(1)
 
@@ -273,12 +326,12 @@ class PipelineRunner:
                         or 'Failed Hunks' in patch.get('detailed_status', '')
                     ):
                         new_patch_entry = patch.copy()
-                        original_diff_path = os.path.join(self.fetched_patches_dir, patch['patch_file'])
+                        original_diff_path = os.path.join(fetched_patches_dir, patch['patch_file'])
                         if os.path.exists(original_diff_path):
                             with open(original_diff_path, 'r', encoding='utf-8') as f:
                                 new_patch_entry['upstream_patch_content'] = f.read()
                         else:
-                            logging.warning(f"Could not find original diff file: {original_diff_path}. Skipping patch for LLM.")
+                            logging.info(f"Could not find original diff file: {original_diff_path}. Skipping patch for LLM.")
                             skipped_count += 1
                             continue
                         failed_patches.append(new_patch_entry)
@@ -289,8 +342,8 @@ class PipelineRunner:
                 logging.info(f"Created '{os.path.basename(llm_input_path)}' with {len(failed_patches)} failed patches.")
                 logging.info(f"COMPLETED STEP: {title}")
         finally:
-            if console_handler and original_level is not None:
-                console_handler.setLevel(original_level)
+            if console_handler and original_formatter is not None:
+                console_handler.setFormatter(original_formatter)
         
         if not failed_patches:
             console.print("✅ Preparing input for LLM (No failed patches to process)")
@@ -322,26 +375,19 @@ class PipelineRunner:
             title="3. Applying Original Patches",
             step_generator=run_adoption_step,
             source='Vanir',
-            strip_level=self.config['patch_adopter']['strip_level'],
             target_source_path=os.getenv("TARGET_SOURCE_PATH")
         )
 
         if self.prepare_llm_input():
-            llm_config = self.config['llm_runner']
             asyncio.run(self.run_async_progress_step(
                 title="4. Running LLM Patch Correction",
-                step_generator=run_llm_correction_step,
-                model_name=llm_config['model_name'],
-                temperature=float(llm_config['temperature']),
-                max_retries=int(llm_config['max_retries']),
-                concurrency=int(llm_config['concurrency'])
+                step_generator=run_llm_correction_step
             ))
             
             self.run_progress_step(
                 title="5. Applying LLM-Generated Patches",
                 step_generator=run_adoption_step,
                 source='LLM',
-                strip_level=self.config['patch_adopter']['strip_level'],
                 target_source_path=os.getenv("TARGET_SOURCE_PATH")
             )
 
@@ -358,14 +404,14 @@ class PipelineRunner:
         with console.status(f"[bold green]{title}", spinner="dots"):
             logging.info(f"STARTING STEP: {title}")
 
-            # Report paths
-            parsed_report_path = os.path.join(self.reports_dir, 'parsed_report.json')
-            fetch_failures_path = os.path.join(self.reports_dir, 'fetch_failures.json')
-            initial_apply_report_path = os.path.join(self.reports_dir, 'patch_application_report.json')
-            failed_patch_path = os.path.join(self.reports_dir, 'failed_patch.json')
-            llm_apply_report_path = os.path.join(self.reports_dir, 'llm_patch_application_report.json')
-            llm_detailed_report_path = os.path.join(self.reports_dir, 'llm_output_detailed.json')
-            final_summary_path = os.path.join(self.reports_dir, 'final_summary_report.json')
+            vidar_dir = Path(self.vidar_dir)
+            parsed_report_path = vidar_dir / self.paths_config.get("parsed_vanir_report")
+            fetch_failures_path = vidar_dir / self.paths_config.get("fetch_failures_report")
+            initial_apply_report_path = vidar_dir / self.paths_config.get("vanir_patch_application_report")
+            failed_patch_path = vidar_dir / self.paths_config.get("llm_input_report")
+            llm_apply_report_path = vidar_dir / self.paths_config.get("llm_patch_application_report")
+            llm_detailed_report_path = vidar_dir / self.paths_config.get("llm_detailed_output_report")
+            final_summary_path = vidar_dir / self.paths_config.get("final_summary_report")
 
             # Initialize data structures
             summary = {}
@@ -486,10 +532,11 @@ class PipelineRunner:
             summary["detailed_error_analysis"] = analysis
             
             # 6. Write to file and log to console
+            final_summary_path.parent.mkdir(parents=True, exist_ok=True)
             with open(final_summary_path, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=4)
             
-            logging.info(f"Final summary report saved to '{os.path.basename(final_summary_path)}'")
+            logging.info(f"Final summary report saved to '{final_summary_path.name}'")
             
             # Log a clean summary to the console log.
             s = summary['pipeline_summary']
