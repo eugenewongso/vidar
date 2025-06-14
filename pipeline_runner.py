@@ -23,6 +23,7 @@ import asyncio
 from rich.console import Console
 from rich.spinner import Spinner
 from rich.progress import Progress
+from pathlib import Path
 
 # --- Vidar Scripts ---
 from patch_adopter import run_adoption_step
@@ -119,6 +120,8 @@ class PipelineRunner:
         except yaml.YAMLError as e:
             console.print(f"[bold red]Error:[/bold red] Error parsing YAML configuration file: {e}")
             sys.exit(1)
+            
+        self.paths_config = self.config.get("paths", {})
 
     def run_spinner_step(self, title, command):
         """Prints a descriptive header and runs a pipeline step with a spinner."""
@@ -240,6 +243,7 @@ class PipelineRunner:
         """
         title = "Preparing input for LLM"
         
+        # Silence console logging for this internal step
         console_handler = next((h for h in logging.getLogger().handlers if isinstance(h, logging.StreamHandler)), None)
         original_level = None
         if console_handler:
@@ -252,9 +256,12 @@ class PipelineRunner:
         try:
             with console.status(f"[bold green]{title}", spinner="dots"):
                 logging.info(f"STARTING STEP: {title}")
-                report_path = os.path.join(self.reports_dir, 'patch_application_report.json')
-                llm_input_path = os.path.join(self.reports_dir, 'failed_patch.json')
-                os.makedirs(self.reports_dir, exist_ok=True)
+                
+                report_path = self.vidar_dir / self.paths_config.get("vanir_patch_application_report")
+                llm_input_path = self.vidar_dir / self.paths_config.get("llm_input_report")
+                fetched_patches_dir = self.vidar_dir / self.paths_config.get("fetched_patches_dir")
+                
+                os.makedirs(os.path.dirname(llm_input_path), exist_ok=True)
 
                 try:
                     with open(report_path, 'r', encoding='utf-8') as f:
@@ -273,7 +280,7 @@ class PipelineRunner:
                         or 'Failed Hunks' in patch.get('detailed_status', '')
                     ):
                         new_patch_entry = patch.copy()
-                        original_diff_path = os.path.join(self.fetched_patches_dir, patch['patch_file'])
+                        original_diff_path = os.path.join(fetched_patches_dir, patch['patch_file'])
                         if os.path.exists(original_diff_path):
                             with open(original_diff_path, 'r', encoding='utf-8') as f:
                                 new_patch_entry['upstream_patch_content'] = f.read()
@@ -322,26 +329,19 @@ class PipelineRunner:
             title="3. Applying Original Patches",
             step_generator=run_adoption_step,
             source='Vanir',
-            strip_level=self.config['patch_adopter']['strip_level'],
             target_source_path=os.getenv("TARGET_SOURCE_PATH")
         )
 
         if self.prepare_llm_input():
-            llm_config = self.config['llm_runner']
             asyncio.run(self.run_async_progress_step(
                 title="4. Running LLM Patch Correction",
-                step_generator=run_llm_correction_step,
-                model_name=llm_config['model_name'],
-                temperature=float(llm_config['temperature']),
-                max_retries=int(llm_config['max_retries']),
-                concurrency=int(llm_config['concurrency'])
+                step_generator=run_llm_correction_step
             ))
             
             self.run_progress_step(
                 title="5. Applying LLM-Generated Patches",
                 step_generator=run_adoption_step,
                 source='LLM',
-                strip_level=self.config['patch_adopter']['strip_level'],
                 target_source_path=os.getenv("TARGET_SOURCE_PATH")
             )
 
@@ -358,14 +358,14 @@ class PipelineRunner:
         with console.status(f"[bold green]{title}", spinner="dots"):
             logging.info(f"STARTING STEP: {title}")
 
-            # Report paths
-            parsed_report_path = os.path.join(self.reports_dir, 'parsed_report.json')
-            fetch_failures_path = os.path.join(self.reports_dir, 'fetch_failures.json')
-            initial_apply_report_path = os.path.join(self.reports_dir, 'patch_application_report.json')
-            failed_patch_path = os.path.join(self.reports_dir, 'failed_patch.json')
-            llm_apply_report_path = os.path.join(self.reports_dir, 'llm_patch_application_report.json')
-            llm_detailed_report_path = os.path.join(self.reports_dir, 'llm_output_detailed.json')
-            final_summary_path = os.path.join(self.reports_dir, 'final_summary_report.json')
+            vidar_dir = Path(self.vidar_dir)
+            parsed_report_path = vidar_dir / self.paths_config.get("parsed_vanir_report")
+            fetch_failures_path = vidar_dir / self.paths_config.get("fetch_failures_report")
+            initial_apply_report_path = vidar_dir / self.paths_config.get("vanir_patch_application_report")
+            failed_patch_path = vidar_dir / self.paths_config.get("llm_input_report")
+            llm_apply_report_path = vidar_dir / self.paths_config.get("llm_patch_application_report")
+            llm_detailed_report_path = vidar_dir / self.paths_config.get("llm_detailed_output_report")
+            final_summary_path = vidar_dir / self.paths_config.get("final_summary_report")
 
             # Initialize data structures
             summary = {}
@@ -486,10 +486,11 @@ class PipelineRunner:
             summary["detailed_error_analysis"] = analysis
             
             # 6. Write to file and log to console
+            final_summary_path.parent.mkdir(parents=True, exist_ok=True)
             with open(final_summary_path, 'w', encoding='utf-8') as f:
                 json.dump(summary, f, indent=4)
             
-            logging.info(f"Final summary report saved to '{os.path.basename(final_summary_path)}'")
+            logging.info(f"Final summary report saved to '{final_summary_path.name}'")
             
             # Log a clean summary to the console log.
             s = summary['pipeline_summary']

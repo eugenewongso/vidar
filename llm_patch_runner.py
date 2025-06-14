@@ -36,6 +36,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import sys
 import argparse
 import logging
+import yaml
 
 from dotenv import load_dotenv
 from unidiff import PatchSet
@@ -48,40 +49,28 @@ from android_patch_manager import AndroidPatchManager
 # Get a logger for this module
 logger = logging.getLogger(__name__)
 
+# --- Load Configuration ---
+CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+if not CONFIG_PATH.exists():
+    raise FileNotFoundError(f"Configuration file not found at {CONFIG_PATH}")
+
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f)
+
+LLM_CONFIG = config.get("llm_runner", {})
+PATHS_CONFIG = config.get("paths", {})
+# --- End Load Configuration ---
+
 # --- Argument Parser ---
 def parse_args():
     """Parses command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Uses an LLM to correct patches that failed to apply."
     )
-    parser.add_argument(
-        "--model_name", type=str, required=True,
-        help="The name of the Gemini model to use."
-    )
-    parser.add_argument(
-        "--temperature", type=float, required=True,
-        help="The temperature for LLM generation."
-    )
-    parser.add_argument(
-        "--max_retries", type=int, required=True,
-        help="The maximum number of self-correction retries for the LLM."
-    )
-    parser.add_argument(
-        "--concurrency", type=int, required=True,
-        help="The number of concurrent LLM API calls to make."
-    )
     return parser.parse_args()
 
 # --- Constants ---
 BASE_DIR = Path(__file__).resolve().parent
-REPORTS_DIR = BASE_DIR / "reports"
-GENERATED_PATCHES_DIR = BASE_DIR.parent / "patch_adoption" / "generated_patches"
-FAILED_PATCH_JSON = REPORTS_DIR / "failed_patch.json"
-SUCCESSFUL_PATCHES_FILE = REPORTS_DIR / "successful_llm_patches.json"
-
-# Create necessary directories
-REPORTS_DIR.mkdir(exist_ok=True)
-GENERATED_PATCHES_DIR.mkdir(exist_ok=True)
 
 # Load environment variables
 load_dotenv()
@@ -137,28 +126,7 @@ def validate_patch_format(patch_content: str) -> tuple[bool, str]:
 
 def validate_patch_applicability_in_repo(patch_content: str, repo_path: str) -> tuple[bool, str]:
     """Test if patch can be applied using GNU patch dry run in actual repo."""
-    try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".diff", mode="w") as f:
-            f.write(patch_content)
-            patch_file_path = f.name
-
-        result = subprocess.run(
-            ['patch', '--dry-run', '-p1', '-i', patch_file_path],
-            cwd=repo_path,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
-        os.unlink(patch_file_path)
-
-        if result.returncode == 0:
-            return True, "Patch applies cleanly in repo"
-        else:
-            return False, f"Patch failed in repo: {(result.stdout + result.stderr).strip()}"
-    except subprocess.TimeoutExpired:
-        return False, "Patch validation timed out"
-    except Exception as e:
-        return False, f"Error during patch validation: {str(e)}"
+    return AndroidPatchManager.check_patch_applicability(patch_content, repo_path)
 
 class GeminiAgent:
     """A client for interacting with the Gemini API.
@@ -228,7 +196,7 @@ class GeminiAgent:
                         "total": response.usage_metadata.total_token_count,
                     }
                 }
-            except Exception as e:
+        except Exception as e:
                 error_message = str(e).lower()
                 if ("quota" in error_message or "rate limit" in error_message or
                     "internal error" in error_message):
@@ -422,7 +390,7 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
                     "format_valid": format_valid, "format_error": format_error,
                     "apply_valid": apply_valid, "apply_error": apply_error,
                     "valid": format_valid and apply_valid
-                }
+                    }
             except Exception as e:
                 logger.error(f"  -> ❌ Error on attempt {attempt_num + 1}: {e}")
                 validation_result = {
@@ -458,8 +426,7 @@ Now, apply the feedback and generate a new, corrected unified diff. Be precise a
         }
 
 
-async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock,
-                              model_name: str, temperature: float, max_retries: int) -> list[dict]:
+async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock) -> list[dict]:
     """Processes a single entry from the `failed_patch.json` file.
 
     This function sets up the repository and then iterates through each file
@@ -540,7 +507,8 @@ async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock,
                 continue
             
             # Prepare the inputs for the correction agent.
-            output_dir = BASE_DIR.parent / "patch_adoption" / "generated_patches"
+            output_dir = BASE_DIR / PATHS_CONFIG.get("llm_generated_patches_dir")
+            output_dir.mkdir(parents=True, exist_ok=True)
             output_path = (output_dir / 
                            f"{patch_hash}_{failed_file_path.name}_"
                            f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.diff")
@@ -582,8 +550,8 @@ async def process_patch_entry(patch: dict, repo_lock: asyncio.Lock,
 Now, await the task."""
 
             gemini_agent = GeminiAgent(
-                model_name=model_name,
-                temperature=temperature,
+                model_name=LLM_CONFIG.get("model_name"),
+                temperature=LLM_CONFIG.get("temperature", 0.0),
                 system_prompt=system_prompt,
                 key_rotator=key_rotator
             )
@@ -591,7 +559,7 @@ Now, await the task."""
             agent = PatchCorrectionAgent(
                 gemini_agent=gemini_agent,
                 original_inputs=original_inputs,
-                max_retries=max_retries,
+                max_retries=LLM_CONFIG.get("max_retries", 3),
                 repo_lock=repo_lock
             )
 
@@ -627,24 +595,25 @@ Now, await the task."""
 
     return all_file_results
 
-async def run_llm_correction_step(model_name: str, temperature: float,
-                                  max_retries: int, concurrency: int):
+async def run_llm_correction_step():
     """
     Runs the LLM patch correction process.
     This function is a generator that yields progress updates.
     """
     logger.info("--- Starting LLM Patch Runner ---")
     
+    failed_patch_json_path = BASE_DIR / PATHS_CONFIG.get("llm_input_report")
+
     try:
-        with open(FAILED_PATCH_JSON, "r", encoding="utf-8") as f:
+        with open(failed_patch_json_path, "r", encoding="utf-8") as f:
             failed_patches_data = json.load(f)
     except FileNotFoundError:
-        message = f"Input file not found at '{FAILED_PATCH_JSON}'."
+        message = f"Input file not found at '{failed_patch_json_path}'."
         logger.error(message)
         yield {"type": "error", "message": message}
         return
     except json.JSONDecodeError:
-        message = f"Could not decode JSON from '{FAILED_PATCH_JSON}'. The file might be empty or corrupt."
+        message = f"Could not decode JSON from '{failed_patch_json_path}'. The file might be empty or corrupt."
         logger.error(message)
         yield {"type": "error", "message": message}
         return
@@ -658,15 +627,14 @@ async def run_llm_correction_step(model_name: str, temperature: float,
         return
 
     repo_lock = asyncio.Lock()
-    sem = asyncio.Semaphore(concurrency)
+    sem = asyncio.Semaphore(LLM_CONFIG.get("concurrency", 5))
     all_results = []
     processed_count = 0
 
     async def process_one_patch(patch: dict):
         """Helper to process one patch entry under the semaphore."""
         async with sem:
-            return await process_patch_entry(
-                patch, repo_lock, model_name, temperature, max_retries)
+            return await process_patch_entry(patch, repo_lock)
 
     tasks = [process_one_patch(patch) for patch in patches_to_process]
 
@@ -675,7 +643,6 @@ async def run_llm_correction_step(model_name: str, temperature: float,
         all_results.extend(results_for_patch)
         processed_count += 1
         yield {"type": "progress", "completed": processed_count, "total": total_patches}
-
 
     # Aggregate token counts and create reports
     total_input_tokens = sum(r.get("token_counts", {}).get("input", 0) for r in all_results)
@@ -687,12 +654,13 @@ async def run_llm_correction_step(model_name: str, temperature: float,
         for r in all_results if r.get("success") and r.get("saved_patch_file")
     ]
     
-    SUCCESSFUL_PATCHES_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(SUCCESSFUL_PATCHES_FILE, "w", encoding="utf-8") as f:
+    successful_patches_file = BASE_DIR / PATHS_CONFIG.get("llm_successful_patches_report")
+    successful_patches_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(successful_patches_file, "w", encoding="utf-8") as f:
         json.dump({"patches": successful_patches}, f, indent=4)
-    logger.info(f"Saved {len(successful_patches)} successfully generated patches to {SUCCESSFUL_PATCHES_FILE}")
+    logger.info(f"Saved {len(successful_patches)} successfully generated patches to {successful_patches_file}")
 
-    debug_report_path = REPORTS_DIR / "llm_output_detailed.json"
+    debug_report_path = BASE_DIR / PATHS_CONFIG.get("llm_detailed_output_report")
     failed_patches_list = [
         {"patch_file": r.get("file"), "project": r.get("project"), "error": r.get("validation_results", [{}])[-1].get("apply_error", "Unknown LLM failure")}
         for r in all_results if not r.get("success")
@@ -720,21 +688,9 @@ async def run_llm_correction_step(model_name: str, temperature: float,
 
 async def main():
     """Main asynchronous entry point for the LLM patch runner."""
-    args = parse_args()
     # When run as a script, just iterate through the async generator to execute it.
-    async for _ in run_llm_correction_step(
-        args.model_name, args.temperature, args.max_retries, args.concurrency
-    ):
+    async for _ in run_llm_correction_step():
         pass
 
 if __name__ == "__main__":
-    # Setup for running standalone
-    BASE_DIR = Path(__file__).resolve().parent
-    REPORTS_DIR = BASE_DIR / "reports"
-    FAILED_PATCH_JSON = REPORTS_DIR / "failed_patch.json"
-    GENERATED_PATCHES_DIR = (
-        BASE_DIR.parent / "patch_adoption" / "generated_patches"
-    )
-    REPORTS_DIR.mkdir(exist_ok=True)
-    GENERATED_PATCHES_DIR.mkdir(exist_ok=True)
     asyncio.run(main())

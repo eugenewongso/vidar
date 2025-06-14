@@ -24,9 +24,21 @@ from pathlib import Path
 from urllib.parse import urlparse
 from android_patch_manager import AndroidPatchManager
 import logging
+import yaml
 
 # Get a logger for this module
 logger = logging.getLogger(__name__)
+
+# --- Load Configuration ---
+CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+if not CONFIG_PATH.exists():
+    raise FileNotFoundError(f"Configuration file not found at {CONFIG_PATH}")
+
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f)
+
+PATHS_CONFIG = config.get("paths", {})
+# --- End Load Configuration ---
 
 # --- UTILITY FUNCTIONS ---
 
@@ -91,7 +103,7 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tupl
 
     logger.info(f"  -> Fetching diff from: {diff_url}")
 
-    output_dir = project_root / "fetch_patch_output" / "diff_output"
+    output_dir = Path(__file__).resolve().parent / PATHS_CONFIG.get("fetched_patches_dir")
     output_dir.mkdir(parents=True, exist_ok=True)
     output_filename = output_dir / f"{commit_hash}.diff"
 
@@ -217,7 +229,7 @@ def run_fetcher_step():
     This function is a generator that yields progress updates.
     """
     vidar_dir = Path(__file__).resolve().parent
-    report_path = vidar_dir / "reports" / "parsed_report.json"
+    report_path = vidar_dir / PATHS_CONFIG.get("parsed_vanir_report")
     results = {"successful": [], "failed": []}
 
     try:
@@ -265,7 +277,7 @@ def run_fetcher_step():
     # Write failed fetches to a report for downstream steps
     reports_dir = vidar_dir / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
-    fetch_failures_path = reports_dir / "fetch_failures.json"
+    fetch_failures_path = reports_dir.parent / PATHS_CONFIG.get("fetch_failures_report")
     with open(fetch_failures_path, "w", encoding="utf-8") as f:
         json.dump(results["failed"], f, indent=2)
 

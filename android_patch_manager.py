@@ -18,8 +18,20 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 import logging
+import yaml
 
 logger = logging.getLogger(__name__)
+
+# --- Load Configuration ---
+CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+if not CONFIG_PATH.exists():
+    raise FileNotFoundError(f"Configuration file not found at {CONFIG_PATH}")
+
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f)
+
+PATCH_ADOPTER_CONFIG = config.get("patch_adopter", {})
+# --- End Load Configuration ---
 
 def parse_version(v: str) -> tuple[int, int]:
     """Converts version strings like '12L' or '14' into tuples for comparison."""
@@ -34,8 +46,8 @@ def is_newer_version(source: str, target: str) -> bool:
 
 class AndroidPatchManager:
     """Provides a collection of static methods for managing Git and patch ops."""
-    PATCH_TOOL = "patch"  # Default patch tool
-    STRIP_LEVEL = 1  # Default strip level for patch application
+    PATCH_TOOL = PATCH_ADOPTER_CONFIG.get("patch_tool", "patch")  # Default patch tool
+    STRIP_LEVEL = PATCH_ADOPTER_CONFIG.get("strip_level", 1)  # Default strip level for patch application
 
     @staticmethod
     def clone_repo(repo_url: str, repo_base: str) -> str:
@@ -285,7 +297,7 @@ class AndroidPatchManager:
                 patch_file_path = f.name
 
             result = subprocess.run(
-                ['patch', '--dry-run', '-p1', '-i', patch_file_path],
+                [AndroidPatchManager.PATCH_TOOL, '--dry-run', f'-p{AndroidPatchManager.STRIP_LEVEL}', '-i', patch_file_path],
                 cwd=repo_path,
                 capture_output=True,
                 text=True,
