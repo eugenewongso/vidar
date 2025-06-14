@@ -120,3 +120,10 @@ The pipeline generates several intermediate files. While the default locations a
 | `successful_llm_patches.json` | **Output of Stage 5.** A clean list of only the patches that the LLM successfully generated. This is the input for the final patch application step. |
 | `llm_patch_application_report.json` | **Output of Stage 6.** The report on the attempt to apply the newly generated LLM patches. |
 | `final_summary_report.json` | **Output of Stage 7.** The final, consolidated report summarizing the results of the entire pipeline. This is the main file to check for results. |
+
+---
+## Evaluation Framework
+
+A dedicated framework for analyzing the pipeline's performance is located in the `evaluation/` directory. It contains tools for running detailed tests, preparing data, and generating reports, and maintains its own separate set of dependencies in `evaluation/requirements.txt`.
+
+For detailed instructions, please see the `evaluation/README.md`.

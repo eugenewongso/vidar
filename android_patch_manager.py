@@ -94,24 +94,19 @@ class AndroidPatchManager:
         }
 
     @staticmethod
-    def get_all_token_counts(text: str, gemini_token_count: Optional[int] = None):
+    def get_all_token_counts(text: str):
         """
         Get token counts using a general estimation method.
-        The Gemini token count is expected to be provided if available.
 
         Args:
             text (str): Input text.
-            gemini_token_count (Optional[int]): Pre-calculated Gemini token count.
 
         Returns:
             dict: A dictionary of token counts.
         """
-        result = {
+        return {
             "general": AndroidPatchManager.count_tokens_general(text),
         }
-        if gemini_token_count is not None:
-            result["gemini"] = gemini_token_count
-        return result
 
 
     @staticmethod
@@ -365,16 +360,13 @@ class AndroidPatchManager:
 
             # Calculate inline conflict token summary
             total_inline_tokens = {
-                "gemini": 0,
-                "general_word": 0,
-                "general_char": 0
+                "word_based": 0,
+                "char_based": 0
             }
             for conflict in inline_conflicts:
                 tokens = conflict.get("merge_conflict_tokens", {})
-                total_inline_tokens["gemini"] += tokens.get("gemini", 0)
-                general = tokens.get("general", {})
-                total_inline_tokens["general_word"] += general.get("word_based", 0)
-                total_inline_tokens["general_char"] += general.get("char_based", 0)
+                total_inline_tokens["word_based"] += tokens.get("word_based", 0)
+                total_inline_tokens["char_based"] += tokens.get("char_based", 0)
 
             file_conflicts.append({
                 "file_name": file_name,
