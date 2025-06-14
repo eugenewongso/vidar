@@ -22,7 +22,7 @@ Vidar is an end-to-end orchestration system that automates the security patching
 ```bash
     # Point to the root of the source code you want to patch
     python pipeline_runner.py --source_path /path/to/your/android/source_code
-    ```
+```
 6.  **Check the results** in the generated `reports/final_summary_report.json`.
 
 ---
