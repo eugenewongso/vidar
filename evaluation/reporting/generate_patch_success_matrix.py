@@ -1,4 +1,3 @@
-# generate_cross_patch_matrix.py
 r"""Generates a matrix and heatmap visualizing patch success rates across versions.
 
 This script is part of the reporting stage of the evaluation framework. It consumes
