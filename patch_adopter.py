@@ -33,9 +33,23 @@ import time
 from pathlib import Path
 from typing import List, Dict
 import logging
+import yaml
 
 # Get a logger for this module
 logger = logging.getLogger(__name__)
+
+
+# --- Load Configuration ---
+CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+if not CONFIG_PATH.exists():
+    raise FileNotFoundError(f"Configuration file not found at {CONFIG_PATH}")
+
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f)
+
+PATCH_ADOPTER_CONFIG = config.get("patch_adopter", {})
+PATHS_CONFIG = config.get("paths", {})
+# --- End Load Configuration ---
 
 
 # --- Argument Parser ---
@@ -51,20 +65,12 @@ def parse_args():
         choices=["Vanir", "LLM"],
         help="The source of the patches ('Vanir' or 'LLM')."
     )
-    parser.add_argument(
-        "--strip_level",
-        type=int,
-        required=True,
-        help="The '-p' level for the GNU patch command (e.g., 1)."
-    )
     return parser.parse_args()
 
 
 # --- Constants ---
 BASE_DIR = Path(__file__).resolve().parent
 REPORTS_DIR = BASE_DIR / "reports"
-PARSED_VANIR_REPORT_JSON = REPORTS_DIR / "parsed_report.json"
-LLM_SUCCESS_JSON = REPORTS_DIR / "successful_llm_patches.json"
 
 
 class PatchAdopter:
@@ -73,7 +79,8 @@ class PatchAdopter:
     """
 
     def __init__(self, target_source_path: str, patch_dir: str,
-                 report_output_path: str, strip_level: int = 1):
+                 report_output_path: str, strip_level: int = 1,
+                 patch_command: str = "patch"):
         """Initializes the PatchAdopter.
 
         Args:
@@ -81,6 +88,7 @@ class PatchAdopter:
             patch_dir: The directory containing the .def patch files.
             report_output_path: The path to save the JSON report.
             strip_level: The '-p' level for the patch command.
+            patch_command: The patch executable to use.
         """
         if not os.path.isdir(target_source_path):
              logger.error(f"Target source root not found at '{target_source_path}'")
@@ -89,7 +97,7 @@ class PatchAdopter:
         self.patch_dir = patch_dir
         self.report_output_path = report_output_path
         self.strip_level = strip_level
-        self.patch_command = "patch"
+        self.patch_command = patch_command
         self.patch_results = {"patches": []}
 
     def apply_patch(self, patch_info: dict, source: str = "Vanir") -> dict:
@@ -279,13 +287,17 @@ class PatchAdopter:
     def generate_summary(self):
         """Prints a summary of the patch application results to the console."""
         status_counts = {}
+        failed_patches_count = 0
         for patch in self.patch_results["patches"]:
             detailed_status = patch.get("detailed_status", "Unknown")
             status_counts[detailed_status] = status_counts.get(
                 detailed_status, 0) + 1
+            if patch.get("status") == "Rejected":
+                failed_patches_count += 1
         
         summary = {
             "total_patches": len(self.patch_results["patches"]),
+            "failed_patches": failed_patches_count,
             "status_counts": status_counts
         }
 
@@ -301,120 +313,97 @@ class PatchAdopter:
         return summary
 
 
-def run_adoption_step(source: str, strip_level: int, target_source_path: str):
+def run_adoption_step(source: str, target_source_path: str):
     """
-    Runs the patch adoption process for a given source.
-    This function is a generator that yields progress updates.
+    Runs the appropriate patch adoption step based on the source.
+
+    Args:
+        source (str): The patch source ('Vanir' or 'LLM').
+        target_source_path (str): Path to the target source code directory.
     """
-    # Determine paths based on the source
+    start_time = time.time()
+    logger.info(f"Running adoption for '{source}' patches...")
+
     if source == "Vanir":
-        input_report_path = PARSED_VANIR_REPORT_JSON
-        # Patches from Vanir are in the /diff_output/ directory.
-        patch_dir = BASE_DIR.parent / "fetch_patch_output" / "diff_output"
-        # The final, cumulative report will be saved here.
-        output_report_path = REPORTS_DIR / "patch_application_report.json"
-        # Failed patches from this stage are input for the LLM.
-        failed_report_path = REPORTS_DIR / "failed_patch.json"
-    else:  # Source is LLM
-        input_report_path = LLM_SUCCESS_JSON
-        # Patches from the LLM are in the /generated_patches/ directory.
-        patch_dir = BASE_DIR.parent / "patch_adoption" / "generated_patches"
-        # This is a temporary report for just the LLM patches.
-        output_report_path = REPORTS_DIR / "llm_patch_application_report.json"
-        # We don't have a new 'failed' list from this step currently.
-        failed_report_path = None
-    
-    logger.info(f"--- Running Patch Adopter for source: {source} ---")
+        input_json = BASE_DIR / PATHS_CONFIG.get("parsed_vanir_report")
+        patch_dir = BASE_DIR / PATHS_CONFIG.get("fetched_patches_dir")
+        report_output_path = BASE_DIR / PATHS_CONFIG.get("vanir_patch_application_report")
+    else:  # LLM
+        input_json = BASE_DIR / PATHS_CONFIG.get("llm_successful_patches_report")
+        patch_dir = BASE_DIR / PATHS_CONFIG.get("llm_generated_patches_dir")
+        report_output_path = BASE_DIR / PATHS_CONFIG.get("llm_patch_application_report")
 
-    if not input_report_path.exists():
-        logger.error(f"Input report not found at '{input_report_path}'")
-        yield {"type": "error", "message": f"Input report not found at '{input_report_path}'"}
-        return
+    if not os.path.exists(input_json):
+        logger.error(f"Input JSON file not found: {input_json}")
+        sys.exit(1)
 
-    with open(input_report_path, "r", encoding="utf-8") as f:
-        try:
-            report_data = json.load(f)
-        except json.JSONDecodeError:
-            logger.error(f"Could not decode JSON from '{input_report_path}'. It may be empty or corrupt.")
-            yield {"type": "error", "message": f"Could not decode JSON from '{input_report_path}'"}
-            return
+    with open(input_json, "r") as f:
+        data = json.load(f)
 
-    adopter = PatchAdopter(
+    # Ensure the output directory for the report exists
+    report_output_path.parent.mkdir(exist_ok=True, parents=True)
+
+    strip_level = PATCH_ADOPTER_CONFIG.get("strip_level", 1)
+    patch_command = PATCH_ADOPTER_CONFIG.get("patch_tool", "patch")
+
+    patch_adopter = PatchAdopter(
         target_source_path=target_source_path,
-        patch_dir=str(patch_dir),
-        report_output_path=str(output_report_path),
-        strip_level=strip_level
+        patch_dir=patch_dir,
+        report_output_path=str(report_output_path),
+        strip_level=strip_level,
+        patch_command=patch_command
     )
 
-    all_patches = report_data.get("patches", [])
-    total_patches = len(all_patches)
-    
+    patches_to_apply = data if isinstance(data, list) else data.get("patches", [])
+    total_patches = len(patches_to_apply)
     yield {"type": "progress", "completed": 0, "total": total_patches}
 
-    if not all_patches:
-        logger.info("No patches found in the input report. Nothing to do.")
-        adopter.save_report()
+    if not patches_to_apply:
+        logger.warning(f"No patches found in {input_json} to apply.")
+        # Create an empty report and exit
+        patch_adopter.save_report()
+        yield {"type": "summary", "data": patch_adopter.generate_summary()}
         return
 
-    logger.info(f"Found {total_patches} patches to process.")
-    for i, patch_info in enumerate(all_patches):
-        patch_file_name = os.path.basename(patch_info.get("patch_file", "Unknown"))
-        logger.info(f"Processing patch: {patch_file_name}")
-        result = adopter.apply_patch(patch_info, source=source)
-        adopter.patch_results["patches"].append(result)
+    for i, patch_info in enumerate(patches_to_apply):
+        patch_file = os.path.basename(patch_info.get("output_path") or patch_info.get("patch_file", ""))
+        project_rel_path = patch_info.get("project")
+
+        logger.info(
+            f"[{i+1}/{len(patches_to_apply)}] "
+            f"Applying '{patch_file}' to project '{project_rel_path}'..."
+        )
+        result = patch_adopter.apply_patch(patch_info, source=source)
+        patch_adopter.patch_results["patches"].append(result)
         yield {"type": "progress", "completed": i + 1, "total": total_patches}
 
-    adopter.save_report()
-    summary = adopter.generate_summary()
-
-    # If processing original patches, create a report of only the failed ones
-    # for the next step in the pipeline.
-    if failed_report_path:
-        failed_patches = [
-            p for p in adopter.patch_results["patches"]
-            if p.get("status") == "Rejected"
-        ]
-        
-        # We also need to add back the original upstream patch content for the LLM
-        # to have full context.
-        all_original_patches = {
-            os.path.basename(p.get("patch_file", "")): p.get("upstream_patch_content")
-            for p in report_data.get("patches", []) # Use original report data
-        }
-        
-        for failed_patch in failed_patches:
-            patch_filename = os.path.basename(failed_patch.get("patch_file", ""))
-            failed_patch["upstream_patch_content"] = all_original_patches.get(patch_filename)
-
-        with open(failed_report_path, "w", encoding="utf-8") as f:
-            json.dump({"patches": failed_patches}, f, indent=4)
-        logger.info(f"Saved details for {len(failed_patches)} failed patches to: {failed_report_path}")
-
-    # Clean up any empty .rej files that 'patch' might create on success.
-    for root, _, files in os.walk(target_source_path):
-        for file in files:
-            if file.endswith(".rej"):
-                rej_path = os.path.join(root, file)
-                if os.path.getsize(rej_path) == 0:
-                    os.remove(rej_path)
-                    
+    patch_adopter.save_report()
+    summary = patch_adopter.generate_summary()
+    end_time = time.time()
+    logger.info(f"Adoption for '{source}' finished in {end_time - start_time:.2f}s")
     yield {"type": "summary", "data": summary}
 
 
 def main():
-    """Main entry point for the patch adopter script."""
+    """Main function to run the patch adoption process."""
     args = parse_args()
-
-    # When run as a script, this is needed
-    target_source_path = os.getenv("TARGET_SOURCE_PATH")
+    source = args.source
+    
+    # These paths are environment-dependent.
+    # TODO: These should be moved to a configuration file.
+    target_source_path = os.getenv("AOSP_SOURCE_PATH")
     if not target_source_path:
-        logger.error("The 'TARGET_SOURCE_PATH' environment variable is not set.")
-        logger.error("   Please set it to the root of the AOSP source code directory.")
+        logger.error("AOSP_SOURCE_PATH environment variable not set.")
         sys.exit(1)
-        
-    # When run as a script, just iterate through the generator to execute it.
-    for _ in run_adoption_step(args.source, args.strip_level, target_source_path):
-        pass
+
+    logger.info("=" * 80)
+    logger.info(f"🚀 Starting Patch Adopter for '{source}' patches.")
+    logger.info(f"    - AOSP Source: {target_source_path}")
+    logger.info(f"    - Strip Level: {strip_level}")
+    logger.info(f"    - Patch Tool:  {patch_command}")
+    logger.info("=" * 80)
+
+    run_adoption_step(source, target_source_path)
 
 
 if __name__ == "__main__":

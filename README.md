@@ -19,10 +19,10 @@ Vidar is an end-to-end orchestration system that automates the security patching
     echo "GOOGLE_API_KEYS=your_gemini_api_key_here" > .env
     ```
 5.  **Run the pipeline:**
-    ```bash
+```bash
     # Point to the root of the source code you want to patch
     python pipeline_runner.py --source_path /path/to/your/android/source_code
-    ```
+```
 6.  **Check the results** in the generated `reports/final_summary_report.json`.
 
 ---
@@ -51,6 +51,24 @@ Vidar operates as a multi-stage pipeline, orchestrated by `pipeline_runner.py`. 
 ### Configuration
 -   **Input Reports**: Place one or more `vanir_output*.json` files into the `vidar/reports/` directory. The parser will automatically find and process all of them. The `reports` directory will be created by the pipeline if it does not exist, but it must be created manually to hold the initial input files.
 -   **Environment Variables**: The `GOOGLE_API_KEYS` variable must be set in a `.env` file in the `vidar/` directory. This file is ignored by Git.
+-   **Pipeline Settings (`config.yaml`)**: Key pipeline behaviors can be modified in this file.
+
+| Section | Key | Description |
+| :--- | :--- | :--- |
+| `llm_runner` | `model_name` | The specific Gemini model to use for patch correction. |
+| | `temperature` | The creativity of the LLM's responses (0.0 is deterministic). |
+| | `max_retries` | The number of self-correction attempts the LLM will make per failed patch. |
+| | `concurrency` | The number of parallel API calls made to the LLM. |
+| `patch_adopter` | `strip_level` | The `-p` level used by the `patch` command to strip leading path components from file paths in the patch. |
+| | `patch_tool` | The executable command to use for applying patches (e.g., "patch"). |
+| `paths` | `vanir_source_report` | **Input:** The path to the raw JSON report from Vanir. |
+| | `parsed_vanir_report` | **Stage 1 Output:** The structured report for the patch fetcher. |
+| | `fetched_patches_dir` | **Stage 2 Output:** Directory where downloaded `.diff` files are stored. |
+| | `vanir_patch_application_report` | **Stage 3 Output:** The report on applying original patches. |
+| | `llm_input_report` | **Stage 4 Output:** The filtered report of failed patches for the LLM. |
+| | `llm_generated_patches_dir` | **Stage 5 Output:** Directory where new patches from the LLM are saved. |
+| | `llm_successful_patches_report` | **Stage 5 Output:** Report listing successfully created LLM patches. |
+| | `llm_patch_application_report` | **Stage 6 Output:** The report on applying the LLM-generated patches. |
 
 ### Understanding the Output
 The most important output is `reports/final_summary_report.json`.
@@ -89,16 +107,23 @@ The pipeline is a modular system orchestrated by `pipeline_runner.py`, which act
 
 ---
 ## Guide to the `reports/` Directory
-The pipeline generates several intermediate files in the `reports/` directory. Here is a guide to the most important ones, in the order they are typically generated.
+The pipeline generates several intermediate files. While the default locations are in the `reports/` directory, all paths are configurable in `config.yaml`. Here is a guide to the most important files, in the order they are typically generated.
 
 | File | Description |
 | :--- | :--- |
-| `vanir_output*.json` | **Input:** The raw security report(s) from a tool like Vanir. You place these here before running the pipeline. |
-| `parsed_report.json` | **Output of Stage 1.** A structured, de-duplicated list of unique patches to be processed, created by `vanir_report_parser.py`. |
-| `fetch_failures.json` | **Output of Stage 2.** A list of patches that the `patch_fetcher.py` script was unable to download from its repository. |
-| `patch_application_report.json` | **Output of Stage 3.** A detailed report from `patch_adopter.py` on the attempt to apply the original, unaltered patches. |
-| `failed_patch.json` | **Output of Stage 4.** A filtered list containing only the patches that were 'Rejected' in the previous step. This file is the primary input for the LLM. |
-| `llm_output_detailed.json` | **Output of Stage 5.** A comprehensive debug log from `llm_patch_runner.py` showing every attempt and self-correction step taken by the LLM. |
+| `vanir_output.json` | **Input:** The raw security report from a tool like Vanir. You place this here before running the pipeline. |
+| `parsed_report.json` | **Output of Stage 1.** A structured, de-duplicated list of unique patches to be processed. |
+| `fetch_failures.json` | **Output of Stage 2.** A list of patches that could not be downloaded. |
+| `vanir_patch_application_report.json` | **Output of Stage 3.** A detailed report on the attempt to apply the original, unaltered patches. |
+| `failed_patch.json` | **Output of Stage 4.** A filtered list containing only the patches that were 'Rejected'. This is the primary input for the LLM. |
+| `llm_output_detailed.json` | **Output of Stage 5.** A comprehensive debug log from the LLM showing every self-correction attempt. |
 | `successful_llm_patches.json` | **Output of Stage 5.** A clean list of only the patches that the LLM successfully generated. This is the input for the final patch application step. |
-| `llm_patch_application_report.json` | **Output of Stage 6.** The report from `patch_adopter.py` on the attempt to apply the newly generated LLM patches. |
-| `final_summary_report.json` | **Output of Stage 7.** The final, consolidated report summarizing the results of the entire pipeline, from start to finish. This is the main file to check for results. |
+| `llm_patch_application_report.json` | **Output of Stage 6.** The report on the attempt to apply the newly generated LLM patches. |
+| `final_summary_report.json` | **Output of Stage 7.** The final, consolidated report summarizing the results of the entire pipeline. This is the main file to check for results. |
+
+---
+## Evaluation Framework
+
+A dedicated framework for analyzing the pipeline's performance is located in the `evaluation/` directory. It contains tools for running detailed tests, preparing data, and generating reports, and maintains its own separate set of dependencies in `evaluation/requirements.txt`.
+
+For detailed instructions, please see the `evaluation/README.md`.

@@ -20,9 +20,23 @@ import re
 import sys
 from urllib.parse import urlparse
 import logging
+import yaml
+from pathlib import Path
 
 # Get a logger for this module
 logger = logging.getLogger(__name__)
+
+
+# --- Load Configuration ---
+CONFIG_PATH = Path(__file__).resolve().parent / "config.yaml"
+if not CONFIG_PATH.exists():
+    raise FileNotFoundError(f"Configuration file not found at {CONFIG_PATH}")
+
+with open(CONFIG_PATH, "r") as f:
+    config = yaml.safe_load(f)
+
+PATHS_CONFIG = config.get("paths", {})
+# --- End Load Configuration ---
 
 
 class VanirParser:
@@ -40,14 +54,10 @@ class VanirParser:
 
         Args:
             file_path: The path to the input Vanir report JSON file.
-            output_path: The path to save the parsed output. Defaults to
-              'reports/parsed_report.json' within the same directory.
+            output_path: The path to save the parsed output.
         """
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        
         self.file_path = file_path
-        self.output_path = output_path or os.path.join(
-            project_root, "reports", "parsed_report.json")
+        self.output_path = output_path
         
         # Ensure the output directory exists.
         os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
@@ -159,16 +169,15 @@ def main():
     """Main entry point for the Vanir report parser script."""
     project_root = os.path.dirname(os.path.abspath(__file__))
     
-    # Define the default input path for the raw Vanir report.
-    vanir_report_path = os.path.join(
-        project_root, "reports", "vanir_output.json")
+    vanir_report_path = os.path.join(project_root, PATHS_CONFIG.get("vanir_source_report"))
+    parsed_report_path = os.path.join(project_root, PATHS_CONFIG.get("parsed_vanir_report"))
     
     if not os.path.exists(vanir_report_path):
         logger.error(f"Input file not found at '{vanir_report_path}'.")
         logger.error("   Please place the raw Vanir report at that location.")
         sys.exit(1)
         
-    VanirParser(vanir_report_path)
+    VanirParser(vanir_report_path, parsed_report_path)
 
 
 if __name__ == "__main__":

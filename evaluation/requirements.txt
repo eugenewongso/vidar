@@ -1,0 +1,15 @@
+# Main evaluation framework dependencies
+requests
+rich
+unidiff
+
+# For reporting/visualization
+pandas
+matplotlib
+seaborn
+numpy
+plotly
+
+# For prompt optimization framework
+python-dotenv
+google-generativeai 
