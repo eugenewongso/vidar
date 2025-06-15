@@ -5,3 +5,5 @@ unidiff>=0.7.5
 PyYAML>=6.0
 rich>=13.0
 click>=8.0
+beautifulsoup4>=4.0.0
+bs4
