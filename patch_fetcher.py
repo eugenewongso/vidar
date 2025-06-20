@@ -21,10 +21,13 @@ import re
 import base64
 import time
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 from android_patch_manager import AndroidPatchManager
 import logging
 import yaml
+from bs4 import BeautifulSoup
+from datetime import datetime, timezone
+
 
 # Get a logger for this module
 logger = logging.getLogger(__name__)
@@ -66,9 +69,135 @@ def _get_with_backoff(url: str, retries: int = 5) -> requests.Response:
         time.sleep(backoff_time)
     return response  # Return the last response after all retries
 
+def _extract_commit_date_from_API_codelinaro(commit_url: str) -> str:
+    """
+    Extracts the commit date (ISO 8601) from a CodeLinaro commit .diff URL.
+    Uses GitLab REST API to fetch commit details. Documentation link:
+        https://docs.gitlab.com/api/rest/
+    
+    Args:
+        commit_url: URL like 'https://git.codelinaro.org/.../commit/<sha>.diff'
+    
+    Returns:
+        Commit date string in ISO 8601 format.
+    """
+    parsed = urlparse(commit_url)
+    match = re.match(r'^/([^/]+/[^/]+/[^/]+/[^/]+)/-/commit/([a-f0-9]{7,40})', parsed.path)
+    if not match:
+        raise ValueError(f"Invalid CodeLinaro commit URL: {commit_url}")
+
+    project_path, commit_sha = match.groups()
+    encoded_project = quote(project_path, safe='')
+    api_url = f"https://git.codelinaro.org/api/v4/projects/{encoded_project}/repository/commits/{commit_sha}"
+
+    response = requests.get(api_url)
+    print("DEBUG, response.json():", response.json())  
+    if response.status_code != 200:
+        raise Exception(f"API request failed: {response.status_code} {response.text}")
+    
+    return response.json()['committed_date']
+
+    
+def _extract_commit_date_from_html_gittles(html_content: str, source_site: str, commit_url: str) -> str | None:
+    """Extracts commit date from HTML content of a commit page.
+
+    Args:
+        html_content: The HTML text of the commit page.
+        source_site: Either "googlesource" or "codelinaro".
+        commit_url: The URL of the commit page (for logging).
+
+    Returns:
+        An ISO 8601 formatted date string if found, else None.
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+    date_str = None
+    dt_obj = None
+
+    try:
+        if source_site == "googlesource":
+            metadata_table = soup.find('div', class_='Metadata').find('table')
+            if metadata_table:
+                rows = metadata_table.find_all('tr')
+                for row in rows:
+                    th = row.find('th', class_='Metadata-title')
+                    if th and th.get_text(strip=True).lower() in ("committer"):
+                        tds = row.find_all('td')
+                        if len(tds) >= 2: # Expecting at least two <td>: one for name/email, one for date
+                            date_str_candidate = tds[-1].get_text(strip=True) # Date is in the last <td>
+                            try:
+                                # Primary format: Day Mon DD HH:MM:SS YYYY +/-ZZZZ
+                                dt_obj = datetime.strptime(date_str_candidate, '%a %b %d %H:%M:%S %Y %z')
+                                date_str = date_str_candidate # Keep the successfully parsed string
+                                logger.debug(f"Successfully parsed Googlesource date '{date_str}' for {commit_url}")
+                                break 
+                            except ValueError:
+                                logger.debug(f"Googlesource format '%a %b %d %H:%M:%S %Y %z' did not match '{date_str_candidate}'. Trying fallback for {commit_url}.")
+                                # Fallback to old regex based format from the same string, just in case
+                                match = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [+-]\d{4})', date_str_candidate)
+                                if match:
+                                    date_str = match.group(1)
+                                    try:
+                                        dt_obj = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S %z')
+                                        logger.debug(f"Successfully parsed Googlesource date (fallback) '{date_str}' for {commit_url}")
+                                        break 
+                                    except ValueError:
+                                        logger.warning(f"Fallback Googlesource date format '%Y-%m-%d %H:%M:%S %z' also failed for '{date_str}' from {commit_url}")
+                                else:
+                                    logger.warning(f"No known date format matched for Googlesource string: '{date_str_candidate}' from {commit_url}")
+            # If dt_obj is set, it will be used below. If not, date_str remains None or the unparsed candidate.
+            # The original 'if date_str: dt_obj = ...' is now handled inside the loop.
+
+        elif source_site == "codelinaro":
+            # Look for <time datetime="...">
+            time_tag = soup.find('time', attrs={'datetime': True})
+            if time_tag:
+                date_str = time_tag['datetime']
+            else:
+                # Fallback: Look for "Commit date" text then sibling
+                # e.g. <span class="light">Commit date</span> <strong>Sep 25, 2023 10:00am</strong>
+                commit_date_label = soup.find(string=re.compile(r'Commit date', re.I))
+                if commit_date_label:
+                    # Try to find the date in a sibling or parent's strong tag
+                    parent = commit_date_label.find_parent()
+                    if parent:
+                        strong_tag = parent.find('strong')
+                        if strong_tag:
+                             date_str = strong_tag.text.strip()
+            
+            if date_str: # Try to parse various formats that might appear
+                try:
+                    if date_str.endswith('Z'): # ISO UTC
+                        dt_obj = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    else: # Try common non-ISO format
+                         # Example: "Sep 25, 2023 10:00am" - this is harder without dateutil
+                         # For now, we rely on <time datetime> for codelinaro if possible
+                         # If it's a string like "Sep 25, 2023 10:00am", strptime is needed
+                        try:
+                            dt_obj = datetime.strptime(date_str, '%b %d, %Y %I:%M%p')
+                        except ValueError:
+                            # Try ISO format as a fallback if <time datetime> was not specific enough
+                            dt_obj = datetime.fromisoformat(date_str)
+                except ValueError as e:
+                    logger.warning(f"Could not parse date string '{date_str}' for {commit_url} from codelinaro: {e}")
+
+
+        if dt_obj:
+            return dt_obj.isoformat() # Return as ISO string
+
+    except Exception as e:
+        logger.error(f"Error parsing HTML for date from {commit_url}: {e}", exc_info=True)
+    
+    if date_str and not dt_obj: # Found a string but couldn't parse it to datetime
+        logger.warning(f"Found date string '{date_str}' for {commit_url} but could not parse to standard format.")
+    elif not date_str:
+        logger.warning(f"Could not find date string in HTML for {commit_url}")
+        
+    return None
+
+
 # --- CORE PATCH FETCHING FUNCTIONALITY ---
 
-def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tuple[bool, str]:
+def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tuple[bool, str, str | None]:
     """Downloads, filters, and saves the diff for a given commit URL.
 
     This function performs the following steps:
@@ -90,17 +219,49 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tupl
     project_root = Path(__file__).resolve().parent.parent
     commit_hashes = AndroidPatchManager.extract_commit_hashes([commit_url])
     if not commit_hashes:
-        return False, f"Could not extract commit hash from URL: {commit_url}"
+        return False, f"Could not extract commit hash from URL: {commit_url}", None
     commit_hash = commit_hashes[0]
 
     # Determine the repository type and construct the appropriate download URL.
+    source_site = None # Initialize source_site
+    
+    # make a handler here for the different sites (e.g. googleSourceHand
+    # ler, codelinaroHandler)
+    android = False
+    codelinaro = False
     if "android.googlesource.com" in commit_url:
         diff_url = commit_url + "^!/?format=TEXT"
+        source_site = "googlesource" # Set source_site for googlesource
+        android = True
     elif "git.codelinaro.org" in commit_url:
         diff_url = commit_url + ".diff"
+        source_site = "codelinaro"
+        codelinaro = True
     else:
-        return False, f"Unsupported repository host in URL: {commit_url}"
+        return False, f"Unsupported repository host in URL: {commit_url}", None
 
+    # Fetch commit date by parsing the HTML page
+    commit_date_iso = None
+    if source_site:
+        logger.info(f"  -> Fetching HTML page for date from: {commit_url}") 
+        html_response = _get_with_backoff(commit_url)
+
+        if html_response.status_code == 200:
+            # commit_date_iso = _extract_commit_date_from_html(html_response.text, source_site, commit_url)
+            if android:
+                commit_date_iso = _extract_commit_date_from_html_gittles(html_response.text, source_site, commit_url)
+            elif codelinaro:
+                commit_date_iso = _extract_commit_date_from_API_codelinaro(commit_url)
+    
+            # DEBUG PRINT for extracted commit date
+            if commit_date_iso:
+
+                logger.info(f"  -> Extracted commit date: {commit_date_iso}")
+            else:
+                logger.warning(f"  -> Could not extract commit date from HTML for {commit_url}")
+        else:
+            logger.warning(f"  -> Failed to fetch HTML page for date: {commit_url}, Status: {html_response.status_code}")
+    
     logger.info(f"  -> Fetching diff from: {diff_url}")
 
     output_dir = Path(__file__).resolve().parent / PATHS_CONFIG.get("fetched_patches_dir")
@@ -108,16 +269,18 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tupl
     output_filename = output_dir / f"{commit_hash}.diff"
 
     response = _get_with_backoff(diff_url)
+
     if response.status_code != 200:
-        return False, f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}"
+        return False, f"Failed to fetch diff for {commit_hash}. HTTP Status: {response.status_code}", commit_date_iso
 
     if "android.googlesource.com" in commit_url:
+        source_site = "googlesource" # Already set, but good for clarity
         try:
             raw_diff = base64.b64decode(response.text)
             diff_text = raw_diff.decode("utf-8")
         except (ValueError, TypeError) as e:
-            return False, f"Failed to decode Base64 content for {commit_hash}: {e}"
-    else:
+            return False, f"Failed to decode Base64 content for {commit_hash}: {e}", commit_date_iso
+    else: # codelinaro
         diff_text = response.text
 
     # Filter the full diff to include only the specified files.
@@ -141,12 +304,13 @@ def fetch_and_filter_patch(commit_url: str, files_to_include: list[str]) -> tupl
             filtered_diff_lines.append(line)
 
     if not filtered_diff_lines:
-        return False, f"No matching diff content found for files: {files_to_include}"
+        error_message = f"No matching diff content found for files: {files_to_include}. (In this patch URL, there are no changes to the files specified in files_to_include.)"
+        return False, error_message, commit_date_iso
 
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write("\n".join(filtered_diff_lines).strip() + "\n")
 
-    return True, str(output_filename)
+    return True, str(output_filename), commit_date_iso
 
 # --- BATCH PROCESSING FUNCTIONALITY ---
 
@@ -167,6 +331,7 @@ def process_patches_from_report(report_path: str = None) -> dict:
     vidar_dir = Path(__file__).resolve().parent
 
     # Define the default path to the parsed report if not provided.
+    # TODO: hard coded for for now, but should be configurable
     if not report_path:
         report_path = vidar_dir / "reports" / "parsed_report.json"
 
@@ -223,6 +388,153 @@ def process_patches_from_report(report_path: str = None) -> dict:
 
     return results
 
+# def run_fetcher_step():
+#     """
+#     Runs the patch fetching process.
+#     This function is a generator that yields progress updates.
+#     """
+#     vidar_dir = Path(__file__).resolve().parent
+#     report_path = vidar_dir / PATHS_CONFIG.get("parsed_vanir_report")
+#     results = {"successful": [], "failed": []}
+
+#     try:
+#         with open(report_path, "r", encoding="utf-8") as f:
+#             parsed_report = json.load(f)
+#     except (FileNotFoundError, json.JSONDecodeError) as e:
+#         logger.error(f"Error loading parsed report from '{report_path}': {e}")
+#         yield {"type": "error", "message": f"Error loading parsed report from '{report_path}': {e}"}
+#         return
+
+#     patches_to_process = parsed_report.get("patches", [])
+#     total_patches = len(patches_to_process)
+#     processed_count = 0
+#     logger.info(f"Processing {total_patches} patches from report: {report_path.name}")
+    
+#     yield {"type": "progress", "completed": 0, "total": total_patches}
+
+#     if not patches_to_process:
+#         yield {"type": "summary", "data": results}
+#         return
+
+#     for patch in patches_to_process:
+#         patch_url = patch.get("patch_url")
+#         files_to_include = list(patch.get("files", {}).keys())
+
+#         try:
+#             success, message, extracted_date_iso = fetch_and_filter_patch(patch_url, files_to_include)
+            
+#             # Use 'N/A' if date extraction failed (extracted_date_iso is None)
+#             actual_date_to_store = extracted_date_iso if extracted_date_iso is not None else 'N/A'
+#             patch['commit_date'] = actual_date_to_store
+            
+#             commit_date_for_results = actual_date_to_store # For consistency in results dict
+
+#             if success:
+#                 logger.info(f"Successfully saved patch to: {Path(message).name}")
+#                 results["successful"].append({"url": patch_url, "file": message, "commit_date": commit_date_for_results})
+#             else:
+#                 error_reason = f"Failed to fetch or filter patch: {patch_url}. Reason: {message}"
+
+#                 logger.error(error_reason)
+#                 results["failed"].append({"url": patch_url, "reason": message, "commit_date": commit_date_for_results})
+
+#         except Exception as e:
+#             error_reason = f"An unexpected error occurred while processing {patch_url}: {e}"
+#             logger.error(error_reason, exc_info=True)
+#             # If exception occurs before date is fetched, extracted_date_iso might not be defined in this scope.
+#             # So, we use patch.get('commit_date', 'N/A') to be safe for the results dict.
+#             results["failed"].append({"url": patch_url, "reason": str(e), "commit_date": patch.get('commit_date', 'N/A')})
+        
+#         processed_count += 1
+#         yield {"type": "progress", "completed": processed_count, "total": total_patches}
+
+#     # Write failed fetches to a report for downstream steps
+#     reports_dir = vidar_dir / "reports"
+#     reports_dir.mkdir(parents=True, exist_ok=True)
+    
+#     # Sort patches_to_process by commit_date
+#     # None dates will be at the beginning if datetime.min is used, or end if datetime.max
+#     def sort_key(p_item):
+#         date_val = p_item.get('commit_date')
+#         # Check if date_val is a valid date string and not 'N/A'
+#         if date_val and date_val != 'N/A':
+#             try:
+#                 # All stored dates should be ISO strings if valid, or 'N/A'
+#                 return datetime.fromisoformat(date_val.replace('Z', '+00:00'))
+#             except (ValueError, TypeError):
+#                 logger.warning(f"Could not parse date string '{date_val}' during sorting for patch {p_item.get('patch_url')}. Treating as earliest.")
+#         # 'N/A' or unparseable/None dates will be treated as earliest (and made timezone-aware UTC)
+#         return datetime.min.replace(tzinfo=timezone.utc)
+
+#     # First, sort all patches by commit date for the flat sorted report
+#     patches_to_process.sort(key=sort_key)
+#     logger.info("Completed initial sorting of all patches by commit date.")
+
+#     # Save the flat sorted report (parsed_report_sorted_by_date.json)
+#     # This report contains all patches, sorted by date, without grouping.
+#     # The original parsed_report (loaded as `parsed_report` dict) might have other top-level keys.
+#     # We need to update the "patches" list within that original structure.
+#     flat_sorted_report_data = parsed_report.copy() # Start with a copy of the loaded JSON structure
+#     flat_sorted_report_data["patches"] = patches_to_process # Replace with the globally sorted list
+    
+#     sorted_report_output_filename = "parsed_report_sorted_by_date.json"
+#     sorted_report_output_path = reports_dir / sorted_report_output_filename
+#     with open(sorted_report_output_path, "w", encoding="utf-8") as f:
+#         json.dump(flat_sorted_report_data, f, indent=2)
+#     logger.info(f"Saved flat sorted report with commit dates to: {sorted_report_output_path}")
+
+#     # Now, proceed to group the already date-sorted patches by filename
+#     logger.info("Grouping patches by filename and ensuring sort order within groups...")
+#     grouped_by_file = {}
+#     # Iterate over the globally sorted patches_to_process list
+#     for patch_item in patches_to_process: 
+#         files_dict = patch_item.get("files")
+#         if files_dict and isinstance(files_dict, dict) and files_dict:
+#             for filename in files_dict.keys():
+#                 if filename not in grouped_by_file:
+#                     grouped_by_file[filename] = []
+#                 grouped_by_file[filename].append(patch_item.copy()) # Append a copy
+#         else:
+#             generic_group_key = "_patches_without_specific_files_"
+#             if generic_group_key not in grouped_by_file:
+#                 grouped_by_file[generic_group_key] = []
+#             grouped_by_file[generic_group_key].append(patch_item.copy()) # Append a copy
+
+#     # Although patches_to_process was globally sorted, re-sorting within each group
+#     # is a good practice if the grouping logic could alter order or if items are duplicated.
+#     # Given the .copy() and direct append from an already sorted list, this might be redundant
+#     # but ensures correctness if the logic were more complex.
+#     for filename in grouped_by_file:
+#         grouped_by_file[filename].sort(key=sort_key) # Patches within each group are sorted by date
+
+#     # Save the grouped and sorted report (grouped_by_file_report.json)
+#     grouped_report_filename = "grouped_by_file_report.json"
+#     grouped_report_output_path = reports_dir / grouped_report_filename
+#     output_data_for_grouped_report = {"grouped_patches_by_file": grouped_by_file}
+#     with open(grouped_report_output_path, "w", encoding="utf-8") as f:
+#         json.dump(output_data_for_grouped_report, f, indent=2)
+#     logger.info(f"Saved grouped and sorted report to: {grouped_report_output_path}")
+
+#     # Save fetch_failures.json (unchanged logic)
+#     fetch_failures_path = reports_dir.parent / PATHS_CONFIG.get("fetch_failures_report")
+
+#     with open(fetch_failures_path, "w", encoding="utf-8") as f:
+#         json.dump(results["failed"], f, indent=2)
+
+#     if results["failed"]:
+#         logger.warning(f"Some patches could not be fetched/processed fully. See '{fetch_failures_path}' for failure details.")
+#     else:
+#         logger.info("All patches fetched and processed successfully. Both reports generated.")
+        
+#     # Update summary yield to include paths to both reports
+#     yield {
+#         "type": "summary", 
+#         "data": results, 
+#         "sorted_report_path": str(sorted_report_output_path),
+#         "grouped_report_path": str(grouped_report_output_path)
+#     }
+
+
 def run_fetcher_step():
     """
     Runs the patch fetching process.
@@ -244,7 +556,7 @@ def run_fetcher_step():
     total_patches = len(patches_to_process)
     processed_count = 0
     logger.info(f"Processing {total_patches} patches from report: {report_path.name}")
-    
+
     yield {"type": "progress", "completed": 0, "total": total_patches}
 
     if not patches_to_process:
@@ -256,34 +568,108 @@ def run_fetcher_step():
         files_to_include = list(patch.get("files", {}).keys())
 
         try:
-            success, message = fetch_and_filter_patch(patch_url, files_to_include)
+            success, message, extracted_date_iso = fetch_and_filter_patch(patch_url, files_to_include)
+            actual_date_to_store = extracted_date_iso if extracted_date_iso is not None else 'N/A'
+            patch['commit_date'] = actual_date_to_store
+            commit_date_for_results = actual_date_to_store
 
             if success:
                 logger.info(f"Successfully saved patch to: {Path(message).name}")
-                results["successful"].append({"url": patch_url, "file": message})
+                results["successful"].append({"url": patch_url, "file": message, "commit_date": commit_date_for_results})
             else:
                 error_reason = f"Failed to fetch or filter patch: {patch_url}. Reason: {message}"
-                logger.info(error_reason)
-                results["failed"].append({"url": patch_url, "reason": message})
+                logger.error(error_reason)
+                results["failed"].append({"url": patch_url, "reason": message, "commit_date": commit_date_for_results})
 
         except Exception as e:
             error_reason = f"An unexpected error occurred while processing {patch_url}: {e}"
-            logger.info(error_reason, exc_info=True)
-            results["failed"].append({"url": patch_url, "reason": str(e)})
-        
+            logger.error(error_reason, exc_info=True)
+            results["failed"].append({"url": patch_url, "reason": str(e), "commit_date": patch.get('commit_date', 'N/A')})
+
         processed_count += 1
         yield {"type": "progress", "completed": processed_count, "total": total_patches}
 
-    # Write failed fetches to a report for downstream steps
     reports_dir = vidar_dir / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
+
+    def sort_key(p_item):
+        date_val = p_item.get('commit_date')
+        if date_val and date_val != 'N/A':
+            try:
+                return datetime.fromisoformat(date_val.replace('Z', '+00:00'))
+            except (ValueError, TypeError):
+                logger.warning(f"Could not parse date string '{date_val}' during sorting for patch {p_item.get('patch_url')}. Treating as earliest.")
+        return datetime.min.replace(tzinfo=timezone.utc)
+
+    patches_to_process.sort(key=sort_key)
+    logger.info("Completed initial sorting of all patches by commit date.")
+
+    flat_sorted_report_data = parsed_report.copy()
+    flat_sorted_report_data["patches"] = patches_to_process
+
+    sorted_report_output_filename = "parsed_report_sorted_by_date.json"
+    sorted_report_output_path = reports_dir / sorted_report_output_filename
+    with open(sorted_report_output_path, "w", encoding="utf-8") as f:
+        json.dump(flat_sorted_report_data, f, indent=2)
+    logger.info(f"Saved flat sorted report with commit dates to: {sorted_report_output_path}")
+
+    # Build Option B grouped output
+    logger.info("Building grouped-by-file Option B report...")
+    grouped_by_file = {}
+    for patch_item in patches_to_process:
+        patch_summary = {
+            "patch_url": patch_item.get("patch_url"),
+            "patch_file": f"{AndroidPatchManager.extract_commit_hashes([patch_item.get('patch_url')])[0]}.diff",
+            "project": patch_item.get("project"),
+            "commit_date": patch_item.get("commit_date", "N/A")
+        }
+        files_dict = patch_item.get("files")
+        if files_dict and isinstance(files_dict, dict):
+            for file_path in files_dict:
+                if file_path not in grouped_by_file:
+                    grouped_by_file[file_path] = []
+                grouped_by_file[file_path].append(patch_summary.copy())
+
+    # Sort patches for each file group by date
+    for file_key in grouped_by_file:
+        grouped_by_file[file_key].sort(key=lambda p: sort_key({"commit_date": p["commit_date"]}))
+
+    grouped_output = []
+    for file_key, patches in grouped_by_file.items():
+        grouped_output.append({
+            "file": file_key,
+            "patches": patches
+        })
+
+    grouped_report_path = reports_dir / "grouped_by_file_report.json"
+    with open(grouped_report_path, "w", encoding="utf-8") as f:
+        json.dump({"grouped_patch_records": grouped_output}, f, indent=2)
+    logger.info(f"Saved grouped-by-file Option B report to: {grouped_report_path}")
+
     fetch_failures_path = reports_dir.parent / PATHS_CONFIG.get("fetch_failures_report")
     with open(fetch_failures_path, "w", encoding="utf-8") as f:
         json.dump(results["failed"], f, indent=2)
 
     if results["failed"]:
-        logger.warning(f"Some patches could not be fetched. See '{fetch_failures_path}' for details.")
+        logger.warning(f"Some patches could not be fetched/processed fully. See '{fetch_failures_path}' for failure details.")
     else:
-        logger.info("All patches fetched successfully.")
-        
-    yield {"type": "summary", "data": results}
+        logger.info("All patches fetched and processed successfully. Both reports generated.")
+
+    yield {
+        "type": "summary",
+        "data": results,
+        "sorted_report_path": str(sorted_report_output_path),
+        "grouped_report_path": str(grouped_report_path)
+    }
+
+
+# --- MAIN ENTRY POINT ---
+
+def main():
+    """Main entry point for the patch fetcher script."""
+    # When run as a script, just iterate through the generator to execute it.
+    for _ in run_fetcher_step():
+        pass
+
+if __name__ == "__main__":
+    main()
