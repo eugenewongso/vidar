@@ -91,7 +91,7 @@ def _extract_commit_date_from_API_codelinaro(commit_url: str) -> str:
     api_url = f"https://git.codelinaro.org/api/v4/projects/{encoded_project}/repository/commits/{commit_sha}"
 
     response = requests.get(api_url)
-    print("DEBUG, response.json():", response.json())  
+    # print("DEBUG, response.json():", response.json())  
     if response.status_code != 200:
         raise Exception(f"API request failed: {response.status_code} {response.text}")
     
